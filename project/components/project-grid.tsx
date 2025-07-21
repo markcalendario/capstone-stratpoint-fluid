@@ -1,15 +1,16 @@
-import { Calendar, Users, MoreHorizontal } from "lucide-react"
+import { Calendar, Users, MoreHorizontal } from "lucide-react";
 
 const projects = [
   {
     id: "1",
     name: "Website Redesign",
-    description: "Complete overhaul of company website with modern design and improved UX",
+    description:
+      "Complete overhaul of company website with modern design and improved UX",
     progress: 75,
     members: 5,
     dueDate: "2024-02-15",
     status: "In Progress",
-    color: "bg-blue_munsell-500",
+    color: "bg-blue_munsell-500"
   },
   {
     id: "2",
@@ -19,7 +20,7 @@ const projects = [
     members: 8,
     dueDate: "2024-03-20",
     status: "In Progress",
-    color: "bg-green-500",
+    color: "bg-green-500"
   },
   {
     id: "3",
@@ -29,7 +30,7 @@ const projects = [
     members: 3,
     dueDate: "2024-01-30",
     status: "Review",
-    color: "bg-purple-500",
+    color: "bg-purple-500"
   },
   {
     id: "4",
@@ -39,7 +40,7 @@ const projects = [
     members: 4,
     dueDate: "2024-04-10",
     status: "Planning",
-    color: "bg-orange-500",
+    color: "bg-orange-500"
   },
   {
     id: "5",
@@ -49,7 +50,7 @@ const projects = [
     members: 2,
     dueDate: "2024-02-28",
     status: "In Progress",
-    color: "bg-red-500",
+    color: "bg-red-500"
   },
   {
     id: "6",
@@ -59,9 +60,9 @@ const projects = [
     members: 3,
     dueDate: "2024-02-05",
     status: "Review",
-    color: "bg-indigo-500",
-  },
-]
+    color: "bg-indigo-500"
+  }
+];
 
 export function ProjectGrid() {
   return (
@@ -69,8 +70,7 @@ export function ProjectGrid() {
       {projects.map((project) => (
         <div
           key={project.id}
-          className="bg-white dark:bg-outer_space-500 rounded-lg border border-french_gray-300 dark:border-payne's_gray-400 p-6 hover:shadow-lg transition-shadow cursor-pointer"
-        >
+          className="bg-white dark:bg-outer_space-500 rounded-lg border border-french_gray-300 dark:border-payne's_gray-400 p-6 hover:shadow-lg transition-shadow cursor-pointer">
           <div className="flex items-start justify-between mb-4">
             <div className={`w-3 h-3 rounded-full ${project.color}`} />
             <button className="p-1 hover:bg-platinum-500 dark:hover:bg-payne's_gray-400 rounded">
@@ -78,7 +78,9 @@ export function ProjectGrid() {
             </button>
           </div>
 
-          <h3 className="text-lg font-semibold text-outer_space-500 dark:text-platinum-500 mb-2">{project.name}</h3>
+          <h3 className="text-lg font-semibold text-outer_space-500 dark:text-platinum-500 mb-2">
+            {project.name}
+          </h3>
 
           <p className="text-sm text-payne's_gray-500 dark:text-french_gray-400 mb-4 line-clamp-2">
             {project.description}
@@ -86,19 +88,29 @@ export function ProjectGrid() {
 
           <div className="flex items-center justify-between text-sm text-payne's_gray-500 dark:text-french_gray-400 mb-4">
             <div className="flex items-center">
-              <Users size={16} className="mr-1" />
+              <Users
+                size={16}
+                className="mr-1"
+              />
               {project.members} members
             </div>
             <div className="flex items-center">
-              <Calendar size={16} className="mr-1" />
+              <Calendar
+                size={16}
+                className="mr-1"
+              />
               {project.dueDate}
             </div>
           </div>
 
           <div className="mb-4">
             <div className="flex items-center justify-between text-sm mb-2">
-              <span className="text-payne's_gray-500 dark:text-french_gray-400">Progress</span>
-              <span className="text-outer_space-500 dark:text-platinum-500 font-medium">{project.progress}%</span>
+              <span className="text-payne's_gray-500 dark:text-french_gray-400">
+                Progress
+              </span>
+              <span className="text-outer_space-500 dark:text-platinum-500 font-medium">
+                {project.progress}%
+              </span>
             </div>
             <div className="w-full bg-french_gray-300 dark:bg-payne's_gray-400 rounded-full h-2">
               <div
@@ -116,13 +128,12 @@ export function ProjectGrid() {
                   : project.status === "Review"
                     ? "bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300"
                     : "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300"
-              }`}
-            >
+              }`}>
               {project.status}
             </span>
           </div>
         </div>
       ))}
     </div>
-  )
+  );
 }

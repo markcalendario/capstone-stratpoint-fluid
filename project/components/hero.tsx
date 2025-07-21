@@ -1,5 +1,5 @@
-import Link from "next/link"
-import { ArrowRight, CheckCircle, Users, Zap } from "lucide-react"
+import Link from "next/link";
+import { ArrowRight, CheckCircle, Users, Zap } from "lucide-react";
 
 export function Hero() {
   return (
@@ -12,17 +12,19 @@ export function Hero() {
           </h1>
 
           <p className="text-xl text-payne's_gray-500 dark:text-french_gray-500 mb-8 max-w-2xl mx-auto">
-            Organize tasks, collaborate with your team, and deliver projects on time with our intuitive Kanban-style
-            project management platform.
+            Organize tasks, collaborate with your team, and deliver projects on
+            time with our intuitive Kanban-style project management platform.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
             <Link
               href="/dashboard"
-              className="inline-flex items-center px-8 py-4 bg-blue_munsell-500 text-white rounded-lg hover:bg-blue_munsell-600 transition-colors text-lg font-semibold"
-            >
+              className="inline-flex items-center px-8 py-4 bg-blue_munsell-500 text-white rounded-lg hover:bg-blue_munsell-600 transition-colors text-lg font-semibold">
               Start Free Trial
-              <ArrowRight className="ml-2" size={20} />
+              <ArrowRight
+                className="ml-2"
+                size={20}
+              />
             </Link>
 
             <button className="inline-flex items-center px-8 py-4 border-2 border-blue_munsell-500 text-blue_munsell-500 rounded-lg hover:bg-blue_munsell-50 dark:hover:bg-blue_munsell-900 transition-colors text-lg font-semibold">
@@ -32,20 +34,29 @@ export function Hero() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-3xl mx-auto">
             <div className="flex items-center justify-center space-x-2 text-outer_space-500 dark:text-platinum-500">
-              <CheckCircle className="text-blue_munsell-500" size={20} />
+              <CheckCircle
+                className="text-blue_munsell-500"
+                size={20}
+              />
               <span>No Credit Card Required</span>
             </div>
             <div className="flex items-center justify-center space-x-2 text-outer_space-500 dark:text-platinum-500">
-              <Users className="text-blue_munsell-500" size={20} />
+              <Users
+                className="text-blue_munsell-500"
+                size={20}
+              />
               <span>Team Collaboration</span>
             </div>
             <div className="flex items-center justify-center space-x-2 text-outer_space-500 dark:text-platinum-500">
-              <Zap className="text-blue_munsell-500" size={20} />
+              <Zap
+                className="text-blue_munsell-500"
+                size={20}
+              />
               <span>Real-time Updates</span>
             </div>
           </div>
         </div>
       </div>
     </section>
-  )
+  );
 }

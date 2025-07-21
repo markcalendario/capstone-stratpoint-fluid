@@ -1,4 +1,4 @@
-import { TrendingUp, Users, CheckCircle, Clock } from "lucide-react"
+import { TrendingUp, Users, CheckCircle, Clock } from "lucide-react";
 
 const stats = [
   {
@@ -6,30 +6,30 @@ const stats = [
     value: "12",
     change: "+2.5%",
     changeType: "positive",
-    icon: TrendingUp,
+    icon: TrendingUp
   },
   {
     name: "Team Members",
     value: "24",
     change: "+4.1%",
     changeType: "positive",
-    icon: Users,
+    icon: Users
   },
   {
     name: "Completed Tasks",
     value: "156",
     change: "+12.3%",
     changeType: "positive",
-    icon: CheckCircle,
+    icon: CheckCircle
   },
   {
     name: "Pending Tasks",
     value: "43",
     change: "-2.1%",
     changeType: "negative",
-    icon: Clock,
-  },
-]
+    icon: Clock
+  }
+];
 
 export function DashboardStats() {
   return (
@@ -37,12 +37,14 @@ export function DashboardStats() {
       {stats.map((stat) => (
         <div
           key={stat.name}
-          className="bg-white dark:bg-outer_space-500 overflow-hidden rounded-lg border border-french_gray-300 dark:border-payne's_gray-400 p-6"
-        >
+          className="bg-white dark:bg-outer_space-500 overflow-hidden rounded-lg border border-french_gray-300 dark:border-payne's_gray-400 p-6">
           <div className="flex items-center">
             <div className="flex-shrink-0">
               <div className="w-8 h-8 bg-blue_munsell-100 dark:bg-blue_munsell-900 rounded-lg flex items-center justify-center">
-                <stat.icon className="text-blue_munsell-500" size={20} />
+                <stat.icon
+                  className="text-blue_munsell-500"
+                  size={20}
+                />
               </div>
             </div>
             <div className="ml-5 w-0 flex-1">
@@ -51,14 +53,15 @@ export function DashboardStats() {
                   {stat.name}
                 </dt>
                 <dd className="flex items-baseline">
-                  <div className="text-2xl font-semibold text-outer_space-500 dark:text-platinum-500">{stat.value}</div>
+                  <div className="text-2xl font-semibold text-outer_space-500 dark:text-platinum-500">
+                    {stat.value}
+                  </div>
                   <div
                     className={`ml-2 flex items-baseline text-sm font-semibold ${
                       stat.changeType === "positive"
                         ? "text-green-600 dark:text-green-400"
                         : "text-red-600 dark:text-red-400"
-                    }`}
-                  >
+                    }`}>
                     {stat.change}
                   </div>
                 </dd>
@@ -68,5 +71,5 @@ export function DashboardStats() {
         </div>
       ))}
     </div>
-  )
+  );
 }
