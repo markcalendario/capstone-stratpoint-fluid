@@ -1,10 +1,12 @@
-import { User, Bell, Shield, Palette } from "lucide-react"
+import { User, Bell, Shield, Palette } from "lucide-react";
 
 export default function SettingsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-outer_space-500 dark:text-platinum-500">Settings</h1>
+        <h1 className="text-3xl font-bold text-outer_space-500 dark:text-platinum-500">
+          Settings
+        </h1>
         <p className="text-payne's_gray-500 dark:text-french_gray-500 mt-2">
           Manage your account and application preferences
         </p>
@@ -17,7 +19,9 @@ export default function SettingsPage() {
         </h3>
         <ul className="text-sm text-yellow-700 dark:text-yellow-300 space-y-1">
           <li>• Task 2.4: Implement user session management</li>
-          <li>• Task 6.4: Implement project member management and permissions</li>
+          <li>
+            • Task 6.4: Implement project member management and permissions
+          </li>
         </ul>
       </div>
 
@@ -25,13 +29,15 @@ export default function SettingsPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Settings Navigation */}
         <div className="bg-white dark:bg-outer_space-500 rounded-lg border border-french_gray-300 dark:border-payne's_gray-400 p-6">
-          <h3 className="text-lg font-semibold text-outer_space-500 dark:text-platinum-500 mb-4">Settings</h3>
+          <h3 className="text-lg font-semibold text-outer_space-500 dark:text-platinum-500 mb-4">
+            Settings
+          </h3>
           <nav className="space-y-2">
             {[
               { name: "Profile", icon: User, active: true },
               { name: "Notifications", icon: Bell, active: false },
               { name: "Security", icon: Shield, active: false },
-              { name: "Appearance", icon: Palette, active: false },
+              { name: "Appearance", icon: Palette, active: false }
             ].map((item) => (
               <button
                 key={item.name}
@@ -39,9 +45,11 @@ export default function SettingsPage() {
                   item.active
                     ? "bg-blue_munsell-100 dark:bg-blue_munsell-900 text-blue_munsell-700 dark:text-blue_munsell-300"
                     : "text-outer_space-500 dark:text-platinum-500 hover:bg-platinum-500 dark:hover:bg-payne's_gray-400"
-                }`}
-              >
-                <item.icon className="mr-3" size={16} />
+                }`}>
+                <item.icon
+                  className="mr-3"
+                  size={16}
+                />
                 {item.name}
               </button>
             ))}
@@ -50,7 +58,9 @@ export default function SettingsPage() {
 
         {/* Settings Content */}
         <div className="lg:col-span-2 bg-white dark:bg-outer_space-500 rounded-lg border border-french_gray-300 dark:border-payne's_gray-400 p-6">
-          <h3 className="text-lg font-semibold text-outer_space-500 dark:text-platinum-500 mb-6">Profile Settings</h3>
+          <h3 className="text-lg font-semibold text-outer_space-500 dark:text-platinum-500 mb-6">
+            Profile Settings
+          </h3>
 
           <div className="space-y-6">
             <div>
@@ -76,7 +86,9 @@ export default function SettingsPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-outer_space-500 dark:text-platinum-500 mb-2">Role</label>
+              <label className="block text-sm font-medium text-outer_space-500 dark:text-platinum-500 mb-2">
+                Role
+              </label>
               <select className="w-full px-3 py-2 border border-french_gray-300 dark:border-payne's_gray-400 rounded-lg bg-white dark:bg-outer_space-400 text-outer_space-500 dark:text-platinum-500 focus:outline-none focus:ring-2 focus:ring-blue_munsell-500">
                 <option>Project Manager</option>
                 <option>Developer</option>
@@ -97,5 +109,5 @@ export default function SettingsPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }
