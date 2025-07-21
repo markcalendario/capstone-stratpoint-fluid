@@ -5,46 +5,46 @@ module.exports = {
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
-    "*.{js,ts,jsx,tsx,mdx}",
+    "*.{js,ts,jsx,tsx,mdx}"
   ],
   theme: {
     extend: {
       colors: {
-        border: "hsl(var(--border))",
-        input: "hsl(var(--input))",
-        ring: "hsl(var(--ring))",
-        background: "hsl(var(--background))",
-        foreground: "hsl(var(--foreground))",
-        primary: {
+        "border": "hsl(var(--border))",
+        "input": "hsl(var(--input))",
+        "ring": "hsl(var(--ring))",
+        "background": "hsl(var(--background))",
+        "foreground": "hsl(var(--foreground))",
+        "primary": {
           DEFAULT: "hsl(var(--primary))",
-          foreground: "hsl(var(--primary-foreground))",
+          foreground: "hsl(var(--primary-foreground))"
         },
-        secondary: {
+        "secondary": {
           DEFAULT: "hsl(var(--secondary))",
-          foreground: "hsl(var(--secondary-foreground))",
+          foreground: "hsl(var(--secondary-foreground))"
         },
-        destructive: {
+        "destructive": {
           DEFAULT: "hsl(var(--destructive))",
-          foreground: "hsl(var(--destructive-foreground))",
+          foreground: "hsl(var(--destructive-foreground))"
         },
-        muted: {
+        "muted": {
           DEFAULT: "hsl(var(--muted))",
-          foreground: "hsl(var(--muted-foreground))",
+          foreground: "hsl(var(--muted-foreground))"
         },
-        accent: {
+        "accent": {
           DEFAULT: "hsl(var(--accent))",
-          foreground: "hsl(var(--accent-foreground))",
+          foreground: "hsl(var(--accent-foreground))"
         },
-        popover: {
+        "popover": {
           DEFAULT: "hsl(var(--popover))",
-          foreground: "hsl(var(--popover-foreground))",
+          foreground: "hsl(var(--popover-foreground))"
         },
-        card: {
+        "card": {
           DEFAULT: "hsl(var(--card))",
-          foreground: "hsl(var(--card-foreground))",
+          foreground: "hsl(var(--card-foreground))"
         },
         // Custom color palette based on requirements - NO shadcn colors
-        platinum: {
+        "platinum": {
           DEFAULT: "#dcdcdd",
           50: "#f8f8f8",
           100: "#f1f1f1",
@@ -55,9 +55,9 @@ module.exports = {
           600: "#828285",
           700: "#575759",
           800: "#2b2b2c",
-          900: "#f8f8f8",
+          900: "#f8f8f8"
         },
-        french_gray: {
+        "french_gray": {
           DEFAULT: "#c5c3c6",
           50: "#f3f3f4",
           100: "#e8e7e8",
@@ -68,9 +68,9 @@ module.exports = {
           600: "#777279",
           700: "#4f4c51",
           800: "#282628",
-          900: "#f3f3f4",
+          900: "#f3f3f4"
         },
-        outer_space: {
+        "outer_space": {
           DEFAULT: "#46494c",
           50: "#d9dbdc",
           100: "#b4b7b9",
@@ -81,7 +81,7 @@ module.exports = {
           600: "#2b2c2e",
           700: "#1c1e1f",
           800: "#0e0f0f",
-          900: "#d9dbdc",
+          900: "#d9dbdc"
         },
         "payne's_gray": {
           DEFAULT: "#4c5c68",
@@ -94,9 +94,9 @@ module.exports = {
           600: "#2d373e",
           700: "#1e2429",
           800: "#0f1215",
-          900: "#d9dfe3",
+          900: "#d9dfe3"
         },
-        blue_munsell: {
+        "blue_munsell": {
           DEFAULT: "#1985a1",
           50: "#c7edf6",
           100: "#8edaed",
@@ -107,18 +107,18 @@ module.exports = {
           600: "#0f4f5f",
           700: "#0a3540",
           800: "#051a20",
-          900: "#c7edf6",
-        },
+          900: "#c7edf6"
+        }
       },
       fontFamily: {
-        sans: ["Inter", "sans-serif"],
+        sans: ["Inter", "sans-serif"]
       },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
-      },
-    },
+        sm: "calc(var(--radius) - 4px)"
+      }
+    }
   },
-  plugins: [require("tailwindcss-animate")],
-}
+  plugins: [require("tailwindcss-animate")]
+};
