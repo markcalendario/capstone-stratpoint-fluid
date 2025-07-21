@@ -1,8 +1,29 @@
 import { authMiddleware } from "@clerk/nextjs";
+import { NextResponse } from "next/server";
+
+const publicRoutes = ["/", "/sign-in", "/sign-up"];
 
 export default authMiddleware({
-  // Allow signed out users to access the specified routes:
-  publicRoutes: ["/", "/sign-in", "/sign-up"]
+  publicRoutes,
+
+  async afterAuth(auth, req) {
+    const url = req.nextUrl.clone();
+    const isPublicRoute = publicRoutes.includes(url.pathname);
+
+    // When user is not authenticated
+    if (!auth.userId && !isPublicRoute) {
+      url.pathname = "/sign-in";
+      return NextResponse.redirect(url);
+    }
+
+    // When user is authenticated
+    if (auth.userId && isPublicRoute) {
+      url.pathname = "/dashboard";
+      return NextResponse.redirect(url);
+    }
+
+    return NextResponse.next();
+  }
 });
 
 export const config = {
