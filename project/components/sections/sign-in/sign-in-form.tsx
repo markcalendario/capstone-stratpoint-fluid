@@ -2,7 +2,7 @@ import { SignIn } from "@clerk/nextjs";
 
 export default function SignInForm() {
   return (
-    <section className="dark:bg-neutral-900 bg-neutral-100 flex justify-center  items-center min-h-[calc(100vh-64px)] sm:min-h-[calc(100vh-65px)]">
+    <section className="flex min-h-[calc(100vh-64px)] items-center justify-center bg-neutral-100 dark:bg-neutral-900 sm:min-h-[calc(100vh-65px)]">
       <SignIn
         appearance={{
           elements: {
