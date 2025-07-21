@@ -1,11 +1,23 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState, Suspense } from "react"
-import Link from "next/link"
-import { ThemeToggle } from "@/components/theme-toggle"
-import { Home, FolderOpen, Users, Settings, Menu, X, BarChart3, Calendar, Bell, Search } from "lucide-react"
+import { ThemeToggle } from "@/components/theme-toggle";
+import { UserButton } from "@clerk/nextjs";
+import {
+  BarChart3,
+  Bell,
+  Calendar,
+  FolderOpen,
+  Home,
+  Menu,
+  Search,
+  Settings,
+  Users,
+  X
+} from "lucide-react";
+import Link from "next/link";
+import { Suspense, useState } from "react";
 
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: Home, current: true },
@@ -13,35 +25,40 @@ const navigation = [
   { name: "Team", href: "/team", icon: Users, current: false },
   { name: "Analytics", href: "/analytics", icon: BarChart3, current: false },
   { name: "Calendar", href: "/calendar", icon: Calendar, current: false },
-  { name: "Settings", href: "/settings", icon: Settings, current: false },
-]
+  { name: "Settings", href: "/settings", icon: Settings, current: false }
+];
 
 export default function DashboardLayout({
-  children,
+  children
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
-  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-platinum-900 dark:bg-outer_space-600">
       {/* Mobile sidebar overlay */}
       {sidebarOpen && (
-        <div className="fixed inset-0 z-40 bg-black bg-opacity-50 lg:hidden" onClick={() => setSidebarOpen(false)} />
+        <div
+          className="fixed inset-0 z-40 bg-black bg-opacity-50 lg:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
       )}
 
       {/* Sidebar */}
       <div
-        className={`fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-outer_space-500 border-r border-french_gray-300 dark:border-payne's_gray-400 transform transition-transform duration-300 ease-in-out lg:translate-x-0 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}`}
-      >
+        className={`fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-outer_space-500 border-r border-french_gray-300 dark:border-payne's_gray-400 transform transition-transform duration-300 ease-in-out lg:translate-x-0 ${
+          sidebarOpen ? "translate-x-0" : "-translate-x-full"
+        }`}>
         <div className="flex items-center justify-between h-16 px-6 border-b border-french_gray-300 dark:border-payne's_gray-400">
-          <Link href="/" className="text-2xl font-bold text-blue_munsell-500">
+          <Link
+            href="/"
+            className="text-2xl font-bold text-blue_munsell-500">
             ProjectFlow
           </Link>
           <button
             onClick={() => setSidebarOpen(false)}
-            className="lg:hidden p-2 rounded-lg hover:bg-platinum-500 dark:hover:bg-payne's_gray-400"
-          >
+            className="lg:hidden p-2 rounded-lg hover:bg-platinum-500 dark:hover:bg-payne's_gray-400">
             <X size={20} />
           </button>
         </div>
@@ -62,9 +79,11 @@ export default function DashboardLayout({
                     item.current
                       ? "bg-blue_munsell-100 dark:bg-blue_munsell-900 text-blue_munsell-700 dark:text-blue_munsell-300"
                       : "text-outer_space-500 dark:text-platinum-500 hover:bg-platinum-500 dark:hover:bg-payne's_gray-400"
-                  }`}
-                >
-                  <item.icon className="mr-3" size={20} />
+                  }`}>
+                  <item.icon
+                    className="mr-3"
+                    size={20}
+                  />
                   {item.name}
                 </Link>
               </li>
@@ -79,8 +98,7 @@ export default function DashboardLayout({
         <div className="sticky top-0 z-30 flex h-16 items-center gap-x-4 border-b border-french_gray-300 dark:border-payne's_gray-400 bg-white dark:bg-outer_space-500 px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
           <button
             onClick={() => setSidebarOpen(true)}
-            className="lg:hidden p-2 rounded-lg hover:bg-platinum-500 dark:hover:bg-payne's_gray-400"
-          >
+            className="lg:hidden p-2 rounded-lg hover:bg-platinum-500 dark:hover:bg-payne's_gray-400">
             <Menu size={20} />
           </button>
 
@@ -104,12 +122,8 @@ export default function DashboardLayout({
               <button className="p-2 rounded-lg hover:bg-platinum-500 dark:hover:bg-payne's_gray-400">
                 <Bell size={20} />
               </button>
-
               <ThemeToggle />
-
-              <div className="w-8 h-8 bg-blue_munsell-500 rounded-full flex items-center justify-center text-white font-semibold">
-                U
-              </div>
+              <UserButton />
             </div>
           </div>
         </div>
@@ -120,5 +134,5 @@ export default function DashboardLayout({
         </main>
       </div>
     </div>
-  )
+  );
 }

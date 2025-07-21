@@ -1,38 +1,37 @@
-// TODO: Task 2.2 - Configure authentication middleware for route protection
-// import { authMiddleware } from "@clerk/nextjs"
+import { authMiddleware } from "@clerk/nextjs";
+import { NextResponse } from "next/server";
 
-// Placeholder middleware - currently allows all routes for development
-// TODO: Replace with actual Clerk authMiddleware when authentication is implemented
-export default function middleware() {
-  // TODO: Implement actual authentication middleware
-  // For now, allow all routes so interns can navigate and see the mock pages
-  console.log("TODO: Implement Clerk authentication middleware")
+const publicRoutes = ["/", "/sign-in", "/sign-up"];
 
-  // Return undefined to allow all requests through
-  return undefined
-}
-
-export const config = {
-  // TODO: Update matcher when implementing actual authentication
-  // For now, don't match any routes to allow free navigation
-  matcher: [],
-}
-
-/*
-TODO: Task 2.2 Implementation Notes for Interns:
-- Install and configure Clerk
-- Set up authMiddleware to protect routes
-- Configure public routes: ["/", "/sign-in", "/sign-up"]
-- Protect all dashboard routes: ["/dashboard", "/projects"]
-- Add proper redirects for unauthenticated users
-
-Example implementation when ready:
 export default authMiddleware({
-  publicRoutes: ["/", "/sign-in", "/sign-up"],
-  ignoredRoutes: [],
-})
+  publicRoutes,
+
+  async afterAuth(auth, req) {
+    const url = req.nextUrl.clone();
+    const isPublicRoute = publicRoutes.includes(url.pathname);
+
+    // When user is not authenticated
+    if (!auth.userId && !isPublicRoute) {
+      url.pathname = "/sign-in";
+      return NextResponse.redirect(url);
+    }
+
+    // When user is authenticated
+    if (auth.userId && isPublicRoute) {
+      url.pathname = "/dashboard";
+      return NextResponse.redirect(url);
+    }
+
+    return NextResponse.next();
+  }
+});
 
 export const config = {
-  matcher: ["/((?!.+\\.[\\w]+$|_next).*)", "/", "/(api|trpc)(.*)"],
-}
-*/
+  matcher: [
+    // Exclude files with a "." followed by an extension, which are typically static files.
+    // Exclude files in the _next directory, which are Next.js internals.
+    "/((?!.+\\.[\\w]+$|_next).*)",
+    // Re-include any files in the api or trpc folders that might have an extension
+    "/(api|trpc)(.*)"
+  ]
+};
