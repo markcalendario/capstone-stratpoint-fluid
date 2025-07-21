@@ -1,0 +1,15 @@
+# Ignore build output
+.next
+out
+
+# Ignore node modules
+node_modules
+
+# Ignore config files and lock files
+package.json
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Ignore public assets
+public/
