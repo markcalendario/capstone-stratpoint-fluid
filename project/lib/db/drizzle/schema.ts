@@ -1,5 +1,5 @@
-import { pgTable, foreignKey, uuid, text, timestamp, integer, unique, pgEnum } from "drizzle-orm/pg-core"
-import { sql } from "drizzle-orm"
+import { sql } from "drizzle-orm";
+import { foreignKey, integer, pgEnum, pgTable, text, timestamp, unique, uuid } from "drizzle-orm/pg-core";
 
 export const priority = pgEnum("PRIORITY", ['low', 'medium', 'high'])
 
@@ -41,6 +41,7 @@ export const tasks = pgTable("tasks", {
 	description: text().notNull(),
 	listId: uuid().notNull(),
 	assigneeId: uuid().notNull(),
+	priority: priority().notNull(),
 	dueDate: timestamp({ mode: 'string' }).notNull(),
 	position: integer().notNull(),
 	createdAt: timestamp({ mode: 'string' }).default(sql`CURRENT_TIMESTAMP`).notNull(),
