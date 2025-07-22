@@ -20,7 +20,10 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "pretty": "prettier . --write"
+    "pretty": "prettier . --write",
+    "db:migrate": "drizzle-kit migrate",
+    "db:generate": "drizzle-kit generate",
+    "db:introspect": "drizzle-kit introspect"
   },
   "dependencies": {
     "@clerk/nextjs": "4.29.1",
