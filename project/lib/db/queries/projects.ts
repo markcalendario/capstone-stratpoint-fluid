@@ -12,7 +12,12 @@ const projectQueries = {
     return await db.select().from(projects);
   },
   getById: async (id: Project["id"]) => {
-    return await db.select().from(projects).where(eq(projects.id, id));
+    const [project] = await db
+      .select()
+      .from(projects)
+      .where(eq(projects.id, id));
+
+    return project;
   },
   create: async (data: CreateProjectPayload) => {
     const [newProject] = await db

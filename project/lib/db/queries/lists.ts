@@ -8,8 +8,8 @@ const listQueries = {
     return await db.select().from(lists);
   },
   getById: async (id: List["id"]) => {
-    const list = await db.select().from(lists).where(eq(lists.id, id));
-    return list[0];
+    const [list] = await db.select().from(lists).where(eq(lists.id, id));
+    return list;
   },
   create: async (data: CreateListPayload) => {
     const [newList] = await db

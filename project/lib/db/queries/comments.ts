@@ -13,8 +13,12 @@ const commentsQueries = {
     return await db.select().from(comments);
   },
   getById: async (id: Comment["id"]) => {
-    const comment = await db.select().from(comments).where(eq(comments.id, id));
-    return comment[0];
+    const [comment] = await db
+      .select()
+      .from(comments)
+      .where(eq(comments.id, id));
+
+    return comment;
   },
   create: async (data: CreateCommentPayload) => {
     const [newComment] = await db
