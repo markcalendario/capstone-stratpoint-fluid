@@ -4,11 +4,10 @@ import {
   CreateCommentPayload,
   UpdateCommentPayload
 } from "@/types/comments";
-import { Project } from "@/types/projects";
 import { eq } from "drizzle-orm";
 import db from "..";
 
-const commentsQueries = {
+const commentQueries = {
   getAll: async () => {
     return await db.select().from(comments);
   },
@@ -36,7 +35,7 @@ const commentsQueries = {
 
     return updatedComment.id;
   },
-  delete: async (id: Project["id"]) => {
+  delete: async (id: Comment["id"]) => {
     const [deletedComment] = await db
       .delete(comments)
       .where(eq(comments.id, id))
@@ -46,4 +45,4 @@ const commentsQueries = {
   }
 };
 
-export default commentsQueries;
+export default commentQueries;
