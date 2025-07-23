@@ -3,6 +3,6 @@ import { InferSelectModel } from "drizzle-orm";
 
 export type User = InferSelectModel<typeof users>;
 
-export type CreateUserPayload = Omit<User, "createdAt" | "updatedAt">;
+export type CreateUserPayload = Omit<User, "id" | "createdAt" | "updatedAt">;
 
-export type UpdateUserPayload = Omit<User, "createdAt">;
+export type UpdateUserPayload = Omit<User, "id" | "createdAt">;

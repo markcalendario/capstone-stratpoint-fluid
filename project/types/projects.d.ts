@@ -8,7 +8,7 @@ export interface Project extends InferSelectModel<typeof projects> {
 
 export type CreateProjectPayload = Omit<
   Project,
-  "lists" | "createdAt" | "updatedAt"
+  "id" | "lists" | "createdAt" | "updatedAt"
 >;
 
-export type UpdateProjectPayload = Omit<Project, "lists" | "createdAt">;
+export type UpdateProjectPayload = Omit<Project, "id" | "lists" | "createdAt">;

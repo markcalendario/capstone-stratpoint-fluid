@@ -8,7 +8,7 @@ export interface Task extends InferSelectModel<typeof tasks> {
 
 export type CreateTaskPayload = Omit<
   Task,
-  "comments" | "createdAt" | "updatedAt"
+  "id" | "comments" | "createdAt" | "updatedAt"
 >;
 
-export type UpdateTaskPayload = Omit<Task, "comments" | "createdAt">;
+export type UpdateTaskPayload = Omit<Task, "id" | "comments" | "createdAt">;
