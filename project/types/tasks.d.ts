@@ -5,3 +5,10 @@ import { Comment } from "./comments";
 export interface Task extends InferSelectModel<typeof tasks> {
   comments: Comment[];
 }
+
+export type CreateTaskPayload = Omit<
+  Task,
+  "comments" | "createdAt" | "updatedAt"
+>;
+
+export type UpdateTaskPayload = Omit<Task, "comments" | "createdAt">;
