@@ -19,10 +19,11 @@ const taskQueries = {
 
     return newTask.id;
   },
-  update: async (data: UpdateTaskPayload) => {
+  update: async (id: Task["id"], data: UpdateTaskPayload) => {
     const [updatedTask] = await db
       .update(tasks)
       .set(data)
+      .where(eq(tasks.id, id))
       .returning({ id: tasks.id });
 
     return updatedTask.id;

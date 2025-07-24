@@ -27,10 +27,11 @@ const commentQueries = {
 
     return newComment.id;
   },
-  update: async (data: UpdateCommentPayload) => {
+  update: async (id: Comment["id"], data: UpdateCommentPayload) => {
     const [updatedComment] = await db
       .update(comments)
       .set(data)
+      .where(eq(comments.id, id))
       .returning({ id: comments.id });
 
     return updatedComment.id;

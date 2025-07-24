@@ -6,6 +6,9 @@ export interface List extends InferSelectModel<typeof lists> {
   tasks: Task[];
 }
 
-export type CreateListPayload = Omit<List, "tasks" | "createdAt" | "updatedAt">;
+export type CreateListPayload = Omit<
+  List,
+  "id" | "tasks" | "createdAt" | "updatedAt"
+>;
 
-export type UpdateListPayload = Omit<List, "tasks" | "createdAt">;
+export type UpdateListPayload = Omit<List, "id" | "tasks" | "createdAt">;

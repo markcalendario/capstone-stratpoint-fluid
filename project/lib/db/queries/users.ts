@@ -19,10 +19,11 @@ const userQueries = {
 
     return newUser.id;
   },
-  update: async (data: UpdateUserPayload) => {
+  update: async (id: User["id"], data: UpdateUserPayload) => {
     const [updatedUser] = await db
       .update(users)
       .set(data)
+      .where(eq(users.id, id))
       .returning({ id: users.id });
 
     return updatedUser.id;
