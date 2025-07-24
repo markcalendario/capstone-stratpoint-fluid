@@ -4,8 +4,8 @@ CREATE TABLE "comments" (
 	"content" text NOT NULL,
 	"taskId" uuid NOT NULL,
 	"authorId" uuid NOT NULL,
-	"createdAt" timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
-	"updatedAt" timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL
+	"createdAt" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	"updatedAt" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "lists" (
@@ -13,8 +13,8 @@ CREATE TABLE "lists" (
 	"name" text NOT NULL,
 	"projectId" uuid NOT NULL,
 	"position" integer NOT NULL,
-	"createdAt" timestamp DEFAULT CURRENT_TIMESTAMP,
-	"updatedAt" timestamp DEFAULT CURRENT_TIMESTAMP
+	"createdAt" timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+	"updatedAt" timestamp with time zone DEFAULT CURRENT_TIMESTAMP
 );
 --> statement-breakpoint
 CREATE TABLE "projects" (
@@ -22,9 +22,9 @@ CREATE TABLE "projects" (
 	"name" text NOT NULL,
 	"description" text NOT NULL,
 	"ownerId" uuid NOT NULL,
-	"createdAt" timestamp DEFAULT CURRENT_TIMESTAMP,
-	"updatedAt" timestamp DEFAULT CURRENT_TIMESTAMP,
-	"dueDate" timestamp NOT NULL
+	"createdAt" timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+	"updatedAt" timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+	"dueDate" date NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "tasks" (
@@ -34,10 +34,10 @@ CREATE TABLE "tasks" (
 	"listId" uuid NOT NULL,
 	"assigneeId" uuid NOT NULL,
 	"priority" "PRIORITY" NOT NULL,
-	"dueDate" timestamp NOT NULL,
+	"dueDate" date NOT NULL,
 	"position" integer NOT NULL,
-	"createdAt" timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
-	"updatedAt" timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL
+	"createdAt" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	"updatedAt" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "users" (
@@ -45,8 +45,8 @@ CREATE TABLE "users" (
 	"clerkId" text NOT NULL,
 	"email" text NOT NULL,
 	"name" text NOT NULL,
-	"createdAt" timestamp DEFAULT CURRENT_TIMESTAMP,
-	"updatedAt" timestamp DEFAULT CURRENT_TIMESTAMP,
+	"createdAt" timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+	"updatedAt" timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
 	CONSTRAINT "users_clerkId_key" UNIQUE("clerkId")
 );
 --> statement-breakpoint

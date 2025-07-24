@@ -1,5 +1,5 @@
 {
-  "id": "a8eb83dd-4d27-40ff-b1e4-cc1cdc2f7169",
+  "id": "2a416e7a-3d37-48b2-8a1c-5a3084b47471",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -35,14 +35,14 @@
         },
         "createdAt": {
           "name": "createdAt",
-          "type": "timestamp",
+          "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": true,
           "default": "CURRENT_TIMESTAMP"
         },
         "updatedAt": {
           "name": "updatedAt",
-          "type": "timestamp",
+          "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": true,
           "default": "CURRENT_TIMESTAMP"
@@ -114,14 +114,14 @@
         },
         "createdAt": {
           "name": "createdAt",
-          "type": "timestamp",
+          "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": false,
           "default": "CURRENT_TIMESTAMP"
         },
         "updatedAt": {
           "name": "updatedAt",
-          "type": "timestamp",
+          "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": false,
           "default": "CURRENT_TIMESTAMP"
@@ -180,21 +180,21 @@
         },
         "createdAt": {
           "name": "createdAt",
-          "type": "timestamp",
+          "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": false,
           "default": "CURRENT_TIMESTAMP"
         },
         "updatedAt": {
           "name": "updatedAt",
-          "type": "timestamp",
+          "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": false,
           "default": "CURRENT_TIMESTAMP"
         },
         "dueDate": {
           "name": "dueDate",
-          "type": "timestamp",
+          "type": "date",
           "primaryKey": false,
           "notNull": true
         }
@@ -265,7 +265,7 @@
         },
         "dueDate": {
           "name": "dueDate",
-          "type": "timestamp",
+          "type": "date",
           "primaryKey": false,
           "notNull": true
         },
@@ -277,14 +277,14 @@
         },
         "createdAt": {
           "name": "createdAt",
-          "type": "timestamp",
+          "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": true,
           "default": "CURRENT_TIMESTAMP"
         },
         "updatedAt": {
           "name": "updatedAt",
-          "type": "timestamp",
+          "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": true,
           "default": "CURRENT_TIMESTAMP"
@@ -356,14 +356,14 @@
         },
         "createdAt": {
           "name": "createdAt",
-          "type": "timestamp",
+          "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": false,
           "default": "CURRENT_TIMESTAMP"
         },
         "updatedAt": {
           "name": "updatedAt",
-          "type": "timestamp",
+          "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": false,
           "default": "CURRENT_TIMESTAMP"
