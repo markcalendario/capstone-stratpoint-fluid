@@ -26,7 +26,7 @@ export const createTaskSchema = z.object({
   position: z.number().min(1, "Invalid position.")
 });
 
-export const updateUserSchema = z.object({
+export const updateTaskSchema = z.object({
   title: z
     .string()
     .max(TITLE_LENGTH, `Max title length is ${TITLE_LENGTH} characters.`)
