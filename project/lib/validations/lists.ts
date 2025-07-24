@@ -23,6 +23,4 @@ export const updateListSchema = z.object({
   updatedAt: z.iso.datetime("Invalid date for date modified.")
 });
 
-export const getListByIdSchema = z.uuidv4("List ID is an invalid UUID.");
-
-export const deleteListSchema = z.uuidv4("List ID is an invalid UUID.");
+export const listIdSchema = z.uuidv4("Comment ID is an invalid UUID.");

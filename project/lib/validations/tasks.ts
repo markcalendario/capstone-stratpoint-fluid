@@ -50,6 +50,4 @@ export const updateTaskSchema = z.object({
   updatedAt: z.iso.datetime("Invalid date for date modified.")
 });
 
-export const getTaskByIdSchema = z.uuidv4("Task ID is an invalid UUID.");
-
-export const deleteTaskSchema = z.uuidv4("Task ID is an invalid UUID.");
+export const taskIdSchema = z.uuidv4("Task ID is an invalid UUID.");

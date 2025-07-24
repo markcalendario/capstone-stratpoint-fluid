@@ -13,6 +13,4 @@ export const updateUserSchema = z.object({
   updatedAt: z.iso.datetime("Invalid update date and time.")
 });
 
-export const getUserByIdSchema = z.uuidv4("User ID is an invalid UUID.");
-
-export const deleteUserSchema = z.uuidv4("User ID is an invalid UUID.");
+export const userIdSchema = z.uuidv4("User ID is an invalid UUID.");

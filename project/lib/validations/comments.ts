@@ -13,4 +13,4 @@ export const updateCommentSchema = z.object({
   updatedAt: z.iso.datetime("Invalid date for date modified.")
 });
 
-export const commentIDSchema = z.uuidv4("Comment ID is an invalid UUID.");
+export const commentIdSchema = z.uuidv4("Comment ID is an invalid UUID.");

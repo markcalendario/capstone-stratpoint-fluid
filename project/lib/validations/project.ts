@@ -41,6 +41,4 @@ export const updateProjectSchema = z.object({
   updatedAt: z.iso.datetime("Invalid date for date modified.")
 });
 
-export const getProjectByIdSchema = z.uuidv4("Project ID is an invalid UUID.");
-
-export const deleteProjectSchema = z.uuidv4("Project ID is an invalid UUID.");
+export const projectIdSchema = z.uuidv4("Project ID is an invalid UUID.");
