@@ -1,5 +1,5 @@
 import { priority } from "@/lib/db/drizzle/schema";
-import { getCurrentDate } from "@/lib/utils/date-and-time";
+import { isFutureDate } from "@/lib/utils/date-and-time";
 import z from "zod";
 
 const TITLE_LENGTH = 20;
@@ -20,9 +20,9 @@ export const createTaskSchema = z.object({
   listId: z.uuidv4("List ID must be a valid UUID."),
   assigneeId: z.uuidv4("Assignee ID must be a valid UUID."),
   priority: z.enum(priority.enumValues),
-  dueDate: z
+  dueDate: z.iso
     .date("Due date must be a valid date.")
-    .min(getCurrentDate(), "Due date cannot be today or in the past."),
+    .refine(isFutureDate, "Due date cannot be today or in the past."),
   position: z.number().min(1, "Invalid position.")
 });
 
@@ -41,9 +41,9 @@ export const updateTaskSchema = z.object({
   listId: z.uuidv4("List ID must be a valid UUID."),
   assigneeId: z.uuidv4("Assignee ID must be a valid UUID."),
   priority: z.enum(priority.enumValues),
-  dueDate: z
+  dueDate: z.iso
     .date("Due date must be a valid date.")
-    .min(getCurrentDate(), "Due date cannot be today or in the past."),
+    .refine(isFutureDate, "Due date cannot be today or in the past."),
   position: z.number().min(1, "Invalid position."),
   updatedAt: z.iso.datetime("Invalid date for date modified.")
 });
