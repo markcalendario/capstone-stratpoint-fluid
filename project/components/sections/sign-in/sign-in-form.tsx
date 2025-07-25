@@ -6,24 +6,36 @@ export default function SignInForm() {
       <SignIn
         appearance={{
           elements: {
-            card: "dark:bg-neutral-800 bg-white rounded-lg shadow-sm",
-            formButtonPrimary:
-              "bg-blue_munsell-500 hover:bg-blue_munsell-600 rounded-sm",
-            headerTitle: "text-blue_munsell-500",
-            headerSubtitle: "dark:text-neutral-100",
-            socialButtonsBlockButtonText: "dark:text-neutral-100",
-            socialButtonsBlockButton: "dark:bg-neutral-700",
-            socialButtonsBlockButtonArrow: "dark:text-neutral-100",
-            footerActionText: "dark:text-neutral-300",
-            footerActionLink: "dark:text-neutral-100",
-            formFieldLabel: "dark:text-neutral-100",
+            // Layout & Card
+            cardBox: "rounded-none my-5 shadow-md border-1",
+            card: "rounded-none bg-white dark:bg-neutral-800 shadow-none",
+
+            // Header
+            header: "text-left",
+            headerTitle: "text-xl text-blue_munsell-500 dark:text-neutral-100",
+            headerSubtitle: "text-neutral-800 dark:text-neutral-200",
+
+            // Social Buttons
+            socialButtonsBlockButton:
+              "rounded-none py-[10px] bg-white text-neutral-900 dark:bg-neutral-800 dark:text-neutral-100",
+
+            // Divider
+            dividerLine: "bg-neutral-300 dark:bg-neutral-700",
+            dividerText: "text-neutral-700 dark:text-neutral-300",
+
+            // Form
+            formFieldLabel: "text-neutral-900 dark:text-neutral-100",
             formFieldInput:
-              "rounded-sm focus:border-1 focus:border-blue_munsell-500 focus:shadow-none",
-            dividerLine: "dark:bg-neutral-400",
-            dividerText: "dark:text-neutral-300"
+              "rounded-none py-[10px] bg-white dark:bg-neutral-900 text-neutral-800 dark:text-neutral-100 placeholder-neutral-500",
+            formButtonPrimary:
+              "bg-blue_munsell-500 hover:bg-blue_munsell-600 py-[10px] rounded-sm",
+
+            // Footer
+            footerAction: "bg-neutral-100 w-full dark:bg-neutral-700",
+            footerActionText: "text-neutral-600 dark:text-neutral-300",
+            footerActionLink: "text-blue_munsell-600 dark:text-white"
           }
         }}
-        afterSignInUrl="/dashboard"
         signUpUrl="/sign-up"
       />
     </section>
