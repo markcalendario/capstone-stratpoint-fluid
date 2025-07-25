@@ -32,6 +32,18 @@ const userQueries = {
 
     return updatedUser.id;
   },
+  updateByClerkId: async (
+    clerkId: UserSchema["clerkId"],
+    data: UpdateUserPayload
+  ) => {
+    const [updatedUser] = await db
+      .update(users)
+      .set(data)
+      .where(eq(users.clerkId, clerkId))
+      .returning({ clerkId: users.clerkId });
+
+    return updatedUser.clerkId;
+  },
   delete: async (id: UserSchema["id"]) => {
     const [deletedUser] = await db
       .delete(users)

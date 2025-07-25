@@ -1,27 +1,48 @@
-import { createUserAccount } from "@/actions/users";
+import userQueries from "@/lib/db/queries/users";
+import { createUserSchema, updateUserSchema } from "@/lib/validations/users";
 import { verifyWebhook } from "@clerk/nextjs/webhooks";
 import { NextRequest } from "next/server";
+import z from "zod";
 
 export async function POST(req: NextRequest) {
   const CLERK_SECRET = process.env.CLERK_WEBHOOK_SIGNING_SECRET;
-  const evt = await verifyWebhook(req, { signingSecret: CLERK_SECRET });
+  const { data, type } = await verifyWebhook(req, {
+    signingSecret: CLERK_SECRET
+  });
 
-  const { data, type } = evt;
+  try {
+    // Webhook Action: On user created
+    if (type === "user.created") {
+      const validatedData = createUserSchema.parse({
+        clerkId: data.id,
+        email: data.email_addresses[0].email_address,
+        name: `${data.first_name} ${data.last_name}`
+      });
 
-  // Webhook Action: On user created
-  if (type === "user.created") {
-    const { email_addresses, id: clerkId, first_name, last_name } = data;
-    const email = email_addresses[0].email_address;
-    const name = `${first_name} ${last_name}`;
+      await userQueries.create(validatedData);
+      return new Response("[Synced] Account created.", { status: 200 });
+    }
 
-    const { success, message } = await createUserAccount({
-      name,
-      email,
-      clerkId
-    });
+    // Webhook: On user updated
+    else if (type === "user.updated") {
+      const validatedData = updateUserSchema.parse({
+        email: data.email_addresses[0].email_address,
+        name: `${data.first_name} ${data.last_name}`,
+        updatedAt: new Date().toISOString()
+      });
 
-    if (!success) return new Response(message, { status: 400 });
+      await userQueries.updateByClerkId(data.id, validatedData);
+      return new Response("[Synced] Account updated.", { status: 200 });
+    }
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return new Response(error.issues[0].message, { status: 400 });
+    }
+
+    if (error instanceof Error) {
+      return new Response(error.message, { status: 400 });
+    }
+
+    return new Response("Unexpected Error Occured.", { status: 500 });
   }
-
-  return new Response("Webhook Process Done", { status: 200 });
 }
