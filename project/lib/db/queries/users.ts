@@ -1,5 +1,9 @@
 import { users } from "@/lib/db/drizzle/schema";
-import { CreateUserPayload, UpdateUserPayload, User } from "@/types/users";
+import {
+  CreateUserPayload,
+  UpdateUserPayload,
+  UserSchema
+} from "@/types/users";
 import { eq } from "drizzle-orm";
 import db from "..";
 
@@ -7,7 +11,7 @@ const userQueries = {
   getAll: async () => {
     return await db.select().from(users);
   },
-  getById: async (id: User["id"]) => {
+  getById: async (id: UserSchema["id"]) => {
     const [user] = await db.select().from(users).where(eq(users.id, id));
     return user;
   },
@@ -19,7 +23,7 @@ const userQueries = {
 
     return newUser.id;
   },
-  update: async (id: User["id"], data: UpdateUserPayload) => {
+  update: async (id: UserSchema["id"], data: UpdateUserPayload) => {
     const [updatedUser] = await db
       .update(users)
       .set(data)
@@ -28,7 +32,7 @@ const userQueries = {
 
     return updatedUser.id;
   },
-  delete: async (id: User["id"]) => {
+  delete: async (id: UserSchema["id"]) => {
     const [deletedUser] = await db
       .delete(users)
       .where(eq(users.id, id))
