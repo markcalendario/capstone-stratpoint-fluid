@@ -1,13 +1,18 @@
 import { users } from "@/lib/db/drizzle/schema";
-import { CreateUserPayload, UpdateUserPayload, User } from "@/types/users";
+import {
+  CreateUserPayload,
+  UpdateUserPayload,
+  UserSchema
+} from "@/types/users";
 import { eq } from "drizzle-orm";
+import { v4 as uuidv4 } from "uuid";
 import db from "..";
 
 const userQueries = {
   getAll: async () => {
     return await db.select().from(users);
   },
-  getById: async (id: User["id"]) => {
+  getById: async (id: UserSchema["id"]) => {
     const [user] = await db.select().from(users).where(eq(users.id, id));
     return user;
   },
@@ -19,7 +24,7 @@ const userQueries = {
 
     return newUser.id;
   },
-  update: async (id: User["id"], data: UpdateUserPayload) => {
+  update: async (id: UserSchema["id"], data: UpdateUserPayload) => {
     const [updatedUser] = await db
       .update(users)
       .set(data)
@@ -28,11 +33,48 @@ const userQueries = {
 
     return updatedUser.id;
   },
-  delete: async (id: User["id"]) => {
+  updateByClerkId: async (
+    clerkId: UserSchema["clerkId"],
+    data: UpdateUserPayload
+  ) => {
+    const [updatedUser] = await db
+      .update(users)
+      .set(data)
+      .where(eq(users.clerkId, clerkId))
+      .returning({ clerkId: users.clerkId });
+
+    return updatedUser.clerkId;
+  },
+  delete: async (id: UserSchema["id"]) => {
+    const deletedEmail = `${uuidv4()}@deleted.com`;
+    const now = new Date().toISOString();
+
     const [deletedUser] = await db
-      .delete(users)
+      .update(users)
+      .set({
+        email: deletedEmail,
+        name: "[Deleted User]",
+        updatedAt: now
+      })
       .where(eq(users.id, id))
-      .returning({ id: users.id, name: users.name });
+      .returning({ id: users.id });
+
+    return deletedUser;
+  },
+
+  deleteByClerkId: async (clerkId: UserSchema["clerkId"]) => {
+    const deletedEmail = `${uuidv4()}@deleted.com`;
+    const now = new Date().toISOString();
+
+    const [deletedUser] = await db
+      .update(users)
+      .set({
+        email: deletedEmail,
+        name: "[Deleted User]",
+        updatedAt: now
+      })
+      .where(eq(users.clerkId, clerkId))
+      .returning({ id: users.id, clerkId: users.clerkId });
 
     return deletedUser;
   }
