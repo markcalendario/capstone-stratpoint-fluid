@@ -24,7 +24,7 @@ export default function RootLayout({
       suppressHydrationWarning>
       <body className={inter.className}>
         <ThemeProvider>
-          <ClerkProvider>{children}</ClerkProvider>
+          <ClerkProvider afterSignOutUrl="/sign-in">{children}</ClerkProvider>
         </ThemeProvider>
       </body>
     </html>
