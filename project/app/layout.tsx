@@ -1,4 +1,5 @@
 import { ThemeProvider } from "@/components/theme-provider";
+import { cn } from "@/lib/utils";
 import "@/styles/globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
@@ -13,19 +14,18 @@ export const metadata: Metadata = {
   generator: "v0.dev"
 };
 
-export default function RootLayout({
-  children
-}: {
-  children: React.ReactNode;
-}) {
+type RootLayout = { children: React.ReactNode };
+
+export default function RootLayout({ children }: RootLayout) {
   return (
-    <html
-      lang="en"
-      suppressHydrationWarning>
-      <body className={inter.className}>
-        <ThemeProvider>
-          <ClerkProvider afterSignOutUrl="/sign-in">{children}</ClerkProvider>
-        </ThemeProvider>
+    <html lang="en">
+      <body
+        className={cn("bg-neutral-100 dark:bg-neutral-900", inter.className)}>
+        <ClerkProvider
+          afterSignOutUrl="/sign-in"
+          appearance={{ cssLayerName: "clerk" }}>
+          <ThemeProvider>{children}</ThemeProvider>
+        </ClerkProvider>
       </body>
     </html>
   );
