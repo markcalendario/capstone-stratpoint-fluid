@@ -1,5 +1,9 @@
 import userQueries from "@/lib/db/queries/users";
-import { createUserSchema, updateUserSchema } from "@/lib/validations/users";
+import {
+  createUserSchema,
+  updateUserSchema,
+  userClerkIdSchema
+} from "@/lib/validations/users";
 import { verifyWebhook } from "@clerk/nextjs/webhooks";
 import { NextRequest } from "next/server";
 import z from "zod";
@@ -33,6 +37,13 @@ export async function POST(req: NextRequest) {
 
       await userQueries.updateByClerkId(data.id, validatedData);
       return new Response("[Synced] Account updated.", { status: 200 });
+    }
+
+    // Webhook: On user deleted
+    else if (type === "user.deleted") {
+      const validatedClerkId = userClerkIdSchema.parse(data.id);
+      await userQueries.deleteByClerkId(validatedClerkId);
+      return new Response("[Synced] Account deleted.", { status: 200 });
     }
   } catch (error) {
     if (error instanceof z.ZodError) {

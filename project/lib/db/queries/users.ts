@@ -5,6 +5,7 @@ import {
   UserSchema
 } from "@/types/users";
 import { eq } from "drizzle-orm";
+import { v4 as uuidv4 } from "uuid";
 import db from "..";
 
 const userQueries = {
@@ -45,10 +46,35 @@ const userQueries = {
     return updatedUser.clerkId;
   },
   delete: async (id: UserSchema["id"]) => {
+    const deletedEmail = `${uuidv4()}@deleted.com`;
+    const now = new Date().toISOString();
+
     const [deletedUser] = await db
-      .delete(users)
+      .update(users)
+      .set({
+        email: deletedEmail,
+        name: "[Deleted User]",
+        updatedAt: now
+      })
       .where(eq(users.id, id))
-      .returning({ id: users.id, name: users.name });
+      .returning({ id: users.id });
+
+    return deletedUser;
+  },
+
+  deleteByClerkId: async (clerkId: UserSchema["clerkId"]) => {
+    const deletedEmail = `${uuidv4()}@deleted.com`;
+    const now = new Date().toISOString();
+
+    const [deletedUser] = await db
+      .update(users)
+      .set({
+        email: deletedEmail,
+        name: "[Deleted User]",
+        updatedAt: now
+      })
+      .where(eq(users.clerkId, clerkId))
+      .returning({ id: users.id, clerkId: users.clerkId });
 
     return deletedUser;
   }
