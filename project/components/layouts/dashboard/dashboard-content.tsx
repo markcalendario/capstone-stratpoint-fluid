@@ -37,8 +37,10 @@ function Title({ title, description }: TitleProps) {
 
   return (
     <div className="pb-[25px]">
-      <h1 className="text-3xl font-bold tracking-tight">{title}</h1>
-      <p>{description}</p>
+      <h1 className="text-3xl font-bold tracking-tight text-neutral-900 dark:text-neutral-100">
+        {title}
+      </h1>
+      <p className="text-neutral-700 dark:text-neutral-300">{description}</p>
     </div>
   );
 }
