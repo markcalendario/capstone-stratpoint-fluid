@@ -3,5 +3,6 @@
 @import "./custom-variants.css";
 @import "./theme.css";
 @import "./utilities.css";
+@layer clerk;
 
 @import "tailwindcss";
