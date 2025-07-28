@@ -63,7 +63,7 @@ export default function Sidebar({ isOpen }: SidebarProps) {
         <hr className="text-primary/20" />
 
         <Link
-          href="#theme"
+          href="#"
           onClick={theme.toggleTheme}
           className={cn(baseClasses, inactiveClasses)}>
           {theme.theme === "light" ? <Moon /> : <Sun />}
