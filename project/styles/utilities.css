@@ -1,6 +1,6 @@
 @utility container {
   @apply m-auto;
-  @apply px-[10px];
+  @apply px-[20px];
   @apply max-w-[1366px];
 }
 
