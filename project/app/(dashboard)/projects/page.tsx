@@ -28,7 +28,7 @@ export default function ProjectsPage() {
 
         {/* Projects Grid Placeholder */}
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-          <CreateProjectButton />
+          <CreateProjectButton className="border-primary/20 text-primary border-2 border-dashed bg-white text-center text-lg dark:bg-neutral-800 dark:text-neutral-200" />
 
           {[1, 2, 3, 4, 5].map((i) => (
             <ProjectCard

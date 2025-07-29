@@ -1,11 +1,16 @@
 "use client";
 
+import { cn } from "@/lib/utils";
 import { Plus } from "lucide-react";
 import { Fragment, useState } from "react";
 import Button from "./button";
 import { CreateProjectModal } from "./modals/create-project-modal";
 
-export function CreateProjectButton() {
+interface CreateProjectButtonProps {
+  className: string;
+}
+
+export function CreateProjectButton({ className }: CreateProjectButtonProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleIsOpen = () => setIsOpen((prev) => !prev);
@@ -14,7 +19,7 @@ export function CreateProjectButton() {
     <Fragment>
       <Button
         onClick={toggleIsOpen}
-        className="border-primary/20 text-primary border-2 border-dashed bg-white text-center text-lg dark:bg-neutral-800 dark:text-neutral-200">
+        className={cn(className)}>
         <Plus />
         Create Project
       </Button>

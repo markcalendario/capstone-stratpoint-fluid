@@ -1,5 +1,6 @@
-import { Plus, PlusSquare, UserPlus } from "lucide-react";
+import { PlusSquare, UserPlus } from "lucide-react";
 import Button from "./button";
+import { CreateProjectButton } from "./create-project-button";
 
 export default function QuickActions() {
   return (
@@ -8,13 +9,7 @@ export default function QuickActions() {
         Quick Actions
       </h3>
       <div className="space-y-3">
-        <Button className="bg-primary w-full py-4 font-medium text-neutral-100">
-          <Plus
-            size={20}
-            className="mr-2"
-          />
-          Create New Project
-        </Button>
+        <CreateProjectButton className="bg-primary w-full py-4 font-medium text-neutral-100" />
         <Button className="bg-primary/20 text-primary w-full py-4 font-medium dark:text-neutral-300">
           <UserPlus
             size={20}
