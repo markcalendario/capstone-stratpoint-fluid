@@ -1,5 +1,5 @@
+import { AddTeamMemberButton } from "@/components/add-member-button";
 import { DashboardContent } from "@/components/layouts/dashboard/dashboard-content";
-import TeamCard from "@/components/team-card";
 import TeamCard from "@/components/team-card";
 
 export default function TeamPage() {
@@ -26,14 +26,12 @@ export default function TeamPage() {
 
         {/* Team Members Grid */}
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-          asd
+          <AddTeamMemberButton className="border-primary/20 text-primary border-2 border-dashed bg-white text-center text-lg dark:bg-neutral-800 dark:text-neutral-200" />
           {[
             {
               name: "John Doe",
               role: "Project Manager",
               email: "john@example.com",
-              projectsCount: 3,
-              profilePictureUrl: "/placeholder-user.jpg"
               projectsCount: 3,
               profilePictureUrl: "/placeholder-user.jpg"
             },
@@ -43,8 +41,6 @@ export default function TeamPage() {
               email: "jane@example.com",
               projectsCount: 4,
               profilePictureUrl: "/placeholder-user.jpg"
-              projectsCount: 4,
-              profilePictureUrl: "/placeholder-user.jpg"
             },
             {
               name: "Mike Johnson",
@@ -52,15 +48,11 @@ export default function TeamPage() {
               email: "mike@example.com",
               projectsCount: 5,
               profilePictureUrl: "/placeholder-user.jpg"
-              projectsCount: 5,
-              profilePictureUrl: "/placeholder-user.jpg"
             },
             {
               name: "Sarah Wilson",
               role: "Developer",
               email: "sarah@example.com",
-              projectsCount: 6,
-              profilePictureUrl: "/placeholder-user.jpg"
               projectsCount: 6,
               profilePictureUrl: "/placeholder-user.jpg"
             },
