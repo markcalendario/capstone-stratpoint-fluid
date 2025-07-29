@@ -19,7 +19,7 @@ export default function TeamCard({
   className
 }: TeamCardProps) {
   return (
-    <div className={cn("border-primary/20 rounded-lg border", className)}>
+    <div className={cn("border-primary/20 rounded-sm border", className)}>
       <div className="mb-4 flex items-start justify-between">
         <div className="flex items-center space-x-3">
           <div className="relative aspect-square w-12 overflow-hidden rounded-full">
