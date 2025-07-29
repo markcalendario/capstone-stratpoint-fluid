@@ -33,7 +33,7 @@ export default function Sidebar({ isOpen }: SidebarProps) {
   const theme = useTheme();
 
   const baseClasses =
-    "flex font-medium items-center rounded-sm gap-3 px-5 py-3 cursor-pointer";
+    "flex font-medium items-center rounded-sm gap-3 px-5 py-3 min-md:max-lg:p-0 min-md:max-lg:justify-center min-md:max-lg:aspect-square cursor-pointer";
   const inactiveClasses =
     "text-neutral-900 hover:bg-primary/5 dark:text-neutral-100";
   const activeClasses = "text-neutral-100 bg-primary";
@@ -54,7 +54,7 @@ export default function Sidebar({ isOpen }: SidebarProps) {
                 baseClasses,
                 isActive ? activeClasses : inactiveClasses
               )}>
-              <Icon />
+              <Icon size={20} />
               <span className="block md:hidden lg:block">{label}</span>
             </Link>
           );
