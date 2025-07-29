@@ -1,6 +1,6 @@
 import { RecentProject } from "@/types/projects";
 import Link from "next/link";
-import RecentProjectCard from "./recent-project-card";
+import ProjectCard from "./project-card";
 
 interface RecentProjectsProps {
   projects: RecentProject[];
@@ -22,7 +22,7 @@ export function RecentProjects({ projects }: RecentProjectsProps) {
 
       <div className="space-y-3">
         {projects.map((project) => (
-          <RecentProjectCard
+          <ProjectCard
             key={project.id}
             id={project.id}
             name={project.name}
