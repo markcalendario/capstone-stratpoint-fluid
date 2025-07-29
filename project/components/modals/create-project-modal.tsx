@@ -31,7 +31,7 @@ Integration:
 */
 
 import Button from "../button";
-import Input from "../Input";
+import Input from "../input";
 import Textarea from "../textarea";
 import Modal from "./modal";
 
