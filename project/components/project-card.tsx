@@ -1,15 +1,20 @@
+import { cn } from "@/lib/utils";
 import { RecentProject } from "@/types/projects";
 import { Calendar, MoreHorizontal, Users } from "lucide-react";
 import Link from "next/link";
 
-type ProjectCardProps = Pick<
-  RecentProject,
-  "id" | "description" | "dueDate" | "members" | "name" | "progress"
->;
+interface ProjectCardProps
+  extends Pick<
+    RecentProject,
+    "id" | "description" | "dueDate" | "members" | "name" | "progress"
+  > {
+  className: string;
+}
 
 export default function ProjectCard({
   id,
   name,
+  className,
   description,
   dueDate,
   members,
@@ -18,7 +23,7 @@ export default function ProjectCard({
   return (
     <div
       key={id}
-      className="border-primary/20 rounded-lg border p-4">
+      className={cn("border-primary/20 rounded-lg border p-4", className)}>
       <div className="flex items-start justify-between">
         <div className="flex-1">
           <Link
