@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import React from "react";
 
 interface StatusCardProps {
@@ -5,12 +6,14 @@ interface StatusCardProps {
   value: string;
   changeType: "positive" | "negative";
   change: string;
+  className: string;
   icon: React.ElementType;
 }
 
 export default function StatusCard({
   name,
   value,
+  className,
   changeType,
   change,
   icon: Icon
@@ -19,7 +22,11 @@ export default function StatusCard({
     changeType === "positive" ? "text-green-600" : "text-red-600";
 
   return (
-    <div className="border-primary/30 overflow-hidden rounded-sm border-2 bg-white p-6 dark:bg-neutral-800">
+    <div
+      className={cn(
+        "border-primary/20 overflow-hidden rounded-sm border-2 bg-white p-6 dark:bg-neutral-800",
+        className
+      )}>
       <div className="flex items-center">
         <div className="flex-shrink-0">
           <div className="bg-primary/10 flex h-8 w-8 items-center justify-center rounded-lg">
