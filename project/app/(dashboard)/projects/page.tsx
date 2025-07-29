@@ -1,8 +1,7 @@
-import Button from "@/components/button";
+import { CreateProjectButton } from "@/components/create-project-button";
 import { DashboardContent } from "@/components/layouts/dashboard/dashboard-content";
 import ProjectCard from "@/components/project-card";
 import SearchFilter from "@/components/search-filter";
-import { Plus } from "lucide-react";
 
 export default function ProjectsPage() {
   return (
@@ -29,10 +28,8 @@ export default function ProjectsPage() {
 
         {/* Projects Grid Placeholder */}
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-          <Button className="border-primary/20 text-primary border-2 border-dashed bg-white text-lg dark:bg-neutral-800 dark:text-neutral-200">
-            <Plus />
-            Create Project
-          </Button>
+          <CreateProjectButton />
+
           {[1, 2, 3, 4, 5].map((i) => (
             <ProjectCard
               key={i}
