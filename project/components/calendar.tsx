@@ -24,7 +24,7 @@ export default function Calendar({
   defaultView = "month"
 }: CalendarProps) {
   return (
-    <div className="rounded-sm bg-white p-7 dark:bg-neutral-800">
+    <div className="outline-primary/20 rounded-sm bg-white p-7 outline-2 dark:bg-neutral-800">
       <BigCalendar
         localizer={momentLocalizer(moment)}
         style={{ height: "500px" }}

@@ -2,6 +2,7 @@
 
 import Button from "@/components/button";
 import Calendar from "@/components/calendar";
+import DeadlineBar from "@/components/deadline-bar";
 import { DashboardContent } from "@/components/layouts/dashboard/dashboard-content";
 import { Plus } from "lucide-react";
 
@@ -45,8 +46,8 @@ export default function CalendarPage() {
         />
 
         {/* Upcoming Events */}
-        <div className="border-french_gray-300 dark:border-payne's_gray-400 dark:bg-outer_space-500 rounded-lg border bg-white p-6">
-          <h3 className="text-outer_space-500 dark:text-platinum-500 mb-4 text-lg font-semibold">
+        <div className="border-primary/20 space-y-3 rounded-sm border-2 bg-white p-5 dark:bg-neutral-800">
+          <h3 className="text-neutral-700 dark:text-neutral-200">
             Upcoming Deadlines
           </h3>
           <div className="space-y-3">
@@ -54,30 +55,20 @@ export default function CalendarPage() {
               {
                 title: "Website Redesign",
                 date: "Dec 15, 2024",
-                type: "Project Deadline"
+                label: "Project Deadline"
               },
-              { title: "Team Meeting", date: "Dec 18, 2024", type: "Meeting" },
+              { title: "Team Meeting", date: "Dec 18, 2024", label: "Meeting" },
               {
                 title: "Mobile App Launch",
                 date: "Dec 22, 2024",
-                type: "Milestone"
+                label: "Milestone"
               }
             ].map((event, index) => (
-              <div
+              <DeadlineBar
+                {...event}
                 key={index}
-                className="bg-platinum-800 dark:bg-outer_space-400 flex items-center justify-between rounded-lg p-3">
-                <div>
-                  <div className="text-outer_space-500 dark:text-platinum-500 font-medium">
-                    {event.title}
-                  </div>
-                  <div className="text-payne's_gray-500 dark:text-french_gray-400 text-sm">
-                    {event.type}
-                  </div>
-                </div>
-                <div className="text-payne's_gray-500 dark:text-french_gray-400 text-sm">
-                  {event.date}
-                </div>
-              </div>
+                className="bg-neutral-100 dark:bg-neutral-900"
+              />
             ))}
           </div>
         </div>
