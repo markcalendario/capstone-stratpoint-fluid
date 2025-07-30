@@ -1,5 +1,6 @@
 "use client";
 
+import Button from "@/components/button";
 import Calendar from "@/components/calendar";
 import { DashboardContent } from "@/components/layouts/dashboard/dashboard-content";
 import { Plus } from "lucide-react";
@@ -11,21 +12,13 @@ export default function CalendarPage() {
       description="View project deadlines and team schedules">
       <div className="space-y-6">
         <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-outer_space-500 dark:text-platinum-500 text-3xl font-bold">
-              Calendar
-            </h1>
-            <p className="text-payne's_gray-500 dark:text-french_gray-500 mt-2">
-              View project deadlines and team schedules
-            </p>
-          </div>
-          <button className="bg-blue_munsell-500 hover:bg-blue_munsell-600 inline-flex items-center rounded-lg px-4 py-2 text-white transition-colors">
+          <Button className="bg-primary text-neutral-100 dark:bg-white dark:text-neutral-900">
             <Plus
               size={20}
               className="mr-2"
             />
             Add Event
-          </button>
+          </Button>
         </div>
 
         {/* Implementation Tasks Banner */}

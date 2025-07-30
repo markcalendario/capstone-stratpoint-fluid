@@ -61,15 +61,6 @@ export default function AnalyticsPage() {
       title="Analytics"
       description="Track project performance and team productivity">
       <div className="space-y-6">
-        <div>
-          <h1 className="text-outer_space-500 dark:text-platinum-500 text-3xl font-bold">
-            Analytics
-          </h1>
-          <p className="text-payne's_gray-500 dark:text-french_gray-500 mt-2">
-            Track project performance and team productivity
-          </p>
-        </div>
-
         {/* Implementation Tasks Banner */}
         <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-4 dark:border-yellow-800 dark:bg-yellow-900/20">
           <h3 className="mb-2 text-sm font-medium text-yellow-800 dark:text-yellow-200">
