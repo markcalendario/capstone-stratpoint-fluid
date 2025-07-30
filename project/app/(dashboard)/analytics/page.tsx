@@ -1,5 +1,37 @@
+import AnalyticsCard from "@/components/analytics-card";
 import { DashboardContent } from "@/components/layouts/dashboard/dashboard-content";
 import { BarChart3, Clock, TrendingUp, Users } from "lucide-react";
+
+const metrics = [
+  {
+    title: "Project Velocity",
+    value: "8.5",
+    unit: "tasks/week",
+    icon: TrendingUp,
+    color: "blue"
+  },
+  {
+    title: "Team Efficiency",
+    value: "92%",
+    unit: "completion rate",
+    icon: BarChart3,
+    color: "green"
+  },
+  {
+    title: "Active Users",
+    value: "24",
+    unit: "this week",
+    icon: Users,
+    color: "purple"
+  },
+  {
+    title: "Avg. Task Time",
+    value: "2.3",
+    unit: "days",
+    icon: Clock,
+    color: "red"
+  }
+] as const;
 
 export default function AnalyticsPage() {
   return (
@@ -31,58 +63,12 @@ export default function AnalyticsPage() {
 
         {/* Analytics Cards */}
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
-          {[
-            {
-              title: "Project Velocity",
-              value: "8.5",
-              unit: "tasks/week",
-              icon: TrendingUp,
-              color: "blue"
-            },
-            {
-              title: "Team Efficiency",
-              value: "92%",
-              unit: "completion rate",
-              icon: BarChart3,
-              color: "green"
-            },
-            {
-              title: "Active Users",
-              value: "24",
-              unit: "this week",
-              icon: Users,
-              color: "purple"
-            },
-            {
-              title: "Avg. Task Time",
-              value: "2.3",
-              unit: "days",
-              icon: Clock,
-              color: "orange"
-            }
-          ].map((metric, index) => (
-            <div
+          {metrics.map((metric, index) => (
+            <AnalyticsCard
               key={index}
-              className="border-french_gray-300 dark:border-payne's_gray-400 dark:bg-outer_space-500 rounded-lg border bg-white p-6">
-              <div className="mb-4 flex items-center justify-between">
-                <div
-                  className={`h-10 w-10 bg-${metric.color}-100 dark:bg-${metric.color}-900 flex items-center justify-center rounded-lg`}>
-                  <metric.icon
-                    className={`text-${metric.color}-500`}
-                    size={20}
-                  />
-                </div>
-              </div>
-              <div className="text-outer_space-500 dark:text-platinum-500 mb-1 text-2xl font-bold">
-                {metric.value}
-              </div>
-              <div className="text-payne's_gray-500 dark:text-french_gray-400 mb-2 text-sm">
-                {metric.unit}
-              </div>
-              <div className="text-outer_space-500 dark:text-platinum-500 text-xs font-medium">
-                {metric.title}
-              </div>
-            </div>
+              {...metric}
+              className="bg-white dark:bg-neutral-800"
+            />
           ))}
         </div>
 
