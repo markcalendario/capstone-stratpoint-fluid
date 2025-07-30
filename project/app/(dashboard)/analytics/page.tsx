@@ -1,4 +1,5 @@
 import AnalyticsCard from "@/components/analytics-card";
+import BarChart from "@/components/bar-chart";
 import { DashboardContent } from "@/components/layouts/dashboard/dashboard-content";
 import { BarChart3, Clock, TrendingUp, Users } from "lucide-react";
 
@@ -32,6 +33,19 @@ const metrics = [
     color: "red"
   }
 ] as const;
+
+const data = [
+  {
+    name: "TaskFlow Capstone Project",
+    Done: 30,
+    Pending: 100 - 30
+  },
+  {
+    name: "Stratpoint Website Redesign",
+    Done: 68,
+    Pending: 100 - 68
+  }
+];
 
 export default function AnalyticsPage() {
   return (
@@ -74,22 +88,11 @@ export default function AnalyticsPage() {
 
         {/* Charts Placeholder */}
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-          <div className="border-french_gray-300 dark:border-payne's_gray-400 dark:bg-outer_space-500 rounded-lg border bg-white p-6">
-            <h3 className="text-outer_space-500 dark:text-platinum-500 mb-4 text-lg font-semibold">
+          <div className="outline-primary/20 rounded-sm bg-white p-6 outline-2 dark:bg-neutral-800">
+            <h3 className="mb-4 text-lg font-semibold text-neutral-800 dark:text-neutral-200">
               Project Progress
             </h3>
-            <div className="bg-platinum-800 dark:bg-outer_space-400 flex h-64 items-center justify-center rounded-lg">
-              <div className="text-payne's_gray-500 dark:text-french_gray-400 text-center">
-                <BarChart3
-                  size={48}
-                  className="mx-auto mb-2"
-                />
-                <p>Chart Component Placeholder</p>
-                <p className="text-sm">
-                  TODO: Implement with Chart.js or Recharts
-                </p>
-              </div>
-            </div>
+            <BarChart data={data} />
           </div>
 
           <div className="border-french_gray-300 dark:border-payne's_gray-400 dark:bg-outer_space-500 rounded-lg border bg-white p-6">
