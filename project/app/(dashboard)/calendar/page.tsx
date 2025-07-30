@@ -1,5 +1,8 @@
+"use client";
+
+import Calendar from "@/components/calendar";
 import { DashboardContent } from "@/components/layouts/dashboard/dashboard-content";
-import { Calendar, ChevronLeft, ChevronRight, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 
 export default function CalendarPage() {
   return (
@@ -37,46 +40,16 @@ export default function CalendarPage() {
         </div>
 
         {/* Calendar Header */}
-        <div className="border-french_gray-300 dark:border-payne's_gray-400 dark:bg-outer_space-500 rounded-lg border bg-white p-6">
-          <div className="mb-6 flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <button className="hover:bg-platinum-500 dark:hover:bg-payne's_gray-400 rounded-lg p-2">
-                <ChevronLeft size={20} />
-              </button>
-              <h2 className="text-outer_space-500 dark:text-platinum-500 text-xl font-semibold">
-                December 2024
-              </h2>
-              <button className="hover:bg-platinum-500 dark:hover:bg-payne's_gray-400 rounded-lg p-2">
-                <ChevronRight size={20} />
-              </button>
-            </div>
-            <div className="flex space-x-2">
-              <button className="bg-blue_munsell-100 text-blue_munsell-700 dark:bg-blue_munsell-900 dark:text-blue_munsell-300 rounded px-3 py-1 text-sm">
-                Month
-              </button>
-              <button className="text-payne's_gray-500 hover:bg-platinum-500 dark:text-french_gray-400 dark:hover:bg-payne's_gray-400 rounded px-3 py-1 text-sm">
-                Week
-              </button>
-              <button className="text-payne's_gray-500 hover:bg-platinum-500 dark:text-french_gray-400 dark:hover:bg-payne's_gray-400 rounded px-3 py-1 text-sm">
-                Day
-              </button>
-            </div>
-          </div>
-
-          {/* Calendar Grid Placeholder */}
-          <div className="bg-platinum-800 dark:bg-outer_space-400 flex h-96 items-center justify-center rounded-lg">
-            <div className="text-payne's_gray-500 dark:text-french_gray-400 text-center">
-              <Calendar
-                size={48}
-                className="mx-auto mb-2"
-              />
-              <p>Calendar Component Placeholder</p>
-              <p className="text-sm">
-                TODO: Implement with react-big-calendar or similar
-              </p>
-            </div>
-          </div>
-        </div>
+        <Calendar
+          events={[
+            {
+              title: "Team Meeting",
+              start: new Date(2025, 6, 30, 10, 0), // July 30, 2025, 10:00 AM
+              end: new Date(2025, 6, 30, 11, 0) // July 30, 2025, 11:00 AM
+            }
+          ]}
+          onSelectEvent={(evt) => console.log("Selected event:", evt)}
+        />
 
         {/* Upcoming Events */}
         <div className="border-french_gray-300 dark:border-payne's_gray-400 dark:bg-outer_space-500 rounded-lg border bg-white p-6">
