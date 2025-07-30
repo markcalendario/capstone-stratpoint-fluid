@@ -21,7 +21,7 @@ export default function Dashboard({ children }: DashboardProps) {
   }, [isOnMobile]);
 
   return (
-    <section className="dashboard-grid relative min-h-screen">
+    <section className="dashboard-grid min-h-screen">
       <Navbar toggleSidebar={toggleSidebar} />
       <Sidebar isOpen={isSidebarOpen} />
       <Main>{children}</Main>

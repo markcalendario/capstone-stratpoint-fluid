@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { MoreHorizontal } from "lucide-react";
 
 // TODO: Task 5.1 - Design responsive Kanban board layout
 // TODO: Task 5.2 - Implement drag-and-drop functionality with dnd-kit
@@ -121,34 +121,55 @@ const initialColumns = [
 ];
 
 export function KanbanBoard({ projectId }: { projectId: string }) {
-  const [columns, setColumns] = useState(initialColumns);
-
-  const getPriorityColor = (priority: string) => {
-    switch (priority) {
-      case "high":
-        return "bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300";
-      case "medium":
-        return "bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300";
-      case "low":
-        return "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300";
-      default:
-        return "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300";
-    }
-  };
-
   return (
-    <div className="rounded-lg border border-french_gray-300 bg-white p-6 dark:border-payne's_gray-400 dark:bg-outer_space-500">
-      <div className="text-center text-payne's_gray-500 dark:text-french_gray-400">
-        <h3 className="mb-2 text-lg font-semibold">
-          TODO: Implement Kanban Board
-        </h3>
-        <p className="mb-4 text-sm">Project ID: {projectId}</p>
-        <div className="rounded border border-yellow-200 bg-yellow-50 p-4 dark:border-yellow-800 dark:bg-yellow-900/20">
-          <p className="text-sm text-yellow-800 dark:text-yellow-200">
-            📋 This will be the main interactive Kanban board with drag-and-drop
-            functionality
-          </p>
-        </div>
+    <div className="outline-primary/20 w-full rounded-lg bg-white p-6 outline-2 dark:bg-neutral-800">
+      <div className="flex min-w-full flex-nowrap space-x-6 overflow-x-auto pb-4">
+        {["To Do", "In Progress", "Review", "Done"].map((title) => (
+          <div
+            key={title}
+            className="outline-primary/20 min-w-80 rounded-lg bg-white outline-3 dark:bg-neutral-700">
+            <div className="border-b border-neutral-200 p-4 dark:border-neutral-600">
+              <div className="flex items-center justify-between">
+                <h3 className="font-semibold text-neutral-800 dark:text-neutral-100">
+                  {title}
+                  <span className="ml-2 rounded-full bg-neutral-200 px-2 py-1 text-xs dark:bg-neutral-600">
+                    5
+                  </span>
+                </h3>
+                <button className="rounded p-1 hover:bg-neutral-200 dark:hover:bg-neutral-600">
+                  <MoreHorizontal size={16} />
+                </button>
+              </div>
+            </div>
+
+            <div className="min-h-[400px] space-y-3 p-4">
+              {[1, 2, 3].map((taskIndex) => (
+                <div
+                  key={taskIndex}
+                  className="outline-primary/20 cursor-pointer rounded-lg bg-white p-4 shadow-sm outline-2 hover:shadow-md dark:bg-neutral-600">
+                  <h4 className="mb-2 text-sm font-medium text-neutral-800 dark:text-neutral-100">
+                    Sample Task {taskIndex}
+                  </h4>
+                  <p className="mb-3 text-xs text-neutral-500 dark:text-neutral-300">
+                    This is a placeholder task description
+                  </p>
+                  <div className="flex items-center justify-between">
+                    <span className="rounded-full bg-blue-100 px-2 py-1 text-xs font-medium text-blue-700 dark:bg-blue-900 dark:text-blue-300">
+                      Medium
+                    </span>
+                    <div className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-500 text-xs font-semibold text-white">
+                      U
+                    </div>
+                  </div>
+                </div>
+              ))}
+
+              <button className="w-full rounded-lg border-2 border-dashed border-neutral-300 p-3 text-neutral-500 transition-colors hover:border-blue-500 hover:text-blue-500 dark:border-neutral-600 dark:text-neutral-400">
+                + Add task
+              </button>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );
