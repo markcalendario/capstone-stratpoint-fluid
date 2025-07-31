@@ -46,7 +46,7 @@ export function Features() {
       className="px-4 py-20 sm:px-6 lg:px-8">
       <div className="container mx-auto">
         <div className="mb-16 text-center">
-          <h2 className="text-outer_space-500 dark:text-platinum-500 mb-4 text-4xl font-bold">
+          <h2 className="text-outer_space-500 mb-4 text-4xl font-bold">
             Everything You Need to Succeed
           </h2>
           <p className="dark:text-french_gray-500 mx-auto max-w-2xl text-xl">
@@ -63,7 +63,7 @@ export function Features() {
               <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg">
                 <feature.icon size={24} />
               </div>
-              <h3 className="text-outer_space-500 dark:text-platinum-500 mb-2 text-xl font-semibold">
+              <h3 className="text-outer_space-500 mb-2 text-xl font-semibold">
                 {feature.title}
               </h3>
               <p className="dark:text-french_gray-500">{feature.description}</p>

@@ -32,7 +32,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
   const { theme, setTheme } = useTheme();
 
   return (
-    <div className="bg-platinum-900 dark:bg-outer_space-600 min-h-screen">
+    <div className="dark:bg-outer_space-600 min-h-screen">
       {/* Mobile sidebar overlay */}
       {sidebarOpen && (
         <div
@@ -52,7 +52,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
           </Link>
           <button
             onClick={() => setSidebarOpen(false)}
-            className="hover:bg-platinum-500 rounded-lg p-2 lg:hidden">
+            className="rounded-lg p-2 lg:hidden">
             <X size={20} />
           </button>
         </div>
@@ -82,7 +82,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
         <div className="border-french_gray-300 dark:bg-outer_space-500 sticky top-0 z-30 flex h-16 items-center gap-x-4 border-b bg-white px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
           <button
             onClick={() => setSidebarOpen(true)}
-            className="hover:bg-platinum-500 rounded-lg p-2 lg:hidden">
+            className="rounded-lg p-2 lg:hidden">
             <Menu size={20} />
           </button>
 
@@ -91,7 +91,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
             <div className="flex items-center gap-x-4 lg:gap-x-6">
               <button
                 onClick={() => setTheme(theme === "light" ? "dark" : "light")}
-                className="bg-platinum-500 text-outer_space-500 hover:bg-french_gray-500 dark:text-platinum-500 rounded-lg p-2 transition-colors">
+                className="text-outer_space-500 hover:bg-french_gray-500 rounded-lg p-2 transition-colors">
                 {theme === "light" ? <Moon size={20} /> : <Sun size={20} />}
               </button>
 

@@ -50,7 +50,7 @@ export function DashboardStats() {
                   {stat.name}
                 </dt>
                 <dd className="flex items-baseline">
-                  <div className="text-outer_space-500 dark:text-platinum-500 text-2xl font-semibold">
+                  <div className="text-outer_space-500 text-2xl font-semibold">
                     {stat.value}
                   </div>
                   <div

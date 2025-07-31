@@ -73,12 +73,12 @@ export function ProjectGrid() {
           className="border-french_gray-300 dark:bg-outer_space-500 cursor-pointer rounded-lg border bg-white p-6 transition-shadow hover:shadow-lg">
           <div className="mb-4 flex items-start justify-between">
             <div className={`h-3 w-3 rounded-full ${project.color}`} />
-            <button className="hover:bg-platinum-500 rounded p-1">
+            <button className="rounded p-1">
               <MoreHorizontal size={16} />
             </button>
           </div>
 
-          <h3 className="text-outer_space-500 dark:text-platinum-500 mb-2 text-lg font-semibold">
+          <h3 className="text-outer_space-500mb-2 text-lg font-semibold">
             {project.name}
           </h3>
 
@@ -106,7 +106,7 @@ export function ProjectGrid() {
           <div className="mb-4">
             <div className="mb-2 flex items-center justify-between text-sm">
               <span className="dark:text-french_gray-400">Progress</span>
-              <span className="text-outer_space-500 dark:text-platinum-500 font-medium">
+              <span className="text-outer_space-500 font-medium">
                 {project.progress}%
               </span>
             </div>

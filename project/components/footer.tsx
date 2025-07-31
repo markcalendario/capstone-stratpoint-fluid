@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export function Footer() {
   return (
-    <footer className="bg-outer_space-500 text-platinum-500 dark:bg-outer_space-600 py-12">
+    <footer className="bg-outer_space-500 dark:bg-outer_space-600 py-12">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
           <div>
@@ -19,21 +19,21 @@ export function Footer() {
               <li>
                 <Link
                   href="#"
-                  className="text-french_gray-400 hover:text-platinum-500 transition-colors">
+                  className="text-french_gray-400 transition-colors">
                   Features
                 </Link>
               </li>
               <li>
                 <Link
                   href="#"
-                  className="text-french_gray-400 hover:text-platinum-500 transition-colors">
+                  className="text-french_gray-400 transition-colors">
                   Pricing
                 </Link>
               </li>
               <li>
                 <Link
                   href="#"
-                  className="text-french_gray-400 hover:text-platinum-500 transition-colors">
+                  className="text-french_gray-400 transition-colors">
                   Security
                 </Link>
               </li>
@@ -46,21 +46,21 @@ export function Footer() {
               <li>
                 <Link
                   href="#"
-                  className="text-french_gray-400 hover:text-platinum-500 transition-colors">
+                  className="text-french_gray-400 transition-colors">
                   About
                 </Link>
               </li>
               <li>
                 <Link
                   href="#"
-                  className="text-french_gray-400 hover:text-platinum-500 transition-colors">
+                  className="text-french_gray-400 transition-colors">
                   Blog
                 </Link>
               </li>
               <li>
                 <Link
                   href="#"
-                  className="text-french_gray-400 hover:text-platinum-500 transition-colors">
+                  className="text-french_gray-400 transition-colors">
                   Careers
                 </Link>
               </li>
@@ -73,21 +73,21 @@ export function Footer() {
               <li>
                 <Link
                   href="#"
-                  className="text-french_gray-400 hover:text-platinum-500 transition-colors">
+                  className="text-french_gray-400 transition-colors">
                   Help Center
                 </Link>
               </li>
               <li>
                 <Link
                   href="#"
-                  className="text-french_gray-400 hover:text-platinum-500 transition-colors">
+                  className="text-french_gray-400 transition-colors">
                   Contact
                 </Link>
               </li>
               <li>
                 <Link
                   href="#"
-                  className="text-french_gray-400 hover:text-platinum-500 transition-colors">
+                  className="text-french_gray-400 transition-colors">
                   API Docs
                 </Link>
               </li>

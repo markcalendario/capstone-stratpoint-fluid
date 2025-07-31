@@ -7,7 +7,7 @@ export function ProjectHeader({ projectId }: { projectId: string }) {
         <div className="flex-1">
           <div className="mb-2 flex items-center space-x-3">
             <div className="h-3 w-3 rounded-full" />
-            <h1 className="text-outer_space-500 dark:text-platinum-500 text-2xl font-bold">
+            <h1 className="text-outer_space-500 text-2xl font-bold">
               Website Redesign
             </h1>
           </div>
@@ -40,10 +40,10 @@ export function ProjectHeader({ projectId }: { projectId: string }) {
         </div>
 
         <div className="flex items-center space-x-2">
-          <button className="hover:bg-platinum-500 rounded-lg p-2 transition-colors">
+          <button className="rounded-lg p-2 transition-colors">
             <Settings size={20} />
           </button>
-          <button className="hover:bg-platinum-500 rounded-lg p-2 transition-colors">
+          <button className="rounded-lg p-2 transition-colors">
             <MoreHorizontal size={20} />
           </button>
         </div>
