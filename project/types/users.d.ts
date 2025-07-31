@@ -10,12 +10,9 @@ export type User = Omit<
   "id" | "clerkId" | "createdAt" | "updatedAt"
 >;
 
-export type CreateUserPayload = Omit<
-  UserSchema,
-  "id" | "createdAt" | "updatedAt"
->;
+export type CreateUserPayload = Pick<UserSchema, "name" | "clerkId" | "email">;
 
-export type UpdateUserPayload = Omit<
+export type UpdateUserPayload = Pick<
   UserSchema,
-  "id" | "clerkId" | "createdAt"
+  "name" | "email" | "updatedAt"
 >;
