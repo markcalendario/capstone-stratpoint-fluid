@@ -8,7 +8,7 @@ interface ProjectCardProps
     RecentProject,
     "id" | "description" | "dueDate" | "members" | "name" | "progress"
   > {
-  className: string;
+  className?: string;
 }
 
 export default function ProjectCard({
