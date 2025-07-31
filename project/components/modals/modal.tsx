@@ -11,7 +11,7 @@ export default function Modal({ toggle, children, title }: Modal) {
     <div className="bg-opacity-50 fixed top-0 left-0 z-[2] flex h-screen w-full items-center justify-center bg-black/75 p-2">
       <div className="max-h-[90vh] w-[700px] overflow-auto rounded-sm bg-white p-6 dark:bg-neutral-800">
         <div className="mb-4 flex items-center justify-between">
-          <h3 className="dark:text-platinum-500 text-lg font-semibold text-neutral-800 dark:text-neutral-100">
+          <h3 className="text-lg font-semibold text-neutral-800 dark:text-neutral-100">
             {title}
           </h3>
           <button

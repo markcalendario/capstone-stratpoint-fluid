@@ -1,4 +1,4 @@
-import { CheckCircle, Clock, AlertCircle, Users } from "lucide-react";
+import { AlertCircle, CheckCircle, Clock, Users } from "lucide-react";
 
 const taskStats = [
   {
@@ -12,8 +12,8 @@ const taskStats = [
     label: "In Progress",
     count: 18,
     icon: Clock,
-    color: "text-blue_munsell-500",
-    bgColor: "bg-blue_munsell-100 dark:bg-blue_munsell-900"
+    color: "",
+    bgColor: ""
   },
   {
     label: "Overdue",
@@ -33,16 +33,14 @@ const taskStats = [
 
 export function TaskOverview() {
   return (
-    <div className="rounded-lg border border-french_gray-300 bg-white p-6 dark:border-payne's_gray-400 dark:bg-outer_space-500">
-      <h3 className="mb-6 text-lg font-semibold text-outer_space-500 dark:text-platinum-500">
-        Task Overview
-      </h3>
+    <div className="rounded-lg border bg-white p-6">
+      <h3 className="mb-6 text-lg font-semibold">Task Overview</h3>
 
       <div className="space-y-4">
         {taskStats.map((stat) => (
           <div
             key={stat.label}
-            className="flex items-center justify-between rounded-lg border border-french_gray-300 p-3 dark:border-payne's_gray-400">
+            className="flex items-center justify-between rounded-lg border p-3">
             <div className="flex items-center space-x-3">
               <div
                 className={`h-10 w-10 rounded-lg ${stat.bgColor} flex items-center justify-center`}>
@@ -51,19 +49,15 @@ export function TaskOverview() {
                   size={20}
                 />
               </div>
-              <span className="font-medium text-outer_space-500 dark:text-platinum-500">
-                {stat.label}
-              </span>
+              <span className="font-medium">{stat.label}</span>
             </div>
-            <span className="text-2xl font-bold text-outer_space-500 dark:text-platinum-500">
-              {stat.count}
-            </span>
+            <span className="text-2xl font-bold">{stat.count}</span>
           </div>
         ))}
       </div>
 
-      <div className="mt-6 border-t border-french_gray-300 pt-4 dark:border-payne's_gray-400">
-        <div className="text-sm text-payne's_gray-500 dark:text-french_gray-400">
+      <div className="mt-6 border-t pt-4">
+        <div className="text-sm">
           <span className="font-medium">Productivity:</span> 89% completion rate
           this week
         </div>

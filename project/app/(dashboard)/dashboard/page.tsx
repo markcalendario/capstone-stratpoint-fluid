@@ -72,7 +72,7 @@ export default function DashboardPage() {
       <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-900/20">
         <div className="flex items-start">
           <div className="flex-shrink-0">
-            <div className="bg-blue_munsell-500 flex h-8 w-8 items-center justify-center rounded-full">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full">
               <TrendingUp
                 className="text-white"
                 size={16}
