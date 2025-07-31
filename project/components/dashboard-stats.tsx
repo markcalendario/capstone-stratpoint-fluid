@@ -1,4 +1,4 @@
-import { TrendingUp, Users, CheckCircle, Clock } from "lucide-react";
+import { CheckCircle, Clock, TrendingUp, Users } from "lucide-react";
 
 const stats = [
   {
@@ -37,10 +37,10 @@ export function DashboardStats() {
       {stats.map((stat) => (
         <div
           key={stat.name}
-          className="overflow-hidden rounded-lg border border-french_gray-300 bg-white p-6 dark:border-payne's_gray-400 dark:bg-outer_space-500">
+          className="border-french_gray-300 dark:bg-outer_space-500 overflow-hidden rounded-lg border bg-white p-6">
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue_munsell-100 dark:bg-blue_munsell-900">
+              <div className="bg-blue_munsell-100 dark:bg-blue_munsell-900 flex h-8 w-8 items-center justify-center rounded-lg">
                 <stat.icon
                   className="text-blue_munsell-500"
                   size={20}
@@ -49,11 +49,11 @@ export function DashboardStats() {
             </div>
             <div className="ml-5 w-0 flex-1">
               <dl>
-                <dt className="truncate text-sm font-medium text-payne's_gray-500 dark:text-french_gray-400">
+                <dt className="dark:text-french_gray-400 truncate text-sm font-medium">
                   {stat.name}
                 </dt>
                 <dd className="flex items-baseline">
-                  <div className="text-2xl font-semibold text-outer_space-500 dark:text-platinum-500">
+                  <div className="text-outer_space-500 dark:text-platinum-500 text-2xl font-semibold">
                     {stat.value}
                   </div>
                   <div
