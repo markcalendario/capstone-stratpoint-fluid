@@ -16,6 +16,14 @@ const userQueries = {
     const [user] = await db.select().from(users).where(eq(users.id, id));
     return user;
   },
+  getIdByClerkId: async (clerkId: UserSchema["clerkId"]) => {
+    const [user] = await db
+      .select()
+      .from(users)
+      .where(eq(users.clerkId, clerkId));
+
+    return user.id;
+  },
   create: async (data: CreateUserPayload) => {
     const [newUser] = await db
       .insert(users)
