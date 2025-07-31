@@ -37,7 +37,7 @@ export function DashboardStats() {
       {stats.map((stat) => (
         <div
           key={stat.name}
-          className="border-french_gray-300 dark:bg-outer_space-500 overflow-hidden rounded-lg border bg-white p-6">
+          className="border-french_gray-300 overflow-hidden rounded-lg border bg-white p-6">
           <div className="flex items-center">
             <div className="flex-shrink-0">
               <div className="flex h-8 w-8 items-center justify-center rounded-lg">
@@ -50,9 +50,7 @@ export function DashboardStats() {
                   {stat.name}
                 </dt>
                 <dd className="flex items-baseline">
-                  <div className="text-outer_space-500 text-2xl font-semibold">
-                    {stat.value}
-                  </div>
+                  <div className="text-2xl font-semibold">{stat.value}</div>
                   <div
                     className={`ml-2 flex items-baseline text-sm font-semibold ${
                       stat.changeType === "positive"

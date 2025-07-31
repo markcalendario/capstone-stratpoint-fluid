@@ -36,8 +36,8 @@ Integration:
 export function CreateTaskModal() {
   return (
     <div className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-black">
-      <div className="dark:bg-outer_space-500 mx-4 w-full max-w-2xl rounded-lg bg-white p-6">
-        <h3 className="text-outer_space-500 mb-4 text-lg font-semibold">
+      <div className="mx-4 w-full max-w-2xl rounded-lg bg-white p-6">
+        <h3 className="mb-4 text-lg font-semibold">
           TODO: Create/Edit Task Modal
         </h3>
         <div className="rounded border border-yellow-200 bg-yellow-50 p-4 dark:border-yellow-800 dark:bg-yellow-900/20">

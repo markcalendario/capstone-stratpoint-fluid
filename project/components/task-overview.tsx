@@ -33,10 +33,8 @@ const taskStats = [
 
 export function TaskOverview() {
   return (
-    <div className="border-french_gray-300 dark:bg-outer_space-500 rounded-lg border bg-white p-6">
-      <h3 className="text-outer_space-500 mb-6 text-lg font-semibold">
-        Task Overview
-      </h3>
+    <div className="border-french_gray-300 rounded-lg border bg-white p-6">
+      <h3 className="mb-6 text-lg font-semibold">Task Overview</h3>
 
       <div className="space-y-4">
         {taskStats.map((stat) => (
@@ -51,13 +49,9 @@ export function TaskOverview() {
                   size={20}
                 />
               </div>
-              <span className="text-outer_space-500 font-medium">
-                {stat.label}
-              </span>
+              <span className="font-medium">{stat.label}</span>
             </div>
-            <span className="text-outer_space-500 text-2xl font-bold">
-              {stat.count}
-            </span>
+            <span className="text-2xl font-bold">{stat.count}</span>
           </div>
         ))}
       </div>

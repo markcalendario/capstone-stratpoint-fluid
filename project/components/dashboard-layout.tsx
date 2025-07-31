@@ -32,7 +32,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
   const { theme, setTheme } = useTheme();
 
   return (
-    <div className="dark:bg-outer_space-600 min-h-screen">
+    <div className="min-h-screen">
       {/* Mobile sidebar overlay */}
       {sidebarOpen && (
         <div
@@ -43,7 +43,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
 
       {/* Sidebar */}
       <div
-        className={`border-french_gray-300 dark:bg-outer_space-500 fixed inset-y-0 left-0 z-50 w-64 transform border-r bg-white transition-transform duration-300 ease-in-out lg:translate-x-0 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}`}>
+        className={`border-french_gray-300 fixed inset-y-0 left-0 z-50 w-64 transform border-r bg-white transition-transform duration-300 ease-in-out lg:translate-x-0 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}`}>
         <div className="border-french_gray-300 flex h-16 items-center justify-between border-b px-6">
           <Link
             href="/"
@@ -63,7 +63,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
               <li key={item.name}>
                 <Link
                   href={item.href}
-                  className="text-outer_space-500 flex items-center rounded-lg px-3 py-2 text-sm font-medium transition-colors">
+                  className="flex items-center rounded-lg px-3 py-2 text-sm font-medium transition-colors">
                   <item.icon
                     className="mr-3"
                     size={20}
@@ -79,7 +79,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
       {/* Main content */}
       <div className="lg:pl-64">
         {/* Top bar */}
-        <div className="border-french_gray-300 dark:bg-outer_space-500 sticky top-0 z-30 flex h-16 items-center gap-x-4 border-b bg-white px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
+        <div className="border-french_gray-300 sticky top-0 z-30 flex h-16 items-center gap-x-4 border-b bg-white px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
           <button
             onClick={() => setSidebarOpen(true)}
             className="rounded-lg p-2 lg:hidden">
@@ -91,7 +91,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
             <div className="flex items-center gap-x-4 lg:gap-x-6">
               <button
                 onClick={() => setTheme(theme === "light" ? "dark" : "light")}
-                className="text-outer_space-500 hover:bg-french_gray-500 rounded-lg p-2 transition-colors">
+                className="hover:bg-french_gray-500 rounded-lg p-2 transition-colors">
                 {theme === "light" ? <Moon size={20} /> : <Sun size={20} />}
               </button>
 

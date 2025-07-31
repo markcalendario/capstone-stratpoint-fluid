@@ -70,7 +70,7 @@ export function ProjectGrid() {
       {projects.map((project) => (
         <div
           key={project.id}
-          className="border-french_gray-300 dark:bg-outer_space-500 cursor-pointer rounded-lg border bg-white p-6 transition-shadow hover:shadow-lg">
+          className="border-french_gray-300 cursor-pointer rounded-lg border bg-white p-6 transition-shadow hover:shadow-lg">
           <div className="mb-4 flex items-start justify-between">
             <div className={`h-3 w-3 rounded-full ${project.color}`} />
             <button className="rounded p-1">
@@ -78,9 +78,7 @@ export function ProjectGrid() {
             </button>
           </div>
 
-          <h3 className="text-outer_space-500mb-2 text-lg font-semibold">
-            {project.name}
-          </h3>
+          <h3 className="mb-2 text-lg font-semibold">{project.name}</h3>
 
           <p className="dark:text-french_gray-400 mb-4 line-clamp-2 text-sm">
             {project.description}
@@ -106,9 +104,7 @@ export function ProjectGrid() {
           <div className="mb-4">
             <div className="mb-2 flex items-center justify-between text-sm">
               <span className="dark:text-french_gray-400">Progress</span>
-              <span className="text-outer_space-500 font-medium">
-                {project.progress}%
-              </span>
+              <span className="font-medium">{project.progress}%</span>
             </div>
             <div className="bg-french_gray-300 h-2 w-full rounded-full">
               <div
