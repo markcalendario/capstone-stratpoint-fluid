@@ -1,49 +1,36 @@
+import Button from "@/components/button";
 import { KanbanBoard } from "@/components/kanban-board";
 import { DashboardContent } from "@/components/layouts/dashboard/dashboard-content";
-import {
-  ArrowLeft,
-  Calendar,
-  MoreHorizontal,
-  Settings,
-  Users
-} from "lucide-react";
-import Link from "next/link";
+import { Project } from "@/types/projects";
+import { Calendar, MoreHorizontal, Settings, Users } from "lucide-react";
 
-export default function ProjectPage({ params }: { params: { id: string } }) {
+export default async function ProjectPage({
+  params
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const project: Partial<Project> = {
+    name: "Car Dealership Website"
+  };
+
   return (
-    <DashboardContent className="space-y-6">
-      {/* Project Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-4">
-          <Link
-            href="/projects"
-            className="hover:bg-platinum-500 dark:hover:bg-payne's_gray-400 rounded-lg p-2 transition-colors">
-            <ArrowLeft size={20} />
-          </Link>
-          <div>
-            <h1 className="text-outer_space-500 dark:text-platinum-500 text-3xl font-bold">
-              Project #{params.id}
-            </h1>
-            <p className="text-payne's_gray-500 dark:text-french_gray-500 mt-1">
-              Kanban board view for project management
-            </p>
-          </div>
-        </div>
-
-        <div className="flex items-center space-x-2">
-          <button className="hover:bg-platinum-500 dark:hover:bg-payne's_gray-400 rounded-lg p-2 transition-colors">
-            <Users size={20} />
-          </button>
-          <button className="hover:bg-platinum-500 dark:hover:bg-payne's_gray-400 rounded-lg p-2 transition-colors">
-            <Calendar size={20} />
-          </button>
-          <button className="hover:bg-platinum-500 dark:hover:bg-payne's_gray-400 rounded-lg p-2 transition-colors">
-            <Settings size={20} />
-          </button>
-          <button className="hover:bg-platinum-500 dark:hover:bg-payne's_gray-400 rounded-lg p-2 transition-colors">
-            <MoreHorizontal size={20} />
-          </button>
-        </div>
+    <DashboardContent
+      className="space-y-6"
+      title={`${project.name}`}
+      description="List and tasks for this project.">
+      <div className="flex items-center justify-end space-x-2">
+        <Button className="bg-neutral-50">
+          <Users size={20} />
+        </Button>
+        <Button className="bg-neutral-50">
+          <Calendar size={20} />
+        </Button>
+        <Button className="bg-neutral-50">
+          <Settings size={20} />
+        </Button>
+        <Button className="bg-neutral-50">
+          <MoreHorizontal size={20} />
+        </Button>
       </div>
 
       {/* Implementation Tasks Banner */}
