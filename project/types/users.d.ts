@@ -1,7 +1,9 @@
 import { users } from "@/lib/db/drizzle/schema";
 import { InferSelectModel } from "drizzle-orm";
 
-export type UserSchema = InferSelectModel<typeof users>;
+export interface UserSchema extends InferSelectModel<typeof users> {
+  imageUrl: string;
+}
 
 export type User = Omit<
   UserSchema,
