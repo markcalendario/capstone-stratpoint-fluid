@@ -30,9 +30,14 @@ Integration:
 - Handle errors gracefully
 */
 
+import { createProject } from "@/lib/actions/project";
+import { useUser } from "@clerk/nextjs";
+import { redirect, RedirectType } from "next/navigation";
+import { MouseEvent, useRef } from "react";
 import Button from "../button";
 import Input from "../input";
 import Textarea from "../textarea";
+import { showErrorToast, showSuccessToast } from "../toast";
 import Modal from "./modal";
 
 interface CreateProjectModalProps {
@@ -40,25 +45,50 @@ interface CreateProjectModalProps {
 }
 
 export function CreateProjectModal({ toggle }: CreateProjectModalProps) {
+  const form = useRef(null);
+  const { user } = useUser();
+
+  const handleCreateProject = async (evt: MouseEvent<HTMLButtonElement>) => {
+    evt.preventDefault();
+
+    if (!form.current) return null;
+    if (!user?.id) return null;
+
+    const formData = new FormData(form.current);
+    formData.append("ownerClerkId", user.id);
+
+    const { success, message, projectId } = await createProject(formData);
+    if (!success) return showErrorToast(message);
+    showSuccessToast(message);
+
+    toggle();
+    redirect(`/projects/${projectId}`, RedirectType.push);
+  };
+
   return (
     <Modal
       toggle={toggle}
       title="Create New Project">
-      <form className="space-y-4">
+      <form
+        ref={form}
+        className="space-y-4">
         <Input
           id="name"
+          name="name"
           label="Project Name"
           placeholder="Enter project name"
         />
 
         <Textarea
           id="description"
+          name="description"
           label="Project Description"
           placeholder="Enter project description"
         />
 
         <Input
           id="date"
+          name="dueDate"
           label="Project Due Date"
           placeholder="Enter due date"
           type="date"
@@ -70,7 +100,9 @@ export function CreateProjectModal({ toggle }: CreateProjectModalProps) {
             className="text-neutral-800 dark:text-neutral-100">
             Cancel
           </Button>
-          <Button className="bg-primary text-neutral-100">
+          <Button
+            onClick={handleCreateProject}
+            className="bg-primary text-neutral-100">
             Create Project
           </Button>
         </div>
