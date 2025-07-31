@@ -10,7 +10,7 @@ const projects = [
     members: 5,
     dueDate: "2024-02-15",
     status: "In Progress",
-    color: "bg-blue_munsell-500"
+    color: ""
   },
   {
     id: "2",
@@ -122,7 +122,7 @@ export function ProjectGrid() {
             <span
               className={`rounded-full px-2 py-1 text-xs font-medium ${
                 project.status === "In Progress"
-                  ? "bg-blue_munsell-100 text-blue_munsell-700 dark:bg-blue_munsell-900 dark:text-blue_munsell-300"
+                  ? ""
                   : project.status === "Review"
                     ? "bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300"
                     : "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300"

@@ -47,7 +47,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
         <div className="border-french_gray-300 flex h-16 items-center justify-between border-b px-6">
           <Link
             href="/"
-            className="text-blue_munsell-500 text-2xl font-bold">
+            className="text-2xl font-bold">
             TaskFlow
           </Link>
           <button
@@ -95,7 +95,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
                 {theme === "light" ? <Moon size={20} /> : <Sun size={20} />}
               </button>
 
-              <div className="bg-blue_munsell-500 flex h-8 w-8 items-center justify-center rounded-full font-semibold text-white">
+              <div className="flex h-8 w-8 items-center justify-center rounded-full font-semibold text-white">
                 U
               </div>
             </div>

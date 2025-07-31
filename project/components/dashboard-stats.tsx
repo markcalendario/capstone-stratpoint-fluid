@@ -40,11 +40,8 @@ export function DashboardStats() {
           className="border-french_gray-300 dark:bg-outer_space-500 overflow-hidden rounded-lg border bg-white p-6">
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <div className="bg-blue_munsell-100 dark:bg-blue_munsell-900 flex h-8 w-8 items-center justify-center rounded-lg">
-                <stat.icon
-                  className="text-blue_munsell-500"
-                  size={20}
-                />
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg">
+                <stat.icon size={20} />
               </div>
             </div>
             <div className="ml-5 w-0 flex-1">

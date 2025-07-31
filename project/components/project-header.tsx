@@ -6,7 +6,7 @@ export function ProjectHeader({ projectId }: { projectId: string }) {
       <div className="flex items-start justify-between">
         <div className="flex-1">
           <div className="mb-2 flex items-center space-x-3">
-            <div className="bg-blue_munsell-500 h-3 w-3 rounded-full" />
+            <div className="h-3 w-3 rounded-full" />
             <h1 className="text-outer_space-500 dark:text-platinum-500 text-2xl font-bold">
               Website Redesign
             </h1>

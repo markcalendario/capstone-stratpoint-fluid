@@ -60,11 +60,8 @@ export function Features() {
             <div
               key={index}
               className="border-french_gray-300 dark:bg-outer_space-400 rounded-xl border bg-white p-6 shadow-lg transition-shadow hover:shadow-xl">
-              <div className="bg-blue_munsell-100 dark:bg-blue_munsell-900 mb-4 flex h-12 w-12 items-center justify-center rounded-lg">
-                <feature.icon
-                  className="text-blue_munsell-500"
-                  size={24}
-                />
+              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg">
+                <feature.icon size={24} />
               </div>
               <h3 className="text-outer_space-500 dark:text-platinum-500 mb-2 text-xl font-semibold">
                 {feature.title}

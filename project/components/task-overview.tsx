@@ -12,8 +12,8 @@ const taskStats = [
     label: "In Progress",
     count: 18,
     icon: Clock,
-    color: "text-blue_munsell-500",
-    bgColor: "bg-blue_munsell-100 dark:bg-blue_munsell-900"
+    color: "",
+    bgColor: ""
   },
   {
     label: "Overdue",

@@ -6,9 +6,7 @@ export function Footer() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
           <div>
-            <h3 className="text-blue_munsell-400 mb-4 text-2xl font-bold">
-              TaskFlow
-            </h3>
+            <h3 className="mb-4 text-2xl font-bold">TaskFlow</h3>
             <p className="text-french_gray-400">
               The modern project management platform that helps teams
               collaborate and deliver results.
