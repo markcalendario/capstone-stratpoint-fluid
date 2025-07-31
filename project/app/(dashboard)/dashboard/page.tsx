@@ -101,7 +101,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Status Boxes */}
-      <div className="flex flex-col gap-5 lg:flex-row">
+      <div className="grid gap-5 lg:grid-cols-2 xl:grid-cols-4">
         {STATUS.map((stat, i) => (
           <StatusCard
             key={i}
