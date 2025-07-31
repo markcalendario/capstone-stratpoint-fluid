@@ -70,7 +70,7 @@ export function ProjectGrid() {
       {projects.map((project) => (
         <div
           key={project.id}
-          className="border-french_gray-300 cursor-pointer rounded-lg border bg-white p-6 transition-shadow hover:shadow-lg">
+          className="cursor-pointer rounded-lg border bg-white p-6 transition-shadow hover:shadow-lg">
           <div className="mb-4 flex items-start justify-between">
             <div className={`h-3 w-3 rounded-full ${project.color}`} />
             <button className="rounded p-1">
@@ -80,11 +80,9 @@ export function ProjectGrid() {
 
           <h3 className="mb-2 text-lg font-semibold">{project.name}</h3>
 
-          <p className="dark:text-french_gray-400 mb-4 line-clamp-2 text-sm">
-            {project.description}
-          </p>
+          <p className="mb-4 line-clamp-2 text-sm">{project.description}</p>
 
-          <div className="dark:text-french_gray-400 mb-4 flex items-center justify-between text-sm">
+          <div className="mb-4 flex items-center justify-between text-sm">
             <div className="flex items-center">
               <Users
                 size={16}
@@ -103,10 +101,10 @@ export function ProjectGrid() {
 
           <div className="mb-4">
             <div className="mb-2 flex items-center justify-between text-sm">
-              <span className="dark:text-french_gray-400">Progress</span>
+              <span className="">Progress</span>
               <span className="font-medium">{project.progress}%</span>
             </div>
-            <div className="bg-french_gray-300 h-2 w-full rounded-full">
+            <div className="h-2 w-full rounded-full">
               <div
                 className={`h-2 rounded-full transition-all duration-300 ${project.color}`}
                 style={{ width: `${project.progress}%` }}

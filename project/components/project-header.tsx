@@ -2,7 +2,7 @@ import { Calendar, MoreHorizontal, Settings, Users } from "lucide-react";
 
 export function ProjectHeader({ projectId }: { projectId: string }) {
   return (
-    <div className="border-french_gray-300 rounded-lg border bg-white p-6">
+    <div className="rounded-lg border bg-white p-6">
       <div className="flex items-start justify-between">
         <div className="flex-1">
           <div className="mb-2 flex items-center space-x-3">
@@ -10,12 +10,12 @@ export function ProjectHeader({ projectId }: { projectId: string }) {
             <h1 className="text-2xl font-bold">Website Redesign</h1>
           </div>
 
-          <p className="dark:text-french_gray-400 mb-4">
+          <p className="mb-4">
             Complete overhaul of company website with modern design and improved
             user experience
           </p>
 
-          <div className="dark:text-french_gray-400 flex items-center space-x-6 text-sm">
+          <div className="flex items-center space-x-6 text-sm">
             <div className="flex items-center">
               <Users
                 size={16}

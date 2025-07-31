@@ -37,7 +37,7 @@ export function DashboardStats() {
       {stats.map((stat) => (
         <div
           key={stat.name}
-          className="border-french_gray-300 overflow-hidden rounded-lg border bg-white p-6">
+          className="overflow-hidden rounded-lg border bg-white p-6">
           <div className="flex items-center">
             <div className="flex-shrink-0">
               <div className="flex h-8 w-8 items-center justify-center rounded-lg">
@@ -46,9 +46,7 @@ export function DashboardStats() {
             </div>
             <div className="ml-5 w-0 flex-1">
               <dl>
-                <dt className="dark:text-french_gray-400 truncate text-sm font-medium">
-                  {stat.name}
-                </dt>
+                <dt className="truncate text-sm font-medium">{stat.name}</dt>
                 <dd className="flex items-baseline">
                   <div className="text-2xl font-semibold">{stat.value}</div>
                   <div

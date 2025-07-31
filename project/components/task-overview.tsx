@@ -33,14 +33,14 @@ const taskStats = [
 
 export function TaskOverview() {
   return (
-    <div className="border-french_gray-300 rounded-lg border bg-white p-6">
+    <div className="rounded-lg border bg-white p-6">
       <h3 className="mb-6 text-lg font-semibold">Task Overview</h3>
 
       <div className="space-y-4">
         {taskStats.map((stat) => (
           <div
             key={stat.label}
-            className="border-french_gray-300 flex items-center justify-between rounded-lg border p-3">
+            className="flex items-center justify-between rounded-lg border p-3">
             <div className="flex items-center space-x-3">
               <div
                 className={`h-10 w-10 rounded-lg ${stat.bgColor} flex items-center justify-center`}>
@@ -56,8 +56,8 @@ export function TaskOverview() {
         ))}
       </div>
 
-      <div className="border-french_gray-300 mt-6 border-t pt-4">
-        <div className="dark:text-french_gray-400 text-sm">
+      <div className="mt-6 border-t pt-4">
+        <div className="text-sm">
           <span className="font-medium">Productivity:</span> 89% completion rate
           this week
         </div>

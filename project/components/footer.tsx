@@ -7,7 +7,7 @@ export function Footer() {
         <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
           <div>
             <h3 className="mb-4 text-2xl font-bold">TaskFlow</h3>
-            <p className="text-french_gray-400">
+            <p className="">
               The modern project management platform that helps teams
               collaborate and deliver results.
             </p>
@@ -19,21 +19,21 @@ export function Footer() {
               <li>
                 <Link
                   href="#"
-                  className="text-french_gray-400 transition-colors">
+                  className="transition-colors">
                   Features
                 </Link>
               </li>
               <li>
                 <Link
                   href="#"
-                  className="text-french_gray-400 transition-colors">
+                  className="transition-colors">
                   Pricing
                 </Link>
               </li>
               <li>
                 <Link
                   href="#"
-                  className="text-french_gray-400 transition-colors">
+                  className="transition-colors">
                   Security
                 </Link>
               </li>
@@ -46,21 +46,21 @@ export function Footer() {
               <li>
                 <Link
                   href="#"
-                  className="text-french_gray-400 transition-colors">
+                  className="transition-colors">
                   About
                 </Link>
               </li>
               <li>
                 <Link
                   href="#"
-                  className="text-french_gray-400 transition-colors">
+                  className="transition-colors">
                   Blog
                 </Link>
               </li>
               <li>
                 <Link
                   href="#"
-                  className="text-french_gray-400 transition-colors">
+                  className="transition-colors">
                   Careers
                 </Link>
               </li>
@@ -73,21 +73,21 @@ export function Footer() {
               <li>
                 <Link
                   href="#"
-                  className="text-french_gray-400 transition-colors">
+                  className="transition-colors">
                   Help Center
                 </Link>
               </li>
               <li>
                 <Link
                   href="#"
-                  className="text-french_gray-400 transition-colors">
+                  className="transition-colors">
                   Contact
                 </Link>
               </li>
               <li>
                 <Link
                   href="#"
-                  className="text-french_gray-400 transition-colors">
+                  className="transition-colors">
                   API Docs
                 </Link>
               </li>
@@ -96,9 +96,7 @@ export function Footer() {
         </div>
 
         <div className="mt-8 border-t pt-8 text-center">
-          <p className="text-french_gray-400">
-            © 2024 TaskFlow. All rights reserved.
-          </p>
+          <p className="">© 2024 TaskFlow. All rights reserved.</p>
         </div>
       </div>
     </footer>

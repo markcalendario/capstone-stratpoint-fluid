@@ -49,7 +49,7 @@ export function Features() {
           <h2 className="mb-4 text-4xl font-bold">
             Everything You Need to Succeed
           </h2>
-          <p className="dark:text-french_gray-500 mx-auto max-w-2xl text-xl">
+          <p className="mx-auto max-w-2xl text-xl">
             Powerful features designed to help teams collaborate effectively and
             deliver projects on time.
           </p>
@@ -59,12 +59,12 @@ export function Features() {
           {features.map((feature, index) => (
             <div
               key={index}
-              className="border-french_gray-300 rounded-xl border bg-white p-6 shadow-lg transition-shadow hover:shadow-xl">
+              className="rounded-xl border bg-white p-6 shadow-lg transition-shadow hover:shadow-xl">
               <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg">
                 <feature.icon size={24} />
               </div>
               <h3 className="mb-2 text-xl font-semibold">{feature.title}</h3>
-              <p className="dark:text-french_gray-500">{feature.description}</p>
+              <p>{feature.description}</p>
             </div>
           ))}
         </div>
