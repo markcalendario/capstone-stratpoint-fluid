@@ -12,3 +12,9 @@ export type CreateProjectPayload = Omit<
 >;
 
 export type UpdateProjectPayload = Omit<Project, "id" | "lists" | "createdAt">;
+
+interface RecentProject
+  extends Pick<Project, "id" | "name" | "description" | "dueDate"> {
+  members: number;
+  progress: number;
+}

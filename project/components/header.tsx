@@ -1,57 +1,166 @@
 "use client";
 
-import { useTheme } from "./theme-provider";
-import { Moon, Sun } from "lucide-react";
+import { LogIn, MenuIcon, Moon, Sun } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
+import { Fragment, useCallback, useEffect, useState } from "react";
+import Button from "./button";
+import LinkButton from "./link-button";
+import { useTheme } from "./theme-provider";
+
+const NAV_LINKS = [
+  { href: "/#features", label: "Features" },
+  { href: "/#pricing", label: "Pricing" },
+  { href: "/#about", label: "About" }
+];
 
 export function Header() {
-  const { theme, setTheme } = useTheme();
+  const [isMobile, setIsMobile] = useState<boolean | null>(null);
 
   return (
-    <header className="border-b border-french_gray-300 bg-white/80 backdrop-blur-sm dark:border-payne's_gray-400 dark:bg-outer_space-500/80">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex h-16 items-center justify-between">
-          <div className="flex items-center">
-            <Link
-              href="/"
-              className="text-2xl font-bold text-blue_munsell-500">
-              TaskFlow
-            </Link>
-          </div>
-
-          <nav className="hidden space-x-8 md:flex">
-            <Link
-              href="#features"
-              className="text-outer_space-500 transition-colors hover:text-blue_munsell-500 dark:text-platinum-500">
-              Features
-            </Link>
-            <Link
-              href="#pricing"
-              className="text-outer_space-500 transition-colors hover:text-blue_munsell-500 dark:text-platinum-500">
-              Pricing
-            </Link>
-            <Link
-              href="#about"
-              className="text-outer_space-500 transition-colors hover:text-blue_munsell-500 dark:text-platinum-500">
-              About
-            </Link>
-          </nav>
-
-          <div className="flex items-center space-x-4">
-            <button
-              onClick={() => setTheme(theme === "light" ? "dark" : "light")}
-              className="rounded-lg bg-platinum-500 p-2 text-outer_space-500 transition-colors hover:bg-french_gray-500 dark:bg-payne's_gray-500 dark:text-platinum-500 dark:hover:bg-payne's_gray-400">
-              {theme === "light" ? <Moon size={20} /> : <Sun size={20} />}
-            </button>
-
-            <Link
-              href="/dashboard"
-              className="rounded-lg bg-blue_munsell-500 px-4 py-2 text-white transition-colors hover:bg-blue_munsell-600">
-              Get Started
-            </Link>
-          </div>
+    <nav className="bg-primary/90 fixed top-0 left-0 z-1 w-full border-b-1 border-neutral-600 backdrop-blur-2xl dark:bg-neutral-900/80">
+      <div className="container">
+        <div className="flex items-center justify-between">
+          <Logo />
+          <Menu
+            isMobile={isMobile}
+            setIsMobile={setIsMobile}
+          />
+          <CallToActions isMobile={isMobile} />
         </div>
       </div>
-    </header>
+    </nav>
+  );
+}
+
+function Logo() {
+  return (
+    <div className="md:w-[calc(100%/3)]">
+      <div className="inline-block bg-neutral-100 px-2 py-3 dark:bg-neutral-800">
+        <Link
+          href="/"
+          className="relative block aspect-square w-[40px] overflow-hidden">
+          <Image
+            fill
+            alt="brand logo"
+            sizes="(max-width: 768px) 100vw, 50vw"
+            src="/assets/images/logo.svg"
+            className="svg-primary dark:svg-white"
+          />
+        </Link>
+      </div>
+    </div>
+  );
+}
+
+interface Menu {
+  isMobile: boolean | null;
+  setIsMobile: (isMobile: boolean) => void;
+}
+
+function Menu({ isMobile, setIsMobile }: Menu) {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const shouldDisplayLinks = useCallback(() => {
+    const screenWidth = window.innerWidth;
+    setIsMobile(screenWidth < 768);
+  }, []);
+
+  const toggleMenu = () => setIsMenuOpen((prev) => !prev);
+
+  useEffect(() => {
+    shouldDisplayLinks();
+    window.addEventListener("resize", shouldDisplayLinks);
+
+    return () => window.removeEventListener("resize", shouldDisplayLinks);
+  }, [shouldDisplayLinks]);
+
+  return (
+    <Fragment>
+      <MenuItems
+        isMobile={isMobile}
+        isMenuOpen={isMenuOpen}
+        toggleMenu={toggleMenu}
+      />
+
+      <MenuButton
+        isMobile={isMobile}
+        toggleMenu={toggleMenu}
+      />
+    </Fragment>
+  );
+}
+
+interface MenuItemsProps {
+  isMobile: boolean | null;
+  isMenuOpen: boolean;
+  toggleMenu: () => void;
+}
+
+function MenuItems({ isMobile, isMenuOpen, toggleMenu }: MenuItemsProps) {
+  const shouldDisplay = (isMobile && isMenuOpen) || isMobile === false;
+
+  if (!shouldDisplay) return null;
+
+  return (
+    <div className="bg-primary fixed top-[60px] left-0 flex h-[calc(100vh-60px)] w-full flex-col gap-[30px] p-[20px] md:static md:top-auto md:left-auto md:h-auto md:w-[calc(100%/3)] md:flex-row md:justify-center md:gap-[10px] md:bg-transparent md:p-0 dark:max-md:bg-neutral-900">
+      {NAV_LINKS.map((link, i) => (
+        <Link
+          key={i}
+          href={link.href}
+          onClick={toggleMenu}
+          className="block rounded-sm font-[500] text-neutral-200 duration-300 ease-in-out md:px-[15px] md:py-[5px] md:text-neutral-200 md:hover:bg-neutral-100/20">
+          {link.label}
+        </Link>
+      ))}
+    </div>
+  );
+}
+
+interface MenuButtonProps {
+  isMobile: boolean | null;
+  toggleMenu: () => void;
+}
+
+function MenuButton({ isMobile, toggleMenu }: MenuButtonProps) {
+  if (!isMobile) return;
+
+  return (
+    <button
+      onClick={toggleMenu}
+      className="cursor-pointer rounded-sm bg-neutral-100 p-[5px]">
+      <MenuIcon />
+    </button>
+  );
+}
+
+interface CallToActions {
+  isMobile: boolean | null;
+}
+
+function CallToActions({ isMobile }: CallToActions) {
+  const { theme, setTheme } = useTheme();
+  const toggle = () => setTheme(theme === "light" ? "dark" : "light");
+
+  if (isMobile) return;
+
+  return (
+    <div className="flex justify-end gap-1 md:w-[calc(100%/3)]">
+      <LinkButton
+        href="/sign-up"
+        className="bg-neutral-100 dark:bg-neutral-800 dark:text-neutral-100">
+        Get Started
+      </LinkButton>
+      <LinkButton
+        href="/sign-in"
+        className="bg-neutral-100 p-[10px] dark:bg-neutral-800 dark:text-neutral-100">
+        <LogIn size={16} />
+      </LinkButton>
+      <Button
+        className="bg-neutral-100 p-[10px] dark:bg-neutral-800 dark:text-neutral-100"
+        onClick={toggle}>
+        {theme === "light" ? <Moon size={16} /> : <Sun size={16} />}
+      </Button>
+    </div>
   );
 }

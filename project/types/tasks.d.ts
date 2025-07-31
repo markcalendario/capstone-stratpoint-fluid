@@ -1,6 +1,7 @@
 import { tasks } from "@/lib/db/drizzle/schema";
 import { InferSelectModel } from "drizzle-orm";
 import { Comment } from "./comments";
+import { UserSchema } from "./users";
 
 export interface Task extends InferSelectModel<typeof tasks> {
   comments: Comment[];
@@ -12,3 +13,9 @@ export type CreateTaskPayload = Omit<
 >;
 
 export type UpdateTaskPayload = Omit<Task, "id" | "comments" | "createdAt">;
+
+export interface TaskCard
+  extends Pick<Task, "id" | "title" | "description" | "priority"> {
+  assigneeName: UserSchema["name"];
+  assigneeImageUrl: UserSchema["imageUrl"];
+}

@@ -1,45 +1,80 @@
-// TODO: Task 4.5 - Design and implement project cards and layouts
+import { cn } from "@/lib/utils";
+import { RecentProject } from "@/types/projects";
+import { Calendar, MoreHorizontal, Users } from "lucide-react";
+import Link from "next/link";
 
-/*
-TODO: Implementation Notes for Interns:
-
-This component should display:
-- Project name and description
-- Progress indicator
-- Team member count
-- Due date
-- Status badge
-- Actions menu (edit, delete, etc.)
-
-Props interface:
-interface ProjectCardProps {
-  project: {
-    id: string
-    name: string
-    description?: string
-    progress: number
-    memberCount: number
-    dueDate?: Date
-    status: 'active' | 'completed' | 'on-hold'
-  }
-  onEdit?: (id: string) => void
-  onDelete?: (id: string) => void
+interface ProjectCardProps
+  extends Pick<
+    RecentProject,
+    "id" | "description" | "dueDate" | "members" | "name" | "progress"
+  > {
+  className: string;
 }
 
-Features to implement:
-- Hover effects
-- Click to navigate to project board
-- Responsive design
-- Loading states
-- Error states
-*/
-
-export function ProjectCard() {
+export default function ProjectCard({
+  id,
+  name,
+  className,
+  description,
+  dueDate,
+  members,
+  progress
+}: ProjectCardProps) {
   return (
-    <div className="rounded-lg border border-french_gray-300 bg-white p-6 dark:border-payne's_gray-400 dark:bg-outer_space-500">
-      <p className="text-center text-payne's_gray-500 dark:text-french_gray-400">
-        TODO: Implement ProjectCard component
-      </p>
+    <div
+      key={id}
+      className={cn("border-primary/20 rounded-lg border p-4", className)}>
+      <div className="flex items-start justify-between">
+        <div className="flex-1">
+          <Link
+            href={`/projects/${id}`}
+            className="text-primary font-medium dark:text-white">
+            {name}
+          </Link>
+          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+            {description}
+          </p>
+
+          <div className="mt-3 flex items-center space-x-4 text-sm text-gray-500 dark:text-gray-400">
+            <div className="flex items-center">
+              <Users
+                size={16}
+                className="mr-1"
+              />
+              {members}
+            </div>
+            <div className="flex items-center">
+              <Calendar
+                size={16}
+                className="mr-1"
+              />
+              {dueDate}
+            </div>
+          </div>
+
+          <div className="mt-3">
+            <div className="mb-1 flex items-center justify-between text-sm">
+              <span className="text-gray-500 dark:text-gray-400">Progress</span>
+              <span className="text-gray-900 dark:text-gray-100">
+                {progress}%
+              </span>
+            </div>
+            <div className="h-2 w-full rounded-full bg-gray-200 dark:bg-gray-700">
+              <div
+                className="bg-primary h-2 rounded-full transition-all duration-300"
+                style={{ width: `${progress}%` }}
+              />
+            </div>
+          </div>
+        </div>
+
+        <button className="hover:bg-primary/10 cursor-pointer rounded p-1">
+          <MoreHorizontal
+            size={16}
+            className="dark:text-white"
+          />
+        </button>
+      </div>
     </div>
   );
 }

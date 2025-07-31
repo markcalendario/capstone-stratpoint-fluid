@@ -30,19 +30,51 @@ Integration:
 - Handle errors gracefully
 */
 
-export function CreateProjectModal() {
+import Button from "../button";
+import Input from "../input";
+import Textarea from "../textarea";
+import Modal from "./modal";
+
+interface CreateProjectModalProps {
+  toggle: () => void;
+}
+
+export function CreateProjectModal({ toggle }: CreateProjectModalProps) {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="mx-4 w-full max-w-md rounded-lg bg-white p-6 dark:bg-outer_space-500">
-        <h3 className="mb-4 text-lg font-semibold text-outer_space-500 dark:text-platinum-500">
-          TODO: Create Project Modal
-        </h3>
-        <div className="rounded border border-yellow-200 bg-yellow-50 p-4 dark:border-yellow-800 dark:bg-yellow-900/20">
-          <p className="text-sm text-yellow-800 dark:text-yellow-200">
-            📋 Implement project creation form with validation
-          </p>
+    <Modal
+      toggle={toggle}
+      title="Create New Project">
+      <form className="space-y-4">
+        <Input
+          id="name"
+          label="Project Name"
+          placeholder="Enter project name"
+        />
+
+        <Textarea
+          id="description"
+          label="Project Description"
+          placeholder="Enter project description"
+        />
+
+        <Input
+          id="date"
+          label="Project Due Date"
+          placeholder="Enter due date"
+          type="date"
+        />
+
+        <div className="flex justify-end space-x-3 pt-4">
+          <Button
+            onClick={toggle}
+            className="text-neutral-800 dark:text-neutral-100">
+            Cancel
+          </Button>
+          <Button className="bg-primary text-neutral-100">
+            Create Project
+          </Button>
         </div>
-      </div>
-    </div>
+      </form>
+    </Modal>
   );
 }

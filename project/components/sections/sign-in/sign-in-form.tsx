@@ -2,7 +2,7 @@ import { SignIn } from "@clerk/nextjs";
 
 export default function SignInForm() {
   return (
-    <section className="flex min-h-[calc(100vh-64px)] items-center justify-center">
+    <section className="mt-[65px] flex min-h-[calc(100vh-65px)] items-center justify-center">
       <SignIn
         appearance={{
           variables: {
@@ -16,7 +16,7 @@ export default function SignInForm() {
             // Header
             header: "text-left",
             headerTitle:
-              "text-2xl font-black text-blue-500 dark:text-neutral-100",
+              "text-2xl font-black text-primary dark:text-neutral-100",
             headerSubtitle: "text-neutral-700 dark:text-neutral-400",
 
             // Social Buttons
@@ -32,12 +32,12 @@ export default function SignInForm() {
             formFieldInput:
               "py-[10px] bg-white dark:bg-neutral-900 text-neutral-800 dark:text-neutral-100 placeholder-neutral-500 shadow-none outline-1 hover:outline-2 focus:outline-2 outline-offset-0 outline-neutral-300 dark:outline-neutral-700",
             formButtonPrimary:
-              "py-[10px] bg-blue-500 hover:bg-blue-600 text-white rounded-none shadow-none",
+              "py-[10px] bg-primary hover:bg-primary text-white rounded-none shadow-none",
 
             // Footer
             footerAction: "w-full bg-neutral-100 dark:bg-neutral-700",
             footerActionText: "text-neutral-600 dark:text-neutral-300",
-            footerActionLink: "text-blue-600 dark:text-white"
+            footerActionLink: "text-primary dark:text-white"
           }
         }}
         signUpUrl="/sign-up"
