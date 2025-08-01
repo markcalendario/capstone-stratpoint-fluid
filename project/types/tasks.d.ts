@@ -1,4 +1,4 @@
-import { tasks } from "@/lib/db/drizzle/schema";
+import { tasks } from "@/lib/db/drizzle/migrations/schema";
 import { InferSelectModel } from "drizzle-orm";
 import { Comment } from "./comments";
 import { UserSchema } from "./users";

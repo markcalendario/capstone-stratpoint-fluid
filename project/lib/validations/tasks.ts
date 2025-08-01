@@ -1,4 +1,4 @@
-import { priority } from "@/lib/db/drizzle/schema";
+import { priority } from "@/lib/db/drizzle/migrations/schema";
 import { isFutureDate } from "@/lib/utils/date-and-time";
 import z from "zod";
 

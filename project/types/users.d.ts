@@ -1,4 +1,4 @@
-import { users } from "@/lib/db/drizzle/schema";
+import { users } from "@/lib/db/drizzle/migrations/schema";
 import { InferSelectModel } from "drizzle-orm";
 
 export interface UserSchema extends InferSelectModel<typeof users> {

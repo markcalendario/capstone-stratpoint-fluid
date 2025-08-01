@@ -1,4 +1,4 @@
-import { tasks } from "@/lib/db/drizzle/schema";
+import { tasks } from "@/lib/db/drizzle/migrations/schema";
 import { CreateTaskPayload, Task, UpdateTaskPayload } from "@/types/tasks";
 import { eq } from "drizzle-orm";
 import db from "..";

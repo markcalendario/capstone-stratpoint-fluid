@@ -1,4 +1,4 @@
-import { lists } from "@/lib/db/drizzle/schema";
+import { lists } from "@/lib/db/drizzle/migrations/schema";
 import { CreateListPayload, List, UpdateListPayload } from "@/types/lists";
 import { eq } from "drizzle-orm";
 import db from "..";

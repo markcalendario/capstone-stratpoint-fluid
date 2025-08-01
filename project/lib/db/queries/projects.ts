@@ -1,4 +1,4 @@
-import { projects } from "@/lib/db/drizzle/schema";
+import { projects } from "@/lib/db/drizzle/migrations/schema";
 import {
   CreateProjectPayload,
   Project,

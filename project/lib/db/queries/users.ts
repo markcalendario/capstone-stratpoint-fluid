@@ -1,4 +1,4 @@
-import { users } from "@/lib/db/drizzle/schema";
+import { users } from "@/lib/db/drizzle/migrations/schema";
 import {
   CreateUserPayload,
   UpdateUserPayload,
