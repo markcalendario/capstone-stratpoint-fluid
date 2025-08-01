@@ -9,6 +9,8 @@ export default async function ProjectPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
+  void params;
+
   const project: Partial<Project> = {
     name: "Car Dealership Website"
   };

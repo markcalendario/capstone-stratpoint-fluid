@@ -64,7 +64,7 @@ function Menu({ isMobile, setIsMobile }: Menu) {
   const shouldDisplayLinks = useCallback(() => {
     const screenWidth = window.innerWidth;
     setIsMobile(screenWidth < 768);
-  }, []);
+  }, [setIsMobile]);
 
   const toggleMenu = () => setIsMenuOpen((prev) => !prev);
 

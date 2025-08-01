@@ -1,5 +1,6 @@
 "use client";
 
+import { TaskStatus } from "@/types/tasks";
 import {
   Bar,
   CartesianGrid,
@@ -11,7 +12,13 @@ import {
   YAxis
 } from "recharts";
 
-export default function BarChart({ data }: { data: any }) {
+export type BarChartData<T> = T[];
+
+interface BarChart {
+  data: BarChartData<TaskStatus>;
+}
+
+export default function BarChart({ data }: BarChart) {
   return (
     <ResponsiveContainer
       width="100%"

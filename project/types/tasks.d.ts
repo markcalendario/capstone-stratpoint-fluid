@@ -19,3 +19,9 @@ export interface TaskCard
   assigneeName: UserSchema["name"];
   assigneeImageUrl: UserSchema["imageUrl"];
 }
+
+export type TaskStatus = {
+  name: string;
+  Done: number;
+  Pending: number;
+};

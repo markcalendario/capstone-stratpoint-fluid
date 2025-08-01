@@ -1,7 +1,8 @@
 import AnalyticsCard from "@/components/analytics-card";
 import CumulativeFlowDiagram from "@/components/area-chart";
-import BarChart from "@/components/bar-chart";
+import BarChart, { BarChartData } from "@/components/bar-chart";
 import { DashboardContent } from "@/components/layouts/dashboard/dashboard-content";
+import { TaskStatus } from "@/types/tasks";
 import { BarChart3, Clock, TrendingUp, Users } from "lucide-react";
 
 const metrics = [
@@ -35,7 +36,7 @@ const metrics = [
   }
 ] as const;
 
-const data = [
+const data: BarChartData<TaskStatus> = [
   {
     name: "TaskFlow Capstone Project",
     Done: 30,

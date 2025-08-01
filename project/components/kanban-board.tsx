@@ -81,11 +81,14 @@ const initialColumns = [
 ];
 
 export function KanbanBoard({ projectId }: { projectId: string }) {
+  void projectId;
+
   return (
     <div className="outline-primary/20 w-full rounded-sm bg-white p-6 outline-2 dark:bg-neutral-800">
       <div className="flex min-w-full flex-nowrap space-x-6 overflow-x-auto pb-4">
         {initialColumns.map((list) => (
           <ListCard
+            key={list.id}
             id={list.id}
             title={list.title}
             tasks={list.tasks}
