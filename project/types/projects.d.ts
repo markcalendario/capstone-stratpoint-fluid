@@ -8,9 +8,9 @@ export interface Project extends InferSelectModel<typeof projects> {
   teams: Teams[];
 }
 
-export type CreateProjectPayload = Omit<
+export type CreateProjectData = Pick<
   Project,
-  "id" | "lists" | "createdAt" | "updatedAt"
+  "name" | "description" | "dueDate" | "ownerId"
 >;
 
 export type UpdateProjectPayload = Omit<Project, "id" | "lists" | "createdAt">;

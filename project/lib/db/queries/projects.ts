@@ -1,10 +1,23 @@
 import { projects, team } from "@/lib/db/drizzle/migrations/schema";
-import { Project, UpdateProjectPayload } from "@/types/projects";
+import {
+  CreateProjectData,
+  Project,
+  UpdateProjectPayload
+} from "@/types/projects";
 import { UserSchema } from "@/types/users";
 import { eq, inArray } from "drizzle-orm";
 import db from "..";
 
 const projectQueries = {
+  create: async (data: CreateProjectData) => {
+    const [newProject] = await db
+      .insert(projects)
+      .values(data)
+      .returning({ id: projects.id });
+
+    return newProject.id;
+  },
+
   ownedOrMember: async (userId: UserSchema["id"]) => {
     return await db.query.projects.findMany({
       with: { teams: true, lists: { with: { tasks: true } } },
