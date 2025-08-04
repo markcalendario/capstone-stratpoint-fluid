@@ -405,8 +405,8 @@
       "policies": {},
       "isRLSEnabled": false
     },
-    "public.team": {
-      "name": "team",
+    "public.teams": {
+      "name": "teams",
       "schema": "",
       "columns": {
         "id": {
@@ -452,7 +452,7 @@
       "foreignKeys": {
         "projectMember": {
           "name": "projectMember",
-          "tableFrom": "team",
+          "tableFrom": "teams",
           "tableTo": "projects",
           "schemaTo": "public",
           "columnsFrom": [
@@ -466,7 +466,7 @@
         },
         "memberUserData": {
           "name": "memberUserData",
-          "tableFrom": "team",
+          "tableFrom": "teams",
           "tableTo": "users",
           "schemaTo": "public",
           "columnsFrom": [

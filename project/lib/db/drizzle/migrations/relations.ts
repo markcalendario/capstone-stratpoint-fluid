@@ -1,5 +1,5 @@
 import { relations } from "drizzle-orm/relations";
-import { users, tasks, lists, comments, projects, team } from "./schema";
+import { users, tasks, lists, comments, projects, teams } from "./schema";
 
 export const tasksRelations = relations(tasks, ({one, many}) => ({
 	user: one(users, {
@@ -17,7 +17,7 @@ export const usersRelations = relations(users, ({many}) => ({
 	tasks: many(tasks),
 	comments: many(comments),
 	projects: many(projects),
-	teams: many(team),
+	teams: many(teams),
 }));
 
 export const listsRelations = relations(lists, ({one, many}) => ({
@@ -45,16 +45,16 @@ export const projectsRelations = relations(projects, ({one, many}) => ({
 		fields: [projects.ownerId],
 		references: [users.id]
 	}),
-	teams: many(team),
+	teams: many(teams),
 }));
 
-export const teamRelations = relations(team, ({one}) => ({
+export const teamsRelations = relations(teams, ({one}) => ({
 	project: one(projects, {
-		fields: [team.projectId],
+		fields: [teams.projectId],
 		references: [projects.id]
 	}),
 	user: one(users, {
-		fields: [team.userId],
+		fields: [teams.userId],
 		references: [users.id]
 	}),
 }));

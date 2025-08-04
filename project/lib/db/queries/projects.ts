@@ -1,4 +1,4 @@
-import { projects, team } from "@/lib/db/drizzle/migrations/schema";
+import { projects, teams } from "@/lib/db/drizzle/migrations/schema";
 import {
   CreateProjectData,
   Project,
@@ -29,9 +29,11 @@ const projectQueries = {
             inArray(
               projects.id,
               db
-                .select({ projectId: team.projectId })
-                .from(team)
-                .where(and(eq(team.userId, userId), eq(team.isAccepted, true)))
+                .select({ projectId: teams.projectId })
+                .from(teams)
+                .where(
+                  and(eq(teams.userId, userId), eq(teams.isAccepted, true))
+                )
             )
           )
         )
@@ -55,9 +57,9 @@ const projectQueries = {
           inArray(
             projects.id,
             db
-              .select({ projectId: team.projectId })
-              .from(team)
-              .where(and(eq(team.userId, userId), eq(team.isAccepted, true)))
+              .select({ projectId: teams.projectId })
+              .from(teams)
+              .where(and(eq(teams.userId, userId), eq(teams.isAccepted, true)))
           )
         )
     });

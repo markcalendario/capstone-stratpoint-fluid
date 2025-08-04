@@ -92,7 +92,7 @@ export const projects = pgTable("projects", {
 		}),
 ]);
 
-export const team = pgTable("team", {
+export const teams = pgTable("teams", {
 	id: uuid().defaultRandom().primaryKey().notNull(),
 	userId: uuid().notNull(),
 	projectId: uuid().notNull(),
