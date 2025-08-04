@@ -1,6 +1,6 @@
 "use client";
 
-import { getRecentProjects } from "@/lib/actions/project";
+import { getRecentProjects } from "@/lib/actions/projects";
 import { ProjectCard as IProjectCard } from "@/types/projects";
 import { useUser } from "@clerk/nextjs";
 import Link from "next/link";

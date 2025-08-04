@@ -6,7 +6,7 @@ import { ZodError } from "zod";
 import projectQueries from "../db/queries/projects";
 import userQueries from "../db/queries/users";
 import { toCardData } from "../utils/projects";
-import { createProjectSchema } from "../validations/project";
+import { createProjectSchema } from "../validations/projects";
 import { userClerkIdSchema } from "../validations/users";
 
 export async function createProject(formData: FormData) {

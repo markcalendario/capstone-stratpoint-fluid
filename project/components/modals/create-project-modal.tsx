@@ -30,7 +30,7 @@ Integration:
 - Handle errors gracefully
 */
 
-import { createProject } from "@/lib/actions/project";
+import { createProject } from "@/lib/actions/projects";
 import { useUser } from "@clerk/nextjs";
 import { redirect, RedirectType } from "next/navigation";
 import { MouseEvent, useRef } from "react";

@@ -5,7 +5,7 @@ import { DashboardContent } from "@/components/layouts/dashboard/dashboard-conte
 import ProjectCard from "@/components/project-card";
 import SearchFilter from "@/components/search-filter";
 import { showErrorToast } from "@/components/toast";
-import { getProjects } from "@/lib/actions/project";
+import { getProjects } from "@/lib/actions/projects";
 import { ProjectCard as IProjectCard } from "@/types/projects";
 import { useUser } from "@clerk/nextjs";
 import { useCallback, useEffect, useState } from "react";
