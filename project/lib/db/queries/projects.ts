@@ -4,13 +4,60 @@ import {
   Project,
   UpdateProjectPayload
 } from "@/types/projects";
-import { eq } from "drizzle-orm";
+import { UserSchema } from "@/types/users";
+import { desc, eq, inArray } from "drizzle-orm";
 import db from "..";
 
 const projectQueries = {
-  getAll: async () => {
-    return await db.select().from(projects);
+  getAll: async (userId: UserSchema["id"]) => {
+    const userTeams = await db.query.team.findMany({
+      columns: { projectId: true },
+      where: (team, { eq }) => eq(team.userId, userId)
+    });
+
+    const projectIds = userTeams.map((t) => t.projectId);
+
+    const results = await db.query.projects.findMany({
+      where: (projects, { eq, or }) =>
+        or(eq(projects.ownerId, userId), inArray(projects.id, projectIds)),
+      columns: { id: true, name: true, description: true, dueDate: true },
+      with: {
+        teams: { columns: { id: true } },
+        lists: {
+          columns: { id: true, isFinal: true },
+          with: { tasks: { columns: { id: true } } }
+        }
+      },
+      orderBy: [desc(projects.updatedAt)]
+    });
+
+    const recentProjects = [];
+
+    for (const result of results) {
+      const doneTasks = result.lists.reduce((count, list) => {
+        return list.isFinal ? count + list.tasks.length : count;
+      }, 0);
+
+      const pendingTasks = result.lists.reduce((count, list) => {
+        return !list.isFinal ? count + list.tasks.length : count;
+      }, 0);
+
+      const totalTasks = doneTasks + pendingTasks;
+      const progress = totalTasks === 0 ? 0 : doneTasks / totalTasks;
+
+      recentProjects.push({
+        id: result.id,
+        name: result.name,
+        description: result.description,
+        dueDate: result.dueDate,
+        members: result.teams.length + 1, // Plus the owner
+        progress
+      });
+    }
+
+    return recentProjects;
   },
+
   getById: async (id: Project["id"]) => {
     const [project] = await db
       .select()
@@ -19,6 +66,7 @@ const projectQueries = {
 
     return project;
   },
+
   create: async (data: CreateProjectPayload) => {
     const [newProject] = await db
       .insert(projects)
