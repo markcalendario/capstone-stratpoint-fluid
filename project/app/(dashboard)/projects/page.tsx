@@ -93,7 +93,7 @@ function RenderProjects() {
       <CreateProjectButton className="border-primary/20 text-primary border-2 border-dashed bg-white text-center text-lg dark:bg-neutral-800 dark:text-neutral-200" />
       {projects.map((project) => (
         <ProjectCard
-          className="bg-white"
+          className="bg-white dark:bg-neutral-800"
           key={project.id}
           id={project.id}
           name={project.name}

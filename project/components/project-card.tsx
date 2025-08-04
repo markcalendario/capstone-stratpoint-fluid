@@ -19,7 +19,7 @@ export default function ProjectCard({
   return (
     <div
       key={id}
-      className={cn("border-primary/20 rounded-lg border p-4", className)}>
+      className={cn("border-primary/20 rounded-sm border p-4", className)}>
       <div className="flex items-start justify-between">
         <div className="flex-1">
           <Link
