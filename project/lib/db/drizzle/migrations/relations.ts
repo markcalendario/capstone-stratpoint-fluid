@@ -40,11 +40,11 @@ export const commentsRelations = relations(comments, ({one}) => ({
 }));
 
 export const projectsRelations = relations(projects, ({one, many}) => ({
+	lists: many(lists),
 	user: one(users, {
 		fields: [projects.ownerId],
 		references: [users.id]
 	}),
-	lists: many(lists),
 	teams: many(team),
 }));
 

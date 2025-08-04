@@ -59,22 +59,6 @@ export const users = pgTable("users", {
 	unique("users_clerkId_key").on(table.clerkId),
 ]);
 
-export const projects = pgTable("projects", {
-	id: uuid().defaultRandom().primaryKey().notNull(),
-	name: text().notNull(),
-	description: text().notNull(),
-	ownerId: uuid().notNull(),
-	createdAt: timestamp({ withTimezone: true, mode: 'string' }).default(sql`CURRENT_TIMESTAMP`),
-	updatedAt: timestamp({ withTimezone: true, mode: 'string' }).default(sql`CURRENT_TIMESTAMP`),
-	dueDate: date().notNull(),
-}, (table) => [
-	foreignKey({
-			columns: [table.ownerId],
-			foreignColumns: [users.id],
-			name: "projectOwner"
-		}),
-]);
-
 export const lists = pgTable("lists", {
 	id: uuid().defaultRandom().primaryKey().notNull(),
 	name: text().notNull(),
@@ -88,6 +72,23 @@ export const lists = pgTable("lists", {
 			columns: [table.projectId],
 			foreignColumns: [projects.id],
 			name: "projectList"
+		}),
+]);
+
+export const projects = pgTable("projects", {
+	id: uuid().defaultRandom().primaryKey().notNull(),
+	name: text().notNull(),
+	description: text().notNull(),
+	ownerId: uuid().notNull(),
+	createdAt: timestamp({ withTimezone: true, mode: 'string' }).default(sql`CURRENT_TIMESTAMP`),
+	updatedAt: timestamp({ withTimezone: true, mode: 'string' }).default(sql`CURRENT_TIMESTAMP`),
+	dueDate: date().notNull(),
+	active: boolean().default(true),
+}, (table) => [
+	foreignKey({
+			columns: [table.ownerId],
+			foreignColumns: [users.id],
+			name: "projectOwner"
 		}),
 ]);
 
