@@ -1,8 +1,8 @@
 import { comments } from "@/lib/db/drizzle/migrations/schema";
 import {
-  Comment,
-  CreateCommentPayload,
-  UpdateCommentPayload
+  CommentSchema,
+  CreateCommentData,
+  UpdateCommentData
 } from "@/types/comments";
 import { eq } from "drizzle-orm";
 import db from "..";
@@ -11,7 +11,7 @@ const commentQueries = {
   getAll: async () => {
     return await db.select().from(comments);
   },
-  getById: async (id: Comment["id"]) => {
+  getById: async (id: CommentSchema["id"]) => {
     const [comment] = await db
       .select()
       .from(comments)
@@ -19,7 +19,7 @@ const commentQueries = {
 
     return comment;
   },
-  create: async (data: CreateCommentPayload) => {
+  create: async (data: CreateCommentData) => {
     const [newComment] = await db
       .insert(comments)
       .values(data)
@@ -27,7 +27,7 @@ const commentQueries = {
 
     return newComment.id;
   },
-  update: async (id: Comment["id"], data: UpdateCommentPayload) => {
+  update: async (id: CommentSchema["id"], data: UpdateCommentData) => {
     const [updatedComment] = await db
       .update(comments)
       .set(data)
@@ -36,7 +36,7 @@ const commentQueries = {
 
     return updatedComment.id;
   },
-  delete: async (id: Comment["id"]) => {
+  delete: async (id: CommentSchema["id"]) => {
     const [deletedComment] = await db
       .delete(comments)
       .where(eq(comments.id, id))

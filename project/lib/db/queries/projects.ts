@@ -1,7 +1,7 @@
 import { projects, teams } from "@/lib/db/drizzle/migrations/schema";
 import {
   CreateProjectData,
-  Project,
+  ProjectSchema,
   UpdateProjectPayload
 } from "@/types/projects";
 import { UserSchema } from "@/types/users";
@@ -65,7 +65,7 @@ const projectQueries = {
     });
   },
 
-  update: async (id: Project["id"], data: UpdateProjectPayload) => {
+  update: async (id: ProjectSchema["id"], data: UpdateProjectPayload) => {
     const [updatedProject] = await db
       .update(projects)
       .set(data)
@@ -75,7 +75,7 @@ const projectQueries = {
     return updatedProject.id;
   },
 
-  delete: async (id: Project["id"]) => {
+  delete: async (id: ProjectSchema["id"]) => {
     const [deletedProject] = await db
       .delete(projects)
       .where(eq(projects.id, id))

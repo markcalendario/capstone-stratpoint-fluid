@@ -1,11 +1,14 @@
 import { comments } from "@/lib/db/drizzle/migrations/schema";
 import { InferSelectModel } from "drizzle-orm";
 
-export type Comment = InferSelectModel<typeof comments>;
+export type CommentSchema = InferSelectModel<typeof comments>;
 
-export type CreateCommentPayload = Omit<
-  Comment,
-  "id" | "createdAt" | "updatedAt"
+export type CreateCommentData = Pick<
+  CommentSchema,
+  "content" | "taskId" | "authorId"
 >;
 
-export type UpdateCommentPayload = Omit<Comment, "id" | "createdAt">;
+export type UpdateCommentData = Pick<
+  CommentSchema,
+  "content" | "taskId" | "authorId" | "updatedAt"
+>;

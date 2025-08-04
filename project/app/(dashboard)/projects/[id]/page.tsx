@@ -1,7 +1,7 @@
 import Button from "@/components/button";
 import { KanbanBoard } from "@/components/kanban-board";
 import { DashboardContent } from "@/components/layouts/dashboard/dashboard-content";
-import { Project } from "@/types/projects";
+import { ProjectSchema } from "@/types/projects";
 import { Calendar, MoreHorizontal, Settings, Users } from "lucide-react";
 
 export default async function ProjectPage({
@@ -11,7 +11,7 @@ export default async function ProjectPage({
 }) {
   void params;
 
-  const project: Partial<Project> = {
+  const project: Partial<ProjectSchema> = {
     name: "Car Dealership Website"
   };
 

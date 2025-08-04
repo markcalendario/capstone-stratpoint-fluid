@@ -1,7 +1,7 @@
-import { Project } from "@/types/projects";
+import { ProjectSchema } from "@/types/projects";
 import { formatDate } from "./date-and-time";
 
-export function toCardData(projects: Project[]) {
+export function toCardData(projects: ProjectSchema[]) {
   const projectCardData = [];
 
   for (const project of projects) {
