@@ -1,13 +1,9 @@
 import { cn } from "@/lib/utils";
-import { RecentProject } from "@/types/projects";
+import { ProjectCard as IProjectCard } from "@/types/projects";
 import { Calendar, MoreHorizontal, Users } from "lucide-react";
 import Link from "next/link";
 
-interface ProjectCardProps
-  extends Pick<
-    RecentProject,
-    "id" | "description" | "dueDate" | "members" | "name" | "progress"
-  > {
+interface ProjectCardProps extends IProjectCard {
   className?: string;
 }
 
