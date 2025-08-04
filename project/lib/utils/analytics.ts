@@ -24,10 +24,10 @@ export async function getActiveProjectsStatus(userId: UserSchema["id"]) {
   const oneWeekAgo = new Date();
   oneWeekAgo.setDate(new Date().getDate() - 7);
 
-  const activeProjects = await projectQueries.getActive(userId);
+  const projects = await projectQueries.ownedOrMember(userId);
 
-  const currentCount = activeProjects.length;
-  const previousCount = activeProjects.filter((p) =>
+  const currentCount = projects.length;
+  const previousCount = projects.filter((p) =>
     p.createdAt ? new Date(p.createdAt) < oneWeekAgo : false
   ).length;
 
@@ -44,21 +44,14 @@ export async function getTeamMembersStatus(userId: UserSchema["id"]) {
   const oneWeekAgo = new Date();
   oneWeekAgo.setDate(new Date().getDate() - 7);
 
-  const activeProjects = await projectQueries.getActive(userId);
-  console.log(activeProjects);
-
-  console.log(activeProjects.flatMap((p) => console.log(p)));
+  const projects = await projectQueries.ownedOrMember(userId);
 
   const currentMembers = new Set(
-    activeProjects.flatMap((p) =>
-      p.teams.filter((m) => m.isAccepted).map((m) => m.userId)
-    )
+    projects.flatMap((p) => p.teams.map((m) => m.userId))
   );
 
-  console.log(currentMembers);
-
   const previousMembers = new Set(
-    activeProjects.flatMap((p) =>
+    projects.flatMap((p) =>
       p.teams
         .filter(
           (m) =>
@@ -67,8 +60,6 @@ export async function getTeamMembersStatus(userId: UserSchema["id"]) {
         .map((m) => m.userId)
     )
   );
-
-  console.log(currentMembers);
 
   const change = calcChange(currentMembers.size, previousMembers.size);
 
@@ -83,12 +74,12 @@ export async function getCompletedTasksStatus(userId: UserSchema["id"]) {
   const oneWeekAgo = new Date();
   oneWeekAgo.setDate(new Date().getDate() - 7);
 
-  const activeProjects = await projectQueries.getActive(userId);
+  const projects = await projectQueries.ownedOrMember(userId);
 
   let current = 0;
   let previous = 0;
 
-  for (const project of activeProjects) {
+  for (const project of projects) {
     for (const list of project.lists) {
       if (!list.isFinal) continue;
 
@@ -113,12 +104,12 @@ export async function getPendingTasksStatus(userId: UserSchema["id"]) {
   const oneWeekAgo = new Date();
   oneWeekAgo.setDate(new Date().getDate() - 7);
 
-  const activeProjects = await projectQueries.getActive(userId);
+  const projects = await projectQueries.ownedOrMember(userId);
 
   let current = 0;
   let previous = 0;
 
-  for (const project of activeProjects) {
+  for (const project of projects) {
     for (const list of project.lists) {
       if (list.isFinal) continue;
 
