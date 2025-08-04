@@ -82,6 +82,7 @@ export const lists = pgTable("lists", {
 	position: integer().notNull(),
 	createdAt: timestamp({ withTimezone: true, mode: 'string' }).default(sql`CURRENT_TIMESTAMP`),
 	updatedAt: timestamp({ withTimezone: true, mode: 'string' }).default(sql`CURRENT_TIMESTAMP`),
+	isFinal: boolean().default(false),
 }, (table) => [
 	foreignKey({
 			columns: [table.projectId],

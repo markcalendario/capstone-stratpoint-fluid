@@ -1,32 +1,7 @@
+-- Current sql file was generated after introspecting the database
+-- If you want to run this migration please uncomment this code before executing migrations
+/*
 CREATE TYPE "public"."PRIORITY" AS ENUM('low', 'medium', 'high');--> statement-breakpoint
-CREATE TABLE "comments" (
-	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
-	"content" text NOT NULL,
-	"taskId" uuid NOT NULL,
-	"authorId" uuid NOT NULL,
-	"createdAt" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-	"updatedAt" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
-);
---> statement-breakpoint
-CREATE TABLE "lists" (
-	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
-	"name" text NOT NULL,
-	"projectId" uuid NOT NULL,
-	"position" integer NOT NULL,
-	"createdAt" timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
-	"updatedAt" timestamp with time zone DEFAULT CURRENT_TIMESTAMP
-);
---> statement-breakpoint
-CREATE TABLE "projects" (
-	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
-	"name" text NOT NULL,
-	"description" text NOT NULL,
-	"ownerId" uuid NOT NULL,
-	"createdAt" timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
-	"updatedAt" timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
-	"dueDate" date NOT NULL
-);
---> statement-breakpoint
 CREATE TABLE "tasks" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"title" text NOT NULL,
@@ -40,13 +15,13 @@ CREATE TABLE "tasks" (
 	"updatedAt" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 --> statement-breakpoint
-CREATE TABLE "team" (
+CREATE TABLE "comments" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
-	"userId" uuid NOT NULL,
-	"projectId" uuid NOT NULL,
-	"isAccepted" boolean,
-	"invitedAt" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-	"acceptedAt" timestamp with time zone
+	"content" text NOT NULL,
+	"taskId" uuid NOT NULL,
+	"authorId" uuid NOT NULL,
+	"createdAt" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	"updatedAt" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "users" (
@@ -59,11 +34,41 @@ CREATE TABLE "users" (
 	CONSTRAINT "users_clerkId_key" UNIQUE("clerkId")
 );
 --> statement-breakpoint
-ALTER TABLE "comments" ADD CONSTRAINT "taskComment" FOREIGN KEY ("taskId") REFERENCES "public"."tasks"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "comments" ADD CONSTRAINT "commentAuthor" FOREIGN KEY ("authorId") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "lists" ADD CONSTRAINT "projectList" FOREIGN KEY ("projectId") REFERENCES "public"."projects"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "projects" ADD CONSTRAINT "projectOwner" FOREIGN KEY ("ownerId") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+CREATE TABLE "projects" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"name" text NOT NULL,
+	"description" text NOT NULL,
+	"ownerId" uuid NOT NULL,
+	"createdAt" timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+	"updatedAt" timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+	"dueDate" date NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE "lists" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"name" text NOT NULL,
+	"projectId" uuid NOT NULL,
+	"position" integer NOT NULL,
+	"createdAt" timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+	"updatedAt" timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+	"isFinal" boolean DEFAULT false
+);
+--> statement-breakpoint
+CREATE TABLE "team" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"userId" uuid NOT NULL,
+	"projectId" uuid NOT NULL,
+	"isAccepted" boolean,
+	"invitedAt" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	"acceptedAt" timestamp with time zone
+);
+--> statement-breakpoint
 ALTER TABLE "tasks" ADD CONSTRAINT "taskAssignee" FOREIGN KEY ("assigneeId") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "tasks" ADD CONSTRAINT "listTask" FOREIGN KEY ("listId") REFERENCES "public"."lists"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "comments" ADD CONSTRAINT "taskComment" FOREIGN KEY ("taskId") REFERENCES "public"."tasks"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "comments" ADD CONSTRAINT "commentAuthor" FOREIGN KEY ("authorId") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "projects" ADD CONSTRAINT "projectOwner" FOREIGN KEY ("ownerId") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "lists" ADD CONSTRAINT "projectList" FOREIGN KEY ("projectId") REFERENCES "public"."projects"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "team" ADD CONSTRAINT "projectMember" FOREIGN KEY ("projectId") REFERENCES "public"."projects"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "team" ADD CONSTRAINT "memberUserData" FOREIGN KEY ("userId") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;
+*/
