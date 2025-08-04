@@ -1,7 +1,14 @@
+"use client";
+
 import { CreateProjectButton } from "@/components/create-project-button";
 import { DashboardContent } from "@/components/layouts/dashboard/dashboard-content";
 import ProjectCard from "@/components/project-card";
 import SearchFilter from "@/components/search-filter";
+import { showErrorToast } from "@/components/toast";
+import { getProjects } from "@/lib/actions/project";
+import { ProjectCard as IProjectCard } from "@/types/projects";
+import { useUser } from "@clerk/nextjs";
+import { useCallback, useEffect, useState } from "react";
 
 export default function ProjectsPage() {
   return (
@@ -27,22 +34,7 @@ export default function ProjectsPage() {
         <SearchFilter />
 
         {/* Projects Grid Placeholder */}
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-          <CreateProjectButton className="border-primary/20 text-primary border-2 border-dashed bg-white text-center text-lg dark:bg-neutral-800 dark:text-neutral-200" />
-
-          {[1, 2, 3, 4, 5].map((i) => (
-            <ProjectCard
-              key={i}
-              id={`${i}`}
-              className="bg-white dark:bg-neutral-800"
-              name="Website Redesign"
-              description="This is a sample description of the project."
-              dueDate="2002-10-19"
-              members={10}
-              progress={87}
-            />
-          ))}
-        </div>
+        <RenderProjects />
 
         {/* Component Placeholders */}
         <div className="mt-8 rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 p-6 dark:border-gray-600 dark:bg-gray-800/50">
@@ -72,5 +64,45 @@ export default function ProjectsPage() {
         </div>
       </div>
     </DashboardContent>
+  );
+}
+
+function RenderProjects() {
+  const { user } = useUser();
+
+  const [projects, setProjects] = useState<IProjectCard[] | null>(null);
+
+  const retrieveProjects = useCallback(async () => {
+    if (!user?.id) return null;
+
+    const { success, message, projects } = await getProjects(user.id);
+
+    if (!success || !projects) return showErrorToast(message);
+
+    setProjects(projects);
+  }, [user?.id]);
+
+  useEffect(() => {
+    retrieveProjects();
+  }, [retrieveProjects]);
+
+  if (!projects) return null;
+
+  return (
+    <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <CreateProjectButton className="border-primary/20 text-primary border-2 border-dashed bg-white text-center text-lg dark:bg-neutral-800 dark:text-neutral-200" />
+      {projects.map((project) => (
+        <ProjectCard
+          className="bg-white"
+          key={project.id}
+          id={project.id}
+          name={project.name}
+          description={project.description}
+          dueDate={project.dueDate}
+          members={project.members}
+          progress={project.progress}
+        />
+      ))}
+    </div>
   );
 }

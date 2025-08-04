@@ -57,3 +57,23 @@ export async function getRecentProjects(userClerkId: UserSchema["clerkId"]) {
     return { success: false, message: "Error. Cannot get recent projects." };
   }
 }
+
+export async function getProjects(userClerkId: UserSchema["clerkId"]) {
+  try {
+    const validUserClerkId = userClerkIdSchema.parse(userClerkId);
+    const userId = await userQueries.getIdByClerkId(validUserClerkId);
+    const projects = await projectQueries.getAll(userId);
+
+    return {
+      success: true,
+      message: "Success getting all projects.",
+      projects
+    };
+  } catch (error) {
+    if (error instanceof ZodError) {
+      return { success: false, message: error.issues[0].message };
+    }
+
+    return { success: false, message: "Error. Cannot get projects." };
+  }
+}

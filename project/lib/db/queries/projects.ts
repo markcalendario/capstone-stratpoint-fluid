@@ -1,4 +1,5 @@
 import { projects } from "@/lib/db/drizzle/migrations/schema";
+import { formatDate } from "@/lib/utils/date-and-time";
 import {
   CreateProjectPayload,
   Project,
@@ -49,7 +50,7 @@ const projectQueries = {
         id: result.id,
         name: result.name,
         description: result.description,
-        dueDate: result.dueDate,
+        dueDate: formatDate(result.dueDate),
         members: result.teams.length + 1, // Plus the owner
         progress
       });
