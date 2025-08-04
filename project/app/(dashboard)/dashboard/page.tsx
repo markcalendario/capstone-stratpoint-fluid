@@ -1,7 +1,7 @@
+import DashboardStatus from "@/components/dashboard-status";
 import { DashboardContent } from "@/components/layouts/dashboard/dashboard-content";
 import QuickActions from "@/components/quick-actions";
 import { RecentProjects } from "@/components/recent-projects";
-import StatusCard from "@/components/status-card";
 import { CheckCircle, Clock, TrendingUp, Users } from "lucide-react";
 
 const STATUS = [
@@ -74,19 +74,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Status Boxes */}
-      <div className="grid gap-5 lg:grid-cols-2 xl:grid-cols-4">
-        {STATUS.map((stat, i) => (
-          <StatusCard
-            key={i}
-            className="w-full"
-            name={stat.name}
-            value={stat.value}
-            changeType={stat.changeType}
-            icon={stat.icon}
-            change={stat.change}
-          />
-        ))}
-      </div>
+      <DashboardStatus />
 
       {/* Recent Activity & Quick Actions */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">

@@ -13,17 +13,24 @@ const projectQueries = {
   getAll: async (userId: UserSchema["id"]) => {
     const userTeams = await db.query.team.findMany({
       columns: { projectId: true },
-      where: (team, { eq }) => eq(team.userId, userId)
+      where: (team, { eq, and }) =>
+        and(eq(team.userId, userId), eq(team.isAccepted, true))
     });
 
     const projectIds = userTeams.map((t) => t.projectId);
 
     const results = await db.query.projects.findMany({
-      where: (projects, { eq, or }) =>
-        or(eq(projects.ownerId, userId), inArray(projects.id, projectIds)),
+      where: (projects, { eq, or, and }) =>
+        and(
+          or(eq(projects.ownerId, userId), inArray(projects.id, projectIds)),
+          eq(projects.active, true)
+        ),
       columns: { id: true, name: true, description: true, dueDate: true },
       with: {
-        teams: { columns: { id: true } },
+        teams: {
+          columns: { id: true },
+          where: (teams, { eq }) => eq(teams.isAccepted, true)
+        },
         lists: {
           columns: { id: true, isFinal: true },
           with: { tasks: { columns: { id: true } } }
@@ -68,6 +75,20 @@ const projectQueries = {
     return project;
   },
 
+  getActive: async (userId: UserSchema["id"]) => {
+    return await db.query.projects.findMany({
+      where: (projects, { eq, and }) =>
+        and(eq(projects.ownerId, userId), eq(projects.active, true)),
+      with: {
+        teams: {
+          where: (teams, { eq, or }) =>
+            or(eq(teams.userId, userId), eq(teams.isAccepted, true))
+        },
+        lists: { with: { tasks: true } }
+      }
+    });
+  },
+
   create: async (data: CreateProjectPayload) => {
     const [newProject] = await db
       .insert(projects)
@@ -76,6 +97,7 @@ const projectQueries = {
 
     return newProject.id;
   },
+
   update: async (id: Project["id"], data: UpdateProjectPayload) => {
     const [updatedProject] = await db
       .update(projects)
