@@ -1,12 +1,32 @@
-import { RecentProject } from "@/types/projects";
+"use client";
+
+import { getRecentProjects } from "@/lib/actions/project";
+import { ProjectCard as IProjectCard } from "@/types/projects";
+import { useUser } from "@clerk/nextjs";
 import Link from "next/link";
+import { useCallback, useEffect, useState } from "react";
 import ProjectCard from "./project-card";
+import { showErrorToast, showSuccessToast } from "./toast";
 
-interface RecentProjectsProps {
-  projects: RecentProject[];
-}
+export function RecentProjects() {
+  const { user } = useUser();
+  const [projects, setProjects] = useState<IProjectCard[] | null>(null);
 
-export function RecentProjects({ projects }: RecentProjectsProps) {
+  const retrieveRecentProjects = useCallback(async () => {
+    if (!user?.id) return;
+
+    const response = await getRecentProjects(user.id);
+
+    if (!response.success || !response.recentProjects)
+      return showErrorToast(response.message);
+    showSuccessToast(response.message);
+    setProjects(response.recentProjects);
+  }, [user]);
+
+  useEffect(() => {
+    retrieveRecentProjects();
+  }, [retrieveRecentProjects, user]);
+
   return (
     <div className="border-primary/20 rounded-sm border-2 bg-white p-6 dark:bg-neutral-800">
       <div className="mb-6 flex items-center justify-between">
@@ -21,18 +41,26 @@ export function RecentProjects({ projects }: RecentProjectsProps) {
       </div>
 
       <div className="space-y-3">
-        {projects.map((project) => (
-          <ProjectCard
-            key={project.id}
-            id={project.id}
-            name={project.name}
-            description={project.description}
-            dueDate={project.dueDate}
-            members={project.members}
-            progress={project.progress}
-          />
-        ))}
+        {projects !== null && <RenderRecentProjects projects={projects} />}
       </div>
     </div>
   );
+}
+
+interface RenderRecentProjectsProps {
+  projects: IProjectCard[];
+}
+
+function RenderRecentProjects({ projects }: RenderRecentProjectsProps) {
+  return projects.map((project) => (
+    <ProjectCard
+      key={project.id}
+      id={project.id}
+      name={project.name}
+      description={project.description}
+      dueDate={project.dueDate}
+      members={project.members}
+      progress={project.progress}
+    />
+  ));
 }

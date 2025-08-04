@@ -1,10 +1,12 @@
 "use server";
 
+import { UserSchema } from "@/types/users";
 import { revalidatePath } from "next/cache";
 import { ZodError } from "zod";
 import projectQueries from "../db/queries/projects";
 import userQueries from "../db/queries/users";
 import { createProjectSchema } from "../validations/project";
+import { userClerkIdSchema } from "../validations/users";
 
 export async function createProject(formData: FormData) {
   const name = formData.get("name");
@@ -33,5 +35,25 @@ export async function createProject(formData: FormData) {
     }
 
     return { success: false, message: "Error. Cannot create project." };
+  }
+}
+
+export async function getRecentProjects(userClerkId: UserSchema["clerkId"]) {
+  try {
+    const validUserClerkId = userClerkIdSchema.parse(userClerkId);
+    const userId = await userQueries.getIdByClerkId(validUserClerkId);
+    const recentProjects = await projectQueries.getAll(userId);
+
+    return {
+      success: true,
+      message: "Success getting recent projects.",
+      recentProjects: recentProjects.slice(0, 3)
+    };
+  } catch (error) {
+    if (error instanceof ZodError) {
+      return { success: false, message: error.issues[0].message };
+    }
+
+    return { success: false, message: "Error. Cannot get recent projects." };
   }
 }
