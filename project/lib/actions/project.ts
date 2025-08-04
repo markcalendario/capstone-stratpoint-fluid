@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { ZodError } from "zod";
 import projectQueries from "../db/queries/projects";
 import userQueries from "../db/queries/users";
+import { toCardData } from "../utils/projects";
 import { createProjectSchema } from "../validations/project";
 import { userClerkIdSchema } from "../validations/users";
 
@@ -42,12 +43,13 @@ export async function getRecentProjects(userClerkId: UserSchema["clerkId"]) {
   try {
     const validUserClerkId = userClerkIdSchema.parse(userClerkId);
     const userId = await userQueries.getIdByClerkId(validUserClerkId);
-    const recentProjects = await projectQueries.getAll(userId);
+    const projects = await projectQueries.ownedOrMember(userId);
+    const recentProjects = toCardData(projects).slice(0, 3);
 
     return {
       success: true,
       message: "Success getting recent projects.",
-      recentProjects: recentProjects.slice(0, 3)
+      recentProjects
     };
   } catch (error) {
     if (error instanceof ZodError) {
@@ -62,12 +64,13 @@ export async function getProjects(userClerkId: UserSchema["clerkId"]) {
   try {
     const validUserClerkId = userClerkIdSchema.parse(userClerkId);
     const userId = await userQueries.getIdByClerkId(validUserClerkId);
-    const projects = await projectQueries.getAll(userId);
+    const projects = await projectQueries.ownedOrMember(userId);
+    const formattedProjects = toCardData(projects);
 
     return {
       success: true,
       message: "Success getting all projects.",
-      projects
+      projects: formattedProjects
     };
   } catch (error) {
     if (error instanceof ZodError) {
