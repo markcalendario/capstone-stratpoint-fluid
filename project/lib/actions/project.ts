@@ -43,13 +43,21 @@ export async function getRecentProjects(userClerkId: UserSchema["clerkId"]) {
   try {
     const validUserClerkId = userClerkIdSchema.parse(userClerkId);
     const userId = await userQueries.getIdByClerkId(validUserClerkId);
+
     const projects = await projectQueries.ownedOrMember(userId);
-    const recentProjects = toCardData(projects).slice(0, 3);
+
+    const recentProjects = projects
+      .sort((a, b) => {
+        const aTime = a.updatedAt ? new Date(a.updatedAt).getTime() : 0;
+        const bTime = b.updatedAt ? new Date(b.updatedAt).getTime() : 0;
+        return bTime - aTime; // Most recent first
+      })
+      .slice(0, 3);
 
     return {
       success: true,
       message: "Success getting recent projects.",
-      recentProjects
+      recentProjects: toCardData(recentProjects)
     };
   } catch (error) {
     if (error instanceof ZodError) {
@@ -65,7 +73,14 @@ export async function getProjects(userClerkId: UserSchema["clerkId"]) {
     const validUserClerkId = userClerkIdSchema.parse(userClerkId);
     const userId = await userQueries.getIdByClerkId(validUserClerkId);
     const projects = await projectQueries.ownedOrMember(userId);
-    const formattedProjects = toCardData(projects);
+
+    const sortedProjects = projects.sort((a, b) => {
+      const aTime = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+      const bTime = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+      return bTime - aTime;
+    });
+
+    const formattedProjects = toCardData(sortedProjects);
 
     return {
       success: true,
