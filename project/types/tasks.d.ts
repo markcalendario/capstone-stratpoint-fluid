@@ -7,6 +7,8 @@ export interface TaskSchema extends InferSelectModel<typeof tasks> {
   comments: CommentSchema[];
 }
 
+export interface Task extends InferSelectModel<typeof tasks> {}
+
 export type CreateTaskData = Pick<
   TaskSchema,
   "assigneeId" | "description" | "dueDate" | "listId" | "priority" | "title"

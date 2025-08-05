@@ -6,6 +6,8 @@ export interface ListSchema extends InferSelectModel<typeof lists> {
   tasks: TaskSchema[];
 }
 
+export interface List extends InferSelectModel<typeof lists> {}
+
 export type CreateListData = Pick<
   ListSchema,
   "name" | "position" | "isFinal" | "projectId"
