@@ -1,11 +1,9 @@
 import { lists } from "@/lib/db/drizzle/migrations/schema";
 import { InferSelectModel } from "drizzle-orm";
-import { CommentSchema } from "./comments";
 import { TaskSchema } from "./tasks";
 
 export interface ListSchema extends InferSelectModel<typeof lists> {
   tasks: TaskSchema[];
-  comments: CommentSchema[];
 }
 
 export type CreateListData = Pick<
