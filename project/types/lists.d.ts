@@ -8,7 +8,7 @@ export interface ListSchema extends InferSelectModel<typeof lists> {
   comments: CommentSchema[];
 }
 
-export type CreateListPayload = Pick<
+export type CreateListData = Pick<
   ListSchema,
   "name" | "position" | "isFinal" | "projectId"
 >;

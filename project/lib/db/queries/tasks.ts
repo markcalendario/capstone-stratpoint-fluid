@@ -1,9 +1,5 @@
 import { tasks } from "@/lib/db/drizzle/migrations/schema";
-import {
-  CreateTaskPayload,
-  TaskSchema,
-  UpdateTaskPayload
-} from "@/types/tasks";
+import { CreateTaskData, TaskSchema, UpdateTaskData } from "@/types/tasks";
 import { eq } from "drizzle-orm";
 import db from "..";
 
@@ -15,7 +11,7 @@ const taskQueries = {
     const [task] = await db.select().from(tasks).where(eq(tasks.id, id));
     return task;
   },
-  create: async (data: CreateTaskPayload) => {
+  create: async (data: CreateTaskData) => {
     const [newTask] = await db
       .insert(tasks)
       .values(data)
@@ -23,7 +19,7 @@ const taskQueries = {
 
     return newTask.id;
   },
-  update: async (id: TaskSchema["id"], data: UpdateTaskPayload) => {
+  update: async (id: TaskSchema["id"], data: UpdateTaskData) => {
     const [updatedTask] = await db
       .update(tasks)
       .set(data)

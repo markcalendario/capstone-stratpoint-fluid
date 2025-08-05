@@ -13,7 +13,7 @@ export type CreateProjectData = Pick<
   "name" | "description" | "dueDate" | "ownerId"
 >;
 
-export type UpdateProjectPayload = Pick<
+export type UpdateProjectData = Pick<
   ProjectSchema,
   "name" | "description" | "dueDate" | "ownerId" | "updatedAt"
 >;

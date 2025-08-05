@@ -1,9 +1,5 @@
 import { users } from "@/lib/db/drizzle/migrations/schema";
-import {
-  CreateUserPayload,
-  UpdateUserPayload,
-  UserSchema
-} from "@/types/users";
+import { CreateUserData, UpdateUserData, UserSchema } from "@/types/users";
 import { eq } from "drizzle-orm";
 import { v4 as uuidv4 } from "uuid";
 import db from "..";
@@ -24,7 +20,7 @@ const userQueries = {
 
     return user.id;
   },
-  create: async (data: CreateUserPayload) => {
+  create: async (data: CreateUserData) => {
     const [newUser] = await db
       .insert(users)
       .values(data)
@@ -32,7 +28,7 @@ const userQueries = {
 
     return newUser.id;
   },
-  update: async (id: UserSchema["id"], data: UpdateUserPayload) => {
+  update: async (id: UserSchema["id"], data: UpdateUserData) => {
     const [updatedUser] = await db
       .update(users)
       .set(data)
@@ -43,7 +39,7 @@ const userQueries = {
   },
   updateByClerkId: async (
     clerkId: UserSchema["clerkId"],
-    data: UpdateUserPayload
+    data: UpdateUserData
   ) => {
     const [updatedUser] = await db
       .update(users)
