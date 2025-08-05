@@ -6,7 +6,7 @@ import { revalidatePath } from "next/cache";
 import { ZodError } from "zod";
 import projectQueries from "../db/queries/projects";
 import userQueries from "../db/queries/users";
-import { toCardData } from "../utils/projects";
+import { isUserProjectOwner, toCardData } from "../utils/projects";
 import { createProjectSchema, projectIdSchema } from "../validations/projects";
 import { userClerkIdSchema } from "../validations/users";
 
@@ -112,5 +112,30 @@ export async function getProject(id: ProjectSchema["id"]) {
     }
 
     return { success: false, message: "Error. Cannot get project." };
+  }
+}
+
+export async function deleteProject(
+  userClerkId: UserSchema["clerkId"],
+  projectId: ProjectSchema["id"]
+) {
+  try {
+    const validProjectId = projectIdSchema.parse(projectId);
+    const validClerkId = userClerkIdSchema.parse(userClerkId);
+    const userId = await userQueries.getIdByClerkId(validClerkId);
+
+    if (!(await isUserProjectOwner(userId, validProjectId))) {
+      return { success: false, message: "You are not the project owner." };
+    }
+
+    await projectQueries.delete(userId, validProjectId);
+
+    return { success: true, message: "Project deleted successfully." };
+  } catch (error) {
+    if (error instanceof ZodError) {
+      return { success: false, message: error.issues[0].message };
+    }
+
+    return { success: false, message: "Error. Cannot delete project." };
   }
 }

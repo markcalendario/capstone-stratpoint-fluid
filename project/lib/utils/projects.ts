@@ -1,7 +1,9 @@
 import { List } from "@/types/lists";
-import { Project } from "@/types/projects";
+import { Project, ProjectSchema } from "@/types/projects";
 import { Task } from "@/types/tasks";
 import { TeamsSchema } from "@/types/teams";
+import { UserSchema } from "@/types/users";
+import projectQueries from "../db/queries/projects";
 import { formatDate } from "./date-and-time";
 
 interface ToCardData extends Omit<Project, "teams" | "lists"> {
@@ -39,4 +41,12 @@ export function toCardData(projects: ToCardData[]) {
   }
 
   return projectCardData;
+}
+
+export async function isUserProjectOwner(
+  userId: UserSchema["id"],
+  projectId: ProjectSchema["id"]
+) {
+  const ownerId = await projectQueries.getOwnerId(projectId);
+  return userId === ownerId;
 }

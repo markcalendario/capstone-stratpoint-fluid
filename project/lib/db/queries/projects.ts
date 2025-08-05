@@ -5,7 +5,7 @@ import {
   UpdateProjectData
 } from "@/types/projects";
 import { UserSchema } from "@/types/users";
-import { eq, inArray } from "drizzle-orm";
+import { and, eq, inArray } from "drizzle-orm";
 import db from "..";
 
 const projectQueries = {
@@ -72,6 +72,14 @@ const projectQueries = {
     });
   },
 
+  getOwnerId: async (id: ProjectSchema["id"]) => {
+    const [owner] = await db
+      .select({ ownerId: projects.ownerId })
+      .from(projects)
+      .where(eq(projects.id, id));
+    return owner.ownerId;
+  },
+
   update: async (id: ProjectSchema["id"], data: UpdateProjectData) => {
     const [updatedProject] = await db
       .update(projects)
@@ -82,13 +90,10 @@ const projectQueries = {
     return updatedProject.id;
   },
 
-  delete: async (id: ProjectSchema["id"]) => {
-    const [deletedProject] = await db
+  delete: async (userId: UserSchema["id"], projectId: ProjectSchema["id"]) => {
+    await db
       .delete(projects)
-      .where(eq(projects.id, id))
-      .returning({ id: projects.id, name: projects.name });
-
-    return deletedProject;
+      .where(and(eq(projects.id, projectId), eq(projects.ownerId, userId)));
   }
 };
 
