@@ -2,11 +2,10 @@ import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { LucideIcon } from "lucide-react";
 import Link from "next/link";
 import { ReactNode } from "react";
-import { Url } from "url";
 
 interface DropdownItem {
   onClick?: () => void;
-  href?: Url;
+  href?: string;
   label: string;
   icon: LucideIcon;
 }
@@ -42,7 +41,7 @@ export default function Dropdown({ className, label, items }: DropdownProps) {
         <Link
           href={href ?? "#"}
           className={itemStyle}>
-          <Icon /> {label}
+          <Icon size={16} /> {item.label}
         </Link>
       </MenuItem>
     );

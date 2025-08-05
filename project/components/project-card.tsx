@@ -1,7 +1,15 @@
 import { cn } from "@/lib/utils";
 import { ProjectCard as IProjectCard } from "@/types/projects";
-import { Calendar, MoreHorizontal, Users } from "lucide-react";
+import {
+  Calendar,
+  Edit,
+  Eye,
+  MoreHorizontal,
+  Trash,
+  Users
+} from "lucide-react";
 import Link from "next/link";
+import Dropdown from "./drop-down";
 
 interface ProjectCardProps extends IProjectCard {
   className?: string;
@@ -64,12 +72,20 @@ export default function ProjectCard({
           </div>
         </div>
 
-        <button className="hover:bg-primary/10 cursor-pointer rounded p-1">
-          <MoreHorizontal
-            size={16}
-            className="dark:text-white"
-          />
-        </button>
+        <Dropdown
+          className="hover:bg-primary/10 cursor-pointer rounded p-1"
+          label={
+            <MoreHorizontal
+              size={16}
+              className="dark:text-white"
+            />
+          }
+          items={[
+            { href: `/projects/${id}`, label: "View", icon: Eye },
+            { onClick: () => {}, label: "Edit", icon: Edit },
+            { onClick: () => {}, label: "Delete", icon: Trash }
+          ]}
+        />
       </div>
     </div>
   );
