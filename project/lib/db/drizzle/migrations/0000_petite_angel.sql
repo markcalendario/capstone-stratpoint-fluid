@@ -7,7 +7,7 @@ CREATE TABLE "tasks" (
 	"title" text NOT NULL,
 	"description" text NOT NULL,
 	"listId" uuid NOT NULL,
-	"assigneeId" uuid NOT NULL,
+	"assigneeId" uuid,
 	"priority" "PRIORITY" NOT NULL,
 	"dueDate" date NOT NULL,
 	"position" integer NOT NULL,

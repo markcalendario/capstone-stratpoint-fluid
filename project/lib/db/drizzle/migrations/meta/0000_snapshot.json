@@ -37,7 +37,7 @@
           "name": "assigneeId",
           "type": "uuid",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "priority": {
           "name": "priority",

@@ -9,7 +9,7 @@ export const tasks = pgTable("tasks", {
 	title: text().notNull(),
 	description: text().notNull(),
 	listId: uuid().notNull(),
-	assigneeId: uuid().notNull(),
+	assigneeId: uuid(),
 	priority: priority().notNull(),
 	dueDate: date().notNull(),
 	position: integer().notNull(),
