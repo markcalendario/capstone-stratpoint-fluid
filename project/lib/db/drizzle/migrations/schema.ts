@@ -17,15 +17,15 @@ export const tasks = pgTable("tasks", {
 	updatedAt: timestamp({ withTimezone: true, mode: 'string' }).default(sql`CURRENT_TIMESTAMP`).notNull(),
 }, (table) => [
 	foreignKey({
-			columns: [table.assigneeId],
-			foreignColumns: [users.id],
-			name: "taskAssignee"
-		}),
-	foreignKey({
 			columns: [table.listId],
 			foreignColumns: [lists.id],
 			name: "listTask"
-		}),
+		}).onDelete("cascade"),
+	foreignKey({
+			columns: [table.assigneeId],
+			foreignColumns: [users.id],
+			name: "taskAssignee"
+		}).onDelete("set null"),
 ]);
 
 export const comments = pgTable("comments", {
@@ -40,12 +40,12 @@ export const comments = pgTable("comments", {
 			columns: [table.taskId],
 			foreignColumns: [tasks.id],
 			name: "taskComment"
-		}),
+		}).onDelete("cascade"),
 	foreignKey({
 			columns: [table.authorId],
 			foreignColumns: [users.id],
 			name: "commentAuthor"
-		}),
+		}).onDelete("cascade"),
 ]);
 
 export const users = pgTable("users", {
@@ -72,7 +72,7 @@ export const lists = pgTable("lists", {
 			columns: [table.projectId],
 			foreignColumns: [projects.id],
 			name: "projectList"
-		}),
+		}).onDelete("cascade"),
 ]);
 
 export const projects = pgTable("projects", {
@@ -89,7 +89,7 @@ export const projects = pgTable("projects", {
 			columns: [table.ownerId],
 			foreignColumns: [users.id],
 			name: "projectOwner"
-		}),
+		}).onDelete("cascade"),
 ]);
 
 export const teams = pgTable("teams", {
@@ -101,13 +101,13 @@ export const teams = pgTable("teams", {
 	acceptedAt: timestamp({ withTimezone: true, mode: 'string' }),
 }, (table) => [
 	foreignKey({
-			columns: [table.projectId],
-			foreignColumns: [projects.id],
-			name: "projectMember"
-		}),
-	foreignKey({
 			columns: [table.userId],
 			foreignColumns: [users.id],
 			name: "memberUserData"
-		}),
+		}).onDelete("cascade"),
+	foreignKey({
+			columns: [table.projectId],
+			foreignColumns: [projects.id],
+			name: "projectMember"
+		}).onDelete("cascade"),
 ]);

@@ -64,12 +64,12 @@ CREATE TABLE "teams" (
 	"acceptedAt" timestamp with time zone
 );
 --> statement-breakpoint
-ALTER TABLE "tasks" ADD CONSTRAINT "taskAssignee" FOREIGN KEY ("assigneeId") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "tasks" ADD CONSTRAINT "listTask" FOREIGN KEY ("listId") REFERENCES "public"."lists"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "comments" ADD CONSTRAINT "taskComment" FOREIGN KEY ("taskId") REFERENCES "public"."tasks"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "comments" ADD CONSTRAINT "commentAuthor" FOREIGN KEY ("authorId") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "lists" ADD CONSTRAINT "projectList" FOREIGN KEY ("projectId") REFERENCES "public"."projects"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "projects" ADD CONSTRAINT "projectOwner" FOREIGN KEY ("ownerId") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "teams" ADD CONSTRAINT "projectMember" FOREIGN KEY ("projectId") REFERENCES "public"."projects"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "teams" ADD CONSTRAINT "memberUserData" FOREIGN KEY ("userId") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;
+ALTER TABLE "tasks" ADD CONSTRAINT "listTask" FOREIGN KEY ("listId") REFERENCES "public"."lists"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "tasks" ADD CONSTRAINT "taskAssignee" FOREIGN KEY ("assigneeId") REFERENCES "public"."users"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "comments" ADD CONSTRAINT "taskComment" FOREIGN KEY ("taskId") REFERENCES "public"."tasks"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "comments" ADD CONSTRAINT "commentAuthor" FOREIGN KEY ("authorId") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "lists" ADD CONSTRAINT "projectList" FOREIGN KEY ("projectId") REFERENCES "public"."projects"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "projects" ADD CONSTRAINT "projectOwner" FOREIGN KEY ("ownerId") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "teams" ADD CONSTRAINT "memberUserData" FOREIGN KEY ("userId") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "teams" ADD CONSTRAINT "projectMember" FOREIGN KEY ("projectId") REFERENCES "public"."projects"("id") ON DELETE cascade ON UPDATE no action;
 */

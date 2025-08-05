@@ -75,20 +75,6 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "taskAssignee": {
-          "name": "taskAssignee",
-          "tableFrom": "tasks",
-          "tableTo": "users",
-          "schemaTo": "public",
-          "columnsFrom": [
-            "assigneeId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
         "listTask": {
           "name": "listTask",
           "tableFrom": "tasks",
@@ -100,7 +86,21 @@
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "taskAssignee": {
+          "name": "taskAssignee",
+          "tableFrom": "tasks",
+          "tableTo": "users",
+          "schemaTo": "public",
+          "columnsFrom": [
+            "assigneeId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
           "onUpdate": "no action"
         }
       },
@@ -167,7 +167,7 @@
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         },
         "commentAuthor": {
@@ -181,7 +181,7 @@
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
@@ -315,7 +315,7 @@
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
@@ -395,7 +395,7 @@
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
@@ -450,20 +450,6 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "projectMember": {
-          "name": "projectMember",
-          "tableFrom": "teams",
-          "tableTo": "projects",
-          "schemaTo": "public",
-          "columnsFrom": [
-            "projectId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
         "memberUserData": {
           "name": "memberUserData",
           "tableFrom": "teams",
@@ -475,7 +461,21 @@
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "projectMember": {
+          "name": "projectMember",
+          "tableFrom": "teams",
+          "tableTo": "projects",
+          "schemaTo": "public",
+          "columnsFrom": [
+            "projectId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
