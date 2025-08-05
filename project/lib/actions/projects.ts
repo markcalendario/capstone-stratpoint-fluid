@@ -1,12 +1,13 @@
 "use server";
 
+import { ProjectSchema } from "@/types/projects";
 import { UserSchema } from "@/types/users";
 import { revalidatePath } from "next/cache";
 import { ZodError } from "zod";
 import projectQueries from "../db/queries/projects";
 import userQueries from "../db/queries/users";
 import { toCardData } from "../utils/projects";
-import { createProjectSchema } from "../validations/projects";
+import { createProjectSchema, projectIdSchema } from "../validations/projects";
 import { userClerkIdSchema } from "../validations/users";
 
 export async function createProject(formData: FormData) {
@@ -93,5 +94,23 @@ export async function getProjects(userClerkId: UserSchema["clerkId"]) {
     }
 
     return { success: false, message: "Error. Cannot get projects." };
+  }
+}
+
+export async function getProject(id: ProjectSchema["id"]) {
+  try {
+    const validId = projectIdSchema.parse(id);
+    const project = await projectQueries.getById(validId);
+    return {
+      success: true,
+      message: "Project retrieved successfully.",
+      project
+    };
+  } catch (error) {
+    if (error instanceof ZodError) {
+      return { success: false, message: error.issues[0].message };
+    }
+
+    return { success: false, message: "Error. Cannot get project." };
   }
 }

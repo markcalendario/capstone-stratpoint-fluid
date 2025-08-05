@@ -18,6 +18,13 @@ const projectQueries = {
     return newProject.id;
   },
 
+  getById: async (id: ProjectSchema["id"]) => {
+    return await db.query.projects.findFirst({
+      with: { teams: true, lists: { with: { tasks: true } } },
+      where: (projects, { eq }) => eq(projects.id, id)
+    });
+  },
+
   ownedOrMember: async (userId: UserSchema["id"]) => {
     return await db.query.projects.findMany({
       with: { teams: true, lists: { with: { tasks: true } } },

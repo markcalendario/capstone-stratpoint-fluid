@@ -1,19 +1,21 @@
+"use client";
+
 import Button from "@/components/button";
 import { KanbanBoard } from "@/components/kanban-board";
 import { DashboardContent } from "@/components/layouts/dashboard/dashboard-content";
-import { ProjectSchema } from "@/types/projects";
+import useProject from "@/hooks/use-project";
 import { Calendar, MoreHorizontal, Settings, Users } from "lucide-react";
+import { use } from "react";
 
-export default async function ProjectPage({
-  params
-}: {
+interface ProjectPage {
   params: Promise<{ id: string }>;
-}) {
-  void params;
+}
 
-  const project: Partial<ProjectSchema> = {
-    name: "Car Dealership Website"
-  };
+export default function ProjectPage({ params }: ProjectPage) {
+  const { id } = use(params);
+  const project = useProject(id);
+
+  if (!project) return null;
 
   return (
     <DashboardContent

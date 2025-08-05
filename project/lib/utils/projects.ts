@@ -1,11 +1,16 @@
-import { ListSchema } from "@/types/lists";
+import { List } from "@/types/lists";
 import { Project } from "@/types/projects";
+import { Task } from "@/types/tasks";
 import { TeamsSchema } from "@/types/teams";
 import { formatDate } from "./date-and-time";
 
-interface ToCardData extends Project {
-  lists: Pick<ListSchema, "tasks" | "isFinal">[];
+interface ToCardData extends Omit<Project, "teams" | "lists"> {
   teams: TeamsSchema[];
+  lists: Array<
+    List & {
+      tasks: Task[];
+    }
+  >;
 }
 
 export function toCardData(projects: ToCardData[]) {
