@@ -8,6 +8,8 @@ export interface ProjectSchema extends InferSelectModel<typeof projects> {
   teams: Teams[];
 }
 
+type Project = InferSelectModel<typeof projects>;
+
 export type CreateProjectData = Pick<
   ProjectSchema,
   "name" | "description" | "dueDate" | "ownerId"

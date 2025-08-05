@@ -1,7 +1,14 @@
-import { ProjectSchema } from "@/types/projects";
+import { ListSchema } from "@/types/lists";
+import { Project } from "@/types/projects";
+import { TeamsSchema } from "@/types/teams";
 import { formatDate } from "./date-and-time";
 
-export function toCardData(projects: ProjectSchema[]) {
+interface ToCardData extends Project {
+  lists: Pick<ListSchema, "tasks" | "isFinal">[];
+  teams: TeamsSchema[];
+}
+
+export function toCardData(projects: ToCardData[]) {
   const projectCardData = [];
 
   for (const project of projects) {
