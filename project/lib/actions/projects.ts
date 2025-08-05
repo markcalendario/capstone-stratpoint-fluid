@@ -7,7 +7,11 @@ import { ZodError } from "zod";
 import projectQueries from "../db/queries/projects";
 import userQueries from "../db/queries/users";
 import { isUserProjectOwner, toCardData } from "../utils/projects";
-import { createProjectSchema, projectIdSchema } from "../validations/projects";
+import {
+  createProjectSchema,
+  projectIdSchema,
+  updateProjectSchema
+} from "../validations/projects";
 import { userClerkIdSchema } from "../validations/users";
 
 export async function createProject(formData: FormData) {
@@ -137,5 +141,53 @@ export async function deleteProject(
     }
 
     return { success: false, message: "Error. Cannot delete project." };
+  }
+}
+
+export async function updateProject(formData: FormData) {
+  const name = formData.get("name");
+  const id = formData.get("projectId");
+  const dueDate = formData.get("dueDate");
+  const description = formData.get("description");
+  const userClerkId = formData.get("userClerkId");
+  const userId = await userQueries.getIdByClerkId(userClerkId as string);
+  const updatedAt = new Date().toISOString();
+
+  const payload = {
+    id,
+    name,
+    description,
+    dueDate,
+    ownerId: userId,
+    updatedAt
+  };
+
+  if (typeof id !== "string") {
+    return { success: false, message: "Missing project ID from the payload." };
+  }
+
+  try {
+    const valid = updateProjectSchema.parse(payload);
+
+    if (!(await isUserProjectOwner(userId, id))) {
+      return { success: false, message: "You are not the project owner." };
+    }
+
+    const projectId = await projectQueries.update(id, valid);
+
+    revalidatePath("/dashboard");
+    revalidatePath("/projects");
+
+    return {
+      success: true,
+      message: "Project updated successfully.",
+      projectId
+    };
+  } catch (error) {
+    if (error instanceof ZodError) {
+      return { success: false, message: error.issues[0].message };
+    }
+
+    return { success: false, message: "Error. Cannot create project." };
   }
 }

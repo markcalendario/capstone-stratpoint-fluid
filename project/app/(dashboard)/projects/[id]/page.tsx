@@ -5,16 +5,9 @@ import { KanbanBoard } from "@/components/kanban-board";
 import { DashboardContent } from "@/components/layouts/dashboard/dashboard-content";
 import LinkButton from "@/components/link-button";
 import { DeleteProjectModal } from "@/components/modals/delete-project-modal";
+import { EditProjectModal } from "@/components/modals/edit-project-modal";
 import useProject from "@/hooks/use-project";
-import {
-  Calendar,
-  Edit,
-  Ellipsis,
-  Settings,
-  Square,
-  Trash,
-  Users
-} from "lucide-react";
+import { Calendar, Edit, Ellipsis, Settings, Trash, Users } from "lucide-react";
 import { Fragment, use, useState } from "react";
 
 interface ProjectPage {
@@ -23,11 +16,13 @@ interface ProjectPage {
 
 export default function ProjectPage({ params }: ProjectPage) {
   const { id } = use(params);
-  const project = useProject(id);
+  const [project] = useProject(id);
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   const toggleDeleteModal = () => setIsDeleteModalOpen((prev) => !prev);
+  const toggleEditModal = () => setIsEditModalOpen((prev) => !prev);
 
   if (!project) return null;
 
@@ -56,8 +51,7 @@ export default function ProjectPage({ params }: ProjectPage) {
           <Dropdown
             label={<Ellipsis />}
             items={[
-              { onClick: () => {}, label: "Edit Project", icon: Edit },
-              { onClick: () => {}, label: "Make Inactive", icon: Square },
+              { onClick: toggleEditModal, label: "Edit Project", icon: Edit },
               {
                 onClick: toggleDeleteModal,
                 label: "Delete Project",
@@ -122,6 +116,13 @@ export default function ProjectPage({ params }: ProjectPage) {
         <DeleteProjectModal
           projectId={id}
           toggle={toggleDeleteModal}
+        />
+      )}
+
+      {isEditModalOpen && (
+        <EditProjectModal
+          projectId={id}
+          toggle={toggleEditModal}
         />
       )}
     </Fragment>

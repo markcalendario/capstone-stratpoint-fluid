@@ -15,7 +15,9 @@ interface ProjectState extends Omit<Project, "teams" | "lists"> {
   >;
 }
 
-export default function useProject(id: ProjectSchema["id"]) {
+type UseProjectReturn = [ProjectState | null, () => void];
+
+export default function useProject(id: ProjectSchema["id"]): UseProjectReturn {
   const [project, setProject] = useState<ProjectState | null>(null);
 
   const retrieveProject = useCallback(async () => {
@@ -35,5 +37,5 @@ export default function useProject(id: ProjectSchema["id"]) {
     retrieveProject();
   }, [retrieveProject, id]);
 
-  return project;
+  return [project, retrieveProject];
 }

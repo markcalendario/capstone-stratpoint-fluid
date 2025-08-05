@@ -30,6 +30,7 @@ export const createProjectSchema = z.object({
 });
 
 export const updateProjectSchema = z.object({
+  id: z.uuidv4("Project ID must be UUID.").trim(),
   name: z
     .string("Project name must be string.")
     .trim()
