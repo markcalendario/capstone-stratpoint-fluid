@@ -59,22 +59,6 @@ export const users = pgTable("users", {
 	unique("users_clerkId_key").on(table.clerkId),
 ]);
 
-export const lists = pgTable("lists", {
-	id: uuid().defaultRandom().primaryKey().notNull(),
-	name: text().notNull(),
-	projectId: uuid().notNull(),
-	position: integer().notNull(),
-	createdAt: timestamp({ withTimezone: true, mode: 'string' }).default(sql`CURRENT_TIMESTAMP`),
-	updatedAt: timestamp({ withTimezone: true, mode: 'string' }).default(sql`CURRENT_TIMESTAMP`),
-	isFinal: boolean().default(false),
-}, (table) => [
-	foreignKey({
-			columns: [table.projectId],
-			foreignColumns: [projects.id],
-			name: "projectList"
-		}).onDelete("cascade"),
-]);
-
 export const projects = pgTable("projects", {
 	id: uuid().defaultRandom().primaryKey().notNull(),
 	name: text().notNull(),
@@ -89,6 +73,28 @@ export const projects = pgTable("projects", {
 			columns: [table.ownerId],
 			foreignColumns: [users.id],
 			name: "projectOwner"
+		}).onDelete("cascade"),
+]);
+
+export const lists = pgTable("lists", {
+	id: uuid().defaultRandom().primaryKey().notNull(),
+	name: text().notNull(),
+	projectId: uuid().notNull(),
+	position: integer(),
+	createdAt: timestamp({ withTimezone: true, mode: 'string' }).default(sql`CURRENT_TIMESTAMP`),
+	updatedAt: timestamp({ withTimezone: true, mode: 'string' }).default(sql`CURRENT_TIMESTAMP`),
+	isFinal: boolean().default(false),
+	createdBy: uuid().notNull(),
+}, (table) => [
+	foreignKey({
+			columns: [table.projectId],
+			foreignColumns: [projects.id],
+			name: "projectList"
+		}).onDelete("cascade"),
+	foreignKey({
+			columns: [table.createdBy],
+			foreignColumns: [users.id],
+			name: "userList"
 		}).onDelete("cascade"),
 ]);
 
