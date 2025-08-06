@@ -63,29 +63,6 @@ const tasks: TTaskCard[] = [
   }
 ];
 
-const initialColumns = [
-  {
-    id: "todo",
-    title: "To Do",
-    tasks
-  },
-  {
-    id: "in-progress",
-    title: "In Progress",
-    tasks
-  },
-  {
-    id: "review",
-    title: "Review",
-    tasks
-  },
-  {
-    id: "done",
-    title: "Done",
-    tasks
-  }
-];
-
 interface KanbanBoardProps {
   projectId: ProjectSchema["id"];
 }
