@@ -3,7 +3,6 @@
 import { getListsByProjectId } from "@/lib/actions/lists";
 import { List } from "@/types/lists";
 import { ProjectSchema } from "@/types/projects";
-import { TaskCard as TTaskCard } from "@/types/tasks";
 import { useCallback, useEffect, useState } from "react";
 import CreateListButton from "./create-list-button";
 import ListCard from "./list-card";
@@ -43,25 +42,6 @@ State management:
 - Implement optimistic updates
 - Handle conflicts with server state
 */
-
-const tasks: TTaskCard[] = [
-  {
-    id: "1",
-    title: "Design homepage mockup",
-    description: "Create initial design concepts",
-    priority: "high",
-    assigneeName: "Mark Kenenth",
-    assigneeImageUrl: "/placeholder-user.jpg"
-  },
-  {
-    id: "2",
-    title: "Car dealership web",
-    description: "Create car dealership project",
-    priority: "low",
-    assigneeName: "Mark Kenenth",
-    assigneeImageUrl: "/placeholder-user.jpg"
-  }
-];
 
 interface KanbanBoardProps {
   projectId: ProjectSchema["id"];
