@@ -7,3 +7,12 @@ export function isFutureDate(date: string) {
 
   return targetDate >= currentDate;
 }
+export function formatDate(date: string) {
+  const d = new Date(date);
+  if (isNaN(d.getTime())) return "Invalid Date";
+  return d.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric"
+  });
+}

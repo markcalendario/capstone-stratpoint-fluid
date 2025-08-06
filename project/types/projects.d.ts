@@ -1,20 +1,27 @@
-import { projects } from "@/lib/db/drizzle/schema";
+import { projects } from "@/lib/db/drizzle/migrations/schema";
 import { InferSelectModel } from "drizzle-orm";
-import { List } from "./lists";
+import { ListSchema } from "./lists";
+import { Teams } from "./teams";
 
-export interface Project extends InferSelectModel<typeof projects> {
-  lists: List[];
+export interface ProjectSchema extends InferSelectModel<typeof projects> {
+  lists: ListSchema[];
+  teams: Teams[];
 }
 
-export type CreateProjectPayload = Omit<
-  Project,
-  "id" | "lists" | "createdAt" | "updatedAt"
+type Project = InferSelectModel<typeof projects>;
+
+export type CreateProjectData = Pick<
+  ProjectSchema,
+  "name" | "description" | "dueDate" | "ownerId"
 >;
 
-export type UpdateProjectPayload = Omit<Project, "id" | "lists" | "createdAt">;
+export type UpdateProjectData = Pick<
+  ProjectSchema,
+  "name" | "description" | "dueDate" | "ownerId" | "updatedAt"
+>;
 
-interface RecentProject
-  extends Pick<Project, "id" | "name" | "description" | "dueDate"> {
+interface ProjectCard
+  extends Pick<ProjectSchema, "id" | "name" | "description" | "dueDate"> {
   members: number;
   progress: number;
 }

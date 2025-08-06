@@ -1,9 +1,7 @@
 import { cn } from "@/lib/utils";
 
-interface ButtonProps {
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   className?: string;
-  onClick?: () => void;
-  children: React.ReactNode;
 }
 
 export default function Button({ className, onClick, children }: ButtonProps) {

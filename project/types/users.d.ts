@@ -1,21 +1,10 @@
-import { users } from "@/lib/db/drizzle/schema";
+import { users } from "@/lib/db/drizzle/migrations/schema";
 import { InferSelectModel } from "drizzle-orm";
 
 export interface UserSchema extends InferSelectModel<typeof users> {
   imageUrl: string;
 }
 
-export type User = Omit<
-  UserSchema,
-  "id" | "clerkId" | "createdAt" | "updatedAt"
->;
+export type CreateUserData = Pick<UserSchema, "name" | "clerkId" | "email">;
 
-export type CreateUserPayload = Omit<
-  UserSchema,
-  "id" | "createdAt" | "updatedAt"
->;
-
-export type UpdateUserPayload = Omit<
-  UserSchema,
-  "id" | "clerkId" | "createdAt"
->;
+export type UpdateUserData = Pick<UserSchema, "name" | "email" | "updatedAt">;

@@ -3,7 +3,7 @@ import React from "react";
 
 interface StatusCardProps {
   name: string;
-  value: string;
+  value: number;
   changeType: "positive" | "negative";
   change: string;
   className: string;

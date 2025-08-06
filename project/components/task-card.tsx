@@ -49,6 +49,8 @@ export function TaskCard({
   assigneeName,
   assigneeImageUrl
 }: TTaskCard) {
+  void id;
+
   return (
     <div className="outline-primary/20 cursor-pointer rounded-xs bg-white p-4 shadow-sm outline-2 hover:shadow-md dark:bg-neutral-600">
       <h4 className="mb-1 text-sm font-medium text-neutral-800 dark:text-neutral-100">

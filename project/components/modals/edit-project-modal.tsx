@@ -30,7 +30,9 @@ Integration:
 - Handle errors gracefully
 */
 
-import { createProject } from "@/lib/actions/projects";
+import useProject from "@/hooks/use-project";
+import { updateProject } from "@/lib/actions/projects";
+import { ProjectSchema } from "@/types/projects";
 import { useUser } from "@clerk/nextjs";
 import { redirect, RedirectType } from "next/navigation";
 import { MouseEvent, useRef } from "react";
@@ -40,35 +42,44 @@ import Textarea from "../textarea";
 import { showErrorToast, showSuccessToast } from "../toast";
 import Modal from "./modal";
 
-interface CreateProjectModalProps {
+interface EditProjectModalProps {
   toggle: () => void;
+  projectId: ProjectSchema["id"];
 }
 
-export function CreateProjectModal({ toggle }: CreateProjectModalProps) {
+export function EditProjectModal({ projectId, toggle }: EditProjectModalProps) {
   const form = useRef(null);
+  const [project, retrieveProject] = useProject(projectId);
   const { user } = useUser();
 
-  const handleCreateProject = async (evt: MouseEvent<HTMLButtonElement>) => {
+  const handleEditProject = async (evt: MouseEvent<HTMLButtonElement>) => {
     evt.preventDefault();
 
     if (!form.current) return null;
     if (!user?.id) return null;
 
     const formData = new FormData(form.current);
-    formData.append("ownerClerkId", user.id);
-
-    const { success, message, projectId } = await createProject(formData);
+    formData.append("userClerkId", user.id);
+    formData.append("projectId", projectId);
+    const {
+      success,
+      message,
+      projectId: updatedProjectId
+    } = await updateProject(formData);
     if (!success) return showErrorToast(message);
     showSuccessToast(message);
 
     toggle();
-    redirect(`/projects/${projectId}`, RedirectType.push);
+    retrieveProject();
+    redirect(`/projects/${updatedProjectId}`, RedirectType.push);
   };
+
+  if (!project) return null;
 
   return (
     <Modal
       toggle={toggle}
-      title="Create New Project">
+      title="Edit Project">
       <form
         ref={form}
         className="space-y-4">
@@ -76,6 +87,7 @@ export function CreateProjectModal({ toggle }: CreateProjectModalProps) {
           id="name"
           name="name"
           label="Project Name"
+          defaultValue={project.name}
           placeholder="Enter project name"
         />
 
@@ -83,6 +95,7 @@ export function CreateProjectModal({ toggle }: CreateProjectModalProps) {
           id="description"
           name="description"
           label="Project Description"
+          defaultValue={project.description}
           placeholder="Enter project description"
         />
 
@@ -91,6 +104,7 @@ export function CreateProjectModal({ toggle }: CreateProjectModalProps) {
           name="dueDate"
           label="Project Due Date"
           placeholder="Enter due date"
+          defaultValue={project.dueDate}
           type="date"
         />
 
@@ -101,9 +115,9 @@ export function CreateProjectModal({ toggle }: CreateProjectModalProps) {
             Cancel
           </Button>
           <Button
-            onClick={handleCreateProject}
+            onClick={handleEditProject}
             className="bg-primary text-neutral-100">
-            Create Project
+            Save Edits
           </Button>
         </div>
       </form>

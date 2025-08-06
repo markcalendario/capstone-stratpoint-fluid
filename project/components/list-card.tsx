@@ -1,12 +1,12 @@
-import { List } from "@/types/lists";
+import { ListSchema } from "@/types/lists";
 import { TaskCard as TTaskCard } from "@/types/tasks";
 import { MoreHorizontal, Plus } from "lucide-react";
 import Button from "./button";
 import { TaskCard } from "./task-card";
 
 interface ListCardProps {
-  id: List["id"];
-  title: List["id"];
+  id: ListSchema["id"];
+  title: ListSchema["id"];
   tasks: TTaskCard[];
 }
 

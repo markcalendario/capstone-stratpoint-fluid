@@ -1,14 +1,19 @@
-import { lists } from "@/lib/db/drizzle/schema";
+import { lists } from "@/lib/db/drizzle/migrations/schema";
 import { InferSelectModel } from "drizzle-orm";
-import { Task } from "./tasks";
+import { TaskSchema } from "./tasks";
 
-export interface List extends InferSelectModel<typeof lists> {
-  tasks: Task[];
+export interface ListSchema extends InferSelectModel<typeof lists> {
+  tasks: TaskSchema[];
 }
 
-export type CreateListPayload = Omit<
-  List,
-  "id" | "tasks" | "createdAt" | "updatedAt"
+export interface List extends InferSelectModel<typeof lists> {}
+
+export type CreateListData = Pick<
+  ListSchema,
+  "name" | "position" | "isFinal" | "projectId"
 >;
 
-export type UpdateListPayload = Omit<List, "id" | "tasks" | "createdAt">;
+export type UpdateListPayload = Pick<
+  ListSchema,
+  "name" | "position" | "isFinal" | "projectId" | "updatedAt"
+>;

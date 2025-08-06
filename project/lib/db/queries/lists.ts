@@ -1,5 +1,5 @@
-import { lists } from "@/lib/db/drizzle/schema";
-import { CreateListPayload, List, UpdateListPayload } from "@/types/lists";
+import { lists } from "@/lib/db/drizzle/migrations/schema";
+import { CreateListData, ListSchema, UpdateListPayload } from "@/types/lists";
 import { eq } from "drizzle-orm";
 import db from "..";
 
@@ -7,11 +7,11 @@ const listQueries = {
   getAll: async () => {
     return await db.select().from(lists);
   },
-  getById: async (id: List["id"]) => {
+  getById: async (id: ListSchema["id"]) => {
     const [list] = await db.select().from(lists).where(eq(lists.id, id));
     return list;
   },
-  create: async (data: CreateListPayload) => {
+  create: async (data: CreateListData) => {
     const [newList] = await db
       .insert(lists)
       .values(data)
@@ -19,7 +19,7 @@ const listQueries = {
 
     return newList.id;
   },
-  update: async (id: List["id"], data: UpdateListPayload) => {
+  update: async (id: ListSchema["id"], data: UpdateListPayload) => {
     const [updatedList] = await db
       .update(lists)
       .set(data)
@@ -28,7 +28,7 @@ const listQueries = {
 
     return updatedList.id;
   },
-  delete: async (id: List["id"]) => {
+  delete: async (id: ListSchema["id"]) => {
     const [deletedList] = await db
       .delete(lists)
       .where(eq(lists.id, id))

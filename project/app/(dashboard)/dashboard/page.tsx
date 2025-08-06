@@ -1,7 +1,7 @@
+import DashboardStatus from "@/components/dashboard-status";
 import { DashboardContent } from "@/components/layouts/dashboard/dashboard-content";
 import QuickActions from "@/components/quick-actions";
 import { RecentProjects } from "@/components/recent-projects";
-import StatusCard from "@/components/status-card";
 import { CheckCircle, Clock, TrendingUp, Users } from "lucide-react";
 
 const STATUS = [
@@ -34,33 +34,6 @@ const STATUS = [
     changeType: "positive"
   }
 ] as const;
-
-const PROJECTS = [
-  {
-    id: "1",
-    name: "Website Redesign",
-    description: "Complete overhaul of company website",
-    progress: 75,
-    members: 5,
-    dueDate: "2024-02-15"
-  },
-  {
-    id: "2",
-    name: "Mobile App Development",
-    description: "iOS and Android app development",
-    progress: 45,
-    members: 8,
-    dueDate: "2024-03-20"
-  },
-  {
-    id: "3",
-    name: "Marketing Campaign",
-    description: "Q1 marketing campaign planning",
-    progress: 90,
-    members: 3,
-    dueDate: "2024-01-30"
-  }
-];
 
 export default function DashboardPage() {
   return (
@@ -101,24 +74,12 @@ export default function DashboardPage() {
       </div>
 
       {/* Status Boxes */}
-      <div className="flex flex-col gap-5 lg:flex-row">
-        {STATUS.map((stat, i) => (
-          <StatusCard
-            key={i}
-            className="w-full"
-            name={stat.name}
-            value={stat.value}
-            changeType={stat.changeType}
-            icon={stat.icon}
-            change={stat.change}
-          />
-        ))}
-      </div>
+      <DashboardStatus />
 
       {/* Recent Activity & Quick Actions */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         {/* Recent Projects */}
-        <RecentProjects projects={PROJECTS} />
+        <RecentProjects />
 
         {/* Quick Actions */}
         <QuickActions />
