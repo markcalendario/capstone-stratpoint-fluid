@@ -11,7 +11,7 @@ import Radio from "../radio";
 import { showErrorToast, showSuccessToast } from "../toast";
 import Modal from "./modal";
 
-interface CreateProjectModalProps {
+interface CreateListModalProps {
   toggle: () => void;
   projectId: ProjectSchema["id"];
   refetchLists: () => void;
@@ -21,7 +21,7 @@ export function CreateListModal({
   toggle,
   projectId,
   refetchLists
-}: CreateProjectModalProps) {
+}: CreateListModalProps) {
   const { user } = useUser();
   const [formData, setFormData] = useState({ name: "", listType: "progress" });
 
