@@ -1,8 +1,12 @@
 "use client";
 
+import { getListsByProjectId } from "@/lib/actions/lists";
+import { List } from "@/types/lists";
 import { TaskCard as TTaskCard } from "@/types/tasks";
+import { useCallback, useEffect, useState } from "react";
 import CreateListButton from "./create-list-button";
 import ListCard from "./list-card";
+import { showErrorToast, showSuccessToast } from "./toast";
 
 // TODO: Task 5.1 - Design responsive Kanban board layout
 // TODO: Task 5.2 - Implement drag-and-drop functionality with dnd-kit
@@ -82,18 +86,41 @@ const initialColumns = [
 ];
 
 export function KanbanBoard({ projectId }: { projectId: string }) {
+  const [lists, setLists] = useState<List[] | null>(null);
+
+  const refetchLists = useCallback(async () => {
+    const {
+      success,
+      message,
+      lists: resultLists
+    } = await getListsByProjectId(projectId);
+
+    if (!success || !resultLists) return showErrorToast(message);
+
+    setLists(resultLists);
+    showSuccessToast(message);
+  }, [projectId]);
+
+  useEffect(() => {
+    refetchLists();
+  }, [refetchLists]);
+
+  if (!lists) return;
+
   return (
     <div className="outline-primary/20 w-full rounded-sm bg-white p-6 outline-2 dark:bg-neutral-800">
       <div className="flex min-w-full flex-nowrap space-x-6 overflow-x-auto pb-4">
-        {initialColumns.map((list) => (
+        {lists.map((list) => (
           <ListCard
             key={list.id}
             id={list.id}
-            title={list.title}
-            tasks={list.tasks}
+            name={list.name}
           />
         ))}
-        <CreateListButton projectId={projectId} />
+        <CreateListButton
+          refetchLists={refetchLists}
+          projectId={projectId}
+        />
       </div>
     </div>
   );

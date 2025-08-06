@@ -3,11 +3,15 @@ import { PlusSquare } from "lucide-react";
 import { Fragment, useState } from "react";
 import { CreateListModal } from "./modals/create-list-modal";
 
-interface CreateListButton {
+interface CreateListButtonProps {
   projectId: ProjectSchema["id"];
+  refetchLists: () => void;
 }
 
-export default function CreateListButton({ projectId }: CreateListButton) {
+export default function CreateListButton({
+  projectId,
+  refetchLists
+}: CreateListButtonProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const toggleModal = () => setIsModalOpen((prev) => !prev);
@@ -23,8 +27,9 @@ export default function CreateListButton({ projectId }: CreateListButton) {
 
       {isModalOpen && (
         <CreateListModal
-          projectId={projectId}
           toggle={toggleModal}
+          projectId={projectId}
+          refetchLists={refetchLists}
         />
       )}
     </Fragment>

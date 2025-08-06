@@ -14,11 +14,13 @@ import Modal from "./modal";
 interface CreateProjectModalProps {
   toggle: () => void;
   projectId: ProjectSchema["id"];
+  refetchLists: () => void;
 }
 
 export function CreateListModal({
+  toggle,
   projectId,
-  toggle
+  refetchLists
 }: CreateProjectModalProps) {
   const { user } = useUser();
   const [formData, setFormData] = useState({ name: "", listType: "progress" });
@@ -44,6 +46,7 @@ export function CreateListModal({
     if (!success) return showErrorToast(message);
 
     showSuccessToast(message);
+    refetchLists();
     toggle();
   };
 
