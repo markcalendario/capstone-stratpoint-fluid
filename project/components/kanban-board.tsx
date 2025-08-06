@@ -77,6 +77,7 @@ export function KanbanBoard({ projectId }: KanbanBoardProps) {
             key={list.id}
             id={list.id}
             name={list.name}
+            refetchLists={refetchLists}
           />
         ))}
         <CreateListButton

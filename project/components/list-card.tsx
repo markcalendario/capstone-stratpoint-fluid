@@ -1,35 +1,43 @@
 import { ListSchema } from "@/types/lists";
 import { Edit, MoreHorizontal, Trash } from "lucide-react";
+import { Fragment, useState } from "react";
 import Dropdown from "./drop-down";
+import { UpdateListModal } from "./modals/update-list-modal";
 
 interface ListCardProps {
   id: ListSchema["id"];
   name: ListSchema["name"];
+  refetchLists: () => void;
 }
 
-export default function ListCard({ id, name }: ListCardProps) {
-  return (
-    <div className="border-primary/20 min-h-[500px] min-w-80 overflow-hidden rounded-sm border-3 bg-neutral-100 dark:bg-neutral-900">
-      <div className="bg-primary px-3 py-2 dark:border-neutral-600">
-        <div className="flex items-center justify-between">
-          <h3 className="font-semibold text-neutral-200">
-            {name}
-            <span className="ml-2 rounded-sm bg-white/20 px-2 py-1 text-xs">
-              {[1, 2].length}
-            </span>
-          </h3>
-          <Dropdown
-            label={<MoreHorizontal size={14} />}
-            className="cursor-pointer text-neutral-100"
-            items={[
-              { onClick: () => {}, label: "Edit", icon: Edit },
-              { onClick: () => {}, label: "Delete", icon: Trash }
-            ]}
-          />
-        </div>
-      </div>
+export default function ListCard({ id, name, refetchLists }: ListCardProps) {
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
-      {/* <div className="space-y-3 p-4">
+  const toggleEditModalOpen = () => setIsEditModalOpen((prev) => !prev);
+
+  return (
+    <Fragment>
+      <div className="border-primary/20 min-h-[500px] min-w-80 overflow-hidden rounded-sm border-3 bg-neutral-100 dark:bg-neutral-900">
+        <div className="bg-primary px-3 py-2 dark:border-neutral-600">
+          <div className="flex items-center justify-between">
+            <h3 className="font-semibold text-neutral-200">
+              {name}
+              <span className="ml-2 rounded-sm bg-white/20 px-2 py-1 text-xs">
+                {[1, 2].length}
+              </span>
+            </h3>
+            <Dropdown
+              label={<MoreHorizontal size={14} />}
+              className="cursor-pointer text-neutral-100"
+              items={[
+                { onClick: toggleEditModalOpen, label: "Edit", icon: Edit },
+                { onClick: () => {}, label: "Delete", icon: Trash }
+              ]}
+            />
+          </div>
+        </div>
+
+        {/* <div className="space-y-3 p-4">
         {tasks.map((task, i) => (
           <TaskCard
             key={i}
@@ -41,6 +49,15 @@ export default function ListCard({ id, name }: ListCardProps) {
           <Plus size={16} /> Add Task
         </Button>
       </div> */}
-    </div>
+      </div>
+
+      {isEditModalOpen && (
+        <UpdateListModal
+          id={id}
+          refetchLists={refetchLists}
+          toggle={toggleEditModalOpen}
+        />
+      )}
+    </Fragment>
   );
 }
