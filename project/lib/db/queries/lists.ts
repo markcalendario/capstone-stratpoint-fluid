@@ -11,6 +11,7 @@ const listQueries = {
     const [list] = await db.select().from(lists).where(eq(lists.id, id));
     return list;
   },
+
   create: async (data: CreateListData) => {
     const [newList] = await db
       .insert(lists)
@@ -19,6 +20,7 @@ const listQueries = {
 
     return newList.id;
   },
+
   update: async (id: ListSchema["id"], data: UpdateListPayload) => {
     const [updatedList] = await db
       .update(lists)
