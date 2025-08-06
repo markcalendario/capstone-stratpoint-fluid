@@ -1,12 +1,14 @@
 "use client";
 
+import { createList } from "@/lib/actions/lists";
 import { ProjectSchema } from "@/types/projects";
 import { useUser } from "@clerk/nextjs";
-import { SquareArrowLeft, TriangleAlert } from "lucide-react";
+import { GitCommitHorizontal, GitGraph } from "lucide-react";
 import { ChangeEvent, MouseEvent, useState } from "react";
 import Button from "../button";
 import Input from "../input";
 import Radio from "../radio";
+import { showErrorToast, showSuccessToast } from "../toast";
 import Modal from "./modal";
 
 interface CreateProjectModalProps {
@@ -32,13 +34,17 @@ export function CreateListModal({
     if (!user?.id) return;
 
     const payload = {
-      userId: user.id,
+      projectId,
       name: formData.name,
-      projectId: projectId,
-      isFinal: formData.listType === "terminal"
+      isFinal: formData.listType === "terminal",
+      userClerkId: user.id
     };
 
-    console.log(payload);
+    const { success, message } = await createList(payload);
+    if (!success) return showErrorToast(message);
+
+    showSuccessToast(message);
+    toggle();
   };
 
   return (
@@ -62,7 +68,7 @@ export function CreateListModal({
             value="progress"
             title="Progress"
             description="Mark tasks in progress."
-            icon={TriangleAlert}
+            icon={GitGraph}
             checked={formData.listType === "progress"}
             onChange={handleChange}
           />
@@ -73,7 +79,7 @@ export function CreateListModal({
             value="terminal"
             title="Terminal"
             description="Mark tasks as final."
-            icon={SquareArrowLeft}
+            icon={GitCommitHorizontal}
             checked={formData.listType === "terminal"}
             onChange={handleChange}
           />
