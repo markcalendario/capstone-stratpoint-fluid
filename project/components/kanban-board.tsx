@@ -2,6 +2,7 @@
 
 import { getListsByProjectId } from "@/lib/actions/lists";
 import { List } from "@/types/lists";
+import { ProjectSchema } from "@/types/projects";
 import { TaskCard as TTaskCard } from "@/types/tasks";
 import { useCallback, useEffect, useState } from "react";
 import CreateListButton from "./create-list-button";
@@ -85,7 +86,11 @@ const initialColumns = [
   }
 ];
 
-export function KanbanBoard({ projectId }: { projectId: string }) {
+interface KanbanBoardProps {
+  projectId: ProjectSchema["id"];
+}
+
+export function KanbanBoard({ projectId }: KanbanBoardProps) {
   const [lists, setLists] = useState<List[] | null>(null);
 
   const refetchLists = useCallback(async () => {
