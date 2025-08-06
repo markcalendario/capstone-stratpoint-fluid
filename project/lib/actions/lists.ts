@@ -1,12 +1,14 @@
 "use server";
 
 import { ListSchema } from "@/types/lists";
+import { ProjectSchema } from "@/types/projects";
 import { UserSchema } from "@/types/users";
 import { ZodError } from "zod";
 import listQueries from "../db/queries/lists";
 import userQueries from "../db/queries/users";
 import { isUserProjectOwner } from "../utils/projects";
 import { createListSchema } from "../validations/lists";
+import { projectIdSchema } from "../validations/projects";
 import { userClerkIdSchema } from "../validations/users";
 
 export interface CreateListPayload
@@ -14,10 +16,13 @@ export interface CreateListPayload
   userClerkId: UserSchema["clerkId"];
 }
 
-export async function createList(payload: CreateListPayload) {
+export async function createList({
+  projectId,
+  name,
+  isFinal,
+  userClerkId
+}: CreateListPayload) {
   try {
-    const { projectId, name, isFinal, userClerkId } = payload;
-
     // Validate user Clerk ID
     const validUserClerkId = userClerkIdSchema.parse(userClerkId);
     const userId = await userQueries.getIdByClerkId(validUserClerkId); // Get the user ID in DB
@@ -41,8 +46,27 @@ export async function createList(payload: CreateListPayload) {
       return { success: false, message: error.issues[0].message };
     }
 
+    return { success: false, message: "Error. Cannot create list." };
+  }
+}
+
+export async function getListsByProjectId(projectId: ProjectSchema["id"]) {
+  try {
+    const validProjectId = projectIdSchema.parse(projectId);
+    const lists = await listQueries.getByProjectId(validProjectId);
+
+    return {
+      success: true,
+      message: "Success getting lists with tasks.",
+      lists
+    };
+  } catch (error) {
+    if (error instanceof ZodError) {
+      return { success: false, message: error.issues[0].message };
+    }
+
     console.log(error);
 
-    return { success: false, message: "Error. Cannot create list." };
+    return { success: false, message: "Error. Cannot get lists with tasks." };
   }
 }
