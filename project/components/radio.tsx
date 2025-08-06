@@ -20,7 +20,7 @@ export default function Radio({
   ...props
 }: RadioCardProps) {
   return (
-    <div>
+    <div className="w-full">
       <input
         id={id}
         name={name}

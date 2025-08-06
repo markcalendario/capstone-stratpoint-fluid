@@ -1,6 +1,7 @@
 "use client";
 
 import { TaskCard as TTaskCard } from "@/types/tasks";
+import CreateListButton from "./create-list-button";
 import ListCard from "./list-card";
 
 // TODO: Task 5.1 - Design responsive Kanban board layout
@@ -94,6 +95,7 @@ export function KanbanBoard({ projectId }: { projectId: string }) {
             tasks={list.tasks}
           />
         ))}
+        <CreateListButton projectId={projectId} />
       </div>
     </div>
   );

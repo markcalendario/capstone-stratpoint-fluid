@@ -12,7 +12,7 @@ interface ListCardProps {
 
 export default function ListCard({ title, tasks }: ListCardProps) {
   return (
-    <div className="border-primary/20 min-w-80 overflow-hidden rounded-sm border-3 bg-neutral-100 dark:bg-neutral-700">
+    <div className="border-primary/20 min-h-[500px] min-w-80 overflow-hidden rounded-sm border-3 bg-neutral-100 dark:bg-neutral-700">
       <div className="bg-primary px-3 py-2 dark:border-neutral-600">
         <div className="flex items-center justify-between">
           <h3 className="font-semibold text-neutral-200">
@@ -30,7 +30,7 @@ export default function ListCard({ title, tasks }: ListCardProps) {
         </div>
       </div>
 
-      <div className="min-h-[400px] space-y-3 p-4">
+      <div className="space-y-3 p-4">
         {tasks.map((task, i) => (
           <TaskCard
             key={i}
