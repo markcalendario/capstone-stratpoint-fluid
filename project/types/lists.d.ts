@@ -11,7 +11,5 @@ export interface List extends InferSelectModel<typeof lists> {}
 export interface CreateListData
   extends Pick<ListSchema, "name" | "isFinal" | "projectId" | "createdBy"> {}
 
-export type UpdateListPayload = Pick<
-  ListSchema,
-  "name" | "position" | "isFinal" | "projectId" | "updatedAt"
->;
+export interface UpdateListData
+  extends Pick<ListSchema, "name" | "isFinal" | "updatedAt"> {}

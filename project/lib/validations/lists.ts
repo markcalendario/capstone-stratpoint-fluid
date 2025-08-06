@@ -18,12 +18,10 @@ export const updateListSchema = z.object({
   name: z
     .string("List name must be string.")
     .trim()
-    .max(MAX_NAME, `Max list name length is ${MAX_NAME} characters.`),
-  projectId: z.uuidv4("Project ID must be a UUID."),
-  position: z
-    .number("Position must be a number.")
-    .positive("Invalid position."),
-  updatedAt: z.iso.datetime("Invalid date for date modified.")
+    .min(MIN_NAME, `Minimum list name length is ${MIN_NAME} characters.`)
+    .max(MAX_NAME, `Maximum list name length is ${MAX_NAME} characters.`),
+  updatedAt: z.iso.datetime("Invalid date for date modified."),
+  isFinal: z.boolean("isFinal field must be boolean.")
 });
 
-export const listIdSchema = z.uuidv4("Comment ID is an invalid UUID.");
+export const listIdSchema = z.uuidv4("List ID is an invalid UUID.");
