@@ -15,7 +15,7 @@ export function RecentProjects() {
   const retrieveRecentProjects = useCallback(async () => {
     if (!user?.id) return;
 
-    const response = await getRecentProjects(user.id);
+    const response = await getRecentProjects({ userClerkId: user.id });
 
     if (!response.success || !response.recentProjects)
       return showErrorToast(response.message);

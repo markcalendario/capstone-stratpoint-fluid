@@ -33,7 +33,10 @@ export function DeleteProjectModal({
       return showErrorToast("Wrong delete confirmation value.");
     }
 
-    const { success, message } = await deleteProject(user.id, projectId);
+    const { success, message } = await deleteProject({
+      projectId,
+      userClerkId: user.id
+    });
 
     if (!success) return showErrorToast(message);
     showSuccessToast(message);

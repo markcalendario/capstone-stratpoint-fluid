@@ -9,41 +9,43 @@ import userQueries from "../db/queries/users";
 import { isUserListCreator } from "../utils/lists";
 import { isUserProjectOwner } from "../utils/projects";
 import {
-  createListSchema,
-  listIdSchema,
+  createListDataSchema,
+  createListPayloadSchema,
+  deleteListPayloadSchema,
+  getListsByProjectIdSchema,
+  listSchema,
+  updateListPayloadSchema,
   updateListSchema
 } from "../validations/lists";
-import { projectIdSchema } from "../validations/projects";
-import { userClerkIdSchema } from "../validations/users";
 
 interface CreateListPayload
   extends Pick<ListSchema, "name" | "isFinal" | "projectId"> {
   userClerkId: UserSchema["clerkId"];
 }
 
-export async function createList({
-  projectId,
-  name,
-  isFinal,
-  userClerkId
-}: CreateListPayload) {
+export async function createList(payload: CreateListPayload) {
   try {
-    // Validate user Clerk ID
-    const validUserClerkId = userClerkIdSchema.parse(userClerkId);
-    const userId = await userQueries.getIdByClerkId(validUserClerkId); // Get the user ID in DB
+    // Validate parameters
+    const parsed = createListPayloadSchema.parse(payload);
+    const userId = await userQueries.getIdByClerkId(parsed.userClerkId); // Get the user ID in DB
 
     // Check if user is a project owner
-    if (!(await isUserProjectOwner(userId, projectId))) {
+    if (!(await isUserProjectOwner(userId, parsed.projectId))) {
       return { success: false, message: "You are not the project owner." };
     }
 
-    const createData = { projectId, name, isFinal, createdBy: userId };
+    const data = {
+      createdBy: userId,
+      name: parsed.name,
+      isFinal: parsed.isFinal,
+      projectId: parsed.projectId
+    };
 
     // Validate create list data
-    const valid = createListSchema.parse(createData);
+    const createData = createListDataSchema.parse(data);
 
-    // Create data
-    await listQueries.create(valid);
+    // Create list
+    await listQueries.create(createData);
 
     return { success: true, message: "List created successfully." };
   } catch (error) {
@@ -55,10 +57,14 @@ export async function createList({
   }
 }
 
-export async function getListsByProjectId(projectId: ProjectSchema["id"]) {
+interface GetListsByProjectIdPayload {
+  projectId: ProjectSchema["id"];
+}
+
+export async function getListsByProjectId(payload: GetListsByProjectIdPayload) {
   try {
-    const validProjectId = projectIdSchema.parse(projectId);
-    const lists = await listQueries.getByProjectId(validProjectId);
+    const parsed = getListsByProjectIdSchema.parse(payload);
+    const lists = await listQueries.getByProjectId(parsed.projectId);
 
     return {
       success: true,
@@ -70,40 +76,37 @@ export async function getListsByProjectId(projectId: ProjectSchema["id"]) {
       return { success: false, message: error.issues[0].message };
     }
 
-    console.log(error);
-
     return { success: false, message: "Error. Cannot get lists with tasks." };
   }
 }
 
 interface UpdateListPayload
   extends Pick<ListSchema, "id" | "name" | "isFinal"> {
-  userClerkId: UserSchema["id"];
+  userClerkId: UserSchema["clerkId"];
 }
 
-export async function updateList({
-  id,
-  name,
-  isFinal,
-  userClerkId
-}: UpdateListPayload) {
+export async function updateList(payload: UpdateListPayload) {
   try {
-    // Validate user Clerk ID
-    const validUserClerkId = userClerkIdSchema.parse(userClerkId);
-    const userId = await userQueries.getIdByClerkId(validUserClerkId); // Get the user ID in DB
+    // Validate payload
+    const parsed = updateListPayloadSchema.parse(payload);
+    const userId = await userQueries.getIdByClerkId(parsed.userClerkId); // Get the user ID in DB
 
     // Check if user is the creator of the list
-    if (!(await isUserListCreator(id, userId))) {
+    if (!(await isUserListCreator(parsed.id, userId))) {
       return { success: false, message: "You are not the list creator." };
     }
 
-    const updateData = { name, isFinal, updatedAt: new Date().toISOString() };
+    const data = {
+      name: parsed.name,
+      isFinal: parsed.isFinal,
+      updatedAt: new Date().toISOString()
+    };
 
     // Validate update list data
-    const valid = updateListSchema.parse(updateData);
+    const updateData = updateListSchema.parse(data);
 
     // Update data
-    await listQueries.update(id, valid);
+    await listQueries.update(parsed.id, updateData);
 
     return { success: true, message: "List updated successfully." };
   } catch (error) {
@@ -111,18 +114,20 @@ export async function updateList({
       return { success: false, message: error.issues[0].message };
     }
 
-    console.log(error);
-
     return { success: false, message: "Error. Cannot update list." };
   }
 }
 
-export async function getListById(id: ListSchema["id"]) {
-  try {
-    const validListId = listIdSchema.parse(id);
-    const list = await listQueries.getById(validListId);
+interface GetListByIdPayload {
+  id: ListSchema["id"];
+}
 
-    return { success: true, message: "List updated successfully.", list };
+export async function getListById(payload: GetListByIdPayload) {
+  try {
+    const validId = listSchema.shape.id.parse(payload.id);
+    const list = await listQueries.getById(validId);
+
+    return { success: true, message: "List fetched successfully.", list };
   } catch (error) {
     if (error instanceof ZodError) {
       return { success: false, message: error.issues[0].message };
@@ -132,22 +137,21 @@ export async function getListById(id: ListSchema["id"]) {
   }
 }
 
-interface DeleteListParams {
+interface DeleteListPayload {
   id: ListSchema["id"];
   userClerkId: UserSchema["clerkId"];
 }
 
-export async function deleteList({ id, userClerkId }: DeleteListParams) {
+export async function deleteList(payload: DeleteListPayload) {
   try {
-    const validClerkId = userClerkIdSchema.parse(userClerkId);
-    const validListId = listIdSchema.parse(id);
-    const validUserId = await userQueries.getIdByClerkId(validClerkId);
+    const parsed = deleteListPayloadSchema.parse(payload);
+    const validUserId = await userQueries.getIdByClerkId(parsed.userClerkId);
 
-    if (!(await isUserListCreator(validListId, validUserId))) {
+    if (!(await isUserListCreator(parsed.id, validUserId))) {
       return { success: false, message: "You are not the owner if this list." };
     }
 
-    await listQueries.delete(validListId);
+    await listQueries.delete(parsed.id);
     return { success: true, message: "List deleted successfully." };
   } catch (error) {
     if (error instanceof ZodError) {

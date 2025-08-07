@@ -8,24 +8,36 @@ import projectQueries from "../db/queries/projects";
 import userQueries from "../db/queries/users";
 import { isUserProjectOwner, toCardData } from "../utils/projects";
 import {
+  createProjectPayloadSchema,
   createProjectSchema,
-  projectIdSchema,
+  deleteProjectPayloadSchema,
+  getProjectPayloadSchema,
+  getProjectsPayloadSchema,
+  getRecentProjectsPayloadSchema,
+  updateProjectPayloadSchema,
   updateProjectSchema
 } from "../validations/projects";
 import { userClerkIdSchema } from "../validations/users";
 
-export async function createProject(formData: FormData) {
-  const name = formData.get("name");
-  const description = formData.get("description");
-  const dueDate = formData.get("dueDate");
-  const ownerClerkId = formData.get("ownerClerkId");
-  const ownerId = await userQueries.getIdByClerkId(ownerClerkId as string);
+interface CreateProjectPayload
+  extends Pick<ProjectSchema, "name" | "description" | "dueDate"> {
+  ownerClerkId: UserSchema["clerkId"];
+}
 
-  const payload = { name, description, dueDate, ownerId };
-
+export async function createProject(payload: CreateProjectPayload) {
   try {
-    const valid = createProjectSchema.parse(payload);
-    const projectId = await projectQueries.create(valid);
+    const parsed = createProjectPayloadSchema.parse(payload);
+    const ownerId = await userQueries.getIdByClerkId(payload.ownerClerkId);
+
+    const data = {
+      name: parsed.name,
+      description: parsed.description,
+      dueDate: parsed.dueDate,
+      ownerId
+    };
+
+    const createProject = createProjectSchema.parse(data);
+    const projectId = await projectQueries.create(createProject);
 
     revalidatePath("/dashboard");
     revalidatePath("/projects");
@@ -44,10 +56,14 @@ export async function createProject(formData: FormData) {
   }
 }
 
-export async function getRecentProjects(userClerkId: UserSchema["clerkId"]) {
+interface GetRecentProjectsPayload {
+  userClerkId: UserSchema["clerkId"];
+}
+
+export async function getRecentProjects(payload: GetRecentProjectsPayload) {
   try {
-    const validUserClerkId = userClerkIdSchema.parse(userClerkId);
-    const userId = await userQueries.getIdByClerkId(validUserClerkId);
+    const parsed = getRecentProjectsPayloadSchema.parse(payload);
+    const userId = await userQueries.getIdByClerkId(parsed.userClerkId);
 
     const projects = await projectQueries.ownedOrMember(userId);
 
@@ -73,10 +89,14 @@ export async function getRecentProjects(userClerkId: UserSchema["clerkId"]) {
   }
 }
 
-export async function getProjects(userClerkId: UserSchema["clerkId"]) {
+interface GetProjectsPayload {
+  userClerkId: UserSchema["clerkId"];
+}
+
+export async function getProjects(payload: GetProjectsPayload) {
   try {
-    const validUserClerkId = userClerkIdSchema.parse(userClerkId);
-    const userId = await userQueries.getIdByClerkId(validUserClerkId);
+    const parsed = getProjectsPayloadSchema.parse(payload);
+    const userId = await userQueries.getIdByClerkId(parsed.userClerkId);
     const projects = await projectQueries.ownedOrMember(userId);
 
     const sortedProjects = projects.sort((a, b) => {
@@ -101,10 +121,14 @@ export async function getProjects(userClerkId: UserSchema["clerkId"]) {
   }
 }
 
-export async function getProject(id: ProjectSchema["id"]) {
+interface GetProjectPayload {
+  id: ProjectSchema["id"];
+}
+
+export async function getProject(payload: GetProjectPayload) {
   try {
-    const validId = projectIdSchema.parse(id);
-    const project = await projectQueries.getById(validId);
+    const parsed = getProjectPayloadSchema.parse(payload);
+    const project = await projectQueries.getById(parsed.id);
     return {
       success: true,
       message: "Project retrieved successfully.",
@@ -119,20 +143,22 @@ export async function getProject(id: ProjectSchema["id"]) {
   }
 }
 
-export async function deleteProject(
-  userClerkId: UserSchema["clerkId"],
-  projectId: ProjectSchema["id"]
-) {
+interface DeleteProjectPayload {
+  userClerkId: UserSchema["clerkId"];
+  projectId: ProjectSchema["id"];
+}
+
+export async function deleteProject(payload: DeleteProjectPayload) {
   try {
-    const validProjectId = projectIdSchema.parse(projectId);
-    const validClerkId = userClerkIdSchema.parse(userClerkId);
+    const parsed = deleteProjectPayloadSchema.parse(payload);
+    const validClerkId = userClerkIdSchema.parse(parsed.userClerkId);
     const userId = await userQueries.getIdByClerkId(validClerkId);
 
-    if (!(await isUserProjectOwner(userId, validProjectId))) {
+    if (!(await isUserProjectOwner(userId, parsed.projectId))) {
       return { success: false, message: "You are not the project owner." };
     }
 
-    await projectQueries.delete(userId, validProjectId);
+    await projectQueries.delete(userId, parsed.projectId);
 
     return { success: true, message: "Project deleted successfully." };
   } catch (error) {
@@ -144,36 +170,32 @@ export async function deleteProject(
   }
 }
 
-export async function updateProject(formData: FormData) {
-  const name = formData.get("name");
-  const id = formData.get("projectId");
-  const dueDate = formData.get("dueDate");
-  const description = formData.get("description");
-  const userClerkId = formData.get("userClerkId");
-  const userId = await userQueries.getIdByClerkId(userClerkId as string);
-  const updatedAt = new Date().toISOString();
+interface UpdateProjectPayload
+  extends Pick<ProjectSchema, "name" | "dueDate" | "description"> {
+  projectId: ProjectSchema["id"];
+  userClerkId: UserSchema["clerkId"];
+}
 
-  const payload = {
-    id,
-    name,
-    description,
-    dueDate,
-    ownerId: userId,
-    updatedAt
-  };
-
-  if (typeof id !== "string") {
-    return { success: false, message: "Missing project ID from the payload." };
-  }
-
+export async function updateProject(payload: UpdateProjectPayload) {
   try {
-    const valid = updateProjectSchema.parse(payload);
+    const parsed = updateProjectPayloadSchema.parse(payload);
+    const userId = await userQueries.getIdByClerkId(parsed.userClerkId);
 
-    if (!(await isUserProjectOwner(userId, id))) {
+    const data = {
+      name: parsed.name,
+      description: parsed.description,
+      dueDate: parsed.dueDate,
+      ownerId: userId,
+      updatedAt: new Date().toISOString()
+    };
+
+    const updateData = updateProjectSchema.parse(data);
+
+    if (!(await isUserProjectOwner(userId, parsed.projectId))) {
       return { success: false, message: "You are not the project owner." };
     }
 
-    const projectId = await projectQueries.update(id, valid);
+    const projectId = await projectQueries.update(parsed.projectId, updateData);
 
     revalidatePath("/dashboard");
     revalidatePath("/projects");

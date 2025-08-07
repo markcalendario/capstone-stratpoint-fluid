@@ -57,7 +57,7 @@ export function UpdateListModal({
   };
 
   const fetchListData = useCallback(async () => {
-    const { success, message, list } = await getListById(id);
+    const { success, message, list } = await getListById({ id });
 
     if (!success || !list) return showErrorToast(message);
 

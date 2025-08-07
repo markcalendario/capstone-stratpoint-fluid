@@ -55,7 +55,7 @@ export function KanbanBoard({ projectId }: KanbanBoardProps) {
       success,
       message,
       lists: resultLists
-    } = await getListsByProjectId(projectId);
+    } = await getListsByProjectId({ projectId });
 
     if (!success || !resultLists) return showErrorToast(message);
 
