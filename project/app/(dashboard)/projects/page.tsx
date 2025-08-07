@@ -1,10 +1,8 @@
 "use server";
 
-import { CreateProjectButton } from "@/components/create-project-button";
 import { DashboardContent } from "@/components/layouts/dashboard/dashboard-content";
-import ProjectCard from "@/components/project-card";
-import SearchFilter from "@/components/search-filter";
-import { getProjects } from "@/lib/actions/projects";
+import ProjectsList from "@/components/sections/projects/projects-list";
+import SearchFilter from "@/components/sections/projects/search-filter";
 
 export default async function ProjectsPage() {
   return (
@@ -30,7 +28,7 @@ export default async function ProjectsPage() {
         <SearchFilter />
 
         {/* Projects Grid Placeholder */}
-        <RenderProjects />
+        <ProjectsList />
 
         {/* Component Placeholders */}
         <div className="mt-8 rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 p-6 dark:border-gray-600 dark:bg-gray-800/50">
@@ -60,29 +58,5 @@ export default async function ProjectsPage() {
         </div>
       </div>
     </DashboardContent>
-  );
-}
-
-async function RenderProjects() {
-  const { projects } = await getProjects();
-
-  if (!projects) return null;
-
-  return (
-    <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-      <CreateProjectButton className="border-primary/20 text-primary border-2 border-dashed bg-white text-center text-lg dark:bg-neutral-800 dark:text-neutral-200" />
-      {projects.map((project) => (
-        <ProjectCard
-          className="bg-white dark:bg-neutral-800"
-          key={project.id}
-          id={project.id}
-          name={project.name}
-          description={project.description}
-          dueDate={project.dueDate}
-          members={project.members}
-          progress={project.progress}
-        />
-      ))}
-    </div>
   );
 }

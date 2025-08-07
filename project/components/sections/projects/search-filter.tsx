@@ -1,5 +1,5 @@
+import Button from "@/components/button";
 import { Filter, Search } from "lucide-react";
-import Button from "./button";
 
 export default function SearchFilter() {
   return (
