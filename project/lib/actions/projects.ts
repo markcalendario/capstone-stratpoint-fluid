@@ -13,7 +13,6 @@ import {
   createProjectSchema,
   deleteProjectPayloadSchema,
   getProjectPayloadSchema,
-  getRecentProjectsPayloadSchema,
   updateProjectPayloadSchema,
   updateProjectSchema
 } from "../validations/projects";
@@ -56,15 +55,9 @@ export async function createProject(payload: CreateProjectPayload) {
   }
 }
 
-interface GetRecentProjectsPayload {
-  userClerkId: UserSchema["clerkId"];
-}
-
-export async function getRecentProjects(payload: GetRecentProjectsPayload) {
+export async function getRecentProjects() {
   try {
-    const parsed = getRecentProjectsPayloadSchema.parse(payload);
-    const userId = await userQueries.getIdByClerkId(parsed.userClerkId);
-
+    const userId = await getUserId();
     const projects = await projectQueries.ownedOrMember(userId);
 
     const recentProjects = projects

@@ -51,8 +51,6 @@ export const updateProjectSchema = z.object({
   updatedAt: projectSchema.shape.updatedAt
 });
 
-export const projectIdSchema = projectSchema.shape.id;
-
 // Project Payload validations
 
 export const createProjectPayloadSchema = z.object({
@@ -60,10 +58,6 @@ export const createProjectPayloadSchema = z.object({
   description: projectSchema.shape.description,
   dueDate: projectSchema.shape.dueDate,
   ownerClerkId: userSchema.shape.clerkId
-});
-
-export const getRecentProjectsPayloadSchema = z.object({
-  userClerkId: userSchema.shape.clerkId
 });
 
 export const getProjectPayloadSchema = z.object({
