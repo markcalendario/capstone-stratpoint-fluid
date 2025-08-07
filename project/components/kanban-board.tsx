@@ -1,7 +1,12 @@
 "use client";
 
-import { TaskCard as TTaskCard } from "@/types/tasks";
+import { getListsByProjectId } from "@/lib/actions/lists";
+import { List } from "@/types/lists";
+import { ProjectSchema } from "@/types/projects";
+import { useCallback, useEffect, useState } from "react";
+import CreateListButton from "./create-list-button";
 import ListCard from "./list-card";
+import { showErrorToast, showSuccessToast } from "./toast";
 
 // TODO: Task 5.1 - Design responsive Kanban board layout
 // TODO: Task 5.2 - Implement drag-and-drop functionality with dnd-kit
@@ -38,62 +43,47 @@ State management:
 - Handle conflicts with server state
 */
 
-const tasks: TTaskCard[] = [
-  {
-    id: "1",
-    title: "Design homepage mockup",
-    description: "Create initial design concepts",
-    priority: "high",
-    assigneeName: "Mark Kenenth",
-    assigneeImageUrl: "/placeholder-user.jpg"
-  },
-  {
-    id: "2",
-    title: "Car dealership web",
-    description: "Create car dealership project",
-    priority: "low",
-    assigneeName: "Mark Kenenth",
-    assigneeImageUrl: "/placeholder-user.jpg"
-  }
-];
+interface KanbanBoardProps {
+  projectId: ProjectSchema["id"];
+}
 
-const initialColumns = [
-  {
-    id: "todo",
-    title: "To Do",
-    tasks
-  },
-  {
-    id: "in-progress",
-    title: "In Progress",
-    tasks
-  },
-  {
-    id: "review",
-    title: "Review",
-    tasks
-  },
-  {
-    id: "done",
-    title: "Done",
-    tasks
-  }
-];
+export function KanbanBoard({ projectId }: KanbanBoardProps) {
+  const [lists, setLists] = useState<List[] | null>(null);
 
-export function KanbanBoard({ projectId }: { projectId: string }) {
-  void projectId;
+  const refetchLists = useCallback(async () => {
+    const {
+      success,
+      message,
+      lists: resultLists
+    } = await getListsByProjectId(projectId);
+
+    if (!success || !resultLists) return showErrorToast(message);
+
+    setLists(resultLists);
+    showSuccessToast(message);
+  }, [projectId]);
+
+  useEffect(() => {
+    refetchLists();
+  }, [refetchLists]);
+
+  if (!lists) return;
 
   return (
     <div className="outline-primary/20 w-full rounded-sm bg-white p-6 outline-2 dark:bg-neutral-800">
       <div className="flex min-w-full flex-nowrap space-x-6 overflow-x-auto pb-4">
-        {initialColumns.map((list) => (
+        {lists.map((list) => (
           <ListCard
             key={list.id}
             id={list.id}
-            title={list.title}
-            tasks={list.tasks}
+            name={list.name}
+            refetchLists={refetchLists}
           />
         ))}
+        <CreateListButton
+          refetchLists={refetchLists}
+          projectId={projectId}
+        />
       </div>
     </div>
   );

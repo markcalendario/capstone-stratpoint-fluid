@@ -16,6 +16,7 @@ interface ProjectPage {
 
 export default function ProjectPage({ params }: ProjectPage) {
   const { id } = use(params);
+
   const [project] = useProject(id);
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -83,7 +84,7 @@ export default function ProjectPage({ params }: ProjectPage) {
         </div>
 
         {/* Kanban Board Placeholder */}
-        <KanbanBoard projectId="1" />
+        <KanbanBoard projectId={id} />
 
         {/* Component Implementation Guide */}
         <div className="mt-8 rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 p-6 dark:border-gray-600 dark:bg-gray-800/50">

@@ -19,12 +19,17 @@ export const listsRelations = relations(lists, ({one, many}) => ({
 		fields: [lists.projectId],
 		references: [projects.id]
 	}),
+	user: one(users, {
+		fields: [lists.createdBy],
+		references: [users.id]
+	}),
 }));
 
 export const usersRelations = relations(users, ({many}) => ({
 	tasks: many(tasks),
 	comments: many(comments),
 	projects: many(projects),
+	lists: many(lists),
 	teams: many(teams),
 }));
 
@@ -40,11 +45,11 @@ export const commentsRelations = relations(comments, ({one}) => ({
 }));
 
 export const projectsRelations = relations(projects, ({one, many}) => ({
-	lists: many(lists),
 	user: one(users, {
 		fields: [projects.ownerId],
 		references: [users.id]
 	}),
+	lists: many(lists),
 	teams: many(teams),
 }));
 
