@@ -1,20 +1,17 @@
 "use server";
 
-import { UserSchema } from "@/types/users";
-import { ZodError } from "zod";
-import userQueries from "../db/queries/users";
 import {
   getActiveProjectsStatus,
   getCompletedTasksStatus,
   getPendingTasksStatus,
   getTeamMembersStatus
-} from "../utils/analytics";
-import { userClerkIdSchema } from "../validations/users";
+} from "@/lib/utils/analytics";
+import { getUserId } from "@/lib/utils/users";
+import { ZodError } from "zod";
 
-export async function getDashboardStatus(userClerkId: UserSchema["clerkId"]) {
+export async function getDashboardStatus() {
   try {
-    const validUserClerkId = userClerkIdSchema.parse(userClerkId);
-    const userId = await userQueries.getIdByClerkId(validUserClerkId);
+    const userId = await getUserId();
 
     const [activeProjects, teamMembers, completedTasks, pendingTasks] =
       await Promise.all([
