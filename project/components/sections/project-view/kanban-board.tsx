@@ -1,12 +1,12 @@
 "use client";
 
+import CreateListButton from "@/components/create-list-button";
+import ListCard from "@/components/list-card";
+import { showErrorToast, showSuccessToast } from "@/components/toast";
 import { getListsByProjectId } from "@/lib/actions/lists";
 import { List } from "@/types/lists";
 import { ProjectSchema } from "@/types/projects";
 import { useCallback, useEffect, useState } from "react";
-import CreateListButton from "./create-list-button";
-import ListCard from "./list-card";
-import { showErrorToast, showSuccessToast } from "./toast";
 
 // TODO: Task 5.1 - Design responsive Kanban board layout
 // TODO: Task 5.2 - Implement drag-and-drop functionality with dnd-kit
@@ -80,6 +80,7 @@ export function KanbanBoard({ projectId }: KanbanBoardProps) {
             refetchLists={refetchLists}
           />
         ))}
+
         <CreateListButton
           refetchLists={refetchLists}
           projectId={projectId}
