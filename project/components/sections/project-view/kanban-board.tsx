@@ -1,12 +1,13 @@
 "use client";
 
-import CreateListButton from "@/components/create-list-button";
 import ListCard from "@/components/list-card";
+import { CreateListModal } from "@/components/modals/create-list-modal";
 import { showErrorToast, showSuccessToast } from "@/components/toast";
 import { getListsByProjectId } from "@/lib/actions/lists";
 import { List } from "@/types/lists";
 import { ProjectSchema } from "@/types/projects";
-import { useCallback, useEffect, useState } from "react";
+import { PlusSquare } from "lucide-react";
+import { Fragment, useCallback, useEffect, useState } from "react";
 
 // TODO: Task 5.1 - Design responsive Kanban board layout
 // TODO: Task 5.2 - Implement drag-and-drop functionality with dnd-kit
@@ -47,7 +48,7 @@ interface KanbanBoardProps {
   projectId: ProjectSchema["id"];
 }
 
-export function KanbanBoard({ projectId }: KanbanBoardProps) {
+export default function KanbanBoard({ projectId }: KanbanBoardProps) {
   const [lists, setLists] = useState<List[] | null>(null);
 
   const refetchLists = useCallback(async () => {
@@ -81,11 +82,36 @@ export function KanbanBoard({ projectId }: KanbanBoardProps) {
           />
         ))}
 
-        <CreateListButton
-          refetchLists={refetchLists}
-          projectId={projectId}
-        />
+        <CreateListButton projectId={projectId} />
       </div>
     </div>
+  );
+}
+
+interface CreateListButtonProps {
+  projectId: ProjectSchema["id"];
+}
+
+function CreateListButton({ projectId }: CreateListButtonProps) {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const toggleModal = () => setIsModalOpen((prev) => !prev);
+
+  return (
+    <Fragment>
+      <button
+        onClick={toggleModal}
+        className="border-primary/20 text-primary hover:bg-primary/10 flex min-h-[500px] min-w-80 cursor-pointer flex-nowrap items-center justify-center gap-2 rounded-sm border-2 border-dashed bg-neutral-50 dark:border-neutral-500 dark:bg-neutral-800 dark:text-neutral-300">
+        <PlusSquare size={18} />
+        Add List
+      </button>
+
+      {isModalOpen && (
+        <CreateListModal
+          toggle={toggleModal}
+          projectId={projectId}
+        />
+      )}
+    </Fragment>
   );
 }

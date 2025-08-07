@@ -56,8 +56,7 @@ export const updateProjectSchema = z.object({
 export const createProjectPayloadSchema = z.object({
   name: projectSchema.shape.name,
   description: projectSchema.shape.description,
-  dueDate: projectSchema.shape.dueDate,
-  ownerClerkId: userSchema.shape.clerkId
+  dueDate: projectSchema.shape.dueDate
 });
 
 export const getProjectPayloadSchema = z.object({
@@ -65,7 +64,6 @@ export const getProjectPayloadSchema = z.object({
 });
 
 export const deleteProjectPayloadSchema = z.object({
-  userClerkId: userSchema.shape.clerkId,
   projectId: projectSchema.shape.id
 });
 
@@ -73,6 +71,5 @@ export const updateProjectPayloadSchema = z.object({
   name: projectSchema.shape.name,
   dueDate: projectSchema.shape.dueDate,
   description: projectSchema.shape.description,
-  projectId: projectSchema.shape.id,
-  userClerkId: userSchema.shape.clerkId
+  projectId: projectSchema.shape.id
 });

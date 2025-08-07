@@ -1,5 +1,4 @@
 import { createProject } from "@/lib/actions/projects";
-import { useUser } from "@clerk/nextjs";
 import { redirect, RedirectType } from "next/navigation";
 import { useState } from "react";
 import Button from "../button";
@@ -13,16 +12,13 @@ interface CreateProjectModalProps {
 }
 
 export function CreateProjectModal({ toggle }: CreateProjectModalProps) {
-  const { user } = useUser();
-
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [dueDate, setDueDate] = useState("");
 
   const handleCreateProject = async () => {
-    if (!user?.id || !name.trim()) return null;
+    const payload = { name, description, dueDate };
 
-    const payload = { name, description, dueDate, ownerClerkId: user.id };
     const { success, message, projectId } = await createProject(payload);
     if (!success) return showErrorToast(message);
     showSuccessToast(message);

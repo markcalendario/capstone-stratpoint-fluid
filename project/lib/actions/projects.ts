@@ -1,11 +1,9 @@
 "use server";
 
 import { ProjectSchema } from "@/types/projects";
-import { UserSchema } from "@/types/users";
 import { revalidatePath } from "next/cache";
 import { ZodError } from "zod";
 import projectQueries from "../db/queries/projects";
-import userQueries from "../db/queries/users";
 import { isUserProjectOwner, toCardData } from "../utils/projects";
 import { getUserId } from "../utils/users";
 import {
@@ -16,23 +14,20 @@ import {
   updateProjectPayloadSchema,
   updateProjectSchema
 } from "../validations/projects";
-import { userClerkIdSchema } from "../validations/users";
 
 interface CreateProjectPayload
-  extends Pick<ProjectSchema, "name" | "description" | "dueDate"> {
-  ownerClerkId: UserSchema["clerkId"];
-}
+  extends Pick<ProjectSchema, "name" | "description" | "dueDate"> {}
 
 export async function createProject(payload: CreateProjectPayload) {
   try {
+    const userId = await getUserId();
     const parsed = createProjectPayloadSchema.parse(payload);
-    const ownerId = await userQueries.getIdByClerkId(payload.ownerClerkId);
 
     const data = {
       name: parsed.name,
       description: parsed.description,
       dueDate: parsed.dueDate,
-      ownerId
+      ownerId: userId
     };
 
     const createProject = createProjectSchema.parse(data);
@@ -132,15 +127,13 @@ export async function getProject(payload: GetProjectPayload) {
 }
 
 interface DeleteProjectPayload {
-  userClerkId: UserSchema["clerkId"];
   projectId: ProjectSchema["id"];
 }
 
 export async function deleteProject(payload: DeleteProjectPayload) {
   try {
+    const userId = await getUserId();
     const parsed = deleteProjectPayloadSchema.parse(payload);
-    const validClerkId = userClerkIdSchema.parse(parsed.userClerkId);
-    const userId = await userQueries.getIdByClerkId(validClerkId);
 
     if (!(await isUserProjectOwner(userId, parsed.projectId))) {
       return { success: false, message: "You are not the project owner." };
@@ -161,13 +154,12 @@ export async function deleteProject(payload: DeleteProjectPayload) {
 interface UpdateProjectPayload
   extends Pick<ProjectSchema, "name" | "dueDate" | "description"> {
   projectId: ProjectSchema["id"];
-  userClerkId: UserSchema["clerkId"];
 }
 
 export async function updateProject(payload: UpdateProjectPayload) {
   try {
+    const userId = await getUserId();
     const parsed = updateProjectPayloadSchema.parse(payload);
-    const userId = await userQueries.getIdByClerkId(parsed.userClerkId);
 
     const data = {
       name: parsed.name,

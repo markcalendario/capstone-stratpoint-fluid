@@ -1,6 +1,5 @@
 import { deleteList } from "@/lib/actions/lists";
 import { ListSchema } from "@/types/lists";
-import { useUser } from "@clerk/nextjs";
 import { ChangeEvent, useState } from "react";
 import Button from "../button";
 import Input from "../input";
@@ -20,7 +19,6 @@ export function DeleteListModal({
 }: DeleteListModalProps) {
   const TARGET_CONFIRM_TEXT = "DELETE LIST";
 
-  const { user } = useUser();
   const [confirmText, setConfirmText] = useState("");
 
   const handleConfirmChange = (evt: ChangeEvent<HTMLInputElement>) => {
@@ -28,16 +26,11 @@ export function DeleteListModal({
   };
 
   const handleDeleteList = async () => {
-    if (!user?.id) return null;
-
     if (confirmText !== TARGET_CONFIRM_TEXT) {
       return showErrorToast("Wrong delete confirmation value.");
     }
 
-    const { success, message } = await deleteList({
-      id: listId,
-      userClerkId: user.id
-    });
+    const { success, message } = await deleteList({ id: listId });
 
     if (!success) return showErrorToast(message);
     showSuccessToast(message);

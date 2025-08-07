@@ -39,8 +39,7 @@ export const updateListSchema = z.object({
 export const createListPayloadSchema = z.object({
   projectId: projectSchema.shape.id,
   name: listSchema.shape.name,
-  isFinal: listSchema.shape.isFinal,
-  userClerkId: userSchema.shape.clerkId
+  isFinal: listSchema.shape.isFinal
 });
 
 export const getListsByProjectIdSchema = z.object({
@@ -50,11 +49,9 @@ export const getListsByProjectIdSchema = z.object({
 export const updateListPayloadSchema = z.object({
   id: listSchema.shape.id,
   name: listSchema.shape.name,
-  isFinal: listSchema.shape.isFinal,
-  userClerkId: userSchema.shape.clerkId
+  isFinal: listSchema.shape.isFinal
 });
 
 export const deleteListPayloadSchema = z.object({
-  id: listSchema.shape.id,
-  userClerkId: userSchema.shape.clerkId
+  id: listSchema.shape.id
 });

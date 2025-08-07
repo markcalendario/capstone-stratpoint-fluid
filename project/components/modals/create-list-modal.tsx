@@ -2,7 +2,6 @@
 
 import { createList } from "@/lib/actions/lists";
 import { ProjectSchema } from "@/types/projects";
-import { useUser } from "@clerk/nextjs";
 import { GitCommitHorizontal, GitGraph } from "lucide-react";
 import { ChangeEvent, MouseEvent, useState } from "react";
 import Button from "../button";
@@ -14,15 +13,9 @@ import Modal from "./modal";
 interface CreateListModalProps {
   toggle: () => void;
   projectId: ProjectSchema["id"];
-  refetchLists: () => void;
 }
 
-export function CreateListModal({
-  toggle,
-  projectId,
-  refetchLists
-}: CreateListModalProps) {
-  const { user } = useUser();
+export function CreateListModal({ toggle, projectId }: CreateListModalProps) {
   const [formData, setFormData] = useState({ name: "", listType: "progress" });
 
   const handleChange = (evt: ChangeEvent<HTMLInputElement>) => {
@@ -33,20 +26,16 @@ export function CreateListModal({
   const handleCreateList = async (evt: MouseEvent<HTMLButtonElement>) => {
     evt.preventDefault();
 
-    if (!user?.id) return;
-
     const payload = {
       projectId,
       name: formData.name,
-      isFinal: formData.listType === "terminal",
-      userClerkId: user.id
+      isFinal: formData.listType === "terminal"
     };
 
     const { success, message } = await createList(payload);
     if (!success) return showErrorToast(message);
 
     showSuccessToast(message);
-    refetchLists();
     toggle();
   };
 

@@ -2,7 +2,6 @@
 
 import { getListById, updateList } from "@/lib/actions/lists";
 import { ProjectSchema } from "@/types/projects";
-import { useUser } from "@clerk/nextjs";
 import { GitCommitHorizontal, GitGraph } from "lucide-react";
 import {
   ChangeEvent,
@@ -28,7 +27,6 @@ export function UpdateListModal({
   toggle,
   refetchLists
 }: UpdateListModalProps) {
-  const { user } = useUser();
   const [formData, setFormData] = useState({ name: "", listType: "progress" });
 
   const handleChange = (evt: ChangeEvent<HTMLInputElement>) => {
@@ -39,13 +37,10 @@ export function UpdateListModal({
   const handleUpdateList = async (evt: MouseEvent<HTMLButtonElement>) => {
     evt.preventDefault();
 
-    if (!user?.id) return;
-
     const payload = {
       id,
       name: formData.name,
-      isFinal: formData.listType === "terminal",
-      userClerkId: user.id
+      isFinal: formData.listType === "terminal"
     };
 
     const { success, message } = await updateList(payload);
