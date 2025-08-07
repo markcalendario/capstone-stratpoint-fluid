@@ -66,10 +66,6 @@ export const getRecentProjectsPayloadSchema = z.object({
   userClerkId: userSchema.shape.clerkId
 });
 
-export const getProjectsPayloadSchema = z.object({
-  userClerkId: userSchema.shape.clerkId
-});
-
 export const getProjectPayloadSchema = z.object({
   id: projectSchema.shape.id
 });

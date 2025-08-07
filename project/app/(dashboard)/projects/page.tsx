@@ -1,16 +1,12 @@
-"use client";
+"use server";
 
 import { CreateProjectButton } from "@/components/create-project-button";
 import { DashboardContent } from "@/components/layouts/dashboard/dashboard-content";
 import ProjectCard from "@/components/project-card";
 import SearchFilter from "@/components/search-filter";
-import { showErrorToast } from "@/components/toast";
 import { getProjects } from "@/lib/actions/projects";
-import { ProjectCard as IProjectCard } from "@/types/projects";
-import { useUser } from "@clerk/nextjs";
-import { useCallback, useEffect, useState } from "react";
 
-export default function ProjectsPage() {
+export default async function ProjectsPage() {
   return (
     <DashboardContent
       title="Projects"
@@ -67,26 +63,8 @@ export default function ProjectsPage() {
   );
 }
 
-function RenderProjects() {
-  const { user } = useUser();
-
-  const [projects, setProjects] = useState<IProjectCard[] | null>(null);
-
-  const retrieveProjects = useCallback(async () => {
-    if (!user?.id) return null;
-
-    const { success, message, projects } = await getProjects({
-      userClerkId: user.id
-    });
-
-    if (!success || !projects) return showErrorToast(message);
-
-    setProjects(projects);
-  }, [user?.id]);
-
-  useEffect(() => {
-    retrieveProjects();
-  }, [retrieveProjects]);
+async function RenderProjects() {
+  const { projects } = await getProjects();
 
   if (!projects) return null;
 

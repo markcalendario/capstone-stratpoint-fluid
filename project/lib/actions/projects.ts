@@ -7,12 +7,12 @@ import { ZodError } from "zod";
 import projectQueries from "../db/queries/projects";
 import userQueries from "../db/queries/users";
 import { isUserProjectOwner, toCardData } from "../utils/projects";
+import { getUserId } from "../utils/users";
 import {
   createProjectPayloadSchema,
   createProjectSchema,
   deleteProjectPayloadSchema,
   getProjectPayloadSchema,
-  getProjectsPayloadSchema,
   getRecentProjectsPayloadSchema,
   updateProjectPayloadSchema,
   updateProjectSchema
@@ -89,14 +89,9 @@ export async function getRecentProjects(payload: GetRecentProjectsPayload) {
   }
 }
 
-interface GetProjectsPayload {
-  userClerkId: UserSchema["clerkId"];
-}
-
-export async function getProjects(payload: GetProjectsPayload) {
+export async function getProjects() {
   try {
-    const parsed = getProjectsPayloadSchema.parse(payload);
-    const userId = await userQueries.getIdByClerkId(parsed.userClerkId);
+    const userId = await getUserId();
     const projects = await projectQueries.ownedOrMember(userId);
 
     const sortedProjects = projects.sort((a, b) => {
