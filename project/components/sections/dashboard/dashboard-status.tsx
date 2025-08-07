@@ -4,8 +4,8 @@ import { getDashboardStatus } from "@/lib/actions/analytics";
 import { useUser } from "@clerk/nextjs";
 import { CheckCircle, Clock, TrendingUp, Users } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
-import StatusCard from "./status-card";
-import { showErrorToast } from "./toast";
+import StatusCard from "../../status-card";
+import { showErrorToast } from "../../toast";
 
 type Status = {
   count: number;

@@ -1,39 +1,8 @@
-import DashboardStatus from "@/components/dashboard-status";
 import { DashboardContent } from "@/components/layouts/dashboard/dashboard-content";
-import QuickActions from "@/components/quick-actions";
-import { RecentProjects } from "@/components/recent-projects";
-import { CheckCircle, Clock, TrendingUp, Users } from "lucide-react";
-
-const STATUS = [
-  {
-    name: "Active Projects",
-    value: "12",
-    icon: TrendingUp,
-    change: "+2.5%",
-    changeType: "positive"
-  },
-  {
-    name: "Team Members",
-    value: "24",
-    icon: Users,
-    change: "+4.1%",
-    changeType: "positive"
-  },
-  {
-    name: "Completed Tasks",
-    value: "156",
-    icon: CheckCircle,
-    change: "+12.3%",
-    changeType: "positive"
-  },
-  {
-    name: "Pending Tasks",
-    value: "43",
-    icon: Clock,
-    change: "-2.1%",
-    changeType: "positive"
-  }
-] as const;
+import DashboardStatus from "@/components/sections/dashboard/dashboard-status";
+import QuickActions from "@/components/sections/dashboard/quick-actions";
+import RecentProjects from "@/components/sections/dashboard/recent-projects";
+import { TrendingUp } from "lucide-react";
 
 export default function DashboardPage() {
   return (

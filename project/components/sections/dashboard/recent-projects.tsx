@@ -5,10 +5,10 @@ import { ProjectCard as IProjectCard } from "@/types/projects";
 import { useUser } from "@clerk/nextjs";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
-import ProjectCard from "./project-card";
-import { showErrorToast, showSuccessToast } from "./toast";
+import ProjectCard from "../../project-card";
+import { showErrorToast, showSuccessToast } from "../../toast";
 
-export function RecentProjects() {
+export default function RecentProjects() {
   const { user } = useUser();
   const [projects, setProjects] = useState<IProjectCard[] | null>(null);
 
