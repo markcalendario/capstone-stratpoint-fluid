@@ -34,6 +34,8 @@ export const projectSchema = z.object({
     .refine(isFutureDate, "Due date cannot be in the past.")
 });
 
+// Project Queries Validations
+
 export const createProjectSchema = z.object({
   name: projectSchema.shape.name,
   description: projectSchema.shape.description,
@@ -42,7 +44,6 @@ export const createProjectSchema = z.object({
 });
 
 export const updateProjectSchema = z.object({
-  id: projectSchema.shape.id,
   name: projectSchema.shape.name,
   description: projectSchema.shape.description,
   dueDate: projectSchema.shape.dueDate,
@@ -51,3 +52,37 @@ export const updateProjectSchema = z.object({
 });
 
 export const projectIdSchema = projectSchema.shape.id;
+
+// Project Payload validations
+
+export const createProjectPayloadSchema = z.object({
+  name: projectSchema.shape.name,
+  description: projectSchema.shape.description,
+  dueDate: projectSchema.shape.dueDate,
+  ownerClerkId: userSchema.shape.clerkId
+});
+
+export const getRecentProjectsPayloadSchema = z.object({
+  userClerkId: userSchema.shape.clerkId
+});
+
+export const getProjectsPayloadSchema = z.object({
+  userClerkId: userSchema.shape.clerkId
+});
+
+export const getProjectPayloadSchema = z.object({
+  id: projectSchema.shape.id
+});
+
+export const deleteProjectPayloadSchema = z.object({
+  userClerkId: userSchema.shape.clerkId,
+  projectId: projectSchema.shape.id
+});
+
+export const updateProjectPayloadSchema = z.object({
+  name: projectSchema.shape.name,
+  dueDate: projectSchema.shape.dueDate,
+  description: projectSchema.shape.description,
+  projectId: projectSchema.shape.id,
+  userClerkId: userSchema.shape.clerkId
+});

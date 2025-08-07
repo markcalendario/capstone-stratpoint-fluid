@@ -1,39 +1,7 @@
-// TODO: Task 4.1 - Implement project CRUD operations
-// TODO: Task 4.4 - Build task creation and editing functionality
-
-/*
-TODO: Implementation Notes for Interns:
-
-Modal for creating new projects with form validation.
-
-Features to implement:
-- Form with project name, description, due date
-- Zod validation
-- Error handling
-- Loading states
-- Success feedback
-- Team member assignment
-- Project template selection
-
-Form fields:
-- Name (required)
-- Description (optional)
-- Due date (optional)
-- Team members (optional)
-- Project template (optional)
-- Privacy settings
-
-Integration:
-- Use project validation schema from lib/validations.ts
-- Call project creation API
-- Update project list optimistically
-- Handle errors gracefully
-*/
-
 import { createProject } from "@/lib/actions/projects";
 import { useUser } from "@clerk/nextjs";
 import { redirect, RedirectType } from "next/navigation";
-import { MouseEvent, useRef } from "react";
+import { useState } from "react";
 import Button from "../button";
 import Input from "../input";
 import Textarea from "../textarea";
@@ -45,19 +13,17 @@ interface CreateProjectModalProps {
 }
 
 export function CreateProjectModal({ toggle }: CreateProjectModalProps) {
-  const form = useRef(null);
   const { user } = useUser();
 
-  const handleCreateProject = async (evt: MouseEvent<HTMLButtonElement>) => {
-    evt.preventDefault();
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [dueDate, setDueDate] = useState("");
 
-    if (!form.current) return null;
-    if (!user?.id) return null;
+  const handleCreateProject = async () => {
+    if (!user?.id || !name.trim()) return null;
 
-    const formData = new FormData(form.current);
-    formData.append("ownerClerkId", user.id);
-
-    const { success, message, projectId } = await createProject(formData);
+    const payload = { name, description, dueDate, ownerClerkId: user.id };
+    const { success, message, projectId } = await createProject(payload);
     if (!success) return showErrorToast(message);
     showSuccessToast(message);
 
@@ -70,13 +36,16 @@ export function CreateProjectModal({ toggle }: CreateProjectModalProps) {
       toggle={toggle}
       title="Create New Project">
       <form
-        ref={form}
+        onSubmit={(e) => e.preventDefault()}
         className="space-y-4">
         <Input
           id="name"
           name="name"
           label="Project Name"
           placeholder="Enter project name"
+          required
+          value={name}
+          onChange={(e) => setName(e.target.value)}
         />
 
         <Textarea
@@ -84,23 +53,29 @@ export function CreateProjectModal({ toggle }: CreateProjectModalProps) {
           name="description"
           label="Project Description"
           placeholder="Enter project description"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
         />
 
         <Input
-          id="date"
+          id="dueDate"
           name="dueDate"
           label="Project Due Date"
-          placeholder="Enter due date"
+          placeholder="Select due date"
           type="date"
+          value={dueDate}
+          onChange={(e) => setDueDate(e.target.value)}
         />
 
         <div className="flex justify-end space-x-3 pt-4">
           <Button
+            type="button"
             onClick={toggle}
             className="text-neutral-800 dark:text-neutral-100">
             Cancel
           </Button>
           <Button
+            type="button"
             onClick={handleCreateProject}
             className="bg-primary text-neutral-100">
             Create Project

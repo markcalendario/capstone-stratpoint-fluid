@@ -75,7 +75,9 @@ function RenderProjects() {
   const retrieveProjects = useCallback(async () => {
     if (!user?.id) return null;
 
-    const { success, message, projects } = await getProjects(user.id);
+    const { success, message, projects } = await getProjects({
+      userClerkId: user.id
+    });
 
     if (!success || !projects) return showErrorToast(message);
 

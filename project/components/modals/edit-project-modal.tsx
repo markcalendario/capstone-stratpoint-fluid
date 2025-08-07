@@ -35,7 +35,7 @@ import { updateProject } from "@/lib/actions/projects";
 import { ProjectSchema } from "@/types/projects";
 import { useUser } from "@clerk/nextjs";
 import { redirect, RedirectType } from "next/navigation";
-import { MouseEvent, useRef } from "react";
+import { useEffect, useState } from "react";
 import Button from "../button";
 import Input from "../input";
 import Textarea from "../textarea";
@@ -48,24 +48,38 @@ interface EditProjectModalProps {
 }
 
 export function EditProjectModal({ projectId, toggle }: EditProjectModalProps) {
-  const form = useRef(null);
   const [project, retrieveProject] = useProject(projectId);
   const { user } = useUser();
 
-  const handleEditProject = async (evt: MouseEvent<HTMLButtonElement>) => {
-    evt.preventDefault();
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [dueDate, setDueDate] = useState("");
 
-    if (!form.current) return null;
-    if (!user?.id) return null;
+  useEffect(() => {
+    if (!project) return;
 
-    const formData = new FormData(form.current);
-    formData.append("userClerkId", user.id);
-    formData.append("projectId", projectId);
+    setName(project.name);
+    setDescription(project.description);
+    setDueDate(project.dueDate);
+  }, [project]);
+
+  const handleEditProject = async () => {
+    if (!user?.id || !projectId) return;
+
+    const payload = {
+      projectId,
+      name: name.trim(),
+      description: description.trim(),
+      dueDate: dueDate,
+      userClerkId: user.id
+    };
+
     const {
       success,
       message,
       projectId: updatedProjectId
-    } = await updateProject(formData);
+    } = await updateProject(payload);
+
     if (!success) return showErrorToast(message);
     showSuccessToast(message);
 
@@ -81,40 +95,45 @@ export function EditProjectModal({ projectId, toggle }: EditProjectModalProps) {
       toggle={toggle}
       title="Edit Project">
       <form
-        ref={form}
+        onSubmit={(e) => e.preventDefault()}
         className="space-y-4">
         <Input
           id="name"
           name="name"
           label="Project Name"
-          defaultValue={project.name}
           placeholder="Enter project name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
         />
 
         <Textarea
           id="description"
           name="description"
           label="Project Description"
-          defaultValue={project.description}
           placeholder="Enter project description"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
         />
 
         <Input
-          id="date"
+          id="dueDate"
           name="dueDate"
           label="Project Due Date"
           placeholder="Enter due date"
-          defaultValue={project.dueDate}
           type="date"
+          value={dueDate}
+          onChange={(e) => setDueDate(e.target.value)}
         />
 
         <div className="flex justify-end space-x-3 pt-4">
           <Button
+            type="button"
             onClick={toggle}
             className="text-neutral-800 dark:text-neutral-100">
             Cancel
           </Button>
           <Button
+            type="button"
             onClick={handleEditProject}
             className="bg-primary text-neutral-100">
             Save Edits

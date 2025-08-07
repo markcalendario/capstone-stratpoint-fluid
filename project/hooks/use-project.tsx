@@ -25,7 +25,7 @@ export default function useProject(id: ProjectSchema["id"]): UseProjectReturn {
       success,
       message,
       project: retrievedProject
-    } = await getProject(id);
+    } = await getProject({ id });
 
     if (!success || !retrievedProject) return showErrorToast(message);
     showSuccessToast(message);
