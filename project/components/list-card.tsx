@@ -2,6 +2,7 @@ import { ListSchema } from "@/types/lists";
 import { Edit, MoreHorizontal, Trash } from "lucide-react";
 import { Fragment, useState } from "react";
 import Dropdown from "./drop-down";
+import { DeleteListModal } from "./modals/delete-list-modal";
 import { UpdateListModal } from "./modals/update-list-modal";
 
 interface ListCardProps {
@@ -12,8 +13,15 @@ interface ListCardProps {
 
 export default function ListCard({ id, name, refetchLists }: ListCardProps) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const toggleEditModalOpen = () => setIsEditModalOpen((prev) => !prev);
+  const toggleDeleteModalOpen = () => setIsDeleteModalOpen((prev) => !prev);
+
+  const dropdownItems = [
+    { onClick: toggleEditModalOpen, label: "Edit", icon: Edit },
+    { onClick: toggleDeleteModalOpen, label: "Delete", icon: Trash }
+  ];
 
   return (
     <Fragment>
@@ -29,10 +37,7 @@ export default function ListCard({ id, name, refetchLists }: ListCardProps) {
             <Dropdown
               label={<MoreHorizontal size={14} />}
               className="cursor-pointer text-neutral-100"
-              items={[
-                { onClick: toggleEditModalOpen, label: "Edit", icon: Edit },
-                { onClick: () => {}, label: "Delete", icon: Trash }
-              ]}
+              items={dropdownItems}
             />
           </div>
         </div>
@@ -56,6 +61,14 @@ export default function ListCard({ id, name, refetchLists }: ListCardProps) {
           id={id}
           refetchLists={refetchLists}
           toggle={toggleEditModalOpen}
+        />
+      )}
+
+      {isDeleteModalOpen && (
+        <DeleteListModal
+          listId={id}
+          refetchLists={refetchLists}
+          toggle={toggleDeleteModalOpen}
         />
       )}
     </Fragment>

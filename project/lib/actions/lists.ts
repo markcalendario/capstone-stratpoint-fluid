@@ -131,3 +131,29 @@ export async function getListById(id: ListSchema["id"]) {
     return { success: false, message: "Error. Cannot get list." };
   }
 }
+
+interface DeleteListParams {
+  id: ListSchema["id"];
+  userClerkId: UserSchema["clerkId"];
+}
+
+export async function deleteList({ id, userClerkId }: DeleteListParams) {
+  try {
+    const validClerkId = userClerkIdSchema.parse(userClerkId);
+    const validListId = listIdSchema.parse(id);
+    const validUserId = await userQueries.getIdByClerkId(validClerkId);
+
+    if (!(await isUserListCreator(validListId, validUserId))) {
+      return { success: false, message: "You are not the owner if this list." };
+    }
+
+    await listQueries.delete(validListId);
+    return { success: true, message: "List deleted successfully." };
+  } catch (error) {
+    if (error instanceof ZodError) {
+      return { success: false, message: error.issues[0].message };
+    }
+
+    return { success: false, message: "Error. Cannot delete list." };
+  }
+}

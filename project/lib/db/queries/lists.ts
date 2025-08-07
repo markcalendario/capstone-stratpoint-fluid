@@ -45,13 +45,9 @@ const listQueries = {
 
     return updatedList.id;
   },
-  delete: async (id: ListSchema["id"]) => {
-    const [deletedList] = await db
-      .delete(lists)
-      .where(eq(lists.id, id))
-      .returning({ id: lists.id, name: lists.name });
 
-    return deletedList;
+  delete: async (id: ListSchema["id"]) => {
+    await db.delete(lists).where(eq(lists.id, id));
   }
 };
 
