@@ -9,7 +9,6 @@ export const tasks = pgTable("tasks", {
 	title: text().notNull(),
 	description: text().notNull(),
 	listId: uuid().notNull(),
-	assigneeId: uuid(),
 	priority: priority().notNull(),
 	dueDate: date().notNull(),
 	position: integer(),
@@ -21,11 +20,6 @@ export const tasks = pgTable("tasks", {
 			foreignColumns: [lists.id],
 			name: "listTask"
 		}).onDelete("cascade"),
-	foreignKey({
-			columns: [table.assigneeId],
-			foreignColumns: [users.id],
-			name: "taskAssignee"
-		}).onDelete("set null"),
 ]);
 
 export const comments = pgTable("comments", {
@@ -115,5 +109,23 @@ export const teams = pgTable("teams", {
 			columns: [table.projectId],
 			foreignColumns: [projects.id],
 			name: "projectMember"
+		}).onDelete("cascade"),
+]);
+
+export const taskAssignments = pgTable("taskAssignments", {
+	id: uuid().defaultRandom().primaryKey().notNull(),
+	taskId: uuid().notNull(),
+	userId: uuid().notNull(),
+	assignedAt: timestamp({ withTimezone: true, mode: 'string' }).default(sql`CURRENT_DATE`),
+}, (table) => [
+	foreignKey({
+			columns: [table.taskId],
+			foreignColumns: [tasks.id],
+			name: "taskAssignment"
+		}).onDelete("cascade"),
+	foreignKey({
+			columns: [table.userId],
+			foreignColumns: [users.id],
+			name: "userTaskAssignment"
 		}).onDelete("cascade"),
 ]);

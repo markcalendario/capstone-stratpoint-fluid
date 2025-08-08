@@ -33,12 +33,6 @@
           "primaryKey": false,
           "notNull": true
         },
-        "assigneeId": {
-          "name": "assigneeId",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": false
-        },
         "priority": {
           "name": "priority",
           "type": "PRIORITY",
@@ -87,20 +81,6 @@
             "id"
           ],
           "onDelete": "cascade",
-          "onUpdate": "no action"
-        },
-        "taskAssignee": {
-          "name": "taskAssignee",
-          "tableFrom": "tasks",
-          "tableTo": "users",
-          "schemaTo": "public",
-          "columnsFrom": [
-            "assigneeId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "set null",
           "onUpdate": "no action"
         }
       },
@@ -491,6 +471,74 @@
           "schemaTo": "public",
           "columnsFrom": [
             "projectId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {},
+      "policies": {},
+      "isRLSEnabled": false
+    },
+    "public.taskAssignments": {
+      "name": "taskAssignments",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "taskId": {
+          "name": "taskId",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "userId": {
+          "name": "userId",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "assignedAt": {
+          "name": "assignedAt",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "CURRENT_DATE"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "taskAssignment": {
+          "name": "taskAssignment",
+          "tableFrom": "taskAssignments",
+          "tableTo": "tasks",
+          "schemaTo": "public",
+          "columnsFrom": [
+            "taskId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "userTaskAssignment": {
+          "name": "userTaskAssignment",
+          "tableFrom": "taskAssignments",
+          "tableTo": "users",
+          "schemaTo": "public",
+          "columnsFrom": [
+            "userId"
           ],
           "columnsTo": [
             "id"
