@@ -10,7 +10,7 @@ CREATE TABLE "tasks" (
 	"assigneeId" uuid,
 	"priority" "PRIORITY" NOT NULL,
 	"dueDate" date NOT NULL,
-	"position" integer NOT NULL,
+	"position" integer,
 	"createdAt" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
 	"updatedAt" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );

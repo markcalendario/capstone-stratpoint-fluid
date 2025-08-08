@@ -12,7 +12,7 @@ export const tasks = pgTable("tasks", {
 	assigneeId: uuid(),
 	priority: priority().notNull(),
 	dueDate: date().notNull(),
-	position: integer().notNull(),
+	position: integer(),
 	createdAt: timestamp({ withTimezone: true, mode: 'string' }).default(sql`CURRENT_TIMESTAMP`).notNull(),
 	updatedAt: timestamp({ withTimezone: true, mode: 'string' }).default(sql`CURRENT_TIMESTAMP`).notNull(),
 }, (table) => [
