@@ -33,8 +33,7 @@ export async function createProject(payload: CreateProjectPayload) {
     const createProject = createProjectSchema.parse(data);
     const projectId = await projectQueries.create(createProject);
 
-    revalidatePath("/dashboard");
-    revalidatePath("/projects");
+    revalidatePath("/(dashboard)");
 
     return {
       success: true,
@@ -141,6 +140,9 @@ export async function deleteProject(payload: DeleteProjectPayload) {
 
     await projectQueries.delete(userId, parsed.projectId);
 
+    // Revalidate the cache
+    revalidatePath("/(dashboard)");
+
     return { success: true, message: "Project deleted successfully." };
   } catch (error) {
     if (error instanceof ZodError) {
@@ -177,8 +179,8 @@ export async function updateProject(payload: UpdateProjectPayload) {
 
     const projectId = await projectQueries.update(parsed.projectId, updateData);
 
-    revalidatePath("/dashboard");
-    revalidatePath("/projects");
+    // Revalidate the cache
+    revalidatePath("/(dashboard)");
 
     return {
       success: true,
