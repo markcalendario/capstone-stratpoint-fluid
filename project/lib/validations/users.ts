@@ -10,7 +10,8 @@ export const userSchema = z.object({
     .trim(),
   updatedAt: z.iso
     .datetime("Value for 'updatedAt' field must be datetime.")
-    .trim()
+    .trim(),
+  imageUrl: z.url("Image URL must be a valid URL.")
 });
 
 // Query Validations
@@ -18,12 +19,14 @@ export const userSchema = z.object({
 export const createUserSchema = z.object({
   name: userSchema.shape.name,
   email: userSchema.shape.email,
-  clerkId: userSchema.shape.clerkId
+  clerkId: userSchema.shape.clerkId,
+  imageUrl: userSchema.shape.imageUrl
 });
 
 export const updateUserSchema = z.object({
   name: userSchema.shape.name,
   email: userSchema.shape.email,
+  imageUrl: userSchema.shape.imageUrl,
   updatedAt: userSchema.shape.updatedAt
 });
 

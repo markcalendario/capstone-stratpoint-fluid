@@ -20,7 +20,8 @@ export async function POST(req: NextRequest) {
       const validatedData = createUserSchema.parse({
         clerkId: data.id,
         email: data.email_addresses[0].email_address,
-        name: `${data.first_name} ${data.last_name}`
+        name: `${data.first_name} ${data.last_name}`,
+        imageUrl: data.image_url
       });
 
       await userQueries.create(validatedData);
@@ -32,7 +33,8 @@ export async function POST(req: NextRequest) {
       const validatedData = updateUserSchema.parse({
         email: data.email_addresses[0].email_address,
         name: `${data.first_name} ${data.last_name}`,
-        updatedAt: new Date().toISOString()
+        updatedAt: new Date().toISOString(),
+        imageUrl: data.image_url
       });
 
       await userQueries.updateByClerkId(data.id, validatedData);

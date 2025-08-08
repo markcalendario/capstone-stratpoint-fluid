@@ -1,6 +1,5 @@
 import { TaskAssignmentsSchema } from "@/types/taskAssignments";
 import { Task, TaskCard } from "@/types/tasks";
-import { getUserProfileById } from "./users";
 
 interface ToTaskCard extends Task {
   taskAssignments: TaskAssignmentsSchema[];
@@ -15,7 +14,7 @@ export async function toTaskCard(data: ToTaskCard) {
   // Fetch all profiles
   const assigneesImages = await Promise.all(
     allUsers.map(async (user) => {
-      return await getUserProfileById(user.clerkId);
+      return user.imageUrl;
     })
   );
 
