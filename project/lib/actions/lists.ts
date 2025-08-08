@@ -107,6 +107,9 @@ export async function updateList(payload: UpdateListPayload) {
     // Update data
     await listQueries.update(parsed.id, updateData);
 
+    // Revalidate the cache
+    revalidatePath("/(dashboard)");
+
     return { success: true, message: "List updated successfully." };
   } catch (error) {
     if (error instanceof ZodError) {
@@ -150,6 +153,10 @@ export async function deleteList(payload: DeleteListPayload) {
     }
 
     await listQueries.delete(parsed.id);
+
+    // Revalidate the cache
+    revalidatePath("/(dashboard)");
+
     return { success: true, message: "List deleted successfully." };
   } catch (error) {
     if (error instanceof ZodError) {
