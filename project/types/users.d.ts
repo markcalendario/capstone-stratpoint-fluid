@@ -5,6 +5,8 @@ export interface UserSchema extends InferSelectModel<typeof users> {
   imageUrl: string;
 }
 
+export interface User extends InferSelectModel<typeof users> {}
+
 export type CreateUserData = Pick<UserSchema, "name" | "clerkId" | "email">;
 
 export type UpdateUserData = Pick<UserSchema, "name" | "email" | "updatedAt">;

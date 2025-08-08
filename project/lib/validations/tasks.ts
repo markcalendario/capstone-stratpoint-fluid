@@ -19,7 +19,6 @@ export const createTaskSchema = z.object({
       `Max description length is ${DESCRIPTION_LENGTH} characters.`
     ),
   listId: z.uuidv4("List ID must be a valid UUID."),
-  assigneeId: z.uuidv4("Assignee ID must be a valid UUID."),
   priority: z.enum(priority.enumValues),
   dueDate: z.iso
     .date("Due date must be a valid date.")

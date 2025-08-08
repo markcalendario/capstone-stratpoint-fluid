@@ -1,4 +1,4 @@
-import { lists, tasks } from "@/lib/db/drizzle/migrations/schema";
+import { tasks } from "@/lib/db/drizzle/migrations/schema";
 import { ListSchema } from "@/types/lists";
 import { CreateTaskData, TaskSchema, UpdateTaskData } from "@/types/tasks";
 import { eq } from "drizzle-orm";
@@ -13,8 +13,11 @@ const taskQueries = {
     return task;
   },
 
-  getByListId: async (listId: ListSchema["id"]) => {
-    const tasks = await db.select().from(lists).where(eq(lists.id, listId));
+  getWithAssigneesByListId: async (listId: ListSchema["id"]) => {
+    const tasks = await db.query.tasks.findMany({
+      where: (tasks, { eq }) => eq(tasks.listId, listId),
+      with: { taskAssignments: { with: { user: true } } }
+    });
     return tasks;
   },
 

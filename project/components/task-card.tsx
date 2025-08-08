@@ -46,8 +46,7 @@ export function TaskCard({
   title,
   description,
   priority,
-  assigneeName,
-  assigneeImageUrl
+  assigneesImages
 }: TTaskCard) {
   void id;
 
@@ -61,13 +60,19 @@ export function TaskCard({
       </p>
       <div className="flex items-center justify-between">
         <PriorityTab priority={priority} />
-        <Image
-          width={25}
-          height={25}
-          alt={assigneeName}
-          src={assigneeImageUrl}
-          className="outline-primary/20 rounded-full outline-2"
-        />
+
+        <div className="flex gap-1">
+          {assigneesImages.map((assigneeImage, i) => (
+            <Image
+              key={i}
+              width={15}
+              height={15}
+              alt={`user ${i}`}
+              src={assigneeImage}
+              className="outline-primary/20 rounded-full outline-2"
+            />
+          ))}
+        </div>
       </div>
     </div>
   );
