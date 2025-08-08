@@ -1,16 +1,18 @@
+"use client";
+
 import { ProjectSchema } from "@/types/projects";
 import { PlusSquare } from "lucide-react";
 import { Fragment, useState } from "react";
 import { CreateListModal } from "./modals/create-list-modal";
 
 interface CreateListButtonProps {
+  className: string;
   projectId: ProjectSchema["id"];
-  refetchLists: () => void;
 }
 
 export default function CreateListButton({
-  projectId,
-  refetchLists
+  className,
+  projectId
 }: CreateListButtonProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -20,7 +22,7 @@ export default function CreateListButton({
     <Fragment>
       <button
         onClick={toggleModal}
-        className="border-primary/20 text-primary hover:bg-primary/10 flex min-h-[500px] min-w-80 cursor-pointer flex-nowrap items-center justify-center gap-2 rounded-sm border-2 border-dashed bg-neutral-50 dark:border-neutral-500 dark:bg-neutral-800 dark:text-neutral-300">
+        className={className}>
         <PlusSquare size={18} />
         Add List
       </button>
@@ -29,7 +31,6 @@ export default function CreateListButton({
         <CreateListModal
           toggle={toggleModal}
           projectId={projectId}
-          refetchLists={refetchLists}
         />
       )}
     </Fragment>

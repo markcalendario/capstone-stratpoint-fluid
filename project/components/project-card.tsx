@@ -1,3 +1,5 @@
+"use client";
+
 import { cn } from "@/lib/utils";
 import { ProjectCard as IProjectCard, ProjectSchema } from "@/types/projects";
 import {

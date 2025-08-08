@@ -33,7 +33,6 @@ Integration:
 import useProject from "@/hooks/use-project";
 import { updateProject } from "@/lib/actions/projects";
 import { ProjectSchema } from "@/types/projects";
-import { useUser } from "@clerk/nextjs";
 import { redirect, RedirectType } from "next/navigation";
 import { useEffect, useState } from "react";
 import Button from "../button";
@@ -49,7 +48,6 @@ interface EditProjectModalProps {
 
 export function EditProjectModal({ projectId, toggle }: EditProjectModalProps) {
   const [project, retrieveProject] = useProject(projectId);
-  const { user } = useUser();
 
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -64,14 +62,13 @@ export function EditProjectModal({ projectId, toggle }: EditProjectModalProps) {
   }, [project]);
 
   const handleEditProject = async () => {
-    if (!user?.id || !projectId) return;
+    if (!projectId) return;
 
     const payload = {
       projectId,
       name: name.trim(),
       description: description.trim(),
-      dueDate: dueDate,
-      userClerkId: user.id
+      dueDate: dueDate
     };
 
     const {

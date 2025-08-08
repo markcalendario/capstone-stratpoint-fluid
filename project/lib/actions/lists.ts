@@ -1,13 +1,9 @@
 "use server";
 
-import { ListSchema } from "@/types/lists";
-import { ProjectSchema } from "@/types/projects";
-import { UserSchema } from "@/types/users";
-import { ZodError } from "zod";
-import listQueries from "../db/queries/lists";
-import userQueries from "../db/queries/users";
-import { isUserListCreator } from "../utils/lists";
-import { isUserProjectOwner } from "../utils/projects";
+import listQueries from "@/lib/db/queries/lists";
+import { isUserListCreator } from "@/lib/utils/lists";
+import { isUserProjectOwner } from "@/lib/utils/projects";
+import { getUserId } from "@/lib/utils/users";
 import {
   createListDataSchema,
   createListPayloadSchema,
@@ -16,18 +12,20 @@ import {
   listSchema,
   updateListPayloadSchema,
   updateListSchema
-} from "../validations/lists";
+} from "@/lib/validations/lists";
+import { ListSchema } from "@/types/lists";
+import { ProjectSchema } from "@/types/projects";
+import { revalidatePath } from "next/cache";
+import { ZodError } from "zod";
 
 interface CreateListPayload
-  extends Pick<ListSchema, "name" | "isFinal" | "projectId"> {
-  userClerkId: UserSchema["clerkId"];
-}
+  extends Pick<ListSchema, "name" | "isFinal" | "projectId"> {}
 
 export async function createList(payload: CreateListPayload) {
   try {
     // Validate parameters
+    const userId = await getUserId();
     const parsed = createListPayloadSchema.parse(payload);
-    const userId = await userQueries.getIdByClerkId(parsed.userClerkId); // Get the user ID in DB
 
     // Check if user is a project owner
     if (!(await isUserProjectOwner(userId, parsed.projectId))) {
@@ -43,6 +41,9 @@ export async function createList(payload: CreateListPayload) {
 
     // Validate create list data
     const createData = createListDataSchema.parse(data);
+
+    // Revalidate paths
+    revalidatePath("/(dashboard)");
 
     // Create list
     await listQueries.create(createData);
@@ -81,15 +82,13 @@ export async function getListsByProjectId(payload: GetListsByProjectIdPayload) {
 }
 
 interface UpdateListPayload
-  extends Pick<ListSchema, "id" | "name" | "isFinal"> {
-  userClerkId: UserSchema["clerkId"];
-}
+  extends Pick<ListSchema, "id" | "name" | "isFinal"> {}
 
 export async function updateList(payload: UpdateListPayload) {
   try {
     // Validate payload
+    const userId = await getUserId();
     const parsed = updateListPayloadSchema.parse(payload);
-    const userId = await userQueries.getIdByClerkId(parsed.userClerkId); // Get the user ID in DB
 
     // Check if user is the creator of the list
     if (!(await isUserListCreator(parsed.id, userId))) {
@@ -107,6 +106,9 @@ export async function updateList(payload: UpdateListPayload) {
 
     // Update data
     await listQueries.update(parsed.id, updateData);
+
+    // Revalidate the cache
+    revalidatePath("/(dashboard)");
 
     return { success: true, message: "List updated successfully." };
   } catch (error) {
@@ -139,19 +141,22 @@ export async function getListById(payload: GetListByIdPayload) {
 
 interface DeleteListPayload {
   id: ListSchema["id"];
-  userClerkId: UserSchema["clerkId"];
 }
 
 export async function deleteList(payload: DeleteListPayload) {
   try {
+    const userId = await getUserId();
     const parsed = deleteListPayloadSchema.parse(payload);
-    const validUserId = await userQueries.getIdByClerkId(parsed.userClerkId);
 
-    if (!(await isUserListCreator(parsed.id, validUserId))) {
+    if (!(await isUserListCreator(parsed.id, userId))) {
       return { success: false, message: "You are not the owner if this list." };
     }
 
     await listQueries.delete(parsed.id);
+
+    // Revalidate the cache
+    revalidatePath("/(dashboard)");
+
     return { success: true, message: "List deleted successfully." };
   } catch (error) {
     if (error instanceof ZodError) {

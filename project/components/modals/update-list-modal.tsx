@@ -1,8 +1,5 @@
-"use client";
-
 import { getListById, updateList } from "@/lib/actions/lists";
 import { ProjectSchema } from "@/types/projects";
-import { useUser } from "@clerk/nextjs";
 import { GitCommitHorizontal, GitGraph } from "lucide-react";
 import {
   ChangeEvent,
@@ -20,15 +17,9 @@ import Modal from "./modal";
 interface UpdateListModalProps {
   toggle: () => void;
   id: ProjectSchema["id"];
-  refetchLists: () => void;
 }
 
-export function UpdateListModal({
-  id,
-  toggle,
-  refetchLists
-}: UpdateListModalProps) {
-  const { user } = useUser();
+export function UpdateListModal({ id, toggle }: UpdateListModalProps) {
   const [formData, setFormData] = useState({ name: "", listType: "progress" });
 
   const handleChange = (evt: ChangeEvent<HTMLInputElement>) => {
@@ -39,20 +30,16 @@ export function UpdateListModal({
   const handleUpdateList = async (evt: MouseEvent<HTMLButtonElement>) => {
     evt.preventDefault();
 
-    if (!user?.id) return;
-
     const payload = {
       id,
       name: formData.name,
-      isFinal: formData.listType === "terminal",
-      userClerkId: user.id
+      isFinal: formData.listType === "terminal"
     };
 
     const { success, message } = await updateList(payload);
     if (!success) return showErrorToast(message);
 
     showSuccessToast(message);
-    refetchLists();
     toggle();
   };
 
