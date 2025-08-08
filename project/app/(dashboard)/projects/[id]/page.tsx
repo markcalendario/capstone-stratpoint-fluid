@@ -1,5 +1,3 @@
-"use server";
-
 import KanbanBoard from "@/components/kanban-board";
 import { DashboardContent } from "@/components/layouts/dashboard/dashboard-content";
 import ProjectActionButtons from "@/components/sections/project-view/project-action-buttons";
@@ -11,7 +9,6 @@ interface ProjectPage {
 
 export default async function ProjectPage({ params }: ProjectPage) {
   const { id } = await params;
-
   const { project } = await getProject({ id });
 
   if (!project) return null;
