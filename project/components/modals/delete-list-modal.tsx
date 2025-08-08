@@ -9,14 +9,9 @@ import Modal from "./modal";
 interface DeleteListModalProps {
   toggle: () => void;
   listId: ListSchema["id"];
-  refetchLists: () => void;
 }
 
-export function DeleteListModal({
-  toggle,
-  listId,
-  refetchLists
-}: DeleteListModalProps) {
+export function DeleteListModal({ toggle, listId }: DeleteListModalProps) {
   const TARGET_CONFIRM_TEXT = "DELETE LIST";
 
   const [confirmText, setConfirmText] = useState("");
@@ -36,7 +31,6 @@ export function DeleteListModal({
     showSuccessToast(message);
 
     toggle();
-    refetchLists();
   };
 
   return (

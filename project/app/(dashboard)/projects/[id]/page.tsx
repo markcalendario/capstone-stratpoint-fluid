@@ -1,7 +1,7 @@
 "use server";
 
+import KanbanBoard from "@/components/kanban-board";
 import { DashboardContent } from "@/components/layouts/dashboard/dashboard-content";
-import KanbanBoard from "@/components/sections/project-view/kanban-board";
 import ProjectActionButtons from "@/components/sections/project-view/project-action-buttons";
 import { getProject } from "@/lib/actions/projects";
 

@@ -1,5 +1,3 @@
-"use client";
-
 import { createList } from "@/lib/actions/lists";
 import { ProjectSchema } from "@/types/projects";
 import { GitCommitHorizontal, GitGraph } from "lucide-react";

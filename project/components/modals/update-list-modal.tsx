@@ -1,5 +1,3 @@
-"use client";
-
 import { getListById, updateList } from "@/lib/actions/lists";
 import { ProjectSchema } from "@/types/projects";
 import { GitCommitHorizontal, GitGraph } from "lucide-react";
@@ -19,14 +17,9 @@ import Modal from "./modal";
 interface UpdateListModalProps {
   toggle: () => void;
   id: ProjectSchema["id"];
-  refetchLists: () => void;
 }
 
-export function UpdateListModal({
-  id,
-  toggle,
-  refetchLists
-}: UpdateListModalProps) {
+export function UpdateListModal({ id, toggle }: UpdateListModalProps) {
   const [formData, setFormData] = useState({ name: "", listType: "progress" });
 
   const handleChange = (evt: ChangeEvent<HTMLInputElement>) => {
@@ -47,7 +40,6 @@ export function UpdateListModal({
     if (!success) return showErrorToast(message);
 
     showSuccessToast(message);
-    refetchLists();
     toggle();
   };
 

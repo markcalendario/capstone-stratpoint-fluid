@@ -1,3 +1,5 @@
+"use client";
+
 import { ListSchema } from "@/types/lists";
 import { Edit, MoreHorizontal, Trash } from "lucide-react";
 import { Fragment, useState } from "react";
@@ -8,10 +10,9 @@ import { UpdateListModal } from "./modals/update-list-modal";
 interface ListCardProps {
   id: ListSchema["id"];
   name: ListSchema["name"];
-  refetchLists: () => void;
 }
 
-export default function ListCard({ id, name, refetchLists }: ListCardProps) {
+export default function ListCard({ id, name }: ListCardProps) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
@@ -59,7 +60,6 @@ export default function ListCard({ id, name, refetchLists }: ListCardProps) {
       {isEditModalOpen && (
         <UpdateListModal
           id={id}
-          refetchLists={refetchLists}
           toggle={toggleEditModalOpen}
         />
       )}
@@ -67,7 +67,6 @@ export default function ListCard({ id, name, refetchLists }: ListCardProps) {
       {isDeleteModalOpen && (
         <DeleteListModal
           listId={id}
-          refetchLists={refetchLists}
           toggle={toggleDeleteModalOpen}
         />
       )}

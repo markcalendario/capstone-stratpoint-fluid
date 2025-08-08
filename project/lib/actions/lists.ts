@@ -15,6 +15,7 @@ import {
 } from "@/lib/validations/lists";
 import { ListSchema } from "@/types/lists";
 import { ProjectSchema } from "@/types/projects";
+import { revalidatePath } from "next/cache";
 import { ZodError } from "zod";
 
 interface CreateListPayload
@@ -40,6 +41,9 @@ export async function createList(payload: CreateListPayload) {
 
     // Validate create list data
     const createData = createListDataSchema.parse(data);
+
+    // Revalidate paths
+    revalidatePath("/(dashboard)");
 
     // Create list
     await listQueries.create(createData);
