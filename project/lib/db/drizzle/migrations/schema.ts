@@ -1,25 +1,19 @@
-import { pgTable, foreignKey, uuid, text, date, integer, timestamp, unique, boolean, pgEnum } from "drizzle-orm/pg-core"
+import { pgTable, unique, uuid, text, timestamp, foreignKey, integer, boolean, date, pgEnum } from "drizzle-orm/pg-core"
 import { sql } from "drizzle-orm"
 
 export const priority = pgEnum("PRIORITY", ['low', 'medium', 'high'])
 
 
-export const tasks = pgTable("tasks", {
+export const users = pgTable("users", {
 	id: uuid().defaultRandom().primaryKey().notNull(),
-	title: text().notNull(),
-	description: text().notNull(),
-	listId: uuid().notNull(),
-	priority: priority().notNull(),
-	dueDate: date().notNull(),
-	position: integer(),
-	createdAt: timestamp({ withTimezone: true, mode: 'string' }).default(sql`CURRENT_TIMESTAMP`).notNull(),
-	updatedAt: timestamp({ withTimezone: true, mode: 'string' }).default(sql`CURRENT_TIMESTAMP`).notNull(),
+	clerkId: text().notNull(),
+	email: text().notNull(),
+	name: text().notNull(),
+	createdAt: timestamp({ withTimezone: true, mode: 'string' }).default(sql`CURRENT_TIMESTAMP`),
+	updatedAt: timestamp({ withTimezone: true, mode: 'string' }).default(sql`CURRENT_TIMESTAMP`),
+	imageUrl: text().notNull(),
 }, (table) => [
-	foreignKey({
-			columns: [table.listId],
-			foreignColumns: [lists.id],
-			name: "listTask"
-		}).onDelete("cascade"),
+	unique("users_clerkId_key").on(table.clerkId),
 ]);
 
 export const comments = pgTable("comments", {
@@ -42,34 +36,6 @@ export const comments = pgTable("comments", {
 		}).onDelete("cascade"),
 ]);
 
-export const users = pgTable("users", {
-	id: uuid().defaultRandom().primaryKey().notNull(),
-	clerkId: text().notNull(),
-	email: text().notNull(),
-	name: text().notNull(),
-	createdAt: timestamp({ withTimezone: true, mode: 'string' }).default(sql`CURRENT_TIMESTAMP`),
-	updatedAt: timestamp({ withTimezone: true, mode: 'string' }).default(sql`CURRENT_TIMESTAMP`),
-}, (table) => [
-	unique("users_clerkId_key").on(table.clerkId),
-]);
-
-export const projects = pgTable("projects", {
-	id: uuid().defaultRandom().primaryKey().notNull(),
-	name: text().notNull(),
-	description: text().notNull(),
-	ownerId: uuid().notNull(),
-	createdAt: timestamp({ withTimezone: true, mode: 'string' }).default(sql`CURRENT_TIMESTAMP`),
-	updatedAt: timestamp({ withTimezone: true, mode: 'string' }).default(sql`CURRENT_TIMESTAMP`),
-	dueDate: date().notNull(),
-	active: boolean().default(true),
-}, (table) => [
-	foreignKey({
-			columns: [table.ownerId],
-			foreignColumns: [users.id],
-			name: "projectOwner"
-		}).onDelete("cascade"),
-]);
-
 export const lists = pgTable("lists", {
 	id: uuid().defaultRandom().primaryKey().notNull(),
 	name: text().notNull(),
@@ -89,6 +55,41 @@ export const lists = pgTable("lists", {
 			columns: [table.createdBy],
 			foreignColumns: [users.id],
 			name: "userList"
+		}).onDelete("cascade"),
+]);
+
+export const projects = pgTable("projects", {
+	id: uuid().defaultRandom().primaryKey().notNull(),
+	name: text().notNull(),
+	description: text().notNull(),
+	ownerId: uuid().notNull(),
+	createdAt: timestamp({ withTimezone: true, mode: 'string' }).default(sql`CURRENT_TIMESTAMP`),
+	updatedAt: timestamp({ withTimezone: true, mode: 'string' }).default(sql`CURRENT_TIMESTAMP`),
+	dueDate: date().notNull(),
+	active: boolean().default(true),
+}, (table) => [
+	foreignKey({
+			columns: [table.ownerId],
+			foreignColumns: [users.id],
+			name: "projectOwner"
+		}).onDelete("cascade"),
+]);
+
+export const tasks = pgTable("tasks", {
+	id: uuid().defaultRandom().primaryKey().notNull(),
+	title: text().notNull(),
+	description: text().notNull(),
+	listId: uuid().notNull(),
+	priority: priority().notNull(),
+	dueDate: date().notNull(),
+	position: integer(),
+	createdAt: timestamp({ withTimezone: true, mode: 'string' }).default(sql`CURRENT_TIMESTAMP`).notNull(),
+	updatedAt: timestamp({ withTimezone: true, mode: 'string' }).default(sql`CURRENT_TIMESTAMP`).notNull(),
+}, (table) => [
+	foreignKey({
+			columns: [table.listId],
+			foreignColumns: [lists.id],
+			name: "listTask"
 		}).onDelete("cascade"),
 ]);
 
