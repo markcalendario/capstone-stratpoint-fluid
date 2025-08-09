@@ -41,7 +41,7 @@ export default async function ListCard({ id, name, projectId }: ListCardProps) {
         <AddTaskButton
           listId={id}
           projectId={projectId}
-          className="border-primary bg-primary/20 text-primary sticky bottom-2 flex w-full cursor-pointer items-center justify-center gap-2 rounded-sm border-1 border-dashed p-1 backdrop-blur-md dark:text-neutral-200"
+          className="border-primary bg-primary/20 text-primary sticky bottom-2 flex w-full cursor-pointer items-center justify-center gap-2 rounded-sm border-1 border-dashed p-1 text-sm backdrop-blur-md dark:text-neutral-200"
         />
       </div>
     </div>

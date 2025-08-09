@@ -26,7 +26,7 @@ export default function AddTaskButton({
       <button
         onClick={toggleModal}
         className={className}>
-        <PlusSquare size={16} /> Add Task
+        <PlusSquare size={14} /> Add Task
       </button>
 
       {isModalOpen && (
