@@ -56,6 +56,7 @@ export default async function KanbanBoard({ projectId }: KanbanBoardProps) {
           <ListCard
             key={list.id}
             id={list.id}
+            projectId={projectId}
             name={list.name}
           />
         ))}

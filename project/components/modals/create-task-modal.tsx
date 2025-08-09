@@ -1,51 +1,153 @@
-// TODO: Task 4.4 - Build task creation and editing functionality
-// TODO: Task 5.6 - Create task detail modals and editing interfaces
+"use client";
 
-/*
-TODO: Implementation Notes for Interns:
+import { createAndAssignTask } from "@/lib/actions/tasks";
+import { ListSchema } from "@/types/lists";
+import { ProjectSchema } from "@/types/projects";
+import { UserSchema } from "@/types/users";
+import { ChangeEvent, FormEvent, useState } from "react";
+import Button from "../button";
+import Input from "../input";
+import RichTextEditor from "../rich-text-editor";
+import SelectPriority from "../select-priority";
+import SelectProjectMembers from "../select-project-members";
+import Modal from "./modal";
 
-Modal for creating and editing tasks.
+interface CreateTaskModalProps {
+  toggle: () => void;
+  projectId: ProjectSchema["id"];
+  listId: ListSchema["id"];
+}
 
-Features to implement:
-- Task title and description
-- Priority selection
-- Assignee selection
-- Due date picker
-- Labels/tags
-- Attachments
-- Comments section (for edit mode)
-- Activity history (for edit mode)
+type Payload = {
+  title: string;
+  description: string;
+  priority: string;
+  dueDate: string;
+  assignees: UserSchema["id"][];
+  label: string;
+  attachment: File | null;
+  projectId: ProjectSchema["id"];
+  listId: ListSchema["id"];
+};
 
-Form fields:
-- Title (required)
-- Description (rich text editor)
-- Priority (low/medium/high)
-- Assignee (team member selector)
-- Due date (date picker)
-- Labels (tag input)
-- Attachments (file upload)
+export function CreateTaskModal({
+  toggle,
+  listId,
+  projectId
+}: CreateTaskModalProps) {
+  const [payload, setPayload] = useState<Payload>({
+    projectId: projectId,
+    listId: listId,
+    title: "",
+    description: "",
+    priority: "",
+    dueDate: "",
+    assignees: [],
+    label: "",
+    attachment: null
+  });
 
-Integration:
-- Use task validation schema
-- Call task creation/update API
-- Update board state optimistically
-- Handle file uploads
-- Real-time updates for comments
-*/
+  // Change handlers
+  const handleChange = <K extends keyof Payload>(key: K, value: Payload[K]) => {
+    setPayload((prev) => ({ ...prev, [key]: value }));
+  };
 
-export function CreateTaskModal() {
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] ?? null;
+    setPayload((prev) => ({ ...prev, attachment: file }));
+  };
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    console.log("hi");
+
+    const { success, message } = await createAndAssignTask(payload);
+    console.log(message);
+  };
+
   return (
-    <div className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-black">
-      <div className="mx-4 w-full max-w-2xl rounded-lg bg-white p-6">
-        <h3 className="mb-4 text-lg font-semibold">
-          TODO: Create/Edit Task Modal
-        </h3>
-        <div className="rounded border border-yellow-200 bg-yellow-50 p-4 dark:border-yellow-800 dark:bg-yellow-900/20">
-          <p className="text-sm text-yellow-800 dark:text-yellow-200">
-            📋 Implement task creation/editing form with rich features
-          </p>
+    <Modal
+      toggle={toggle}
+      title="Create New Task">
+      <form className="space-y-4">
+        <Input
+          id="title"
+          name="tile"
+          label="Task Title"
+          placeholder="Enter task title"
+          value={payload.title}
+          onChange={(e) => handleChange("title", e.target.value)}
+          required
+        />
+
+        <RichTextEditor
+          id="description"
+          name="description"
+          label="Description"
+          placeholder="Enter task description"
+          value={payload.description}
+          onChange={(evt) => handleChange("description", evt.target.value)}
+          required
+        />
+
+        <SelectProjectMembers
+          name="assign-to-members"
+          label="Assign to Members"
+          projectId={projectId}
+          value={payload.assignees}
+          onChange={(selectedIds) => handleChange("assignees", selectedIds)}
+        />
+
+        <SelectPriority
+          id="priority"
+          label="Priority"
+          onChange={(evt) => handleChange("priority", evt.target.value)}
+          required
+        />
+
+        <Input
+          id="dueDate"
+          name="dueDate"
+          label="Due Date"
+          placeholder="Select due date"
+          type="date"
+          value={payload.dueDate}
+          onChange={(e) => handleChange("dueDate", e.target.value)}
+          required
+        />
+
+        <Input
+          id="label"
+          name="label"
+          label="Label"
+          placeholder="Enter label (e.g. Design, Backend)"
+          value={payload.label}
+          onChange={(e) => handleChange("label", e.target.value)}
+        />
+
+        <Input
+          id="attachment"
+          name="attachment"
+          label="Attachment"
+          type="file"
+          onChange={handleFileChange}
+        />
+
+        <div className="flex justify-end space-x-3 pt-4">
+          <Button
+            type="button"
+            onClick={toggle}
+            className="bg-neutral-200 text-neutral-800 dark:bg-neutral-700 dark:text-neutral-100">
+            Cancel
+          </Button>
+          <Button
+            type="submit"
+            onClick={handleSubmit}
+            className="bg-primary text-neutral-100">
+            Create Task
+          </Button>
         </div>
-      </div>
-    </div>
+      </form>
+    </Modal>
   );
 }

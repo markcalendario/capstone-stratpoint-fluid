@@ -1,6 +1,6 @@
 "use client";
 
-import { getProjectMembersOptions } from "@/lib/actions/team";
+import { getProjectMembersOptions } from "@/lib/actions/teams";
 import { ProjectSchema } from "@/types/projects";
 import { UserSchema } from "@/types/users";
 import { ChangeEvent, useCallback, useEffect, useState } from "react";
