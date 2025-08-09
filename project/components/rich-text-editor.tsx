@@ -9,6 +9,7 @@ interface WYSIWYGEditorProps {
   name: string;
   value: string;
   label: string;
+  required?: boolean;
   placeholder: string;
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
 }
@@ -18,6 +19,7 @@ export default function RichTextEditor({
   name,
   label,
   value,
+  required,
   onChange
 }: WYSIWYGEditorProps) {
   const handleChange = (content: string) => {
@@ -30,16 +32,24 @@ export default function RichTextEditor({
 
   return (
     <div className="flex flex-col gap-1">
-      <label
-        htmlFor={id}
-        className="font-medium text-neutral-500 dark:text-neutral-400">
-        {label}
-      </label>
+      <div className="flex flex-wrap items-center justify-between gap-1">
+        <label
+          htmlFor={id}
+          className="font-medium text-neutral-500 dark:text-neutral-400">
+          {label}
+        </label>
+
+        {!required && (
+          <p className="p-1 text-xs text-neutral-500 dark:text-neutral-400">
+            Optional
+          </p>
+        )}
+      </div>
 
       <ReactQuill
         value={value}
         onChange={handleChange}
-        className="border-primary/20 dark:border-primary/50 [&_.ql-toolbar]:bg-primary [&_svg]:svg-white rounded-sm border-2 *:!border-none *:!text-base *:!font-medium dark:text-neutral-300 [&_.ql-header]:!text-white [&_.ql-header_.ql-active]:!text-white [&_.ql-header_.ql-picker-label]:hover:!text-white [&_.ql-toolbar]:!rounded-t-xs"
+        className="border-primary [&_.ql-toolbar]:bg-primary [&_svg]:svg-white rounded-sm border-2 *:!border-none *:!text-base *:!font-medium dark:text-neutral-300 [&_.ql-header]:!text-white [&_.ql-header_.ql-active]:!text-white [&_.ql-header_.ql-picker-label]:hover:!text-white [&_.ql-toolbar]:!rounded-t-xs"
         theme="snow"
       />
 

@@ -7,25 +7,27 @@ import { ChangeEvent, useCallback, useEffect, useState } from "react";
 import { showErrorToast } from "./toast";
 import UserCheckbox from "./user-checkbox";
 
-// Component Props
 interface SelectMembersProps {
   name: string;
-  placeholder: string;
+  label: string;
+  required?: boolean;
+  value: ProjectSchema["id"][];
   projectId: ProjectSchema["id"];
   onChange: (selectedIds: ProjectSchema["id"][]) => void;
 }
 
-// User data shape
 interface MembersState extends Pick<UserSchema, "id" | "imageUrl" | "name"> {}
 
 export default function SelectProjectMembers({
   name,
+  value,
+  label,
   onChange,
-  projectId,
-  placeholder
+  required,
+  projectId
 }: SelectMembersProps) {
   const [members, setMembers] = useState<MembersState[] | null>(null);
-  const [selectedIds, setSelectedIds] = useState<UserSchema["id"][]>([]);
+  const [selectedIds, setSelectedIds] = useState<UserSchema["id"][]>(value);
 
   // Handle checkbox change
   const handleChange = (evt: ChangeEvent<HTMLInputElement>) => {
@@ -48,9 +50,7 @@ export default function SelectProjectMembers({
       members: data
     } = await getProjectMembersOptions({ projectId });
 
-    if (!success || !data) {
-      return showErrorToast(message);
-    }
+    if (!success || !data) return showErrorToast(message);
 
     setMembers(data);
   }, [projectId]);
@@ -60,20 +60,27 @@ export default function SelectProjectMembers({
     retrieveMembersOptions();
   }, [retrieveMembersOptions]);
 
-  // Notify parent when selection changes
   useEffect(() => {
     onChange(selectedIds);
-  }, [selectedIds, onChange]);
+  }, [selectedIds]);
 
   if (!members) return null;
 
   return (
     <div className="flex flex-col gap-1">
-      <label className="font-medium text-neutral-500 dark:text-neutral-400">
-        {placeholder}
-      </label>
+      <div className="flex flex-wrap items-center justify-between gap-1">
+        <label className="font-medium text-neutral-500 dark:text-neutral-400">
+          {label}
+        </label>
 
-      <div className="border-primary/20 dark:border-primary/50 flex min-h-30 flex-wrap gap-2 rounded-sm border-2 p-4">
+        {!required && (
+          <p className="p-1 text-xs text-neutral-500 dark:text-neutral-400">
+            Optional
+          </p>
+        )}
+      </div>
+
+      <div className="border-primary flex min-h-30 flex-wrap gap-2 rounded-sm border-2 p-4">
         {members.map((member) => (
           <UserCheckbox
             key={member.id}
@@ -83,6 +90,7 @@ export default function SelectProjectMembers({
             userName={member.name}
             image={member.imageUrl}
             onChange={handleChange}
+            checked={selectedIds.includes(member.id)}
           />
         ))}
       </div>
