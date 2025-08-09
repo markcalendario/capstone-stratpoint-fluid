@@ -80,6 +80,15 @@ const projectQueries = {
     return owner.ownerId;
   },
 
+  getOwner: async (id: ProjectSchema["id"]) => {
+    const [owner] = await db.query.projects.findMany({
+      where: (projects, { eq }) => eq(projects.id, id),
+      with: { user: true }
+    });
+
+    return owner.user;
+  },
+
   update: async (id: ProjectSchema["id"], data: UpdateProjectData) => {
     const [updatedProject] = await db
       .update(projects)
