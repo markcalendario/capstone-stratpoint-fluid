@@ -1,6 +1,10 @@
 import { tasks } from "@/lib/db/drizzle/migrations/schema";
 import { ListSchema } from "@/types/lists";
-import { CreateTaskData, TaskSchema, UpdateTaskData } from "@/types/tasks";
+import {
+  CreateAndAssignTaskData,
+  TaskSchema,
+  UpdateTaskData
+} from "@/types/tasks";
 import { eq } from "drizzle-orm";
 import db from "..";
 
@@ -21,14 +25,15 @@ const taskQueries = {
     return tasks;
   },
 
-  create: async (data: CreateTaskData) => {
-    const [newTask] = await db
+  create: async (data: CreateAndAssignTaskData) => {
+    const [taskId] = await db
       .insert(tasks)
       .values(data)
       .returning({ id: tasks.id });
 
-    return newTask.id;
+    return taskId.id;
   },
+
   update: async (id: TaskSchema["id"], data: UpdateTaskData) => {
     const [updatedTask] = await db
       .update(tasks)

@@ -10,10 +10,18 @@ export interface TaskSchema extends InferSelectModel<typeof tasks> {
 
 export interface Task extends InferSelectModel<typeof tasks> {}
 
-export type CreateTaskData = Pick<
-  TaskSchema,
-  "description" | "dueDate" | "listId" | "priority" | "title"
->;
+export interface CreateAndAssignTaskData
+  extends Pick<
+    TaskSchema,
+    | "description"
+    | "dueDate"
+    | "listId"
+    | "priority"
+    | "title"
+    | "createdBy"
+    | "attachment"
+    | "label"
+  > {}
 
 export type UpdateTaskData = Pick<
   TaskSchema,

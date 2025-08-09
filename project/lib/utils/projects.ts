@@ -1,13 +1,13 @@
 import { List } from "@/types/lists";
 import { Project, ProjectSchema } from "@/types/projects";
 import { Task } from "@/types/tasks";
-import { TeamsSchema } from "@/types/teams";
+import { Team } from "@/types/teams";
 import { UserSchema } from "@/types/users";
 import projectQueries from "../db/queries/projects";
 import { formatDate } from "./date-and-time";
 
 interface ToCardData extends Omit<Project, "teams" | "lists"> {
-  teams: TeamsSchema[];
+  teams: Team[];
   lists: Array<
     List & {
       tasks: Task[];
@@ -28,7 +28,8 @@ export function toCardData(projects: ToCardData[]) {
     }, 0);
 
     const totalTasks = doneTasks + pendingTasks;
-    const progress = totalTasks === 0 ? 0 : doneTasks / totalTasks;
+    const progress =
+      totalTasks === 0 ? 0 : Math.round((doneTasks / totalTasks) * 100);
 
     projectCardData.push({
       id: project.id,
