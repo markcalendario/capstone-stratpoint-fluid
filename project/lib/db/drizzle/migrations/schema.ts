@@ -1,8 +1,34 @@
-import { pgTable, unique, uuid, text, timestamp, foreignKey, integer, boolean, date, pgEnum } from "drizzle-orm/pg-core"
+import { pgTable, foreignKey, uuid, text, date, integer, timestamp, unique, boolean, pgEnum } from "drizzle-orm/pg-core"
 import { sql } from "drizzle-orm"
 
 export const priority = pgEnum("PRIORITY", ['low', 'medium', 'high'])
 
+
+export const tasks = pgTable("tasks", {
+	id: uuid().defaultRandom().primaryKey().notNull(),
+	title: text().notNull(),
+	description: text().notNull(),
+	listId: uuid().notNull(),
+	priority: priority().notNull(),
+	dueDate: date().notNull(),
+	position: integer(),
+	createdAt: timestamp({ withTimezone: true, mode: 'string' }).default(sql`CURRENT_TIMESTAMP`).notNull(),
+	updatedAt: timestamp({ withTimezone: true, mode: 'string' }).default(sql`CURRENT_TIMESTAMP`).notNull(),
+	attachment: text(),
+	label: text(),
+	createdBy: uuid().notNull(),
+}, (table) => [
+	foreignKey({
+			columns: [table.listId],
+			foreignColumns: [lists.id],
+			name: "listTask"
+		}).onDelete("cascade"),
+	foreignKey({
+			columns: [table.createdBy],
+			foreignColumns: [users.id],
+			name: "userTask"
+		}).onDelete("cascade"),
+]);
 
 export const users = pgTable("users", {
 	id: uuid().defaultRandom().primaryKey().notNull(),
@@ -72,26 +98,6 @@ export const projects = pgTable("projects", {
 			columns: [table.ownerId],
 			foreignColumns: [users.id],
 			name: "projectOwner"
-		}).onDelete("cascade"),
-]);
-
-export const tasks = pgTable("tasks", {
-	id: uuid().defaultRandom().primaryKey().notNull(),
-	title: text().notNull(),
-	description: text().notNull(),
-	listId: uuid().notNull(),
-	priority: priority().notNull(),
-	dueDate: date().notNull(),
-	position: integer(),
-	createdAt: timestamp({ withTimezone: true, mode: 'string' }).default(sql`CURRENT_TIMESTAMP`).notNull(),
-	updatedAt: timestamp({ withTimezone: true, mode: 'string' }).default(sql`CURRENT_TIMESTAMP`).notNull(),
-	attachment: text(),
-	label: text(),
-}, (table) => [
-	foreignKey({
-			columns: [table.listId],
-			foreignColumns: [lists.id],
-			name: "listTask"
 		}).onDelete("cascade"),
 ]);
 

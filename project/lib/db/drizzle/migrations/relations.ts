@@ -1,5 +1,39 @@
 import { relations } from "drizzle-orm/relations";
-import { tasks, comments, users, projects, lists, teams, taskAssignments } from "./schema";
+import { lists, tasks, users, comments, projects, teams, taskAssignments } from "./schema";
+
+export const tasksRelations = relations(tasks, ({one, many}) => ({
+	list: one(lists, {
+		fields: [tasks.listId],
+		references: [lists.id]
+	}),
+	user: one(users, {
+		fields: [tasks.createdBy],
+		references: [users.id]
+	}),
+	comments: many(comments),
+	taskAssignments: many(taskAssignments),
+}));
+
+export const listsRelations = relations(lists, ({one, many}) => ({
+	tasks: many(tasks),
+	project: one(projects, {
+		fields: [lists.projectId],
+		references: [projects.id]
+	}),
+	user: one(users, {
+		fields: [lists.createdBy],
+		references: [users.id]
+	}),
+}));
+
+export const usersRelations = relations(users, ({many}) => ({
+	tasks: many(tasks),
+	comments: many(comments),
+	lists: many(lists),
+	projects: many(projects),
+	teams: many(teams),
+	taskAssignments: many(taskAssignments),
+}));
 
 export const commentsRelations = relations(comments, ({one}) => ({
 	task: one(tasks, {
@@ -10,35 +44,6 @@ export const commentsRelations = relations(comments, ({one}) => ({
 		fields: [comments.authorId],
 		references: [users.id]
 	}),
-}));
-
-export const tasksRelations = relations(tasks, ({one, many}) => ({
-	comments: many(comments),
-	list: one(lists, {
-		fields: [tasks.listId],
-		references: [lists.id]
-	}),
-	taskAssignments: many(taskAssignments),
-}));
-
-export const usersRelations = relations(users, ({many}) => ({
-	comments: many(comments),
-	lists: many(lists),
-	projects: many(projects),
-	teams: many(teams),
-	taskAssignments: many(taskAssignments),
-}));
-
-export const listsRelations = relations(lists, ({one, many}) => ({
-	project: one(projects, {
-		fields: [lists.projectId],
-		references: [projects.id]
-	}),
-	user: one(users, {
-		fields: [lists.createdBy],
-		references: [users.id]
-	}),
-	tasks: many(tasks),
 }));
 
 export const projectsRelations = relations(projects, ({one, many}) => ({
