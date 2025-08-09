@@ -17,7 +17,7 @@ export default async function ListCard({ id, name, projectId }: ListCardProps) {
   if (!tasks) return null;
 
   return (
-    <div className="border-primary/20 relative max-h-[500px] min-h-[500px] min-w-80 overflow-auto rounded-sm border-3 bg-neutral-100 dark:bg-neutral-900">
+    <div className="border-primary/20 relative max-h-[600px] min-h-[500px] min-w-90 overflow-auto rounded-sm border-3 bg-neutral-100 dark:bg-neutral-900">
       <div className="bg-primary sticky top-0 px-3 py-2 dark:border-neutral-600">
         <div className="flex items-center justify-between">
           <h3 className="font-semibold text-neutral-200">
