@@ -2,7 +2,7 @@
 
 import { ListSchema } from "@/types/lists";
 import { ProjectSchema } from "@/types/projects";
-import { Plus } from "lucide-react";
+import { PlusSquare } from "lucide-react";
 import { Fragment, useState } from "react";
 import { CreateTaskModal } from "./modals/create-task-modal";
 
@@ -26,7 +26,7 @@ export default function AddTaskButton({
       <button
         onClick={toggleModal}
         className={className}>
-        <Plus size={16} /> Add Task
+        <PlusSquare size={16} /> Add Task
       </button>
 
       {isModalOpen && (
