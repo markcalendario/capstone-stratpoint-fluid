@@ -53,7 +53,9 @@ CREATE TABLE "tasks" (
 	"dueDate" date NOT NULL,
 	"position" integer,
 	"createdAt" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-	"updatedAt" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+	"updatedAt" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	"attachment" text,
+	"label" text
 );
 --> statement-breakpoint
 CREATE TABLE "teams" (

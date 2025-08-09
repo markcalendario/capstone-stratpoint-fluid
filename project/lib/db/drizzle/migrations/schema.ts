@@ -85,6 +85,8 @@ export const tasks = pgTable("tasks", {
 	position: integer(),
 	createdAt: timestamp({ withTimezone: true, mode: 'string' }).default(sql`CURRENT_TIMESTAMP`).notNull(),
 	updatedAt: timestamp({ withTimezone: true, mode: 'string' }).default(sql`CURRENT_TIMESTAMP`).notNull(),
+	attachment: text(),
+	label: text(),
 }, (table) => [
 	foreignKey({
 			columns: [table.listId],
