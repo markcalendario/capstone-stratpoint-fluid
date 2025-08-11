@@ -13,9 +13,9 @@ import {
 } from "@/lib/validations/lists";
 import {
   CreateListPayload,
+  DeleteListPayload,
   GetListPayload,
   GetProjectListsPayload,
-  ListSchema,
   UpdateListPayload
 } from "@/types/lists";
 import { ZodError } from "zod";
@@ -113,10 +113,6 @@ export async function getList(payload: GetListPayload) {
 
     return { success: false, message: "Error. Cannot get list.", list: null };
   }
-}
-
-interface DeleteListPayload {
-  id: ListSchema["id"];
 }
 
 export async function deleteList(payload: DeleteListPayload) {

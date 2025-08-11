@@ -29,3 +29,7 @@ export interface GetListPayload {
 
 export interface CreateListPayload
   extends Pick<ListSchema, "name" | "isFinal" | "projectId"> {}
+
+export interface DeleteListPayload {
+  id: ListSchema["id"];
+}

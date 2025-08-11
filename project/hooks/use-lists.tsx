@@ -1,41 +1,43 @@
 import { queryClient } from "@/components/ui/query-client-provider";
 import {
   createList,
+  deleteList,
   getList,
   getProjectLists,
   updateList
 } from "@/lib/actions/lists";
 import {
   CreateListPayload,
-  GetListPayload,
-  GetProjectListsPayload,
+  DeleteListPayload,
+  ListSchema,
   UpdateListPayload
 } from "@/types/lists";
+import { ProjectSchema } from "@/types/projects";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
-export function useList(payload: GetListPayload) {
+export function useList(id: ListSchema["id"]) {
   const { isPending, data } = useQuery({
-    queryKey: ["list", payload.id],
-    queryFn: () => getList(payload)
+    queryKey: ["list", id],
+    queryFn: () => getList({ id })
   });
 
   return { isListLoading: isPending, listData: data };
 }
 
-export function useProjectLists(payload: GetProjectListsPayload) {
+export function useProjectLists(projectId: ProjectSchema["id"]) {
   const { isPending, data } = useQuery({
     queryKey: ["projectLists"],
-    queryFn: () => getProjectLists(payload)
+    queryFn: () => getProjectLists({ projectId })
   });
 
   return { isProjectListLoading: isPending, projectListsData: data };
 }
 
-export function useUpdateList(payload: UpdateListPayload) {
+export function useUpdateList(id: ListSchema["id"]) {
   const { isPending, mutateAsync } = useMutation({
     mutationFn: (payload: UpdateListPayload) => updateList(payload),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["list", payload.id] });
+      queryClient.invalidateQueries({ queryKey: ["list", id] });
       queryClient.invalidateQueries({ queryKey: ["projectLists"] });
     }
   });
@@ -52,4 +54,16 @@ export function useCreateList() {
   });
 
   return { isCreatingList: isPending, createList: mutateAsync };
+}
+
+export function useDeleteList(id: ListSchema["id"]) {
+  const { isPending, mutateAsync } = useMutation({
+    mutationFn: (payload: DeleteListPayload) => deleteList(payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["list", id] });
+      queryClient.invalidateQueries({ queryKey: ["projectLists"] });
+    }
+  });
+
+  return { isListDeleting: isPending, deleteList: mutateAsync };
 }

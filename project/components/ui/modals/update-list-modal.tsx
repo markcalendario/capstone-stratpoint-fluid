@@ -16,8 +16,8 @@ interface UpdateListModalProps {
 
 export function UpdateListModal({ id, toggle }: UpdateListModalProps) {
   const [formData, setFormData] = useState({ name: "", listType: "" });
-  const { isListUpdating, updateList } = useUpdateList();
-  const { isListLoading, listData } = useList({ id });
+  const { isListUpdating, updateList } = useUpdateList(id);
+  const { isListLoading, listData } = useList(id);
 
   const handleChange = (evt: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = evt.target;

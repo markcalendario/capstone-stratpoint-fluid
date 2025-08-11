@@ -46,9 +46,7 @@ interface KanbanBoardProps {
 }
 
 export default function KanbanBoard({ projectId }: KanbanBoardProps) {
-  const { isProjectListLoading, projectListsData } = useProjectLists({
-    projectId
-  });
+  const { isProjectListLoading, projectListsData } = useProjectLists(projectId);
 
   const loaded = !isProjectListLoading && projectListsData?.lists;
 

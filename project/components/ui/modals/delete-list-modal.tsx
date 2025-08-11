@@ -1,4 +1,4 @@
-import { deleteList } from "@/lib/actions/lists";
+import { useDeleteList } from "@/hooks/use-lists";
 import { ListSchema } from "@/types/lists";
 import { ChangeEvent, useState } from "react";
 import Button from "../buttons/button";
@@ -13,8 +13,9 @@ interface DeleteListModalProps {
 
 export function DeleteListModal({ toggle, listId }: DeleteListModalProps) {
   const TARGET_CONFIRM_TEXT = "DELETE LIST";
-
   const [confirmText, setConfirmText] = useState("");
+
+  const { isListDeleting, deleteList } = useDeleteList(listId);
 
   const handleConfirmChange = (evt: ChangeEvent<HTMLInputElement>) => {
     setConfirmText(evt.target.value);
@@ -26,7 +27,6 @@ export function DeleteListModal({ toggle, listId }: DeleteListModalProps) {
     }
 
     const { success, message } = await deleteList({ id: listId });
-
     if (!success) return showErrorToast(message);
     showSuccessToast(message);
 
@@ -53,6 +53,7 @@ export function DeleteListModal({ toggle, listId }: DeleteListModalProps) {
           </Button>
           <Button
             onClick={handleDeleteList}
+            isProcessing={isListDeleting}
             className="bg-red-700 text-neutral-100">
             Delete List
           </Button>
