@@ -31,7 +31,6 @@ export function DeleteProjectModal({
     }
 
     const { success, message } = await deleteProject({ id: projectId });
-
     if (!success) return showErrorToast(message);
     showSuccessToast(message);
 

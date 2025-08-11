@@ -1,8 +1,7 @@
 "use server";
 
-import { ListSchema } from "@/types/lists";
 import { ProjectSchema } from "@/types/projects";
-import { Task, TaskSchema } from "@/types/tasks";
+import { GetTasksByListId, Task, TaskSchema } from "@/types/tasks";
 import { UserSchema } from "@/types/users";
 import { revalidatePath } from "next/cache";
 import { ZodError } from "zod";
@@ -18,11 +17,7 @@ import {
   getTasksByListIdPayloadSchema
 } from "../validations/tasks";
 
-interface GetTasksByListId {
-  listId: ListSchema["id"];
-}
-
-export const getTasksByListId = async (payload: GetTasksByListId) => {
+export const getListTasks = async (payload: GetTasksByListId) => {
   try {
     const parsed = getTasksByListIdPayloadSchema.parse(payload);
     const tasks = await taskQueries.getWithAssigneesByListId(parsed.listId);

@@ -49,3 +49,9 @@ export type TaskStatus = {
   Done: number;
   Pending: number;
 };
+
+// Payload
+
+export interface GetTasksByListId {
+  listId: ListSchema["id"];
+}

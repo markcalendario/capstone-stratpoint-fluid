@@ -1,8 +1,9 @@
-"use server";
+"use client";
 
-import { getListsByProjectId } from "@/lib/actions/lists";
+import { useProjectLists } from "@/hooks/use-lists";
 import { ProjectSchema } from "@/types/projects";
 import CreateListButton from "../buttons/create-list-button";
+import SectionLoader from "../section-loader";
 import ListCard from "./list-card";
 
 // TODO: Task 5.1 - Design responsive Kanban board layout
@@ -44,28 +45,34 @@ interface KanbanBoardProps {
   projectId: ProjectSchema["id"];
 }
 
-export default async function KanbanBoard({ projectId }: KanbanBoardProps) {
-  const { lists } = await getListsByProjectId({ projectId });
+export default function KanbanBoard({ projectId }: KanbanBoardProps) {
+  const { isProjectListLoading, projectListsData } = useProjectLists({
+    projectId
+  });
 
-  if (!lists) return;
+  const loaded = !isProjectListLoading && projectListsData?.lists;
 
   return (
     <div className="outline-primary/20 w-full rounded-sm bg-white p-6 outline-2 dark:bg-neutral-800">
-      <div className="flex min-w-full flex-nowrap items-stretch space-x-6 overflow-x-auto pb-4">
-        {lists.map((list) => (
-          <ListCard
-            key={list.id}
-            id={list.id}
-            projectId={projectId}
-            name={list.name}
-          />
-        ))}
+      {!loaded && <SectionLoader text="Fetching Kanban Columns" />}
 
-        <CreateListButton
-          projectId={projectId}
-          className="border-primary/20 text-primary hover:bg-primary/10 flex min-h-[500px] min-w-100 cursor-pointer flex-nowrap items-center justify-center gap-2 rounded-sm border-2 border-dashed bg-neutral-50 dark:border-neutral-500 dark:bg-neutral-800 dark:text-neutral-300"
-        />
-      </div>
+      {loaded && (
+        <div className="flex min-w-full flex-nowrap items-stretch space-x-6 overflow-x-auto pb-4">
+          {projectListsData.lists.map((list) => (
+            <ListCard
+              key={list.id}
+              id={list.id}
+              projectId={projectId}
+              name={list.name}
+            />
+          ))}
+
+          <CreateListButton
+            projectId={projectId}
+            className="border-primary/20 text-primary hover:bg-primary/10 flex min-h-[500px] min-w-100 cursor-pointer flex-nowrap items-center justify-center gap-2 rounded-sm border-2 border-dashed bg-neutral-50 dark:border-neutral-500 dark:bg-neutral-800 dark:text-neutral-300"
+          />
+        </div>
+      )}
     </div>
   );
 }

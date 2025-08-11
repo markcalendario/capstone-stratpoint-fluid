@@ -11,8 +11,7 @@ import {
   listSchema,
   updateListPayloadSchema
 } from "@/lib/validations/lists";
-import { ListSchema } from "@/types/lists";
-import { ProjectSchema } from "@/types/projects";
+import { GetListsByProjectIdPayload, ListSchema } from "@/types/lists";
 import { revalidatePath } from "next/cache";
 import { ZodError } from "zod";
 
@@ -53,11 +52,7 @@ export async function createList(payload: CreateListPayload) {
   }
 }
 
-interface GetListsByProjectIdPayload {
-  projectId: ProjectSchema["id"];
-}
-
-export async function getListsByProjectId(payload: GetListsByProjectIdPayload) {
+export async function getProjectLists(payload: GetListsByProjectIdPayload) {
   try {
     const parsed = getListsByProjectIdSchema.parse(payload);
     const lists = await listQueries.getByProjectId(parsed.projectId);

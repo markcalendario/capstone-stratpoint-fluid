@@ -13,3 +13,9 @@ export interface CreateListData
 
 export interface UpdateListData
   extends Pick<ListSchema, "name" | "isFinal" | "updatedAt"> {}
+
+// Payloads
+
+interface GetListsByProjectIdPayload {
+  projectId: ProjectSchema["id"];
+}
