@@ -17,7 +17,7 @@ export function useCreateAndAssignTask() {
     mutationFn: createAndAssignTask,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["listTasks"] });
-      queryClient.invalidateQueries({ queryKey: ["dashboardStatus"] });
+      queryClient.invalidateQueries({ queryKey: ["analytics"] });
     }
   });
 

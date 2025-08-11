@@ -28,6 +28,7 @@ export function useCreateProject() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["projects"] });
       queryClient.invalidateQueries({ queryKey: ["recentProjects"] });
+      queryClient.invalidateQueries({ queryKey: ["analytics"] });
     }
   });
 }
@@ -55,6 +56,7 @@ export function useUpdateProject(id: ProjectSchema["id"]) {
       queryClient.invalidateQueries({ queryKey: ["projects"] });
       queryClient.invalidateQueries({ queryKey: ["project", id] });
       queryClient.invalidateQueries({ queryKey: ["recentProjects"] });
+      queryClient.invalidateQueries({ queryKey: ["analytics"] });
     }
   });
 
@@ -71,6 +73,7 @@ export function useDeleteProject(id: ProjectSchema["id"]) {
       queryClient.invalidateQueries({ queryKey: ["projects"] });
       queryClient.invalidateQueries({ queryKey: ["project", id] });
       queryClient.invalidateQueries({ queryKey: ["recentProjects"] });
+      queryClient.invalidateQueries({ queryKey: ["analytics"] });
     }
   });
 

@@ -39,6 +39,7 @@ export function useUpdateList(id: ListSchema["id"]) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["list", id] });
       queryClient.invalidateQueries({ queryKey: ["projectLists"] });
+      queryClient.invalidateQueries({ queryKey: ["analytics"] });
     }
   });
 
@@ -50,6 +51,7 @@ export function useCreateList() {
     mutationFn: (payload: CreateListPayload) => createList(payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["projectLists"] });
+      queryClient.invalidateQueries({ queryKey: ["analytics"] });
     }
   });
 
@@ -62,6 +64,7 @@ export function useDeleteList(id: ListSchema["id"]) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["list", id] });
       queryClient.invalidateQueries({ queryKey: ["projectLists"] });
+      queryClient.invalidateQueries({ queryKey: ["analytics"] });
     }
   });
 

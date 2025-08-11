@@ -1,13 +1,19 @@
-"use server";
+"use client";
 
-import { getDashboardStatus } from "@/lib/actions/analytics";
+import SectionLoader from "@/components/ui/section-loader";
+import useDashboardStatus from "@/hooks/use-analytics";
 import { CheckCircle, Clock, TrendingUp, Users } from "lucide-react";
 import StatusCard from "../../ui/status-card";
 
-export default async function DashboardStatus() {
-  const { status } = await getDashboardStatus();
+export default function DashboardStatus() {
+  const { isDashboardStatusLoading, dashboardStatusData } =
+    useDashboardStatus();
 
-  if (!status) return null;
+  if (isDashboardStatusLoading || !dashboardStatusData?.status) {
+    return <SectionLoader text="Loading Status" />;
+  }
+
+  const { status } = dashboardStatusData;
 
   const statusCardData = [
     {
