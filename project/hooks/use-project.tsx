@@ -1,24 +1,12 @@
 import { showErrorToast, showSuccessToast } from "@/components/ui/toast";
 import { getProject } from "@/lib/actions/projects";
-import { List } from "@/types/lists";
 import { Project, ProjectSchema } from "@/types/projects";
-import { Task } from "@/types/tasks";
-import { TeamsSchema } from "@/types/teams";
 import { useCallback, useEffect, useState } from "react";
 
-interface ProjectState extends Omit<Project, "teams" | "lists"> {
-  teams: TeamsSchema[];
-  lists: Array<
-    List & {
-      tasks: Task[];
-    }
-  >;
-}
-
-type UseProjectReturn = [ProjectState | null, () => void];
+type UseProjectReturn = [Project | null, () => void];
 
 export default function useProject(id: ProjectSchema["id"]): UseProjectReturn {
-  const [project, setProject] = useState<ProjectState | null>(null);
+  const [project, setProject] = useState<Project | null>(null);
 
   const retrieveProject = useCallback(async () => {
     const {
