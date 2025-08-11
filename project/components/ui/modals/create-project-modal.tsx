@@ -15,7 +15,7 @@ export function CreateProjectModal({ toggle }: CreateProjectModalProps) {
   const [description, setDescription] = useState("");
   const [dueDate, setDueDate] = useState("");
 
-  const { isPending, error, mutateAsync: createProject } = useCreateProject();
+  const { isCreatingProject, createProject } = useCreateProject();
 
   const handleCreateProject = async () => {
     const payload = { name, description, dueDate };
@@ -73,7 +73,7 @@ export function CreateProjectModal({ toggle }: CreateProjectModalProps) {
           </Button>
           <Button
             type="button"
-            isProcessing={isPending}
+            isProcessing={isCreatingProject}
             onClick={handleCreateProject}
             className="bg-primary text-neutral-100">
             Create Project

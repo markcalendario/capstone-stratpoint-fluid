@@ -15,15 +15,17 @@ import {
 } from "@/types/projects";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
-export function useUserProjects() {
-  return useQuery({
+export function useProjects() {
+  const { isPending, data } = useQuery({
     queryKey: ["projects"],
     queryFn: getProjects
   });
+
+  return { isProjectsLoading: isPending, projectsData: data };
 }
 
 export function useCreateProject() {
-  return useMutation({
+  const { isPending, mutateAsync } = useMutation({
     mutationFn: (payload: CreateProjectPayload) => createProject(payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["projects"] });
@@ -31,13 +33,17 @@ export function useCreateProject() {
       queryClient.invalidateQueries({ queryKey: ["analytics"] });
     }
   });
+
+  return { isCreatingProject: isPending, createProject: mutateAsync };
 }
 
 export function useRecentProjects() {
-  return useQuery({
+  const { isPending, data } = useQuery({
     queryKey: ["recentProjects"],
     queryFn: getRecentProjects
   });
+
+  return { isRecentProjectsLoading: isPending, recentProjectsData: data };
 }
 
 export function useUserProject(id: ProjectSchema["id"]) {

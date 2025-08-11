@@ -6,7 +6,7 @@ import { useRecentProjects } from "@/hooks/use-projects";
 import Link from "next/link";
 
 export default function RecentProjects() {
-  const { isPending, data } = useRecentProjects();
+  const { isRecentProjectsLoading, recentProjectsData } = useRecentProjects();
 
   return (
     <div className="border-primary/20 rounded-sm border-2 bg-white p-6 dark:bg-neutral-800">
@@ -22,13 +22,13 @@ export default function RecentProjects() {
       </div>
 
       <div className="space-y-3">
-        {(isPending || !data) && (
+        {(isRecentProjectsLoading || !recentProjectsData) && (
           <SectionLoader text="Retrieving Recent Projects" />
         )}
 
-        {!isPending &&
-          data &&
-          data.recentProjects.map((project) => (
+        {!isRecentProjectsLoading &&
+          recentProjectsData &&
+          recentProjectsData.recentProjects.map((project) => (
             <ProjectCard
               key={project.id}
               id={project.id}
