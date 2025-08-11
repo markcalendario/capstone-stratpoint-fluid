@@ -1,6 +1,6 @@
 import { AddTeamMemberButton } from "@/components/add-member-button";
 import { DashboardContent } from "@/components/layouts/dashboard/dashboard-content";
-import TeamCard from "@/components/team-card";
+import TeamCard from "@/components/ui/team-card";
 
 export default function TeamPage() {
   return (
