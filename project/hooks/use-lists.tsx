@@ -29,6 +29,7 @@ export function useUpdateList() {
   const { isPending, mutateAsync } = useMutation({
     mutationFn: (payload: UpdateListPayload) => updateList(payload),
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["list"] });
       queryClient.invalidateQueries({ queryKey: ["projectLists"] });
     }
   });
