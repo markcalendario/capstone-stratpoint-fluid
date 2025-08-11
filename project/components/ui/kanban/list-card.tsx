@@ -15,7 +15,7 @@ interface ListCardProps {
 }
 
 export default function ListCard({ id, name, projectId }: ListCardProps) {
-  const { isListTasksLoading, listTasksData } = useListTasks({ listId: id });
+  const { isListTasksLoading, listTasksData } = useListTasks(id);
 
   const loaded = !isListTasksLoading && listTasksData?.tasks;
 
