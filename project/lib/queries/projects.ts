@@ -6,7 +6,7 @@ import {
 } from "@/types/projects";
 import { UserSchema } from "@/types/users";
 import { and, eq, inArray } from "drizzle-orm";
-import db from "..";
+import db from "../db";
 
 const projectQueries = {
   create: async (data: CreateProjectData) => {

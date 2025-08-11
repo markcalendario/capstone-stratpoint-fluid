@@ -6,8 +6,8 @@ import { Task, TaskSchema } from "@/types/tasks";
 import { UserSchema } from "@/types/users";
 import { revalidatePath } from "next/cache";
 import { ZodError } from "zod";
-import taskAssignmentsQueries from "../db/queries/taskAssignments";
-import taskQueries from "../db/queries/tasks";
+import taskAssignmentsQueries from "..//queries/taskAssignments";
+import taskQueries from "..//queries/tasks";
 import { isUserProjectOwner } from "../utils/projects";
 import { toTaskCard } from "../utils/tasks";
 import { getUserId } from "../utils/users";
@@ -80,9 +80,10 @@ export async function createAndAssignTask(payload: CreateTaskPayload) {
 
     const taskId = await taskQueries.create(createTaskData);
 
-    const assignmentData = { taskId, userIds: parsed.assignees };
-
-    await taskAssignmentsQueries.createMany(assignmentData);
+    if (parsed.assignees.length) {
+      const assignmentData = { taskId, userIds: parsed.assignees };
+      await taskAssignmentsQueries.createMany(assignmentData);
+    }
 
     revalidatePath("/(dashboard)");
 
@@ -171,9 +172,10 @@ export async function editTaskPayload(payload: EditTaskPayload) {
 
     const taskId = await taskQueries.update(editTaskPayload);
 
-    const assignmentData = { taskId, userIds: parsed.assignees };
-
-    await taskAssignmentsQueries.createMany(assignmentData);
+    if (parsed.assignees.length) {
+      const assignmentData = { taskId, userIds: parsed.assignees };
+      await taskAssignmentsQueries.createMany(assignmentData);
+    }
 
     revalidatePath("/(dashboard)");
 

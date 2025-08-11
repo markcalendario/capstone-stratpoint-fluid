@@ -2,8 +2,8 @@
 
 import { ProjectSchema } from "@/types/projects";
 import { ZodError } from "zod";
-import projectQueries from "../db/queries/projects";
-import teamQueries from "../db/queries/team";
+import projectQueries from "..//queries/projects";
+import teamQueries from "..//queries/team";
 import { isUserProjectOwner } from "../utils/projects";
 import { getUserId } from "../utils/users";
 import { getProjectMembersOptionsPayloadSchema } from "../validations/teams";

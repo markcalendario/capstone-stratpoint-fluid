@@ -1,4 +1,4 @@
-import userQueries from "@/lib/db/queries/users";
+import userQueries from "@/lib/queries/users";
 import {
   createUserSchema,
   updateUserSchema,

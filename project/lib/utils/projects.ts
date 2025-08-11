@@ -3,7 +3,7 @@ import { Project, ProjectSchema } from "@/types/projects";
 import { Task } from "@/types/tasks";
 import { Team } from "@/types/teams";
 import { UserSchema } from "@/types/users";
-import projectQueries from "../db/queries/projects";
+import projectQueries from "..//queries/projects";
 import { formatDate } from "./date-and-time";
 
 interface ToCardData extends Omit<Project, "teams" | "lists"> {

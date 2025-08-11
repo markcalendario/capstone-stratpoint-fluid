@@ -1,6 +1,6 @@
 "use server";
 
-import listQueries from "@/lib/db/queries/lists";
+import listQueries from "@/lib/queries/lists";
 import { isUserListCreator } from "@/lib/utils/lists";
 import { isUserProjectOwner } from "@/lib/utils/projects";
 import { getUserId } from "@/lib/utils/users";

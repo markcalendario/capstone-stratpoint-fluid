@@ -2,7 +2,7 @@ import { lists } from "@/lib/db/drizzle/migrations/schema";
 import { CreateListData, ListSchema, UpdateListData } from "@/types/lists";
 import { ProjectSchema } from "@/types/projects";
 import { eq } from "drizzle-orm";
-import db from "..";
+import db from "../db";
 
 const listQueries = {
   getAll: async () => {

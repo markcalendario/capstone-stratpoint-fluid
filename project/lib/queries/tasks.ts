@@ -6,7 +6,7 @@ import {
   UpdateTaskData
 } from "@/types/tasks";
 import { eq } from "drizzle-orm";
-import db from "..";
+import db from "../db";
 
 const taskQueries = {
   getAll: async () => {

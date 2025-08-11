@@ -5,7 +5,7 @@ import {
   UpdateCommentData
 } from "@/types/comments";
 import { eq } from "drizzle-orm";
-import db from "..";
+import db from "../db";
 
 const commentQueries = {
   getAll: async () => {

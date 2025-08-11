@@ -1,5 +1,5 @@
 import { ProjectSchema } from "@/types/projects";
-import db from "..";
+import db from "../db";
 
 const teamQueries = {
   getByProjectId: async (projectId: ProjectSchema["id"]) => {

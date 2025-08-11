@@ -3,7 +3,7 @@
 import { ProjectSchema } from "@/types/projects";
 import { revalidatePath } from "next/cache";
 import { ZodError } from "zod";
-import projectQueries from "../db/queries/projects";
+import projectQueries from "..//queries/projects";
 import { isUserProjectOwner, toCardData } from "../utils/projects";
 import { getUserId } from "../utils/users";
 import {

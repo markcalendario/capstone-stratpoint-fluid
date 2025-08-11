@@ -2,7 +2,7 @@ import { users } from "@/lib/db/drizzle/migrations/schema";
 import { CreateUserData, UpdateUserData, UserSchema } from "@/types/users";
 import { eq } from "drizzle-orm";
 import { v4 as uuidv4 } from "uuid";
-import db from "..";
+import db from "../db";
 
 const userQueries = {
   getAll: async () => {
