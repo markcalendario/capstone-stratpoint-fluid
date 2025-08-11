@@ -12,9 +12,9 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { Fragment, useState } from "react";
-import Dropdown from "./drop-down";
-import { DeleteProjectModal } from "./modals/delete-project-modal";
-import { EditProjectModal } from "./modals/edit-project-modal";
+import Dropdown from "../drop-down";
+import { DeleteProjectModal } from "../modals/delete-project-modal";
+import { EditProjectModal } from "../modals/edit-project-modal";
 
 interface ProjectCardProps extends IProjectCard {
   className?: string;

@@ -1,8 +1,8 @@
 "use server";
 
+import ProjectCard from "@/components/ui/project-card";
 import { getRecentProjects } from "@/lib/actions/projects";
 import Link from "next/link";
-import ProjectCard from "../../project-card";
 
 export default async function RecentProjects() {
   const { recentProjects } = await getRecentProjects();
