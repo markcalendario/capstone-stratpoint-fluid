@@ -1,11 +1,11 @@
 "use client";
 
-import AppearanceSettingsForm from "@/components/appearance-settings-form";
 import { DashboardContent } from "@/components/layouts/dashboard/dashboard-content";
-import NotificationsSettingsForm from "@/components/notifications-settings-form";
-import ProfileSettingsForm from "@/components/profile-settings-form";
-import SecuritySettingsForm from "@/components/security-settings-form";
-import SettingsNavigation from "@/components/settings-navigation";
+import AppearanceSettingsForm from "@/components/sections/settings/appearance-settings-form";
+import NotificationsSettingsForm from "@/components/sections/settings/notifications-settings-form";
+import ProfileSettingsForm from "@/components/sections/settings/profile-settings-form";
+import SecuritySettingsForm from "@/components/sections/settings/security-settings-form";
+import SettingsNavigation from "@/components/sections/settings/settings-navigation";
 import { useState } from "react";
 
 export default function SettingsPage() {

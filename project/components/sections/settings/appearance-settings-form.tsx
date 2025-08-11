@@ -1,6 +1,6 @@
+import Select from "@/components/select";
+import { Theme, useTheme } from "@/components/ui/theme-provider";
 import { cn } from "@/lib/utils";
-import Select from "./select";
-import { Theme, useTheme } from "./ui/theme-provider";
 
 interface AppearanceSettingsFormProps {
   className?: string;

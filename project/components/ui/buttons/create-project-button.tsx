@@ -1,10 +1,10 @@
 "use client";
 
+import { CreateProjectModal } from "@/components/modals/create-project-modal";
 import { cn } from "@/lib/utils";
 import { Plus } from "lucide-react";
 import { Fragment, useState } from "react";
-import { CreateProjectModal } from "./modals/create-project-modal";
-import Button from "./ui/buttons/button";
+import Button from "./button";
 
 interface CreateProjectButtonProps {
   className: string;

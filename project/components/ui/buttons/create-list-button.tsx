@@ -1,9 +1,9 @@
 "use client";
 
+import { CreateListModal } from "@/components/modals/create-list-modal";
 import { ProjectSchema } from "@/types/projects";
 import { PlusSquare } from "lucide-react";
 import { Fragment, useState } from "react";
-import { CreateListModal } from "./modals/create-list-modal";
 
 interface CreateListButtonProps {
   className: string;

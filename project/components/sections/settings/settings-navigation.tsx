@@ -1,6 +1,6 @@
+import Button from "@/components/ui/buttons/button";
 import { cn } from "@/lib/utils";
 import { Bell, Palette, Shield, User } from "lucide-react";
-import Button from "./ui/buttons/button";
 
 type SettingsItem = {
   name: string;

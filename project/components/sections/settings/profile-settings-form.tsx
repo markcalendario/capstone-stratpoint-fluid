@@ -1,7 +1,7 @@
+import Input from "@/components/input";
+import Select from "@/components/select";
+import Button from "@/components/ui/buttons/button";
 import { cn } from "@/lib/utils";
-import Button from "./button";
-import Input from "./input";
-import Select from "./select";
 
 interface ProfileSettingsFormProps {
   className?: string;
