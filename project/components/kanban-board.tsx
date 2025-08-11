@@ -3,7 +3,7 @@
 import ListCard from "@/components/list-card";
 import { getListsByProjectId } from "@/lib/actions/lists";
 import { ProjectSchema } from "@/types/projects";
-import CreateListButton from "./create-list-button";
+import CreateListButton from "./ui/buttons/create-list-button";
 
 // TODO: Task 5.1 - Design responsive Kanban board layout
 // TODO: Task 5.2 - Implement drag-and-drop functionality with dnd-kit

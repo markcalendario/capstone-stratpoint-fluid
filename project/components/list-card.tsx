@@ -1,8 +1,8 @@
 import { getTasksByListId } from "@/lib/actions/tasks";
 import { ListSchema } from "@/types/lists";
 import { ProjectSchema } from "@/types/projects";
-import AddTaskButton from "./add-task-button";
 import ListCardDropdown from "./list-card-dropdown";
+import AddTaskButton from "./ui/buttons/add-task-button";
 import { TaskCard } from "./ui/task-card";
 
 interface ListCardProps {

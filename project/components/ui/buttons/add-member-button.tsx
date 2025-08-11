@@ -2,8 +2,8 @@
 
 import { UserPlus } from "lucide-react";
 import { Fragment, useState } from "react";
-import Button from "./button";
 import { AddTeamMemberModal } from "./modals/add-team-member-modal";
+import Button from "./ui/buttons/button";
 
 interface AddTeamMemberButtonProps {
   className?: string;

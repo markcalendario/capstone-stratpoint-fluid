@@ -4,7 +4,7 @@ import { ListSchema } from "@/types/lists";
 import { ProjectSchema } from "@/types/projects";
 import { PlusSquare } from "lucide-react";
 import { Fragment, useState } from "react";
-import { CreateTaskModal } from "./modals/create-task-modal";
+import { CreateTaskModal } from "../../modals/create-task-modal";
 
 interface AddTaskButtonProps {
   className: string;

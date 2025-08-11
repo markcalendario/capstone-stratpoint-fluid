@@ -8,9 +8,9 @@ import {
   useEffect,
   useState
 } from "react";
-import Button from "../button";
 import Input from "../input";
 import Radio from "../radio";
+import Button from "../ui/buttons/button";
 import { showErrorToast, showSuccessToast } from "../ui/toast";
 import Modal from "./modal";
 

@@ -1,8 +1,8 @@
 "use client";
 
-import Button from "@/components/button";
 import Calendar from "@/components/calendar";
 import { DashboardContent } from "@/components/layouts/dashboard/dashboard-content";
+import Button from "@/components/ui/buttons/button";
 import DeadlineBar from "@/components/ui/deadline-bar";
 import { Plus } from "lucide-react";
 

@@ -3,8 +3,8 @@
 import { cn } from "@/lib/utils";
 import { Plus } from "lucide-react";
 import { Fragment, useState } from "react";
-import Button from "./button";
 import { CreateProjectModal } from "./modals/create-project-modal";
+import Button from "./ui/buttons/button";
 
 interface CreateProjectButtonProps {
   className: string;

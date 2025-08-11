@@ -1,8 +1,8 @@
 import { deleteList } from "@/lib/actions/lists";
 import { ListSchema } from "@/types/lists";
 import { ChangeEvent, useState } from "react";
-import Button from "../button";
 import Input from "../input";
+import Button from "../ui/buttons/button";
 import { showErrorToast, showSuccessToast } from "../ui/toast";
 import Modal from "./modal";
 
