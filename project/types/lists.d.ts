@@ -26,3 +26,6 @@ export interface UpdateListPayload
 export interface GetListPayload {
   id: ListSchema["id"];
 }
+
+export interface CreateListPayload
+  extends Pick<ListSchema, "name" | "isFinal" | "projectId"> {}

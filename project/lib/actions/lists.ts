@@ -12,15 +12,13 @@ import {
   updateListPayloadSchema
 } from "@/lib/validations/lists";
 import {
+  CreateListPayload,
   GetListPayload,
   GetProjectListsPayload,
   ListSchema,
   UpdateListPayload
 } from "@/types/lists";
 import { ZodError } from "zod";
-
-interface CreateListPayload
-  extends Pick<ListSchema, "name" | "isFinal" | "projectId"> {}
 
 export async function createList(payload: CreateListPayload) {
   try {

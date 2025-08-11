@@ -5,7 +5,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 
 export function useListTasks(payload: GetListTasksPayload) {
   const { isPending, data } = useQuery({
-    queryKey: ["listTasks"],
+    queryKey: ["listTasks", payload.listId],
     queryFn: () => getListTasks(payload)
   });
 
