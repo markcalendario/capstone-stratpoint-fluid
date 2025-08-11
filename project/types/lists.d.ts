@@ -16,6 +16,13 @@ export interface UpdateListData
 
 // Payloads
 
-interface GetListsByProjectIdPayload {
+export interface GetProjectListsPayload {
   projectId: ProjectSchema["id"];
+}
+
+export interface UpdateListPayload
+  extends Pick<ListSchema, "id" | "name" | "isFinal"> {}
+
+export interface GetListPayload {
+  id: ListSchema["id"];
 }

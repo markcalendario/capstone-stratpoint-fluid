@@ -1,16 +1,11 @@
-import { getListById, updateList } from "@/lib/actions/lists";
+import { useList, useUpdateList } from "@/hooks/use-lists";
 import { ProjectSchema } from "@/types/projects";
 import { GitCommitHorizontal, GitGraph } from "lucide-react";
-import {
-  ChangeEvent,
-  MouseEvent,
-  useCallback,
-  useEffect,
-  useState
-} from "react";
+import { ChangeEvent, MouseEvent, useEffect, useState } from "react";
 import Button from "../buttons/button";
 import Input from "../input-fields/input";
 import Radio from "../input-fields/radio";
+import SectionLoader from "../section-loader";
 import { showErrorToast, showSuccessToast } from "../toast";
 import Modal from "./modal";
 
@@ -20,7 +15,9 @@ interface UpdateListModalProps {
 }
 
 export function UpdateListModal({ id, toggle }: UpdateListModalProps) {
-  const [formData, setFormData] = useState({ name: "", listType: "progress" });
+  const [formData, setFormData] = useState({ name: "", listType: "" });
+  const { isListUpdating, updateList } = useUpdateList();
+  const { isListLoading, listData } = useList({ id });
 
   const handleChange = (evt: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = evt.target;
@@ -38,80 +35,79 @@ export function UpdateListModal({ id, toggle }: UpdateListModalProps) {
 
     const { success, message } = await updateList(payload);
     if (!success) return showErrorToast(message);
-
     showSuccessToast(message);
+
     toggle();
   };
 
-  const fetchListData = useCallback(async () => {
-    const { success, message, list } = await getListById({ id });
-
-    if (!success || !list) return showErrorToast(message);
+  useEffect(() => {
+    if (!listData?.list) return;
 
     setFormData({
-      name: list.name,
-      listType: list.isFinal ? "terminal" : "progress"
+      name: listData.list.name,
+      listType: listData.list.isFinal ? "terminal" : "progress"
     });
-  }, [id]);
-
-  useEffect(() => {
-    fetchListData();
-  }, [fetchListData]);
+  }, [listData]);
 
   return (
     <Modal
       toggle={toggle}
       title="Update Board List">
-      <form className="space-y-4">
-        <Input
-          id="name"
-          name="name"
-          label="List Name"
-          placeholder="Enter list name"
-          value={formData.name}
-          onChange={handleChange}
-        />
+      {isListLoading && <SectionLoader text="Loading List Data" />}
 
-        <div className="flex gap-3">
-          <Radio
-            id="progress"
-            name="listType"
-            value="progress"
-            title="Progress"
-            description="Mark tasks in progress."
-            icon={GitGraph}
-            checked={formData.listType === "progress"}
+      {!isListLoading && (
+        <form className="space-y-4">
+          <Input
+            id="name"
+            name="name"
+            label="List Name"
+            placeholder="Enter list name"
+            value={formData.name}
             onChange={handleChange}
           />
 
-          <Radio
-            id="terminal"
-            name="listType"
-            value="terminal"
-            title="Terminal"
-            description="Mark tasks as final."
-            icon={GitCommitHorizontal}
-            checked={formData.listType === "terminal"}
-            onChange={handleChange}
-          />
-        </div>
+          <div className="flex gap-3">
+            <Radio
+              id="progress"
+              name="listType"
+              value="progress"
+              title="Progress"
+              description="Mark tasks in progress."
+              icon={GitGraph}
+              checked={formData.listType === "progress"}
+              onChange={handleChange}
+            />
 
-        <div className="flex justify-end space-x-3 pt-4">
-          <Button
-            type="button"
-            onClick={toggle}
-            className="text-neutral-800 dark:text-neutral-100">
-            Cancel
-          </Button>
+            <Radio
+              id="terminal"
+              name="listType"
+              value="terminal"
+              title="Terminal"
+              description="Mark tasks as final."
+              icon={GitCommitHorizontal}
+              checked={formData.listType === "terminal"}
+              onChange={handleChange}
+            />
+          </div>
 
-          <Button
-            type="button"
-            onClick={handleUpdateList}
-            className="bg-primary text-neutral-100">
-            Update List
-          </Button>
-        </div>
-      </form>
+          <div className="flex justify-end space-x-3 pt-4">
+            <Button
+              type="button"
+              onClick={toggle}
+              className="text-neutral-800 dark:text-neutral-100">
+              Cancel
+            </Button>
+
+            <Button
+              type="button"
+              onClick={handleUpdateList}
+              isProcessing={isListUpdating}
+              className="bg-primary text-neutral-100">
+              Update List
+            </Button>
+          </div>
+        </form>
+      )}
     </Modal>
   );
 }

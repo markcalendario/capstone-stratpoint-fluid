@@ -33,7 +33,7 @@ Integration:
 import { useUpdateProject, useUserProject } from "@/hooks/useProjects";
 import { ProjectSchema } from "@/types/projects";
 import { useRouter } from "next/navigation";
-import { MouseEvent, useEffect, useState } from "react";
+import { ChangeEvent, MouseEvent, useEffect, useState } from "react";
 import Button from "../buttons/button";
 import Input from "../input-fields/input";
 import Textarea from "../input-fields/textarea";
@@ -59,24 +59,20 @@ export function EditProjectModal({ projectId, toggle }: EditProjectModalProps) {
 
   // Populate formData when projectData is loaded
   useEffect(() => {
-    if (projectData?.project) {
-      setFormData({
-        name: projectData.project.name ?? "",
-        description: projectData.project.description ?? "",
-        dueDate: projectData.project.dueDate ?? ""
-      });
-    }
+    if (!projectData?.project) return;
+
+    setFormData({
+      name: projectData.project.name,
+      description: projectData.project.description,
+      dueDate: projectData.project.dueDate
+    });
   }, [projectData]);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value
-    }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleEditProject = async (evt: MouseEvent) => {
