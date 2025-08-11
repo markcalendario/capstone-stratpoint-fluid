@@ -5,30 +5,43 @@ import { UserSchema } from "./users";
 
 export interface TaskSchema extends InferSelectModel<typeof tasks> {
   comments: CommentSchema[];
+  taskAssignments: UserSchema[];
 }
 
 export interface Task extends InferSelectModel<typeof tasks> {}
 
-export type CreateTaskData = Pick<
-  TaskSchema,
-  "assigneeId" | "description" | "dueDate" | "listId" | "priority" | "title"
->;
+export interface CreateAndAssignTaskData
+  extends Pick<
+    TaskSchema,
+    | "description"
+    | "dueDate"
+    | "listId"
+    | "priority"
+    | "title"
+    | "createdBy"
+    | "attachment"
+    | "label"
+  > {}
 
 export type UpdateTaskData = Pick<
   TaskSchema,
-  | "assigneeId"
+  | "id"
   | "description"
   | "dueDate"
   | "listId"
   | "priority"
   | "title"
   | "updatedAt"
+  | "attachment"
+  | "label"
 >;
 
 export interface TaskCard
-  extends Pick<TaskSchema, "id" | "title" | "description" | "priority"> {
-  assigneeName: UserSchema["name"];
-  assigneeImageUrl: UserSchema["imageUrl"];
+  extends Pick<
+    TaskSchema,
+    "id" | "title" | "description" | "priority" | "dueDate"
+  > {
+  assigneesImages: UserSchema["imageUrl"][];
 }
 
 export type TaskStatus = {

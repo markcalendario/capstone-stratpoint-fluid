@@ -1,5 +1,10 @@
 import { tasks } from "@/lib/db/drizzle/migrations/schema";
-import { CreateTaskData, TaskSchema, UpdateTaskData } from "@/types/tasks";
+import { ListSchema } from "@/types/lists";
+import {
+  CreateAndAssignTaskData,
+  TaskSchema,
+  UpdateTaskData
+} from "@/types/tasks";
 import { eq } from "drizzle-orm";
 import db from "..";
 
@@ -11,19 +16,29 @@ const taskQueries = {
     const [task] = await db.select().from(tasks).where(eq(tasks.id, id));
     return task;
   },
-  create: async (data: CreateTaskData) => {
-    const [newTask] = await db
+
+  getWithAssigneesByListId: async (listId: ListSchema["id"]) => {
+    const tasks = await db.query.tasks.findMany({
+      where: (tasks, { eq }) => eq(tasks.listId, listId),
+      with: { taskAssignments: { with: { user: true } } }
+    });
+    return tasks;
+  },
+
+  create: async (data: CreateAndAssignTaskData) => {
+    const [taskId] = await db
       .insert(tasks)
       .values(data)
       .returning({ id: tasks.id });
 
-    return newTask.id;
+    return taskId.id;
   },
-  update: async (id: TaskSchema["id"], data: UpdateTaskData) => {
+
+  update: async (data: UpdateTaskData) => {
     const [updatedTask] = await db
       .update(tasks)
       .set(data)
-      .where(eq(tasks.id, id))
+      .where(eq(tasks.id, data.id))
       .returning({ id: tasks.id });
 
     return updatedTask.id;

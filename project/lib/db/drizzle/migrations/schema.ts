@@ -9,12 +9,14 @@ export const tasks = pgTable("tasks", {
 	title: text().notNull(),
 	description: text().notNull(),
 	listId: uuid().notNull(),
-	assigneeId: uuid(),
 	priority: priority().notNull(),
 	dueDate: date().notNull(),
-	position: integer().notNull(),
+	position: integer(),
 	createdAt: timestamp({ withTimezone: true, mode: 'string' }).default(sql`CURRENT_TIMESTAMP`).notNull(),
 	updatedAt: timestamp({ withTimezone: true, mode: 'string' }).default(sql`CURRENT_TIMESTAMP`).notNull(),
+	attachment: text(),
+	label: text(),
+	createdBy: uuid().notNull(),
 }, (table) => [
 	foreignKey({
 			columns: [table.listId],
@@ -22,10 +24,22 @@ export const tasks = pgTable("tasks", {
 			name: "listTask"
 		}).onDelete("cascade"),
 	foreignKey({
-			columns: [table.assigneeId],
+			columns: [table.createdBy],
 			foreignColumns: [users.id],
-			name: "taskAssignee"
-		}).onDelete("set null"),
+			name: "userTask"
+		}).onDelete("cascade"),
+]);
+
+export const users = pgTable("users", {
+	id: uuid().defaultRandom().primaryKey().notNull(),
+	clerkId: text().notNull(),
+	email: text().notNull(),
+	name: text().notNull(),
+	createdAt: timestamp({ withTimezone: true, mode: 'string' }).default(sql`CURRENT_TIMESTAMP`),
+	updatedAt: timestamp({ withTimezone: true, mode: 'string' }).default(sql`CURRENT_TIMESTAMP`),
+	imageUrl: text().notNull(),
+}, (table) => [
+	unique("users_clerkId_key").on(table.clerkId),
 ]);
 
 export const comments = pgTable("comments", {
@@ -45,34 +59,6 @@ export const comments = pgTable("comments", {
 			columns: [table.authorId],
 			foreignColumns: [users.id],
 			name: "commentAuthor"
-		}).onDelete("cascade"),
-]);
-
-export const users = pgTable("users", {
-	id: uuid().defaultRandom().primaryKey().notNull(),
-	clerkId: text().notNull(),
-	email: text().notNull(),
-	name: text().notNull(),
-	createdAt: timestamp({ withTimezone: true, mode: 'string' }).default(sql`CURRENT_TIMESTAMP`),
-	updatedAt: timestamp({ withTimezone: true, mode: 'string' }).default(sql`CURRENT_TIMESTAMP`),
-}, (table) => [
-	unique("users_clerkId_key").on(table.clerkId),
-]);
-
-export const projects = pgTable("projects", {
-	id: uuid().defaultRandom().primaryKey().notNull(),
-	name: text().notNull(),
-	description: text().notNull(),
-	ownerId: uuid().notNull(),
-	createdAt: timestamp({ withTimezone: true, mode: 'string' }).default(sql`CURRENT_TIMESTAMP`),
-	updatedAt: timestamp({ withTimezone: true, mode: 'string' }).default(sql`CURRENT_TIMESTAMP`),
-	dueDate: date().notNull(),
-	active: boolean().default(true),
-}, (table) => [
-	foreignKey({
-			columns: [table.ownerId],
-			foreignColumns: [users.id],
-			name: "projectOwner"
 		}).onDelete("cascade"),
 ]);
 
@@ -98,6 +84,23 @@ export const lists = pgTable("lists", {
 		}).onDelete("cascade"),
 ]);
 
+export const projects = pgTable("projects", {
+	id: uuid().defaultRandom().primaryKey().notNull(),
+	name: text().notNull(),
+	description: text().notNull(),
+	ownerId: uuid().notNull(),
+	createdAt: timestamp({ withTimezone: true, mode: 'string' }).default(sql`CURRENT_TIMESTAMP`),
+	updatedAt: timestamp({ withTimezone: true, mode: 'string' }).default(sql`CURRENT_TIMESTAMP`),
+	dueDate: date().notNull(),
+	active: boolean().default(true),
+}, (table) => [
+	foreignKey({
+			columns: [table.ownerId],
+			foreignColumns: [users.id],
+			name: "projectOwner"
+		}).onDelete("cascade"),
+]);
+
 export const teams = pgTable("teams", {
 	id: uuid().defaultRandom().primaryKey().notNull(),
 	userId: uuid().notNull(),
@@ -115,5 +118,23 @@ export const teams = pgTable("teams", {
 			columns: [table.projectId],
 			foreignColumns: [projects.id],
 			name: "projectMember"
+		}).onDelete("cascade"),
+]);
+
+export const taskAssignments = pgTable("taskAssignments", {
+	id: uuid().defaultRandom().primaryKey().notNull(),
+	taskId: uuid().notNull(),
+	userId: uuid().notNull(),
+	assignedAt: timestamp({ withTimezone: true, mode: 'string' }).default(sql`CURRENT_DATE`),
+}, (table) => [
+	foreignKey({
+			columns: [table.taskId],
+			foreignColumns: [tasks.id],
+			name: "taskAssignment"
+		}).onDelete("cascade"),
+	foreignKey({
+			columns: [table.userId],
+			foreignColumns: [users.id],
+			name: "userTaskAssignment"
 		}).onDelete("cascade"),
 ]);

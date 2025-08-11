@@ -1,10 +1,19 @@
 import { users } from "@/lib/db/drizzle/migrations/schema";
 import { InferSelectModel } from "drizzle-orm";
+import { ProjectSchema } from "./projects";
 
 export interface UserSchema extends InferSelectModel<typeof users> {
-  imageUrl: string;
+  projects: ProjectSchema[];
 }
 
-export type CreateUserData = Pick<UserSchema, "name" | "clerkId" | "email">;
+export interface User extends InferSelectModel<typeof users> {}
 
-export type UpdateUserData = Pick<UserSchema, "name" | "email" | "updatedAt">;
+export type CreateUserData = Pick<
+  UserSchema,
+  "name" | "clerkId" | "email" | "imageUrl"
+>;
+
+export type UpdateUserData = Pick<
+  UserSchema,
+  "name" | "email" | "imageUrl" | "updatedAt"
+>;

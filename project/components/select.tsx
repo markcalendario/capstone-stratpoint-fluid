@@ -1,9 +1,10 @@
 import { cn } from "@/lib/utils";
+import { SelectHTMLAttributes } from "react";
 
-interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
+export interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
   id: string;
-  tip?: string;
   label: string;
+  required?: boolean;
   children: React.ReactNode;
   className?: string;
 }
@@ -13,27 +14,29 @@ export default function Select({
   label,
   children,
   className,
-  tip,
+  required,
   ...props
 }: SelectProps) {
   return (
     <div className={cn("flex flex-col gap-1", className)}>
-      <div className="flex flex-wrap items-center gap-1">
+      <div className="flex flex-wrap items-center justify-between gap-1">
         <label
           htmlFor={id}
           className="font-medium text-neutral-500 dark:text-neutral-400">
           {label}
         </label>
-        {tip && (
+
+        {!required && (
           <p className="p-1 text-xs text-neutral-500 dark:text-neutral-400">
-            {tip}
+            Optional
           </p>
         )}
       </div>
+
       <select
         id={id}
         {...props}
-        className="border-primary/20 dark:border-primary/50 w-full rounded-sm border-2 p-[10px] font-[500] placeholder-neutral-500 outline-0 dark:text-neutral-300 dark:placeholder-neutral-400">
+        className="border-primary w-full rounded-sm border-2 p-[10px] font-[500] placeholder-neutral-500 outline-0 dark:text-neutral-300 dark:placeholder-neutral-400">
         {children}
       </select>
     </div>

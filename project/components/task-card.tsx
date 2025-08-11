@@ -46,13 +46,12 @@ export function TaskCard({
   title,
   description,
   priority,
-  assigneeName,
-  assigneeImageUrl
+  assigneesImages
 }: TTaskCard) {
   void id;
 
   return (
-    <div className="outline-primary/20 cursor-pointer rounded-xs bg-white p-4 shadow-sm outline-2 hover:shadow-md dark:bg-neutral-600">
+    <div className="outline-primary/20 cursor-pointer rounded-xs bg-white p-4 shadow-sm outline-2 hover:shadow-md dark:bg-neutral-800">
       <h4 className="mb-1 text-sm font-medium text-neutral-800 dark:text-neutral-100">
         {title}
       </h4>
@@ -61,13 +60,19 @@ export function TaskCard({
       </p>
       <div className="flex items-center justify-between">
         <PriorityTab priority={priority} />
-        <Image
-          width={25}
-          height={25}
-          alt={assigneeName}
-          src={assigneeImageUrl}
-          className="outline-primary/20 rounded-full outline-2"
-        />
+
+        <div className="flex gap-1">
+          {assigneesImages.map((assigneeImage, i) => (
+            <Image
+              key={i}
+              width={15}
+              height={15}
+              alt={`user ${i}`}
+              src={assigneeImage}
+              className="outline-primary/20 rounded-full outline-2"
+            />
+          ))}
+        </div>
       </div>
     </div>
   );
