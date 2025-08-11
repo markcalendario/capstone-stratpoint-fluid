@@ -5,13 +5,11 @@ import { isUserListCreator } from "@/lib/utils/lists";
 import { isUserProjectOwner } from "@/lib/utils/projects";
 import { getUserId } from "@/lib/utils/users";
 import {
-  createListDataSchema,
   createListPayloadSchema,
   deleteListPayloadSchema,
   getListsByProjectIdSchema,
   listSchema,
-  updateListPayloadSchema,
-  updateListSchema
+  updateListPayloadSchema
 } from "@/lib/validations/lists";
 import { ListSchema } from "@/types/lists";
 import { ProjectSchema } from "@/types/projects";
@@ -39,14 +37,11 @@ export async function createList(payload: CreateListPayload) {
       projectId: parsed.projectId
     };
 
-    // Validate create list data
-    const createData = createListDataSchema.parse(data);
+    // Create list
+    await listQueries.create(data);
 
     // Revalidate paths
     revalidatePath("/(dashboard)");
-
-    // Create list
-    await listQueries.create(createData);
 
     return { success: true, message: "List created successfully." };
   } catch (error) {
@@ -101,11 +96,8 @@ export async function updateList(payload: UpdateListPayload) {
       updatedAt: new Date().toISOString()
     };
 
-    // Validate update list data
-    const updateData = updateListSchema.parse(data);
-
     // Update data
-    await listQueries.update(parsed.id, updateData);
+    await listQueries.update(parsed.id, data);
 
     // Revalidate the cache
     revalidatePath("/(dashboard)");
