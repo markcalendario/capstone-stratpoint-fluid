@@ -34,11 +34,11 @@ const taskQueries = {
     return taskId.id;
   },
 
-  update: async (id: TaskSchema["id"], data: UpdateTaskData) => {
+  update: async (data: UpdateTaskData) => {
     const [updatedTask] = await db
       .update(tasks)
       .set(data)
-      .where(eq(tasks.id, id))
+      .where(eq(tasks.id, data.id))
       .returning({ id: tasks.id });
 
     return updatedTask.id;

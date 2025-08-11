@@ -11,6 +11,7 @@ const DESCRIPTION_MIN = 6;
 const DESCRIPTION_MAX = 300;
 
 export const taskSchema = z.object({
+  id: z.uuidv4("Task ID must be UUID").trim(),
   title: z
     .string("Task name must be string.")
     .trim()
@@ -47,6 +48,24 @@ export const getTasksByListIdPayloadSchema = z.object({
 });
 
 export const createTaskPayloadSchema = z.object({
+  listId: listSchema.shape.id,
+  title: taskSchema.shape.title,
+  description: taskSchema.shape.description,
+  assignees: z.array(listSchema.shape.id, "Assignees must be array."),
+  priority: taskSchema.shape.priority,
+  dueDate: taskSchema.shape.dueDate,
+  label: taskSchema.shape.label,
+  attachment: z.file("Attachment must be a file.").nullable(),
+  projectId: projectSchema.shape.id
+});
+
+export const deleteTaskValidationPayloadSchema = z.object({
+  id: taskSchema.shape.id,
+  projectId: projectSchema.shape.id
+});
+
+export const editTaskPayloadSchema = z.object({
+  id: taskSchema.shape.id,
   listId: listSchema.shape.id,
   title: taskSchema.shape.title,
   description: taskSchema.shape.description,

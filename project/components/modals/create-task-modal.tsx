@@ -10,6 +10,7 @@ import Input from "../input";
 import RichTextEditor from "../rich-text-editor";
 import SelectPriority from "../select-priority";
 import SelectProjectMembers from "../select-project-members";
+import { showErrorToast, showSuccessToast } from "../toast";
 import Modal from "./modal";
 
 interface CreateTaskModalProps {
@@ -59,10 +60,13 @@ export function CreateTaskModal({
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    console.log("hi");
 
     const { success, message } = await createAndAssignTask(payload);
-    console.log(message);
+
+    if (!success) return showErrorToast(message);
+
+    toggle();
+    showSuccessToast(message);
   };
 
   return (

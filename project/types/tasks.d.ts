@@ -25,7 +25,15 @@ export interface CreateAndAssignTaskData
 
 export type UpdateTaskData = Pick<
   TaskSchema,
-  "dueDate" | "listId" | "priority" | "title" | "updatedAt"
+  | "id"
+  | "description"
+  | "dueDate"
+  | "listId"
+  | "priority"
+  | "title"
+  | "updatedAt"
+  | "attachment"
+  | "label"
 >;
 
 export interface TaskCard
