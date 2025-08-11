@@ -1,22 +1,29 @@
+"use client";
+
 import { DashboardContent } from "@/components/layouts/dashboard/dashboard-content";
 import ProjectActionButtons from "@/components/sections/project-view/project-action-buttons";
-import KanbanBoard from "@/components/ui/kanban/kanban-board";
-import { getProject } from "@/lib/actions/projects";
+import SectionLoader from "@/components/ui/section-loader";
+import { useUserProject } from "@/hooks/useProjects";
+import { redirect, RedirectType, useParams } from "next/navigation";
 
-interface ProjectPage {
-  params: Promise<{ id: string }>;
-}
+export default function ProjectPage() {
+  const params = useParams();
+  const id = params.id;
 
-export default async function ProjectPage({ params }: ProjectPage) {
-  const { id } = await params;
-  const { project } = await getProject({ id });
+  if (typeof id !== "string") {
+    return redirect("/projects", RedirectType.replace);
+  }
 
-  if (!project) return null;
+  const { isProjectLoading, projectData } = useUserProject({ id });
+
+  if (isProjectLoading || !projectData) {
+    return <SectionLoader text="Loading Project" />;
+  }
 
   return (
     <DashboardContent
       className="space-y-6"
-      title={`${project.name}`}
+      title={`${projectData.project?.name}`}
       description="List and tasks for this project.">
       <ProjectActionButtons projectId={id} />
 
@@ -38,7 +45,7 @@ export default async function ProjectPage({ params }: ProjectPage) {
       </div>
 
       {/* Kanban Board Placeholder */}
-      <KanbanBoard projectId={id} />
+      {/* <KanbanBoard projectId={id} /> */}
 
       {/* Component Implementation Guide */}
       <div className="mt-8 rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 p-6 dark:border-gray-600 dark:bg-gray-800/50">
