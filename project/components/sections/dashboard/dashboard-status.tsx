@@ -2,7 +2,7 @@
 
 import { getDashboardStatus } from "@/lib/actions/analytics";
 import { CheckCircle, Clock, TrendingUp, Users } from "lucide-react";
-import StatusCard from "../../status-card";
+import StatusCard from "../../ui/status-card";
 
 export default async function DashboardStatus() {
   const { status } = await getDashboardStatus();
