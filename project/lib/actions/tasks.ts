@@ -1,17 +1,15 @@
 "use server";
 
-import { ProjectSchema } from "@/types/projects";
 import {
   CreateAndAssignTaskPayload,
+  DeleteTaskPayload,
   GetListTasksPayload,
-  Task,
-  TaskSchema
+  UpdatetaskPayload
 } from "@/types/tasks";
-import { UserSchema } from "@/types/users";
 import { revalidatePath } from "next/cache";
 import { ZodError } from "zod";
-import taskAssignmentsQueries from "..//queries/taskAssignments";
-import taskQueries from "..//queries/tasks";
+import taskAssignmentsQueries from "../queries/taskAssignments";
+import taskQueries from "../queries/tasks";
 import { isUserProjectOwner } from "../utils/projects";
 import { toTaskCard } from "../utils/tasks";
 import { getUserId } from "../utils/users";
@@ -22,7 +20,7 @@ import {
   getTasksByListIdPayloadSchema
 } from "../validations/tasks";
 
-export const getListTasks = async (payload: GetListTasksPayload) => {
+export async function getListTasks(payload: GetListTasksPayload) {
   try {
     const parsed = getTasksByListIdPayloadSchema.parse(payload);
     const tasks = await taskQueries.getWithAssigneesByListId(parsed.listId);
@@ -45,7 +43,7 @@ export const getListTasks = async (payload: GetListTasksPayload) => {
 
     return { success: false, message: "Error. Cannot get tasks by list." };
   }
-};
+}
 
 export async function createAndAssignTask(payload: CreateAndAssignTaskPayload) {
   try {
@@ -92,11 +90,6 @@ export async function createAndAssignTask(payload: CreateAndAssignTaskPayload) {
   }
 }
 
-interface DeleteTaskPayload {
-  id: TaskSchema["id"];
-  projectId: ProjectSchema["id"];
-}
-
 export async function deleteTask(payload: DeleteTaskPayload) {
   try {
     const userId = await getUserId();
@@ -118,24 +111,7 @@ export async function deleteTask(payload: DeleteTaskPayload) {
   }
 }
 
-interface EditTaskPayload
-  extends Pick<
-    Task,
-    | "id"
-    | "listId"
-    | "title"
-    | "description"
-    | "dueDate"
-    | "label"
-    | "updatedAt"
-  > {
-  attachment: File | null;
-  priority: string;
-  projectId: ProjectSchema["id"];
-  assignees: UserSchema["id"][];
-}
-
-export async function editTaskPayload(payload: EditTaskPayload) {
+export async function updateTask(payload: UpdatetaskPayload) {
   try {
     const parsed = editTaskPayloadSchema.parse(payload);
     const userId = await getUserId();
