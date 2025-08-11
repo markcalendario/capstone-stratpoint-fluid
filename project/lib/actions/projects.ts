@@ -71,10 +71,18 @@ export async function getRecentProjects() {
     };
   } catch (error) {
     if (error instanceof ZodError) {
-      return { success: false, message: error.issues[0].message };
+      return {
+        success: false,
+        message: error.issues[0].message,
+        recentProjects: []
+      };
     }
 
-    return { success: false, message: "Error. Cannot get recent projects." };
+    return {
+      success: false,
+      message: "Error. Cannot get recent projects.",
+      recentProjects: []
+    };
   }
 }
 

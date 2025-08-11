@@ -1,13 +1,12 @@
-"use server";
+"use client";
 
 import ProjectCard from "@/components/ui/project-card";
-import { getRecentProjects } from "@/lib/actions/projects";
+import SectionLoader from "@/components/ui/section-loader";
+import { useRecentProjects } from "@/hooks/useProjects";
 import Link from "next/link";
 
-export default async function RecentProjects() {
-  const { recentProjects } = await getRecentProjects();
-
-  if (!recentProjects) return null;
+export default function RecentProjects() {
+  const { isPending, data } = useRecentProjects();
 
   return (
     <div className="border-primary/20 rounded-sm border-2 bg-white p-6 dark:bg-neutral-800">
@@ -23,17 +22,23 @@ export default async function RecentProjects() {
       </div>
 
       <div className="space-y-3">
-        {recentProjects.map((project) => (
-          <ProjectCard
-            key={project.id}
-            id={project.id}
-            name={project.name}
-            description={project.description}
-            dueDate={project.dueDate}
-            members={project.members}
-            progress={project.progress}
-          />
-        ))}
+        {(isPending || !data) && (
+          <SectionLoader text="Retrieving Recent Projects" />
+        )}
+
+        {!isPending &&
+          data &&
+          data.recentProjects.map((project) => (
+            <ProjectCard
+              key={project.id}
+              id={project.id}
+              name={project.name}
+              description={project.description}
+              dueDate={project.dueDate}
+              members={project.members}
+              progress={project.progress}
+            />
+          ))}
       </div>
     </div>
   );

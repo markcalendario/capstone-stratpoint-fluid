@@ -1,5 +1,4 @@
 import { useCreateProject } from "@/hooks/useProjects";
-import { redirect } from "next/navigation";
 import { useState } from "react";
 import Button from "../buttons/button";
 import Input from "../input-fields/input";
@@ -27,7 +26,6 @@ export function CreateProjectModal({ toggle }: CreateProjectModalProps) {
     showSuccessToast(message);
 
     toggle();
-    redirect(`/projects/${projectId}`);
   };
 
   return (
