@@ -1,4 +1,4 @@
-import { useCreateProject } from "@/hooks/useUserProjectsQuery";
+import { useCreateProject } from "@/hooks/useProjects";
 import { redirect } from "next/navigation";
 import { useState } from "react";
 import Button from "../buttons/button";

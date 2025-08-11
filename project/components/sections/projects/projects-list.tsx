@@ -3,7 +3,7 @@
 import { CreateProjectButton } from "@/components/ui/buttons/create-project-button";
 import ProjectCard from "@/components/ui/project-card";
 import SectionLoader from "@/components/ui/section-loader";
-import { useUserProjects } from "@/hooks/useUserProjectsQuery";
+import { useUserProjects } from "@/hooks/useProjects";
 
 export default function ProjectsList() {
   const { isLoading, data } = useUserProjects();
