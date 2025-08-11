@@ -2,7 +2,7 @@
 
 import { TaskCard as TTaskCard } from "@/types/tasks";
 import Image from "next/image";
-import PriorityTab from "./priority-tab";
+import PriorityTab from "../priority-tab";
 
 /*
 TODO: Implementation Notes for Interns:

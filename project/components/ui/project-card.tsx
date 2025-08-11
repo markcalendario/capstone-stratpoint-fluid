@@ -1,20 +1,10 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { ProjectCard as IProjectCard, ProjectSchema } from "@/types/projects";
-import {
-  Calendar,
-  Edit,
-  Eye,
-  MoreHorizontal,
-  Trash,
-  Users
-} from "lucide-react";
+import { ProjectCard as IProjectCard } from "@/types/projects";
+import { Calendar, Users } from "lucide-react";
 import Link from "next/link";
-import { Fragment, useState } from "react";
-import Dropdown from "../drop-down";
-import { DeleteProjectModal } from "../modals/delete-project-modal";
-import { EditProjectModal } from "../modals/edit-project-modal";
+import ProjectCardDropdown from "../dropdowns/project-card-dropdown";
 
 interface ProjectCardProps extends IProjectCard {
   className?: string;
@@ -80,48 +70,5 @@ export default function ProjectCard({
         <ProjectCardDropdown id={id} />
       </div>
     </div>
-  );
-}
-
-interface ProjectCardDropdown {
-  id: ProjectSchema["id"];
-}
-
-function ProjectCardDropdown({ id }: ProjectCardDropdown) {
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-
-  const toggleEditModal = () => setIsEditModalOpen((prev) => !prev);
-  const toggleDeleteModal = () => setIsDeleteModalOpen((prev) => !prev);
-
-  return (
-    <Fragment>
-      <Dropdown
-        className="hover:bg-primary/10 cursor-pointer rounded p-1"
-        label={
-          <MoreHorizontal
-            size={16}
-            className="dark:text-white"
-          />
-        }
-        items={[
-          { href: `/projects/${id}`, label: "View", icon: Eye },
-          { onClick: toggleEditModal, label: "Edit", icon: Edit },
-          { onClick: toggleDeleteModal, label: "Delete", icon: Trash }
-        ]}
-      />
-      {isEditModalOpen && (
-        <EditProjectModal
-          projectId={id}
-          toggle={toggleEditModal}
-        />
-      )}
-      {isDeleteModalOpen && (
-        <DeleteProjectModal
-          projectId={id}
-          toggle={toggleDeleteModal}
-        />
-      )}
-    </Fragment>
   );
 }

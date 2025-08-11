@@ -1,9 +1,9 @@
 "use server";
 
-import ListCard from "@/components/list-card";
 import { getListsByProjectId } from "@/lib/actions/lists";
 import { ProjectSchema } from "@/types/projects";
 import CreateListButton from "../buttons/create-list-button";
+import ListCard from "./list-card";
 
 // TODO: Task 5.1 - Design responsive Kanban board layout
 // TODO: Task 5.2 - Implement drag-and-drop functionality with dnd-kit

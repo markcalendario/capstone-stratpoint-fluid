@@ -1,6 +1,6 @@
 "use client";
 
-import Dropdown from "@/components/drop-down";
+import Dropdown from "@/components/dropdowns/drop-down";
 import { DeleteProjectModal } from "@/components/modals/delete-project-modal";
 import { EditProjectModal } from "@/components/modals/edit-project-modal";
 import LinkButton from "@/components/ui/buttons/link-button";
