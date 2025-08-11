@@ -10,7 +10,7 @@ import Input from "../input";
 import RichTextEditor from "../rich-text-editor";
 import SelectPriority from "../select-priority";
 import SelectProjectMembers from "../select-project-members";
-import { showErrorToast, showSuccessToast } from "../toast";
+import { showErrorToast, showSuccessToast } from "../ui/toast";
 import Modal from "./modal";
 
 interface CreateTaskModalProps {

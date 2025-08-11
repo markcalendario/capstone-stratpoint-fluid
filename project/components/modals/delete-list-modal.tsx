@@ -3,7 +3,7 @@ import { ListSchema } from "@/types/lists";
 import { ChangeEvent, useState } from "react";
 import Button from "../button";
 import Input from "../input";
-import { showErrorToast, showSuccessToast } from "../toast";
+import { showErrorToast, showSuccessToast } from "../ui/toast";
 import Modal from "./modal";
 
 interface DeleteListModalProps {
