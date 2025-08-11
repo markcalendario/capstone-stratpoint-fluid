@@ -2,9 +2,9 @@ import { createList } from "@/lib/actions/lists";
 import { ProjectSchema } from "@/types/projects";
 import { GitCommitHorizontal, GitGraph } from "lucide-react";
 import { ChangeEvent, MouseEvent, useState } from "react";
-import Input from "../input";
 import Radio from "../radio";
 import Button from "../ui/buttons/button";
+import Input from "../ui/input-fields/input";
 import { showErrorToast, showSuccessToast } from "../ui/toast";
 import Modal from "./modal";
 

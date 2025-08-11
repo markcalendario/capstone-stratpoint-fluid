@@ -1,5 +1,5 @@
-import Input from "../input";
 import Button from "../ui/buttons/button";
+import Input from "../ui/input-fields/input";
 import Modal from "./modal";
 
 interface AddTeamMemberModalProps {

@@ -2,8 +2,8 @@ import { deleteProject } from "@/lib/actions/projects";
 import { ProjectSchema } from "@/types/projects";
 import { redirect, RedirectType } from "next/navigation";
 import { ChangeEvent, useState } from "react";
-import Input from "../input";
 import Button from "../ui/buttons/button";
+import Input from "../ui/input-fields/input";
 import { showErrorToast, showSuccessToast } from "../ui/toast";
 import Modal from "./modal";
 

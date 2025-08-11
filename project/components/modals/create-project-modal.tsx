@@ -1,9 +1,9 @@
 import { createProject } from "@/lib/actions/projects";
 import { redirect, RedirectType } from "next/navigation";
 import { useState } from "react";
-import Input from "../input";
 import Textarea from "../textarea";
 import Button from "../ui/buttons/button";
+import Input from "../ui/input-fields/input";
 import { showErrorToast, showSuccessToast } from "../ui/toast";
 import Modal from "./modal";
 

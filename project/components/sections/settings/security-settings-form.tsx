@@ -1,5 +1,5 @@
-import Input from "@/components/input";
 import Button from "@/components/ui/buttons/button";
+import Input from "@/components/ui/input-fields/input";
 import { cn } from "@/lib/utils";
 
 interface ProfileSettingsFormProps {
