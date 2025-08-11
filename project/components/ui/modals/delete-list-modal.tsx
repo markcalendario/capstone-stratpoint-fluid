@@ -1,22 +1,18 @@
-import { deleteProject } from "@/lib/actions/projects";
-import { ProjectSchema } from "@/types/projects";
-import { redirect, RedirectType } from "next/navigation";
+import { deleteList } from "@/lib/actions/lists";
+import { ListSchema } from "@/types/lists";
 import { ChangeEvent, useState } from "react";
-import Button from "../ui/buttons/button";
-import Input from "../ui/input-fields/input";
-import { showErrorToast, showSuccessToast } from "../ui/toast";
+import Button from "../buttons/button";
+import Input from "../input-fields/input";
+import { showErrorToast, showSuccessToast } from "../toast";
 import Modal from "./modal";
 
-interface DeleteProjectModalProps {
+interface DeleteListModalProps {
   toggle: () => void;
-  projectId: ProjectSchema["id"];
+  listId: ListSchema["id"];
 }
 
-export function DeleteProjectModal({
-  toggle,
-  projectId
-}: DeleteProjectModalProps) {
-  const TARGET_CONFIRM_TEXT = "DELETE PROJECT";
+export function DeleteListModal({ toggle, listId }: DeleteListModalProps) {
+  const TARGET_CONFIRM_TEXT = "DELETE LIST";
 
   const [confirmText, setConfirmText] = useState("");
 
@@ -24,31 +20,30 @@ export function DeleteProjectModal({
     setConfirmText(evt.target.value);
   };
 
-  const handleDeleteProject = async () => {
+  const handleDeleteList = async () => {
     if (confirmText !== TARGET_CONFIRM_TEXT) {
       return showErrorToast("Wrong delete confirmation value.");
     }
 
-    const { success, message } = await deleteProject({ projectId });
+    const { success, message } = await deleteList({ id: listId });
 
     if (!success) return showErrorToast(message);
     showSuccessToast(message);
 
     toggle();
-    redirect("/projects", RedirectType.push);
   };
 
   return (
     <Modal
       toggle={toggle}
-      title="Delete Project">
+      title="Delete List">
       <div className="space-y-3">
         <Input
           id="confirm-delete"
           value={confirmText}
-          placeholder="DELETE PROJECT"
+          placeholder="DELETE LIST"
           onChange={handleConfirmChange}
-          label={`Type ${TARGET_CONFIRM_TEXT} to delete this project.`}
+          label={`Type ${TARGET_CONFIRM_TEXT} to delete this list.`}
         />
         <div className="flex justify-end gap-2">
           <Button
@@ -57,9 +52,9 @@ export function DeleteProjectModal({
             Cancel
           </Button>
           <Button
-            onClick={handleDeleteProject}
+            onClick={handleDeleteList}
             className="bg-red-700 text-neutral-100">
-            Delete Project
+            Delete List
           </Button>
         </div>
       </div>

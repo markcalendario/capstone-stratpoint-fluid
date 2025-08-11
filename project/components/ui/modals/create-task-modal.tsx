@@ -5,12 +5,12 @@ import { ListSchema } from "@/types/lists";
 import { ProjectSchema } from "@/types/projects";
 import { UserSchema } from "@/types/users";
 import { ChangeEvent, FormEvent, useState } from "react";
-import Button from "../ui/buttons/button";
-import Input from "../ui/input-fields/input";
-import RichTextEditor from "../ui/input-fields/rich-text-editor";
-import SelectPriority from "../ui/input-fields/select/select-priority";
-import SelectProjectMembers from "../ui/input-fields/select/select-project-members";
-import { showErrorToast, showSuccessToast } from "../ui/toast";
+import Button from "../buttons/button";
+import Input from "../input-fields/input";
+import RichTextEditor from "../input-fields/rich-text-editor";
+import SelectPriority from "../input-fields/select/select-priority";
+import SelectProjectMembers from "../input-fields/select/select-project-members";
+import { showErrorToast, showSuccessToast } from "../toast";
 import Modal from "./modal";
 
 interface CreateTaskModalProps {

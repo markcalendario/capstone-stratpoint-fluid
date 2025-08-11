@@ -1,6 +1,6 @@
 "use client";
 
-import { AddTeamMemberModal } from "@/components/modals/add-team-member-modal";
+import { AddTeamMemberModal } from "@/components/ui/modals/add-team-member-modal";
 import { UserPlus } from "lucide-react";
 import { Fragment, useState } from "react";
 import Button from "./button";

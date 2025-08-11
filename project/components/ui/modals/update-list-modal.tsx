@@ -1,19 +1,25 @@
-import { createList } from "@/lib/actions/lists";
+import { getListById, updateList } from "@/lib/actions/lists";
 import { ProjectSchema } from "@/types/projects";
 import { GitCommitHorizontal, GitGraph } from "lucide-react";
-import { ChangeEvent, MouseEvent, useState } from "react";
-import Button from "../ui/buttons/button";
-import Input from "../ui/input-fields/input";
-import Radio from "../ui/input-fields/radio";
-import { showErrorToast, showSuccessToast } from "../ui/toast";
+import {
+  ChangeEvent,
+  MouseEvent,
+  useCallback,
+  useEffect,
+  useState
+} from "react";
+import Button from "../buttons/button";
+import Input from "../input-fields/input";
+import Radio from "../input-fields/radio";
+import { showErrorToast, showSuccessToast } from "../toast";
 import Modal from "./modal";
 
-interface CreateListModalProps {
+interface UpdateListModalProps {
   toggle: () => void;
-  projectId: ProjectSchema["id"];
+  id: ProjectSchema["id"];
 }
 
-export function CreateListModal({ toggle, projectId }: CreateListModalProps) {
+export function UpdateListModal({ id, toggle }: UpdateListModalProps) {
   const [formData, setFormData] = useState({ name: "", listType: "progress" });
 
   const handleChange = (evt: ChangeEvent<HTMLInputElement>) => {
@@ -21,26 +27,41 @@ export function CreateListModal({ toggle, projectId }: CreateListModalProps) {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleCreateList = async (evt: MouseEvent<HTMLButtonElement>) => {
+  const handleUpdateList = async (evt: MouseEvent<HTMLButtonElement>) => {
     evt.preventDefault();
 
     const payload = {
-      projectId,
+      id,
       name: formData.name,
       isFinal: formData.listType === "terminal"
     };
 
-    const { success, message } = await createList(payload);
+    const { success, message } = await updateList(payload);
     if (!success) return showErrorToast(message);
 
     showSuccessToast(message);
     toggle();
   };
 
+  const fetchListData = useCallback(async () => {
+    const { success, message, list } = await getListById({ id });
+
+    if (!success || !list) return showErrorToast(message);
+
+    setFormData({
+      name: list.name,
+      listType: list.isFinal ? "terminal" : "progress"
+    });
+  }, [id]);
+
+  useEffect(() => {
+    fetchListData();
+  }, [fetchListData]);
+
   return (
     <Modal
       toggle={toggle}
-      title="Create Board List">
+      title="Update Board List">
       <form className="space-y-4">
         <Input
           id="name"
@@ -85,9 +106,9 @@ export function CreateListModal({ toggle, projectId }: CreateListModalProps) {
 
           <Button
             type="button"
-            onClick={handleCreateList}
+            onClick={handleUpdateList}
             className="bg-primary text-neutral-100">
-            Create List
+            Update List
           </Button>
         </div>
       </form>

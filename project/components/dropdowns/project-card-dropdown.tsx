@@ -3,8 +3,8 @@
 import { ProjectSchema } from "@/types/projects";
 import { Edit, Eye, MoreHorizontal, Trash } from "lucide-react";
 import { Fragment, useState } from "react";
-import { DeleteProjectModal } from "../modals/delete-project-modal";
-import { EditProjectModal } from "../modals/edit-project-modal";
+import { DeleteProjectModal } from "../ui/modals/delete-project-modal";
+import { EditProjectModal } from "../ui/modals/edit-project-modal";
 import Dropdown from "./drop-down";
 
 interface ProjectCardDropdownProps {

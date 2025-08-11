@@ -1,9 +1,9 @@
 "use client";
 
 import Dropdown from "@/components/dropdowns/drop-down";
-import { DeleteProjectModal } from "@/components/modals/delete-project-modal";
-import { EditProjectModal } from "@/components/modals/edit-project-modal";
 import LinkButton from "@/components/ui/buttons/link-button";
+import { DeleteProjectModal } from "@/components/ui/modals/delete-project-modal";
+import { EditProjectModal } from "@/components/ui/modals/edit-project-modal";
 import { ProjectSchema } from "@/types/projects";
 import { Calendar, Edit, Ellipsis, Settings, Trash, Users } from "lucide-react";
 import { Fragment, useState } from "react";
