@@ -1,7 +1,7 @@
-import AnalyticsCard from "@/components/analytics-card";
-import CumulativeFlowDiagram from "@/components/area-chart";
 import BarChart, { BarChartData } from "@/components/bar-chart";
 import { DashboardContent } from "@/components/layouts/dashboard/dashboard-content";
+import AnalyticsCard from "@/components/ui/analytics-card";
+import CumulativeFlowDiagram from "@/components/ui/area-chart";
 import { TaskStatus } from "@/types/tasks";
 import { BarChart3, Clock, TrendingUp, Users } from "lucide-react";
 
