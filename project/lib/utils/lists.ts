@@ -2,7 +2,7 @@
 
 import { ListSchema } from "@/types/lists";
 import { UserSchema } from "@/types/users";
-import listQueries from "../db/queries/lists";
+import listQueries from "..//queries/lists";
 
 export async function isUserListCreator(
   listId: ListSchema["id"],

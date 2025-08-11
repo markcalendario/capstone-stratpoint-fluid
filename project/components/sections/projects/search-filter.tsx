@@ -1,4 +1,4 @@
-import Button from "@/components/button";
+import Button from "@/components/ui/buttons/button";
 import { Filter, Search } from "lucide-react";
 
 export default function SearchFilter() {

@@ -3,16 +3,14 @@
 import { ProjectSchema } from "@/types/projects";
 import { revalidatePath } from "next/cache";
 import { ZodError } from "zod";
-import projectQueries from "../db/queries/projects";
+import projectQueries from "..//queries/projects";
 import { isUserProjectOwner, toCardData } from "../utils/projects";
 import { getUserId } from "../utils/users";
 import {
   createProjectPayloadSchema,
-  createProjectSchema,
   deleteProjectPayloadSchema,
   getProjectPayloadSchema,
-  updateProjectPayloadSchema,
-  updateProjectSchema
+  updateProjectPayloadSchema
 } from "../validations/projects";
 
 interface CreateProjectPayload
@@ -30,8 +28,7 @@ export async function createProject(payload: CreateProjectPayload) {
       ownerId: userId
     };
 
-    const createProject = createProjectSchema.parse(data);
-    const projectId = await projectQueries.create(createProject);
+    const projectId = await projectQueries.create(data);
 
     revalidatePath("/(dashboard)");
 
@@ -163,6 +160,10 @@ export async function updateProject(payload: UpdateProjectPayload) {
     const userId = await getUserId();
     const parsed = updateProjectPayloadSchema.parse(payload);
 
+    if (!(await isUserProjectOwner(userId, parsed.projectId))) {
+      return { success: false, message: "You are not the project owner." };
+    }
+
     const data = {
       name: parsed.name,
       description: parsed.description,
@@ -171,13 +172,7 @@ export async function updateProject(payload: UpdateProjectPayload) {
       updatedAt: new Date().toISOString()
     };
 
-    const updateData = updateProjectSchema.parse(data);
-
-    if (!(await isUserProjectOwner(userId, parsed.projectId))) {
-      return { success: false, message: "You are not the project owner." };
-    }
-
-    const projectId = await projectQueries.update(parsed.projectId, updateData);
+    const projectId = await projectQueries.update(parsed.projectId, data);
 
     // Revalidate the cache
     revalidatePath("/(dashboard)");

@@ -1,5 +1,5 @@
 import { UserSchema } from "@/types/users";
-import projectQueries from "../db/queries/projects";
+import projectQueries from "..//queries/projects";
 
 // Helper: Calculate percentage and type
 function calcChange(

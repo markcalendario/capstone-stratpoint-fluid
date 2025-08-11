@@ -1,7 +1,7 @@
 "use server";
 
-import { CreateProjectButton } from "@/components/create-project-button";
-import ProjectCard from "@/components/project-card";
+import { CreateProjectButton } from "@/components/ui/buttons/create-project-button";
+import ProjectCard from "@/components/ui/project-card";
 import { getProjects } from "@/lib/actions/projects";
 
 export default async function ProjectsList() {

@@ -1,9 +1,9 @@
 "use client";
 
-import Button from "@/components/button";
-import Calendar from "@/components/calendar";
-import DeadlineBar from "@/components/deadline-bar";
 import { DashboardContent } from "@/components/layouts/dashboard/dashboard-content";
+import Button from "@/components/ui/buttons/button";
+import Calendar from "@/components/ui/calendar";
+import DeadlineBar from "@/components/ui/deadline-bar";
 import { Plus } from "lucide-react";
 
 export default function CalendarPage() {

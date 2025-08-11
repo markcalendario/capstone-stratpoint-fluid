@@ -19,21 +19,6 @@ export const listSchema = z.object({
   isFinal: z.boolean("isFinal field must be boolean.")
 });
 
-// List Query Schema
-
-export const createListDataSchema = z.object({
-  name: listSchema.shape.name,
-  projectId: listSchema.shape.projectId,
-  createdBy: listSchema.shape.createdBy,
-  isFinal: listSchema.shape.isFinal
-});
-
-export const updateListSchema = z.object({
-  name: listSchema.shape.name,
-  updatedAt: listSchema.shape.updatedAt,
-  isFinal: listSchema.shape.isFinal
-});
-
 // Action Params Validations
 
 export const createListPayloadSchema = z.object({

@@ -1,4 +1,4 @@
-import { showErrorToast, showSuccessToast } from "@/components/toast";
+import { showErrorToast, showSuccessToast } from "@/components/ui/toast";
 import { getProject } from "@/lib/actions/projects";
 import { List } from "@/types/lists";
 import { Project, ProjectSchema } from "@/types/projects";

@@ -1,6 +1,6 @@
-import KanbanBoard from "@/components/kanban-board";
 import { DashboardContent } from "@/components/layouts/dashboard/dashboard-content";
 import ProjectActionButtons from "@/components/sections/project-view/project-action-buttons";
+import KanbanBoard from "@/components/ui/kanban/kanban-board";
 import { getProject } from "@/lib/actions/projects";
 
 interface ProjectPage {

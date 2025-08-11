@@ -34,23 +34,6 @@ export const projectSchema = z.object({
     .refine(isFutureDate, "Due date cannot be in the past.")
 });
 
-// Project Queries Validations
-
-export const createProjectSchema = z.object({
-  name: projectSchema.shape.name,
-  description: projectSchema.shape.description,
-  dueDate: projectSchema.shape.dueDate,
-  ownerId: projectSchema.shape.ownerId
-});
-
-export const updateProjectSchema = z.object({
-  name: projectSchema.shape.name,
-  description: projectSchema.shape.description,
-  dueDate: projectSchema.shape.dueDate,
-  ownerId: projectSchema.shape.ownerId,
-  updatedAt: projectSchema.shape.updatedAt
-});
-
 // Project Payload validations
 
 export const createProjectPayloadSchema = z.object({

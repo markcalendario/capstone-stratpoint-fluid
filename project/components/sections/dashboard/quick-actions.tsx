@@ -1,5 +1,5 @@
-import Button from "@/components/button";
-import { CreateProjectButton } from "@/components/create-project-button";
+import Button from "@/components/ui/buttons/button";
+import { CreateProjectButton } from "@/components/ui/buttons/create-project-button";
 import { PlusSquare, UserPlus } from "lucide-react";
 
 export default function QuickActions() {
