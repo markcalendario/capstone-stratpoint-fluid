@@ -27,6 +27,17 @@ export type UpdateProjectData = Pick<
   "name" | "description" | "dueDate" | "ownerId" | "updatedAt"
 >;
 
+interface UpdateProjectPayload
+  extends Pick<ProjectSchema, "name" | "dueDate" | "description"> {
+  projectId: ProjectSchema["id"];
+}
+
+// Get Project
+
+export interface GetProjectPayload {
+  id: ProjectSchema["id"];
+}
+
 // Project Card
 
 interface ProjectCard

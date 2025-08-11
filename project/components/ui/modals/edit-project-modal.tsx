@@ -30,14 +30,14 @@ Integration:
 - Handle errors gracefully
 */
 
-import useProject from "@/hooks/use-project";
-import { updateProject } from "@/lib/actions/projects";
+import { useUpdateProject, useUserProject } from "@/hooks/useProjects";
 import { ProjectSchema } from "@/types/projects";
-import { redirect, RedirectType } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { MouseEvent, useEffect, useState } from "react";
 import Button from "../buttons/button";
 import Input from "../input-fields/input";
 import Textarea from "../input-fields/textarea";
+import SectionLoader from "../section-loader";
 import { showErrorToast, showSuccessToast } from "../toast";
 import Modal from "./modal";
 
@@ -47,96 +47,110 @@ interface EditProjectModalProps {
 }
 
 export function EditProjectModal({ projectId, toggle }: EditProjectModalProps) {
-  const [project, retrieveProject] = useProject(projectId);
+  const { isProjectLoading, projectData } = useUserProject({ id: projectId });
+  const { isProjectUpdating, updateProject } = useUpdateProject(projectId);
+  const router = useRouter();
 
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [dueDate, setDueDate] = useState("");
+  const [formData, setFormData] = useState({
+    name: "",
+    description: "",
+    dueDate: ""
+  });
 
+  // Populate formData when projectData is loaded
   useEffect(() => {
-    if (!project) return;
+    if (projectData?.project) {
+      setFormData({
+        name: projectData.project.name ?? "",
+        description: projectData.project.description ?? "",
+        dueDate: projectData.project.dueDate ?? ""
+      });
+    }
+  }, [projectData]);
 
-    setName(project.name);
-    setDescription(project.description);
-    setDueDate(project.dueDate);
-  }, [project]);
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
 
-  const handleEditProject = async () => {
-    if (!projectId) return;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleEditProject = async (evt: MouseEvent) => {
+    evt.preventDefault();
 
     const payload = {
       projectId,
-      name: name.trim(),
-      description: description.trim(),
-      dueDate: dueDate
+      name: formData.name.trim(),
+      description: formData.description.trim(),
+      dueDate: formData.dueDate
     };
 
-    const {
-      success,
-      message,
-      projectId: updatedProjectId
-    } = await updateProject(payload);
+    const { success, message, projectId: id } = await updateProject(payload);
 
     if (!success) return showErrorToast(message);
     showSuccessToast(message);
 
     toggle();
-    retrieveProject();
-    redirect(`/projects/${updatedProjectId}`, RedirectType.push);
+    router.push(`/projects/${id}`);
   };
-
-  if (!project) return null;
 
   return (
     <Modal
       toggle={toggle}
       title="Edit Project">
-      <form
-        onSubmit={(e) => e.preventDefault()}
-        className="space-y-4">
-        <Input
-          id="name"
-          name="name"
-          label="Project Name"
-          placeholder="Enter project name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
+      {isProjectLoading && <SectionLoader text="Getting project data." />}
 
-        <Textarea
-          id="description"
-          name="description"
-          label="Project Description"
-          placeholder="Enter project description"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
+      {!isProjectLoading && (
+        <form className="space-y-4">
+          <Input
+            id="name"
+            name="name"
+            label="Project Name"
+            placeholder="Enter project name"
+            value={formData.name}
+            onChange={handleChange}
+          />
 
-        <Input
-          id="dueDate"
-          name="dueDate"
-          label="Project Due Date"
-          placeholder="Enter due date"
-          type="date"
-          value={dueDate}
-          onChange={(e) => setDueDate(e.target.value)}
-        />
+          <Textarea
+            id="description"
+            name="description"
+            label="Project Description"
+            placeholder="Enter project description"
+            value={formData.description}
+            onChange={handleChange}
+          />
 
-        <div className="flex justify-end space-x-3 pt-4">
-          <Button
-            type="button"
-            onClick={toggle}
-            className="text-neutral-800 dark:text-neutral-100">
-            Cancel
-          </Button>
-          <Button
-            type="button"
-            onClick={handleEditProject}
-            className="bg-primary text-neutral-100">
-            Save Edits
-          </Button>
-        </div>
-      </form>
+          <Input
+            id="dueDate"
+            name="dueDate"
+            label="Project Due Date"
+            placeholder="Enter due date"
+            type="date"
+            value={formData.dueDate}
+            onChange={handleChange}
+          />
+
+          <div className="flex justify-end space-x-3 pt-4">
+            <Button
+              type="button"
+              onClick={toggle}
+              className="text-neutral-800 dark:text-neutral-100">
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              onClick={handleEditProject}
+              isProcessing={isProjectUpdating}
+              className="bg-primary text-neutral-100">
+              Save Edits
+            </Button>
+          </div>
+        </form>
+      )}
     </Modal>
   );
 }

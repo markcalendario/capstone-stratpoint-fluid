@@ -1,7 +1,11 @@
 "use server";
 
-import { CreateProjectPayload, ProjectSchema } from "@/types/projects";
-import { revalidatePath } from "next/cache";
+import {
+  CreateProjectPayload,
+  GetProjectPayload,
+  ProjectSchema,
+  UpdateProjectPayload
+} from "@/types/projects";
 import { ZodError } from "zod";
 import projectQueries from "..//queries/projects";
 import { isUserProjectOwner, toCardData } from "../utils/projects";
@@ -26,8 +30,6 @@ export async function createProject(payload: CreateProjectPayload) {
     };
 
     const projectId = await projectQueries.create(data);
-
-    revalidatePath("/(dashboard)");
 
     return {
       success: true,
@@ -117,10 +119,6 @@ export async function getProjects() {
   }
 }
 
-interface GetProjectPayload {
-  id: ProjectSchema["id"];
-}
-
 export async function getProject(payload: GetProjectPayload) {
   try {
     const parsed = getProjectPayloadSchema.parse(payload);
@@ -154,9 +152,6 @@ export async function deleteProject(payload: DeleteProjectPayload) {
 
     await projectQueries.delete(userId, parsed.projectId);
 
-    // Revalidate the cache
-    revalidatePath("/(dashboard)");
-
     return { success: true, message: "Project deleted successfully." };
   } catch (error) {
     if (error instanceof ZodError) {
@@ -165,11 +160,6 @@ export async function deleteProject(payload: DeleteProjectPayload) {
 
     return { success: false, message: "Error. Cannot delete project." };
   }
-}
-
-interface UpdateProjectPayload
-  extends Pick<ProjectSchema, "name" | "dueDate" | "description"> {
-  projectId: ProjectSchema["id"];
 }
 
 export async function updateProject(payload: UpdateProjectPayload) {
@@ -191,9 +181,6 @@ export async function updateProject(payload: UpdateProjectPayload) {
 
     const projectId = await projectQueries.update(parsed.projectId, data);
 
-    // Revalidate the cache
-    revalidatePath("/(dashboard)");
-
     return {
       success: true,
       message: "Project updated successfully.",
@@ -201,9 +188,17 @@ export async function updateProject(payload: UpdateProjectPayload) {
     };
   } catch (error) {
     if (error instanceof ZodError) {
-      return { success: false, message: error.issues[0].message };
+      return {
+        success: false,
+        message: error.issues[0].message,
+        projectId: null
+      };
     }
 
-    return { success: false, message: "Error. Cannot create project." };
+    return {
+      success: false,
+      message: "Error. Cannot create project.",
+      projectId: null
+    };
   }
 }
