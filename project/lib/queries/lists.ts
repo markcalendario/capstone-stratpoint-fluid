@@ -9,12 +9,12 @@ const listQueries = {
     return await db.select().from(lists);
   },
 
-  getById: async (id: ListSchema["id"]) => {
+  get: async (id: ListSchema["id"]) => {
     const [list] = await db.select().from(lists).where(eq(lists.id, id));
     return list;
   },
 
-  getByProjectId: async (projectId: ProjectSchema["id"]) => {
+  getProjectLists: async (projectId: ProjectSchema["id"]) => {
     return await db.select().from(lists).where(eq(lists.projectId, projectId));
   },
 

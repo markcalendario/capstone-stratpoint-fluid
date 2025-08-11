@@ -122,7 +122,7 @@ export async function getProjects() {
 export async function getProject(payload: GetProjectPayload) {
   try {
     const parsed = getProjectPayloadSchema.parse(payload);
-    const project = await projectQueries.getById(parsed.id);
+    const project = await projectQueries.get(parsed.id);
     return {
       success: true,
       message: "Project retrieved successfully.",

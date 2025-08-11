@@ -11,7 +11,7 @@ const commentQueries = {
   getAll: async () => {
     return await db.select().from(comments);
   },
-  getById: async (id: CommentSchema["id"]) => {
+  get: async (id: CommentSchema["id"]) => {
     const [comment] = await db
       .select()
       .from(comments)

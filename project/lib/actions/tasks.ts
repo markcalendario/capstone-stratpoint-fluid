@@ -6,7 +6,6 @@ import {
   GetListTasksPayload,
   UpdatetaskPayload
 } from "@/types/tasks";
-import { revalidatePath } from "next/cache";
 import { ZodError } from "zod";
 import taskAssignmentsQueries from "../queries/taskAssignments";
 import taskQueries from "../queries/tasks";
@@ -14,16 +13,16 @@ import { isUserProjectOwner } from "../utils/projects";
 import { toTaskCard } from "../utils/tasks";
 import { getUserId } from "../utils/users";
 import {
-  createTaskPayloadSchema,
-  deleteTaskValidationPayloadSchema,
-  editTaskPayloadSchema,
-  getTasksByListIdPayloadSchema
+  createAndAssignTaskPayloadSchema,
+  deleteTaskPayloadSchema,
+  getListTasksPayloadSchema,
+  updateTaskPayloadSchema
 } from "../validations/tasks";
 
 export async function getListTasks(payload: GetListTasksPayload) {
   try {
-    const parsed = getTasksByListIdPayloadSchema.parse(payload);
-    const tasks = await taskQueries.getWithAssigneesByListId(parsed.listId);
+    const parsed = getListTasksPayloadSchema.parse(payload);
+    const tasks = await taskQueries.getListTasks(parsed.listId);
     const formattedTasks = [];
 
     for (const task of tasks) {
@@ -38,16 +37,20 @@ export async function getListTasks(payload: GetListTasksPayload) {
     };
   } catch (error) {
     if (error instanceof ZodError) {
-      return { success: false, message: error.issues[0].message };
+      return { success: false, message: error.issues[0].message, tasks: [] };
     }
 
-    return { success: false, message: "Error. Cannot get tasks by list." };
+    return {
+      success: false,
+      message: "Error. Cannot get tasks by list.",
+      tasks: []
+    };
   }
 }
 
 export async function createAndAssignTask(payload: CreateAndAssignTaskPayload) {
   try {
-    const parsed = createTaskPayloadSchema.parse(payload);
+    const parsed = createAndAssignTaskPayloadSchema.parse(payload);
     const userId = await getUserId();
 
     if (!(await isUserProjectOwner(userId, parsed.projectId))) {
@@ -68,7 +71,7 @@ export async function createAndAssignTask(payload: CreateAndAssignTaskPayload) {
       label: parsed.label
     };
 
-    const taskId = await taskQueries.create(createTaskData);
+    const taskId = await taskQueries.createAndAssignTask(createTaskData);
 
     if (parsed.assignees.length) {
       const assignmentData = { taskId, userIds: parsed.assignees };
@@ -81,8 +84,6 @@ export async function createAndAssignTask(payload: CreateAndAssignTaskPayload) {
       return { success: false, message: error.issues[0].message };
     }
 
-    console.log(error);
-
     return {
       success: false,
       message: "Error. Cannot create task."
@@ -93,7 +94,7 @@ export async function createAndAssignTask(payload: CreateAndAssignTaskPayload) {
 export async function deleteTask(payload: DeleteTaskPayload) {
   try {
     const userId = await getUserId();
-    const parsed = deleteTaskValidationPayloadSchema.parse(payload);
+    const parsed = deleteTaskPayloadSchema.parse(payload);
 
     if (!(await isUserProjectOwner(userId, parsed.projectId))) {
       return { success: false, message: "You're not the project owner." };
@@ -113,7 +114,7 @@ export async function deleteTask(payload: DeleteTaskPayload) {
 
 export async function updateTask(payload: UpdatetaskPayload) {
   try {
-    const parsed = editTaskPayloadSchema.parse(payload);
+    const parsed = updateTaskPayloadSchema.parse(payload);
     const userId = await getUserId();
 
     if (!(await isUserProjectOwner(userId, parsed.projectId))) {
@@ -142,8 +143,6 @@ export async function updateTask(payload: UpdatetaskPayload) {
       const assignmentData = { taskId, userIds: parsed.assignees };
       await taskAssignmentsQueries.createMany(assignmentData);
     }
-
-    revalidatePath("/(dashboard)");
 
     return { success: true, message: "Task created successfully." };
   } catch (error) {

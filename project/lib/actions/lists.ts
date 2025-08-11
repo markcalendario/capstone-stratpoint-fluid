@@ -7,7 +7,7 @@ import { getUserId } from "@/lib/utils/users";
 import {
   createListPayloadSchema,
   deleteListPayloadSchema,
-  getListsByProjectIdSchema,
+  getProjectListsPayloadSchema,
   listSchema,
   updateListPayloadSchema
 } from "@/lib/validations/lists";
@@ -17,7 +17,6 @@ import {
   ListSchema,
   UpdateListPayload
 } from "@/types/lists";
-import { revalidatePath } from "next/cache";
 import { ZodError } from "zod";
 
 interface CreateListPayload
@@ -44,9 +43,6 @@ export async function createList(payload: CreateListPayload) {
     // Create list
     await listQueries.create(data);
 
-    // Revalidate paths
-    revalidatePath("/(dashboard)");
-
     return { success: true, message: "List created successfully." };
   } catch (error) {
     if (error instanceof ZodError) {
@@ -59,8 +55,8 @@ export async function createList(payload: CreateListPayload) {
 
 export async function getProjectLists(payload: GetProjectListsPayload) {
   try {
-    const parsed = getListsByProjectIdSchema.parse(payload);
-    const lists = await listQueries.getByProjectId(parsed.projectId);
+    const parsed = getProjectListsPayloadSchema.parse(payload);
+    const lists = await listQueries.getProjectLists(parsed.projectId);
 
     return {
       success: true,
@@ -96,9 +92,6 @@ export async function updateList(payload: UpdateListPayload) {
     // Update data
     await listQueries.update(parsed.id, data);
 
-    // Revalidate the cache
-    revalidatePath("/(dashboard)");
-
     return { success: true, message: "List updated successfully." };
   } catch (error) {
     if (error instanceof ZodError) {
@@ -112,7 +105,7 @@ export async function updateList(payload: UpdateListPayload) {
 export async function getList(payload: GetListPayload) {
   try {
     const validId = listSchema.shape.id.parse(payload.id);
-    const list = await listQueries.getById(validId);
+    const list = await listQueries.get(validId);
 
     return { success: true, message: "List fetched successfully.", list };
   } catch (error) {
@@ -138,9 +131,6 @@ export async function deleteList(payload: DeleteListPayload) {
     }
 
     await listQueries.delete(parsed.id);
-
-    // Revalidate the cache
-    revalidatePath("/(dashboard)");
 
     return { success: true, message: "List deleted successfully." };
   } catch (error) {
