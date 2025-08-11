@@ -1,6 +1,6 @@
 "use client";
 
-import { useTheme } from "@/components/theme-provider";
+import { useTheme } from "@/components/ui/theme-provider";
 import { cn } from "@/lib/utils";
 import {
   BarChart3,
