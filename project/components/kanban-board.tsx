@@ -51,7 +51,7 @@ export default async function KanbanBoard({ projectId }: KanbanBoardProps) {
 
   return (
     <div className="outline-primary/20 w-full rounded-sm bg-white p-6 outline-2 dark:bg-neutral-800">
-      <div className="flex min-w-full flex-nowrap space-x-6 overflow-x-auto pb-4">
+      <div className="flex min-w-full flex-nowrap items-stretch space-x-6 overflow-x-auto pb-4">
         {lists.map((list) => (
           <ListCard
             key={list.id}
@@ -63,7 +63,7 @@ export default async function KanbanBoard({ projectId }: KanbanBoardProps) {
 
         <CreateListButton
           projectId={projectId}
-          className="border-primary/20 text-primary hover:bg-primary/10 flex min-h-[500px] min-w-80 cursor-pointer flex-nowrap items-center justify-center gap-2 rounded-sm border-2 border-dashed bg-neutral-50 dark:border-neutral-500 dark:bg-neutral-800 dark:text-neutral-300"
+          className="border-primary/20 text-primary hover:bg-primary/10 flex min-h-[500px] min-w-100 cursor-pointer flex-nowrap items-center justify-center gap-2 rounded-sm border-2 border-dashed bg-neutral-50 dark:border-neutral-500 dark:bg-neutral-800 dark:text-neutral-300"
         />
       </div>
     </div>
