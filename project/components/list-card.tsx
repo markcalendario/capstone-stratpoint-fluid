@@ -3,7 +3,7 @@ import { ListSchema } from "@/types/lists";
 import { ProjectSchema } from "@/types/projects";
 import AddTaskButton from "./add-task-button";
 import ListCardDropdown from "./list-card-dropdown";
-import { TaskCard } from "./task-card";
+import { TaskCard } from "./ui/task-card";
 
 interface ListCardProps {
   id: ListSchema["id"];
