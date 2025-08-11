@@ -52,6 +52,14 @@ export type TaskStatus = {
 
 // Payload
 
-export interface GetTasksByListId {
+export interface GetListTasksPayload {
   listId: ListSchema["id"];
+}
+
+interface CreateAndAssignTaskPayload
+  extends Pick<Task, "listId" | "title" | "description" | "dueDate" | "label"> {
+  attachment: File | null;
+  priority: string;
+  projectId: ProjectSchema["id"];
+  assignees: UserSchema["id"][];
 }

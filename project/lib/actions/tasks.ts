@@ -1,7 +1,12 @@
 "use server";
 
 import { ProjectSchema } from "@/types/projects";
-import { GetTasksByListId, Task, TaskSchema } from "@/types/tasks";
+import {
+  CreateAndAssignTaskPayload,
+  GetListTasksPayload,
+  Task,
+  TaskSchema
+} from "@/types/tasks";
 import { UserSchema } from "@/types/users";
 import { revalidatePath } from "next/cache";
 import { ZodError } from "zod";
@@ -17,7 +22,7 @@ import {
   getTasksByListIdPayloadSchema
 } from "../validations/tasks";
 
-export const getListTasks = async (payload: GetTasksByListId) => {
+export const getListTasks = async (payload: GetListTasksPayload) => {
   try {
     const parsed = getTasksByListIdPayloadSchema.parse(payload);
     const tasks = await taskQueries.getWithAssigneesByListId(parsed.listId);
@@ -42,15 +47,7 @@ export const getListTasks = async (payload: GetTasksByListId) => {
   }
 };
 
-interface CreateTaskPayload
-  extends Pick<Task, "listId" | "title" | "description" | "dueDate" | "label"> {
-  attachment: File | null;
-  priority: string;
-  projectId: ProjectSchema["id"];
-  assignees: UserSchema["id"][];
-}
-
-export async function createAndAssignTask(payload: CreateTaskPayload) {
+export async function createAndAssignTask(payload: CreateAndAssignTaskPayload) {
   try {
     const parsed = createTaskPayloadSchema.parse(payload);
     const userId = await getUserId();
@@ -79,8 +76,6 @@ export async function createAndAssignTask(payload: CreateTaskPayload) {
       const assignmentData = { taskId, userIds: parsed.assignees };
       await taskAssignmentsQueries.createMany(assignmentData);
     }
-
-    revalidatePath("/(dashboard)");
 
     return { success: true, message: "Task created successfully." };
   } catch (error) {
