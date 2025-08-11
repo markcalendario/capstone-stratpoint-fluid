@@ -1,4 +1,4 @@
-import LinkButton from "@/components/link-button";
+import LinkButton from "@/components/ui/buttons/link-button";
 import { Blocks, Kanban } from "lucide-react";
 import Image from "next/image";
 

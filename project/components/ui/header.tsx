@@ -4,8 +4,8 @@ import { LogIn, MenuIcon, Moon, Sun } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Fragment, useCallback, useEffect, useState } from "react";
-import LinkButton from "../link-button";
 import Button from "./buttons/button";
+import LinkButton from "./buttons/link-button";
 import { useTheme } from "./theme-provider";
 
 const NAV_LINKS = [
