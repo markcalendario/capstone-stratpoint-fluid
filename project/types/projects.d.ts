@@ -10,15 +10,24 @@ export interface ProjectSchema extends InferSelectModel<typeof projects> {
 
 type Project = InferSelectModel<typeof projects>;
 
+// Create Project
+
 export type CreateProjectData = Pick<
   ProjectSchema,
   "name" | "description" | "dueDate" | "ownerId"
 >;
 
+interface CreateProjectPayload
+  extends Pick<ProjectSchema, "name" | "description" | "dueDate"> {}
+
+// Update Project
+
 export type UpdateProjectData = Pick<
   ProjectSchema,
   "name" | "description" | "dueDate" | "ownerId" | "updatedAt"
 >;
+
+// Project Card
 
 interface ProjectCard
   extends Pick<ProjectSchema, "id" | "name" | "description" | "dueDate"> {

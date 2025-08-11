@@ -1,3 +1,5 @@
+"use client";
+
 import { DashboardContent } from "@/components/layouts/dashboard/dashboard-content";
 import ProjectsList from "@/components/sections/projects/projects-list";
 import SearchFilter from "@/components/sections/projects/search-filter";

@@ -1,6 +1,6 @@
 "use server";
 
-import { ProjectSchema } from "@/types/projects";
+import { CreateProjectPayload, ProjectSchema } from "@/types/projects";
 import { revalidatePath } from "next/cache";
 import { ZodError } from "zod";
 import projectQueries from "..//queries/projects";
@@ -12,9 +12,6 @@ import {
   getProjectPayloadSchema,
   updateProjectPayloadSchema
 } from "../validations/projects";
-
-interface CreateProjectPayload
-  extends Pick<ProjectSchema, "name" | "description" | "dueDate"> {}
 
 export async function createProject(payload: CreateProjectPayload) {
   try {
@@ -39,10 +36,18 @@ export async function createProject(payload: CreateProjectPayload) {
     };
   } catch (error) {
     if (error instanceof ZodError) {
-      return { success: false, message: error.issues[0].message };
+      return {
+        success: false,
+        message: error.issues[0].message,
+        projectId: null
+      };
     }
 
-    return { success: false, message: "Error. Cannot create project." };
+    return {
+      success: false,
+      message: "Error. Cannot create project.",
+      projectId: null
+    };
   }
 }
 
@@ -93,10 +98,14 @@ export async function getProjects() {
     };
   } catch (error) {
     if (error instanceof ZodError) {
-      return { success: false, message: error.issues[0].message };
+      return { success: false, message: error.issues[0].message, projects: [] };
     }
 
-    return { success: false, message: "Error. Cannot get projects." };
+    return {
+      success: false,
+      message: "Error. Cannot get projects.",
+      projects: []
+    };
   }
 }
 
