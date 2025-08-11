@@ -1,4 +1,4 @@
-import { useDeleteProject } from "@/hooks/useProjects";
+import { useDeleteProject } from "@/hooks/use-projects";
 import { ProjectSchema } from "@/types/projects";
 import { redirect, RedirectType } from "next/navigation";
 import { ChangeEvent, useState } from "react";

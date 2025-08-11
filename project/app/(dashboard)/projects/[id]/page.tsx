@@ -4,7 +4,7 @@ import { DashboardContent } from "@/components/layouts/dashboard/dashboard-conte
 import ProjectActionButtons from "@/components/sections/project-view/project-action-buttons";
 import KanbanBoard from "@/components/ui/kanban/kanban-board";
 import SectionLoader from "@/components/ui/section-loader";
-import { useUserProject } from "@/hooks/useProjects";
+import { useUserProject } from "@/hooks/use-projects";
 import { redirect, RedirectType, useParams } from "next/navigation";
 
 export default function ProjectPage() {
@@ -15,7 +15,7 @@ export default function ProjectPage() {
     return redirect("/projects", RedirectType.replace);
   }
 
-  const { isProjectLoading, projectData } = useUserProject({ id });
+  const { isProjectLoading, projectData } = useUserProject(id);
 
   if (isProjectLoading || !projectData) {
     return <SectionLoader text="Loading Project" />;

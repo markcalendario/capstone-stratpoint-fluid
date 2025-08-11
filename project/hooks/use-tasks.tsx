@@ -1,12 +1,12 @@
 import { queryClient } from "@/components/ui/query-client-provider";
 import { createAndAssignTask, getListTasks } from "@/lib/actions/tasks";
-import { GetListTasksPayload } from "@/types/tasks";
+import { ListSchema } from "@/types/lists";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
-export function useListTasks(payload: GetListTasksPayload) {
+export function useListTasks(id: ListSchema["id"]) {
   const { isPending, data } = useQuery({
-    queryKey: ["listTasks", payload.listId],
-    queryFn: () => getListTasks(payload)
+    queryKey: ["listTasks", id],
+    queryFn: () => getListTasks({ listId: id })
   });
 
   return { isListTasksLoading: isPending, listTasksData: data };

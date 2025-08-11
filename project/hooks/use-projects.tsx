@@ -10,7 +10,6 @@ import {
 import {
   CreateProjectPayload,
   DeleteProjectPayload,
-  GetProjectPayload,
   ProjectSchema,
   UpdateProjectPayload
 } from "@/types/projects";
@@ -28,22 +27,22 @@ export function useCreateProject() {
     mutationFn: (payload: CreateProjectPayload) => createProject(payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["projects"] });
-      queryClient.invalidateQueries({ queryKey: ["recentProject"] });
+      queryClient.invalidateQueries({ queryKey: ["recentProjects"] });
     }
   });
 }
 
 export function useRecentProjects() {
   return useQuery({
-    queryKey: ["recentProject"],
+    queryKey: ["recentProjects"],
     queryFn: getRecentProjects
   });
 }
 
-export function useUserProject(payload: GetProjectPayload) {
+export function useUserProject(id: ProjectSchema["id"]) {
   const { isPending, data } = useQuery({
-    queryKey: ["project", payload.id],
-    queryFn: () => getProject(payload)
+    queryKey: ["project", id],
+    queryFn: () => getProject({ id })
   });
 
   return { isProjectLoading: isPending, projectData: data };
@@ -54,8 +53,8 @@ export function useUpdateProject(id: ProjectSchema["id"]) {
     mutationFn: (payload: UpdateProjectPayload) => updateProject(payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["projects"] });
-      queryClient.invalidateQueries({ queryKey: ["recentProject"] });
       queryClient.invalidateQueries({ queryKey: ["project", id] });
+      queryClient.invalidateQueries({ queryKey: ["recentProjects"] });
     }
   });
 
@@ -71,7 +70,7 @@ export function useDeleteProject(id: ProjectSchema["id"]) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["projects"] });
       queryClient.invalidateQueries({ queryKey: ["project", id] });
-      queryClient.invalidateQueries({ queryKey: ["recentProject"] });
+      queryClient.invalidateQueries({ queryKey: ["recentProjects"] });
     }
   });
 

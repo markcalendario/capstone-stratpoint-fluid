@@ -30,7 +30,7 @@ Integration:
 - Handle errors gracefully
 */
 
-import { useUpdateProject, useUserProject } from "@/hooks/useProjects";
+import { useUpdateProject, useUserProject } from "@/hooks/use-projects";
 import { ProjectSchema } from "@/types/projects";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, MouseEvent, useEffect, useState } from "react";
@@ -47,7 +47,7 @@ interface EditProjectModalProps {
 }
 
 export function EditProjectModal({ projectId, toggle }: EditProjectModalProps) {
-  const { isProjectLoading, projectData } = useUserProject({ id: projectId });
+  const { isProjectLoading, projectData } = useUserProject(projectId);
   const { isProjectUpdating, updateProject } = useUpdateProject(projectId);
   const router = useRouter();
 

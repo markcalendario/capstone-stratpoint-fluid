@@ -2,7 +2,7 @@
 
 import ProjectCard from "@/components/ui/project-card";
 import SectionLoader from "@/components/ui/section-loader";
-import { useRecentProjects } from "@/hooks/useProjects";
+import { useRecentProjects } from "@/hooks/use-projects";
 import Link from "next/link";
 
 export default function RecentProjects() {
