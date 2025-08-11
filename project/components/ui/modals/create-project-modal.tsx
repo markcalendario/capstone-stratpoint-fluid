@@ -20,7 +20,7 @@ export function CreateProjectModal({ toggle }: CreateProjectModalProps) {
   const handleCreateProject = async () => {
     const payload = { name, description, dueDate };
 
-    const { success, message, projectId } = await createProject(payload);
+    const { success, message } = await createProject(payload);
 
     if (!success) return showErrorToast(message);
     showSuccessToast(message);

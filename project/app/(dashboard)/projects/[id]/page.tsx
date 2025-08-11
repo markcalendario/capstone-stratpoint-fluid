@@ -5,15 +5,11 @@ import ProjectActionButtons from "@/components/sections/project-view/project-act
 import KanbanBoard from "@/components/ui/kanban/kanban-board";
 import SectionLoader from "@/components/ui/section-loader";
 import { useUserProject } from "@/hooks/use-projects";
-import { redirect, RedirectType, useParams } from "next/navigation";
+import { useParams } from "next/navigation";
 
 export default function ProjectPage() {
   const params = useParams();
-  const id = params.id;
-
-  if (typeof id !== "string") {
-    return redirect("/projects", RedirectType.replace);
-  }
+  const id = params.id as string;
 
   const { isProjectLoading, projectData } = useUserProject(id);
 

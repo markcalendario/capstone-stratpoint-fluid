@@ -43,7 +43,7 @@ export default function SelectProjectMembers({
 
   useEffect(() => {
     onChange(selectedIds);
-  }, [selectedIds]);
+  }, [selectedIds, onChange]);
 
   const loaded =
     !isProjectMembersOptionsLoading && projectMembersOptions?.members;
