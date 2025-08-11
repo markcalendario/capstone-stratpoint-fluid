@@ -1,4 +1,4 @@
-import ListCardDropdown from "@/components/dropdowns/list-card-dropdown";
+import ListCardDropdown from "@/components/ui/dropdowns/list-card-dropdown";
 import { getTasksByListId } from "@/lib/actions/tasks";
 import { ListSchema } from "@/types/lists";
 import { ProjectSchema } from "@/types/projects";

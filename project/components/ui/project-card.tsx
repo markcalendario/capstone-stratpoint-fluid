@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import { ProjectCard as IProjectCard } from "@/types/projects";
 import { Calendar, Users } from "lucide-react";
 import Link from "next/link";
-import ProjectCardDropdown from "../dropdowns/project-card-dropdown";
+import ProjectCardDropdown from "./dropdowns/project-card-dropdown";
 
 interface ProjectCardProps extends IProjectCard {
   className?: string;

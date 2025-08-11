@@ -1,7 +1,7 @@
 "use client";
 
-import Dropdown from "@/components/dropdowns/drop-down";
 import LinkButton from "@/components/ui/buttons/link-button";
+import Dropdown from "@/components/ui/dropdowns/drop-down";
 import { DeleteProjectModal } from "@/components/ui/modals/delete-project-modal";
 import { EditProjectModal } from "@/components/ui/modals/edit-project-modal";
 import { ProjectSchema } from "@/types/projects";

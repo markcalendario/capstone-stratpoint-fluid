@@ -3,8 +3,8 @@
 import { ListSchema } from "@/types/lists";
 import { Edit, MoreHorizontal, Trash } from "lucide-react";
 import { Fragment, useState } from "react";
-import { DeleteListModal } from "../ui/modals/delete-list-modal";
-import { UpdateListModal } from "../ui/modals/update-list-modal";
+import { DeleteListModal } from "../modals/delete-list-modal";
+import { UpdateListModal } from "../modals/update-list-modal";
 import Dropdown from "./drop-down";
 
 interface ListCardDropdownProps {
