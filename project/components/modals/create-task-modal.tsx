@@ -5,11 +5,11 @@ import { ListSchema } from "@/types/lists";
 import { ProjectSchema } from "@/types/projects";
 import { UserSchema } from "@/types/users";
 import { ChangeEvent, FormEvent, useState } from "react";
-import RichTextEditor from "../rich-text-editor";
-import SelectPriority from "../select-priority";
-import SelectProjectMembers from "../select-project-members";
 import Button from "../ui/buttons/button";
 import Input from "../ui/input-fields/input";
+import RichTextEditor from "../ui/input-fields/rich-text-editor";
+import SelectPriority from "../ui/input-fields/select/select-priority";
+import SelectProjectMembers from "../ui/input-fields/select/select-project-members";
 import { showErrorToast, showSuccessToast } from "../ui/toast";
 import Modal from "./modal";
 

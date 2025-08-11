@@ -4,8 +4,8 @@ import { getProjectMembersOptions } from "@/lib/actions/teams";
 import { ProjectSchema } from "@/types/projects";
 import { UserSchema } from "@/types/users";
 import { ChangeEvent, useCallback, useEffect, useState } from "react";
-import { showErrorToast } from "./ui/toast";
-import UserCheckbox from "./user-checkbox";
+import { showErrorToast } from "../../toast";
+import UserCheckbox from "../user-checkbox";
 
 interface SelectMembersProps {
   name: string;

@@ -35,9 +35,9 @@ import { updateProject } from "@/lib/actions/projects";
 import { ProjectSchema } from "@/types/projects";
 import { redirect, RedirectType } from "next/navigation";
 import { useEffect, useState } from "react";
-import Textarea from "../textarea";
 import Button from "../ui/buttons/button";
 import Input from "../ui/input-fields/input";
+import Textarea from "../ui/input-fields/textarea";
 import { showErrorToast, showSuccessToast } from "../ui/toast";
 import Modal from "./modal";
 

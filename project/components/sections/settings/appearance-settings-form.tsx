@@ -1,4 +1,4 @@
-import Select from "@/components/select";
+import Select from "@/components/ui/input-fields/select/select";
 import { Theme, useTheme } from "@/components/ui/theme-provider";
 import { cn } from "@/lib/utils";
 
