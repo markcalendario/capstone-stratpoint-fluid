@@ -1,4 +1,4 @@
-import { deleteProject } from "@/lib/actions/projects";
+import { useDeleteProject } from "@/hooks/useProjects";
 import { ProjectSchema } from "@/types/projects";
 import { redirect, RedirectType } from "next/navigation";
 import { ChangeEvent, useState } from "react";
@@ -17,8 +17,9 @@ export function DeleteProjectModal({
   projectId
 }: DeleteProjectModalProps) {
   const TARGET_CONFIRM_TEXT = "DELETE PROJECT";
-
   const [confirmText, setConfirmText] = useState("");
+
+  const { isProjectDeleting, deleteProject } = useDeleteProject(projectId);
 
   const handleConfirmChange = (evt: ChangeEvent<HTMLInputElement>) => {
     setConfirmText(evt.target.value);
@@ -29,7 +30,7 @@ export function DeleteProjectModal({
       return showErrorToast("Wrong delete confirmation value.");
     }
 
-    const { success, message } = await deleteProject({ projectId });
+    const { success, message } = await deleteProject({ id: projectId });
 
     if (!success) return showErrorToast(message);
     showSuccessToast(message);
@@ -58,6 +59,7 @@ export function DeleteProjectModal({
           </Button>
           <Button
             onClick={handleDeleteProject}
+            isProcessing={isProjectDeleting}
             className="bg-red-700 text-neutral-100">
             Delete Project
           </Button>

@@ -32,6 +32,12 @@ interface UpdateProjectPayload
   projectId: ProjectSchema["id"];
 }
 
+// Delete Project
+
+interface DeleteProjectPayload {
+  id: ProjectSchema["id"];
+}
+
 // Get Project
 
 export interface GetProjectPayload {

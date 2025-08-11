@@ -2,8 +2,8 @@
 
 import {
   CreateProjectPayload,
+  DeleteProjectPayload,
   GetProjectPayload,
-  ProjectSchema,
   UpdateProjectPayload
 } from "@/types/projects";
 import { ZodError } from "zod";
@@ -137,20 +137,16 @@ export async function getProject(payload: GetProjectPayload) {
   }
 }
 
-interface DeleteProjectPayload {
-  projectId: ProjectSchema["id"];
-}
-
 export async function deleteProject(payload: DeleteProjectPayload) {
   try {
     const userId = await getUserId();
     const parsed = deleteProjectPayloadSchema.parse(payload);
 
-    if (!(await isUserProjectOwner(userId, parsed.projectId))) {
+    if (!(await isUserProjectOwner(userId, parsed.id))) {
       return { success: false, message: "You are not the project owner." };
     }
 
-    await projectQueries.delete(userId, parsed.projectId);
+    await projectQueries.delete(parsed.id, userId);
 
     return { success: true, message: "Project deleted successfully." };
   } catch (error) {

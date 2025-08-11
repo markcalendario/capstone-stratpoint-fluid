@@ -1,6 +1,7 @@
 import { queryClient } from "@/components/ui/query-client-provider";
 import {
   createProject,
+  deleteProject,
   getProject,
   getProjects,
   getRecentProjects,
@@ -8,6 +9,7 @@ import {
 } from "@/lib/actions/projects";
 import {
   CreateProjectPayload,
+  DeleteProjectPayload,
   GetProjectPayload,
   ProjectSchema,
   UpdateProjectPayload
@@ -16,7 +18,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 
 export function useUserProjects() {
   return useQuery({
-    queryKey: ["userProjects"],
+    queryKey: ["projects"],
     queryFn: getProjects
   });
 }
@@ -25,22 +27,22 @@ export function useCreateProject() {
   return useMutation({
     mutationFn: (payload: CreateProjectPayload) => createProject(payload),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["userProjects"] });
-      queryClient.invalidateQueries({ queryKey: ["recentProjects"] });
+      queryClient.invalidateQueries({ queryKey: ["projects"] });
+      queryClient.invalidateQueries({ queryKey: ["recentProject"] });
     }
   });
 }
 
 export function useRecentProjects() {
   return useQuery({
-    queryKey: ["recentProjects"],
+    queryKey: ["recentProject"],
     queryFn: getRecentProjects
   });
 }
 
 export function useUserProject(payload: GetProjectPayload) {
   const { isPending, data } = useQuery({
-    queryKey: ["userProject", payload.id],
+    queryKey: ["project", payload.id],
     queryFn: () => getProject(payload)
   });
 
@@ -51,9 +53,9 @@ export function useUpdateProject(id: ProjectSchema["id"]) {
   const { isPending, mutateAsync } = useMutation({
     mutationFn: (payload: UpdateProjectPayload) => updateProject(payload),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["userProjects"] });
-      queryClient.invalidateQueries({ queryKey: ["recentProjects"] });
-      queryClient.invalidateQueries({ queryKey: ["userProject", id] });
+      queryClient.invalidateQueries({ queryKey: ["projects"] });
+      queryClient.invalidateQueries({ queryKey: ["recentProject"] });
+      queryClient.invalidateQueries({ queryKey: ["project", id] });
     }
   });
 
@@ -61,4 +63,17 @@ export function useUpdateProject(id: ProjectSchema["id"]) {
     isProjectUpdating: isPending,
     updateProject: mutateAsync
   };
+}
+
+export function useDeleteProject(id: ProjectSchema["id"]) {
+  const { isPending, mutateAsync } = useMutation({
+    mutationFn: (payload: DeleteProjectPayload) => deleteProject(payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["projects"] });
+      queryClient.invalidateQueries({ queryKey: ["project", id] });
+      queryClient.invalidateQueries({ queryKey: ["recentProject"] });
+    }
+  });
+
+  return { isProjectDeleting: isPending, deleteProject: mutateAsync };
 }
