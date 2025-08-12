@@ -43,11 +43,11 @@ export const taskSchema = z.object({
 
 // Payload Validations
 
-export const getTasksByListIdPayloadSchema = z.object({
+export const getListTasksPayloadSchema = z.object({
   listId: listSchema.shape.id
 });
 
-export const createTaskPayloadSchema = z.object({
+export const createAndAssignTaskPayloadSchema = z.object({
   listId: listSchema.shape.id,
   title: taskSchema.shape.title,
   description: taskSchema.shape.description,
@@ -59,12 +59,12 @@ export const createTaskPayloadSchema = z.object({
   projectId: projectSchema.shape.id
 });
 
-export const deleteTaskValidationPayloadSchema = z.object({
+export const deleteTaskPayloadSchema = z.object({
   id: taskSchema.shape.id,
   projectId: projectSchema.shape.id
 });
 
-export const editTaskPayloadSchema = z.object({
+export const updateTaskPayloadSchema = z.object({
   id: taskSchema.shape.id,
   listId: listSchema.shape.id,
   title: taskSchema.shape.title,

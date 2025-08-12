@@ -1,7 +1,11 @@
 "use server";
 
-import { ProjectSchema } from "@/types/projects";
-import { revalidatePath } from "next/cache";
+import {
+  CreateProjectPayload,
+  DeleteProjectPayload,
+  GetProjectPayload,
+  UpdateProjectPayload
+} from "@/types/projects";
 import { ZodError } from "zod";
 import projectQueries from "..//queries/projects";
 import { isUserProjectOwner, toCardData } from "../utils/projects";
@@ -12,9 +16,6 @@ import {
   getProjectPayloadSchema,
   updateProjectPayloadSchema
 } from "../validations/projects";
-
-interface CreateProjectPayload
-  extends Pick<ProjectSchema, "name" | "description" | "dueDate"> {}
 
 export async function createProject(payload: CreateProjectPayload) {
   try {
@@ -30,8 +31,6 @@ export async function createProject(payload: CreateProjectPayload) {
 
     const projectId = await projectQueries.create(data);
 
-    revalidatePath("/(dashboard)");
-
     return {
       success: true,
       message: "Project created successfully.",
@@ -39,10 +38,18 @@ export async function createProject(payload: CreateProjectPayload) {
     };
   } catch (error) {
     if (error instanceof ZodError) {
-      return { success: false, message: error.issues[0].message };
+      return {
+        success: false,
+        message: error.issues[0].message,
+        projectId: null
+      };
     }
 
-    return { success: false, message: "Error. Cannot create project." };
+    return {
+      success: false,
+      message: "Error. Cannot create project.",
+      projectId: null
+    };
   }
 }
 
@@ -66,10 +73,18 @@ export async function getRecentProjects() {
     };
   } catch (error) {
     if (error instanceof ZodError) {
-      return { success: false, message: error.issues[0].message };
+      return {
+        success: false,
+        message: error.issues[0].message,
+        recentProjects: []
+      };
     }
 
-    return { success: false, message: "Error. Cannot get recent projects." };
+    return {
+      success: false,
+      message: "Error. Cannot get recent projects.",
+      recentProjects: []
+    };
   }
 }
 
@@ -93,21 +108,21 @@ export async function getProjects() {
     };
   } catch (error) {
     if (error instanceof ZodError) {
-      return { success: false, message: error.issues[0].message };
+      return { success: false, message: error.issues[0].message, projects: [] };
     }
 
-    return { success: false, message: "Error. Cannot get projects." };
+    return {
+      success: false,
+      message: "Error. Cannot get projects.",
+      projects: []
+    };
   }
-}
-
-interface GetProjectPayload {
-  id: ProjectSchema["id"];
 }
 
 export async function getProject(payload: GetProjectPayload) {
   try {
     const parsed = getProjectPayloadSchema.parse(payload);
-    const project = await projectQueries.getById(parsed.id);
+    const project = await projectQueries.get(parsed.id);
     return {
       success: true,
       message: "Project retrieved successfully.",
@@ -122,23 +137,16 @@ export async function getProject(payload: GetProjectPayload) {
   }
 }
 
-interface DeleteProjectPayload {
-  projectId: ProjectSchema["id"];
-}
-
 export async function deleteProject(payload: DeleteProjectPayload) {
   try {
     const userId = await getUserId();
     const parsed = deleteProjectPayloadSchema.parse(payload);
 
-    if (!(await isUserProjectOwner(userId, parsed.projectId))) {
+    if (!(await isUserProjectOwner(userId, parsed.id))) {
       return { success: false, message: "You are not the project owner." };
     }
 
-    await projectQueries.delete(userId, parsed.projectId);
-
-    // Revalidate the cache
-    revalidatePath("/(dashboard)");
+    await projectQueries.delete(parsed.id, userId);
 
     return { success: true, message: "Project deleted successfully." };
   } catch (error) {
@@ -148,11 +156,6 @@ export async function deleteProject(payload: DeleteProjectPayload) {
 
     return { success: false, message: "Error. Cannot delete project." };
   }
-}
-
-interface UpdateProjectPayload
-  extends Pick<ProjectSchema, "name" | "dueDate" | "description"> {
-  projectId: ProjectSchema["id"];
 }
 
 export async function updateProject(payload: UpdateProjectPayload) {
@@ -174,9 +177,6 @@ export async function updateProject(payload: UpdateProjectPayload) {
 
     const projectId = await projectQueries.update(parsed.projectId, data);
 
-    // Revalidate the cache
-    revalidatePath("/(dashboard)");
-
     return {
       success: true,
       message: "Project updated successfully.",
@@ -184,9 +184,17 @@ export async function updateProject(payload: UpdateProjectPayload) {
     };
   } catch (error) {
     if (error instanceof ZodError) {
-      return { success: false, message: error.issues[0].message };
+      return {
+        success: false,
+        message: error.issues[0].message,
+        projectId: null
+      };
     }
 
-    return { success: false, message: "Error. Cannot create project." };
+    return {
+      success: false,
+      message: "Error. Cannot create project.",
+      projectId: null
+    };
   }
 }

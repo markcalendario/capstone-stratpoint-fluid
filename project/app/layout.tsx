@@ -1,3 +1,4 @@
+import QueryClientProvider from "@/components/ui/query-client-provider";
 import { ThemeProvider } from "@/components/ui/theme-provider";
 import { cn } from "@/lib/utils";
 import "@/styles/globals.css";
@@ -25,7 +26,9 @@ export default function RootLayout({ children }: RootLayout) {
         <ClerkProvider
           afterSignOutUrl="/sign-in"
           appearance={{ cssLayerName: "clerk" }}>
-          <ThemeProvider>{children}</ThemeProvider>
+          <QueryClientProvider>
+            <ThemeProvider>{children}</ThemeProvider>
+          </QueryClientProvider>
         </ClerkProvider>
         <Toaster position="bottom-left" />
       </body>

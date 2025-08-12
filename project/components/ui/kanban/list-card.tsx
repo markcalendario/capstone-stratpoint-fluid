@@ -1,8 +1,11 @@
+"use client";
+
 import ListCardDropdown from "@/components/ui/dropdowns/list-card-dropdown";
-import { getTasksByListId } from "@/lib/actions/tasks";
+import { useListTasks } from "@/hooks/use-tasks";
 import { ListSchema } from "@/types/lists";
 import { ProjectSchema } from "@/types/projects";
 import AddTaskButton from "../buttons/add-task-button";
+import SectionLoader from "../section-loader";
 import { TaskCard } from "./task-card";
 
 interface ListCardProps {
@@ -11,10 +14,10 @@ interface ListCardProps {
   projectId: ProjectSchema["id"];
 }
 
-export default async function ListCard({ id, name, projectId }: ListCardProps) {
-  const { tasks } = await getTasksByListId({ listId: id });
+export default function ListCard({ id, name, projectId }: ListCardProps) {
+  const { isListTasksLoading, listTasksData } = useListTasks(id);
 
-  if (!tasks) return null;
+  const loaded = !isListTasksLoading && listTasksData?.tasks;
 
   return (
     <div className="border-primary/20 max-h-[600px] min-h-[500px] min-w-100 overflow-auto rounded-sm border-3 bg-neutral-100 dark:bg-neutral-900">
@@ -23,7 +26,7 @@ export default async function ListCard({ id, name, projectId }: ListCardProps) {
           <h3 className="font-semibold text-neutral-200">
             {name}
             <span className="ml-2 rounded-sm bg-white/20 px-2 py-1 text-xs">
-              {tasks.length}
+              {loaded && listTasksData.tasks.length}
             </span>
           </h3>
           <ListCardDropdown id={id} />
@@ -31,12 +34,20 @@ export default async function ListCard({ id, name, projectId }: ListCardProps) {
       </div>
 
       <div className="space-y-3 p-4">
-        {tasks.map((task, i) => (
-          <TaskCard
-            key={i}
-            {...task}
-          />
-        ))}
+        {!loaded && <SectionLoader text="Loading Tasks" />}
+
+        {loaded &&
+          listTasksData?.tasks.map((task, i) => (
+            <TaskCard
+              key={i}
+              id={task.id}
+              title={task.title}
+              dueDate={task.dueDate}
+              priority={task.priority}
+              description={task.description}
+              assigneesImages={task.assigneesImages}
+            />
+          ))}
 
         <AddTaskButton
           listId={id}

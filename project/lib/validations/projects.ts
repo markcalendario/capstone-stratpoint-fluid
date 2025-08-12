@@ -47,7 +47,7 @@ export const getProjectPayloadSchema = z.object({
 });
 
 export const deleteProjectPayloadSchema = z.object({
-  projectId: projectSchema.shape.id
+  id: projectSchema.shape.id
 });
 
 export const updateProjectPayloadSchema = z.object({

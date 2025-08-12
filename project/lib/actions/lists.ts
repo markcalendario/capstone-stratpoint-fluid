@@ -7,17 +7,18 @@ import { getUserId } from "@/lib/utils/users";
 import {
   createListPayloadSchema,
   deleteListPayloadSchema,
-  getListsByProjectIdSchema,
+  getProjectListsPayloadSchema,
   listSchema,
   updateListPayloadSchema
 } from "@/lib/validations/lists";
-import { ListSchema } from "@/types/lists";
-import { ProjectSchema } from "@/types/projects";
-import { revalidatePath } from "next/cache";
+import {
+  CreateListPayload,
+  DeleteListPayload,
+  GetListPayload,
+  GetProjectListsPayload,
+  UpdateListPayload
+} from "@/types/lists";
 import { ZodError } from "zod";
-
-interface CreateListPayload
-  extends Pick<ListSchema, "name" | "isFinal" | "projectId"> {}
 
 export async function createList(payload: CreateListPayload) {
   try {
@@ -40,9 +41,6 @@ export async function createList(payload: CreateListPayload) {
     // Create list
     await listQueries.create(data);
 
-    // Revalidate paths
-    revalidatePath("/(dashboard)");
-
     return { success: true, message: "List created successfully." };
   } catch (error) {
     if (error instanceof ZodError) {
@@ -53,14 +51,10 @@ export async function createList(payload: CreateListPayload) {
   }
 }
 
-interface GetListsByProjectIdPayload {
-  projectId: ProjectSchema["id"];
-}
-
-export async function getListsByProjectId(payload: GetListsByProjectIdPayload) {
+export async function getProjectLists(payload: GetProjectListsPayload) {
   try {
-    const parsed = getListsByProjectIdSchema.parse(payload);
-    const lists = await listQueries.getByProjectId(parsed.projectId);
+    const parsed = getProjectListsPayloadSchema.parse(payload);
+    const lists = await listQueries.getProjectLists(parsed.projectId);
 
     return {
       success: true,
@@ -75,9 +69,6 @@ export async function getListsByProjectId(payload: GetListsByProjectIdPayload) {
     return { success: false, message: "Error. Cannot get lists with tasks." };
   }
 }
-
-interface UpdateListPayload
-  extends Pick<ListSchema, "id" | "name" | "isFinal"> {}
 
 export async function updateList(payload: UpdateListPayload) {
   try {
@@ -99,9 +90,6 @@ export async function updateList(payload: UpdateListPayload) {
     // Update data
     await listQueries.update(parsed.id, data);
 
-    // Revalidate the cache
-    revalidatePath("/(dashboard)");
-
     return { success: true, message: "List updated successfully." };
   } catch (error) {
     if (error instanceof ZodError) {
@@ -112,27 +100,19 @@ export async function updateList(payload: UpdateListPayload) {
   }
 }
 
-interface GetListByIdPayload {
-  id: ListSchema["id"];
-}
-
-export async function getListById(payload: GetListByIdPayload) {
+export async function getList(payload: GetListPayload) {
   try {
     const validId = listSchema.shape.id.parse(payload.id);
-    const list = await listQueries.getById(validId);
+    const list = await listQueries.get(validId);
 
     return { success: true, message: "List fetched successfully.", list };
   } catch (error) {
     if (error instanceof ZodError) {
-      return { success: false, message: error.issues[0].message };
+      return { success: false, message: error.issues[0].message, list: null };
     }
 
-    return { success: false, message: "Error. Cannot get list." };
+    return { success: false, message: "Error. Cannot get list.", list: null };
   }
-}
-
-interface DeleteListPayload {
-  id: ListSchema["id"];
 }
 
 export async function deleteList(payload: DeleteListPayload) {
@@ -145,9 +125,6 @@ export async function deleteList(payload: DeleteListPayload) {
     }
 
     await listQueries.delete(parsed.id);
-
-    // Revalidate the cache
-    revalidatePath("/(dashboard)");
 
     return { success: true, message: "List deleted successfully." };
   } catch (error) {

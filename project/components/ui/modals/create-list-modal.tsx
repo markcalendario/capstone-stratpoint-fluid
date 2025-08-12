@@ -1,4 +1,4 @@
-import { createList } from "@/lib/actions/lists";
+import { useCreateList } from "@/hooks/use-lists";
 import { ProjectSchema } from "@/types/projects";
 import { GitCommitHorizontal, GitGraph } from "lucide-react";
 import { ChangeEvent, MouseEvent, useState } from "react";
@@ -14,6 +14,7 @@ interface CreateListModalProps {
 }
 
 export function CreateListModal({ toggle, projectId }: CreateListModalProps) {
+  const { isCreatingList, createList } = useCreateList();
   const [formData, setFormData] = useState({ name: "", listType: "progress" });
 
   const handleChange = (evt: ChangeEvent<HTMLInputElement>) => {
@@ -86,6 +87,7 @@ export function CreateListModal({ toggle, projectId }: CreateListModalProps) {
           <Button
             type="button"
             onClick={handleCreateList}
+            isProcessing={isCreatingList}
             className="bg-primary text-neutral-100">
             Create List
           </Button>

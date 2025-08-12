@@ -9,15 +9,7 @@ import { eq } from "drizzle-orm";
 import db from "../db";
 
 const taskQueries = {
-  getAll: async () => {
-    return await db.select().from(tasks);
-  },
-  getById: async (id: TaskSchema["id"]) => {
-    const [task] = await db.select().from(tasks).where(eq(tasks.id, id));
-    return task;
-  },
-
-  getWithAssigneesByListId: async (listId: ListSchema["id"]) => {
+  getListTasks: async (listId: ListSchema["id"]) => {
     const tasks = await db.query.tasks.findMany({
       where: (tasks, { eq }) => eq(tasks.listId, listId),
       with: { taskAssignments: { with: { user: true } } }
@@ -25,7 +17,7 @@ const taskQueries = {
     return tasks;
   },
 
-  create: async (data: CreateAndAssignTaskData) => {
+  createAndAssignTask: async (data: CreateAndAssignTaskData) => {
     const [taskId] = await db
       .insert(tasks)
       .values(data)
@@ -43,6 +35,7 @@ const taskQueries = {
 
     return updatedTask.id;
   },
+
   delete: async (id: TaskSchema["id"]) => {
     const [deletedComment] = await db
       .delete(tasks)

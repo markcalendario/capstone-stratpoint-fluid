@@ -3,9 +3,13 @@ import { InferSelectModel } from "drizzle-orm";
 import { ProjectSchema } from "./projects";
 import { UserSchema } from "./users";
 
-interface TeamsSchema extends InferSelectModel<typeof team> {
+export interface TeamsSchema extends InferSelectModel<typeof team> {
   project: ProjectSchema;
   user: UserSchema;
 }
 
-interface Team extends InferSelectModel<typeof team> {}
+export interface Team extends InferSelectModel<typeof team> {}
+
+export interface GetProjectMembersOptionsPayload {
+  projectId: ProjectSchema["id"];
+}

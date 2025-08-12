@@ -1,31 +1,28 @@
 "use server";
 
-import { ListSchema } from "@/types/lists";
-import { ProjectSchema } from "@/types/projects";
-import { Task, TaskSchema } from "@/types/tasks";
-import { UserSchema } from "@/types/users";
-import { revalidatePath } from "next/cache";
+import {
+  CreateAndAssignTaskPayload,
+  DeleteTaskPayload,
+  GetListTasksPayload,
+  UpdatetaskPayload
+} from "@/types/tasks";
 import { ZodError } from "zod";
-import taskAssignmentsQueries from "..//queries/taskAssignments";
-import taskQueries from "..//queries/tasks";
+import taskAssignmentsQueries from "../queries/taskAssignments";
+import taskQueries from "../queries/tasks";
 import { isUserProjectOwner } from "../utils/projects";
 import { toTaskCard } from "../utils/tasks";
 import { getUserId } from "../utils/users";
 import {
-  createTaskPayloadSchema,
-  deleteTaskValidationPayloadSchema,
-  editTaskPayloadSchema,
-  getTasksByListIdPayloadSchema
+  createAndAssignTaskPayloadSchema,
+  deleteTaskPayloadSchema,
+  getListTasksPayloadSchema,
+  updateTaskPayloadSchema
 } from "../validations/tasks";
 
-interface GetTasksByListId {
-  listId: ListSchema["id"];
-}
-
-export const getTasksByListId = async (payload: GetTasksByListId) => {
+export async function getListTasks(payload: GetListTasksPayload) {
   try {
-    const parsed = getTasksByListIdPayloadSchema.parse(payload);
-    const tasks = await taskQueries.getWithAssigneesByListId(parsed.listId);
+    const parsed = getListTasksPayloadSchema.parse(payload);
+    const tasks = await taskQueries.getListTasks(parsed.listId);
     const formattedTasks = [];
 
     for (const task of tasks) {
@@ -40,24 +37,20 @@ export const getTasksByListId = async (payload: GetTasksByListId) => {
     };
   } catch (error) {
     if (error instanceof ZodError) {
-      return { success: false, message: error.issues[0].message };
+      return { success: false, message: error.issues[0].message, tasks: [] };
     }
 
-    return { success: false, message: "Error. Cannot get tasks by list." };
+    return {
+      success: false,
+      message: "Error. Cannot get tasks by list.",
+      tasks: []
+    };
   }
-};
-
-interface CreateTaskPayload
-  extends Pick<Task, "listId" | "title" | "description" | "dueDate" | "label"> {
-  attachment: File | null;
-  priority: string;
-  projectId: ProjectSchema["id"];
-  assignees: UserSchema["id"][];
 }
 
-export async function createAndAssignTask(payload: CreateTaskPayload) {
+export async function createAndAssignTask(payload: CreateAndAssignTaskPayload) {
   try {
-    const parsed = createTaskPayloadSchema.parse(payload);
+    const parsed = createAndAssignTaskPayloadSchema.parse(payload);
     const userId = await getUserId();
 
     if (!(await isUserProjectOwner(userId, parsed.projectId))) {
@@ -78,22 +71,18 @@ export async function createAndAssignTask(payload: CreateTaskPayload) {
       label: parsed.label
     };
 
-    const taskId = await taskQueries.create(createTaskData);
+    const taskId = await taskQueries.createAndAssignTask(createTaskData);
 
     if (parsed.assignees.length) {
       const assignmentData = { taskId, userIds: parsed.assignees };
       await taskAssignmentsQueries.createMany(assignmentData);
     }
 
-    revalidatePath("/(dashboard)");
-
     return { success: true, message: "Task created successfully." };
   } catch (error) {
     if (error instanceof ZodError) {
       return { success: false, message: error.issues[0].message };
     }
-
-    console.log(error);
 
     return {
       success: false,
@@ -102,15 +91,10 @@ export async function createAndAssignTask(payload: CreateTaskPayload) {
   }
 }
 
-interface DeleteTaskPayload {
-  id: TaskSchema["id"];
-  projectId: ProjectSchema["id"];
-}
-
 export async function deleteTask(payload: DeleteTaskPayload) {
   try {
     const userId = await getUserId();
-    const parsed = deleteTaskValidationPayloadSchema.parse(payload);
+    const parsed = deleteTaskPayloadSchema.parse(payload);
 
     if (!(await isUserProjectOwner(userId, parsed.projectId))) {
       return { success: false, message: "You're not the project owner." };
@@ -128,26 +112,9 @@ export async function deleteTask(payload: DeleteTaskPayload) {
   }
 }
 
-interface EditTaskPayload
-  extends Pick<
-    Task,
-    | "id"
-    | "listId"
-    | "title"
-    | "description"
-    | "dueDate"
-    | "label"
-    | "updatedAt"
-  > {
-  attachment: File | null;
-  priority: string;
-  projectId: ProjectSchema["id"];
-  assignees: UserSchema["id"][];
-}
-
-export async function editTaskPayload(payload: EditTaskPayload) {
+export async function updateTask(payload: UpdatetaskPayload) {
   try {
-    const parsed = editTaskPayloadSchema.parse(payload);
+    const parsed = updateTaskPayloadSchema.parse(payload);
     const userId = await getUserId();
 
     if (!(await isUserProjectOwner(userId, parsed.projectId))) {
@@ -176,8 +143,6 @@ export async function editTaskPayload(payload: EditTaskPayload) {
       const assignmentData = { taskId, userIds: parsed.assignees };
       await taskAssignmentsQueries.createMany(assignmentData);
     }
-
-    revalidatePath("/(dashboard)");
 
     return { success: true, message: "Task created successfully." };
   } catch (error) {

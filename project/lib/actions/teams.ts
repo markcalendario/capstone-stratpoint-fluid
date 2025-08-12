@@ -1,6 +1,6 @@
 "use server";
 
-import { ProjectSchema } from "@/types/projects";
+import { GetProjectMembersOptionsPayload } from "@/types/teams";
 import { ZodError } from "zod";
 import projectQueries from "..//queries/projects";
 import teamQueries from "..//queries/team";
@@ -8,12 +8,8 @@ import { isUserProjectOwner } from "../utils/projects";
 import { getUserId } from "../utils/users";
 import { getProjectMembersOptionsPayloadSchema } from "../validations/teams";
 
-interface getProjectMembersOptionsPayload {
-  projectId: ProjectSchema["id"];
-}
-
 export async function getProjectMembersOptions(
-  payload: getProjectMembersOptionsPayload
+  payload: GetProjectMembersOptionsPayload
 ) {
   try {
     const parsed = getProjectMembersOptionsPayloadSchema.parse(payload);

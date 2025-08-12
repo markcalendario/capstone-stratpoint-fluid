@@ -1,10 +1,10 @@
 "use client";
 
-import { getProjectMembersOptions } from "@/lib/actions/teams";
+import useProjectMembersOptions from "@/hooks/use-teams";
 import { ProjectSchema } from "@/types/projects";
 import { UserSchema } from "@/types/users";
-import { ChangeEvent, useCallback, useEffect, useState } from "react";
-import { showErrorToast } from "../../toast";
+import { ChangeEvent, useEffect, useState } from "react";
+import SectionLoader from "../../section-loader";
 import UserCheckbox from "../user-checkbox";
 
 interface SelectMembersProps {
@@ -16,8 +16,6 @@ interface SelectMembersProps {
   onChange: (selectedIds: ProjectSchema["id"][]) => void;
 }
 
-interface MembersState extends Pick<UserSchema, "id" | "imageUrl" | "name"> {}
-
 export default function SelectProjectMembers({
   name,
   value,
@@ -26,8 +24,9 @@ export default function SelectProjectMembers({
   required,
   projectId
 }: SelectMembersProps) {
-  const [members, setMembers] = useState<MembersState[] | null>(null);
   const [selectedIds, setSelectedIds] = useState<UserSchema["id"][]>(value);
+  const { isProjectMembersOptionsLoading, projectMembersOptions } =
+    useProjectMembersOptions(projectId);
 
   // Handle checkbox change
   const handleChange = (evt: ChangeEvent<HTMLInputElement>) => {
@@ -42,29 +41,12 @@ export default function SelectProjectMembers({
     });
   };
 
-  // Fetch project members
-  const retrieveMembersOptions = useCallback(async () => {
-    const {
-      success,
-      message,
-      members: data
-    } = await getProjectMembersOptions({ projectId });
-
-    if (!success || !data) return showErrorToast(message);
-
-    setMembers(data);
-  }, [projectId]);
-
-  // Load members on mount
-  useEffect(() => {
-    retrieveMembersOptions();
-  }, [retrieveMembersOptions]);
-
   useEffect(() => {
     onChange(selectedIds);
-  }, [selectedIds]);
+  }, [selectedIds, onChange]);
 
-  if (!members) return null;
+  const loaded =
+    !isProjectMembersOptionsLoading && projectMembersOptions?.members;
 
   return (
     <div className="flex flex-col gap-1">
@@ -80,20 +62,24 @@ export default function SelectProjectMembers({
         )}
       </div>
 
-      <div className="border-primary flex min-h-30 flex-wrap gap-2 rounded-sm border-2 p-4">
-        {members.map((member) => (
-          <UserCheckbox
-            key={member.id}
-            id={`${member.id}-checkbox`}
-            name={name}
-            userId={member.id}
-            userName={member.name}
-            image={member.imageUrl}
-            onChange={handleChange}
-            checked={selectedIds.includes(member.id)}
-          />
-        ))}
-      </div>
+      {!loaded && <SectionLoader text="Loading Members" />}
+
+      {loaded && (
+        <div className="border-primary flex min-h-30 flex-wrap gap-2 rounded-sm border-2 p-4">
+          {projectMembersOptions.members.map((member) => (
+            <UserCheckbox
+              key={member.id}
+              id={`${member.id}-checkbox`}
+              name={name}
+              userId={member.id}
+              userName={member.name}
+              image={member.imageUrl}
+              onChange={handleChange}
+              checked={selectedIds.includes(member.id)}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

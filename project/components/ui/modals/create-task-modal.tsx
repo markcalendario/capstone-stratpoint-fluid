@@ -1,6 +1,6 @@
 "use client";
 
-import { createAndAssignTask } from "@/lib/actions/tasks";
+import { useCreateAndAssignTask } from "@/hooks/use-tasks";
 import { ListSchema } from "@/types/lists";
 import { ProjectSchema } from "@/types/projects";
 import { UserSchema } from "@/types/users";
@@ -21,14 +21,14 @@ interface CreateTaskModalProps {
 
 type Payload = {
   title: string;
-  description: string;
-  priority: string;
-  dueDate: string;
-  assignees: UserSchema["id"][];
   label: string;
+  dueDate: string;
+  priority: string;
+  description: string;
   attachment: File | null;
-  projectId: ProjectSchema["id"];
   listId: ListSchema["id"];
+  assignees: UserSchema["id"][];
+  projectId: ProjectSchema["id"];
 };
 
 export function CreateTaskModal({
@@ -36,16 +36,19 @@ export function CreateTaskModal({
   listId,
   projectId
 }: CreateTaskModalProps) {
+  const { isCreatingAndAssignTaskLoading, createAndAssignTask } =
+    useCreateAndAssignTask();
+
   const [payload, setPayload] = useState<Payload>({
-    projectId: projectId,
-    listId: listId,
-    title: "",
-    description: "",
-    priority: "",
-    dueDate: "",
-    assignees: [],
     label: "",
-    attachment: null
+    title: "",
+    dueDate: "",
+    priority: "",
+    assignees: [],
+    description: "",
+    attachment: null,
+    listId: listId,
+    projectId: projectId
   });
 
   // Change handlers
@@ -62,11 +65,10 @@ export function CreateTaskModal({
     e.preventDefault();
 
     const { success, message } = await createAndAssignTask(payload);
-
     if (!success) return showErrorToast(message);
+    showSuccessToast(message);
 
     toggle();
-    showSuccessToast(message);
   };
 
   return (
@@ -147,7 +149,8 @@ export function CreateTaskModal({
           <Button
             type="submit"
             onClick={handleSubmit}
-            className="bg-primary text-neutral-100">
+            className="bg-primary text-neutral-100"
+            isProcessing={isCreatingAndAssignTaskLoading}>
             Create Task
           </Button>
         </div>

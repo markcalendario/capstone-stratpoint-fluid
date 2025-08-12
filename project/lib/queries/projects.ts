@@ -18,7 +18,7 @@ const projectQueries = {
     return newProject.id;
   },
 
-  getById: async (id: ProjectSchema["id"]) => {
+  get: async (id: ProjectSchema["id"]) => {
     return await db.query.projects.findFirst({
       with: { teams: true, lists: { with: { tasks: true } } },
       where: (projects, { eq }) => eq(projects.id, id)
@@ -99,10 +99,10 @@ const projectQueries = {
     return updatedProject.id;
   },
 
-  delete: async (userId: UserSchema["id"], projectId: ProjectSchema["id"]) => {
+  delete: async (id: ProjectSchema["id"], userId: UserSchema["id"]) => {
     await db
       .delete(projects)
-      .where(and(eq(projects.id, projectId), eq(projects.ownerId, userId)));
+      .where(and(eq(projects.id, id), eq(projects.ownerId, userId)));
   }
 };
 

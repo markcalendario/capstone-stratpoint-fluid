@@ -27,7 +27,7 @@ export const createListPayloadSchema = z.object({
   isFinal: listSchema.shape.isFinal
 });
 
-export const getListsByProjectIdSchema = z.object({
+export const getProjectListsPayloadSchema = z.object({
   projectId: projectSchema.shape.id
 });
 

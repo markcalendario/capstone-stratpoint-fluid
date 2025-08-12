@@ -1,5 +1,4 @@
-import { createProject } from "@/lib/actions/projects";
-import { redirect, RedirectType } from "next/navigation";
+import { useCreateProject } from "@/hooks/use-projects";
 import { useState } from "react";
 import Button from "../buttons/button";
 import Input from "../input-fields/input";
@@ -16,15 +15,17 @@ export function CreateProjectModal({ toggle }: CreateProjectModalProps) {
   const [description, setDescription] = useState("");
   const [dueDate, setDueDate] = useState("");
 
+  const { isCreatingProject, createProject } = useCreateProject();
+
   const handleCreateProject = async () => {
     const payload = { name, description, dueDate };
 
-    const { success, message, projectId } = await createProject(payload);
+    const { success, message } = await createProject(payload);
+
     if (!success) return showErrorToast(message);
     showSuccessToast(message);
 
     toggle();
-    redirect(`/projects/${projectId}`, RedirectType.push);
   };
 
   return (
@@ -72,6 +73,7 @@ export function CreateProjectModal({ toggle }: CreateProjectModalProps) {
           </Button>
           <Button
             type="button"
+            isProcessing={isCreatingProject}
             onClick={handleCreateProject}
             className="bg-primary text-neutral-100">
             Create Project
