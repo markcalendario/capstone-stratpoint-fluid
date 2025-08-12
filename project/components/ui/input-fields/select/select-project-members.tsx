@@ -42,8 +42,13 @@ export default function SelectProjectMembers({
   };
 
   useEffect(() => {
+    setSelectedIds(value);
+  }, [value]);
+
+  useEffect(() => {
+    if (selectedIds === value) return;
     onChange(selectedIds);
-  }, [selectedIds, onChange]);
+  }, [selectedIds]);
 
   const loaded =
     !isProjectMembersOptionsLoading && projectMembersOptions?.members;

@@ -19,7 +19,7 @@ export async function getProjectMembersOptions(
       return { success: false, message: "You are not the project owner." };
     }
 
-    const members = await teamQueries.getByProjectId(parsed.projectId);
+    const members = await teamQueries.getByProject(parsed.projectId);
     const formatted = members.map((m) => {
       return {
         id: m.user.id,
