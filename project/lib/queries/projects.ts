@@ -75,6 +75,32 @@ const projectQueries = {
     await db
       .delete(projects)
       .where(and(eq(projects.id, id), eq(projects.ownerId, userId)));
+  },
+
+  getOptions: async (
+    name: ProjectSchema["name"],
+    userId: UserSchema["id"],
+    id?: ProjectSchema["id"]
+  ) => {
+    const memberProjects = await db
+      .select({ projectId: teams.projectId })
+      .from(teams)
+      .where(and(eq(teams.userId, userId), eq(teams.isAccepted, true)));
+
+    const projectIds = memberProjects.map((m) => m.projectId);
+
+    return await db.query.projects.findMany({
+      with: { teams: true, lists: { with: { tasks: true } } },
+      where: (projects, { eq, or, and, ilike, inArray }) =>
+        and(
+          or(
+            and(eq(projects.ownerId, userId), eq(projects.active, true)),
+            and(eq(projects.active, true), inArray(projects.id, projectIds))
+          ),
+          ilike(projects.name, `%${name}%`),
+          id ? eq(projects.id, id) : undefined
+        )
+    });
   }
 };
 

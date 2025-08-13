@@ -41,6 +41,9 @@ export function useAddTeamMembers(projectId: ProjectSchema["id"]) {
     mutationFn: (payload: AddTeamMembersPayload) => addTeamMembers(payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["teams", projectId] });
+      queryClient.invalidateQueries({ queryKey: ["analytics"] });
+      queryClient.invalidateQueries({ queryKey: ["projects"] });
+      queryClient.invalidateQueries({ queryKey: ["recentProjects"] });
     }
   });
 

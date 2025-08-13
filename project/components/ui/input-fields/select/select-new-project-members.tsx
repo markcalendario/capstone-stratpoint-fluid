@@ -96,7 +96,7 @@ export default function SelectNewProjectMembers({
   }, [selectedUsers, onChange]);
 
   return (
-    <div className="gap-1 rounded-sm">
+    <div className="grid gap-1">
       <Input
         id="user-name"
         label="User Name"
@@ -107,28 +107,26 @@ export default function SelectNewProjectMembers({
         required
       />
 
-      <div className="mt-2 grid gap-1">
-        {selectedUsers.map((user) => (
+      {selectedUsers.map((user) => (
+        <UserOptionRow
+          key={user.id}
+          {...user}
+          rolesOptions={roleOptions?.roles}
+          onRoleChange={handleRoleChange}
+          onDeselect={handleDeselectUser}
+        />
+      ))}
+
+      {isLoading && <SectionLoader text="Loading Users" />}
+
+      {!isLoading &&
+        searchedUsers.map((user) => (
           <UserOptionRow
             key={user.id}
             {...user}
-            rolesOptions={roleOptions?.roles}
-            onRoleChange={handleRoleChange}
-            onDeselect={handleDeselectUser}
+            onSelect={handleSelectUser}
           />
         ))}
-
-        {isLoading && <SectionLoader text="Loading Users" />}
-
-        {!isLoading &&
-          searchedUsers.map((user) => (
-            <UserOptionRow
-              key={user.id}
-              {...user}
-              onSelect={handleSelectUser}
-            />
-          ))}
-      </div>
     </div>
   );
 }
@@ -169,7 +167,7 @@ function UserOptionRow({
     <div
       className={cn(
         isSelected && "bg-neutral-100 dark:bg-neutral-900",
-        "flex w-full items-center justify-between rounded-sm p-3"
+        "flex w-full flex-wrap items-center justify-between gap-2 rounded-sm p-3"
       )}>
       <div className="flex items-center gap-3">
         <Image
