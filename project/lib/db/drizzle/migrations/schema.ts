@@ -1,4 +1,4 @@
-import { pgTable, unique, uuid, text, timestamp, foreignKey, date, integer, boolean, pgEnum } from "drizzle-orm/pg-core"
+import { pgTable, unique, uuid, text, timestamp, boolean, foreignKey, date, integer, pgEnum } from "drizzle-orm/pg-core"
 import { sql } from "drizzle-orm"
 
 export const priority = pgEnum("priority", ['low', 'medium', 'high'])
@@ -13,6 +13,7 @@ export const users = pgTable("users", {
 	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }).default(sql`CURRENT_TIMESTAMP`),
 	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }).default(sql`CURRENT_TIMESTAMP`),
 	imageUrl: text("image_url").notNull(),
+	isDeleted: boolean("is_deleted").default(false).notNull(),
 }, (table) => [
 	unique("users_clerk_id_key").on(table.clerkId),
 ]);

@@ -11,6 +11,7 @@ CREATE TABLE "users" (
 	"created_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
 	"updated_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
 	"image_url" text NOT NULL,
+	"is_deleted" boolean DEFAULT false NOT NULL,
 	CONSTRAINT "users_clerk_id_key" UNIQUE("clerk_id")
 );
 --> statement-breakpoint
