@@ -5,7 +5,7 @@ import {
   UpdateProjectData
 } from "@/types/projects";
 import { UserSchema } from "@/types/users";
-import { and, eq, inArray } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import db from "../db";
 
 const projectQueries = {
@@ -26,48 +26,19 @@ const projectQueries = {
   },
 
   ownedOrMember: async (userId: UserSchema["id"]) => {
+    const memberProjects = await db
+      .select({ projectId: teams.projectId })
+      .from(teams)
+      .where(and(eq(teams.userId, userId), eq(teams.isAccepted, true)));
+
+    const projectIds = memberProjects.map((m) => m.projectId);
+
     return await db.query.projects.findMany({
       with: { teams: true, lists: { with: { tasks: true } } },
-      where: (projects, { eq, and, or }) =>
+      where: (projects, { eq, or, and, inArray }) =>
         or(
           and(eq(projects.ownerId, userId), eq(projects.active, true)),
-          and(
-            eq(projects.active, true),
-            inArray(
-              projects.id,
-              db
-                .select({ projectId: teams.projectId })
-                .from(teams)
-                .where(
-                  and(eq(teams.userId, userId), eq(teams.isAccepted, true))
-                )
-            )
-          )
-        )
-    });
-  },
-
-  getOwned: async (userId: UserSchema["id"]) => {
-    return await db.query.projects.findMany({
-      with: { teams: true, lists: { with: { tasks: true } } },
-      where: (projects, { eq, and }) =>
-        and(eq(projects.ownerId, userId), eq(projects.active, true))
-    });
-  },
-
-  getFromTeam: async (userId: UserSchema["id"]) => {
-    return await db.query.projects.findMany({
-      with: { teams: true, lists: { with: { tasks: true } } },
-      where: (projects, { inArray, and }) =>
-        and(
-          eq(projects.active, true),
-          inArray(
-            projects.id,
-            db
-              .select({ projectId: teams.projectId })
-              .from(teams)
-              .where(and(eq(teams.userId, userId), eq(teams.isAccepted, true)))
-          )
+          and(eq(projects.active, true), inArray(projects.id, projectIds))
         )
     });
   },
@@ -77,6 +48,7 @@ const projectQueries = {
       .select({ ownerId: projects.ownerId })
       .from(projects)
       .where(eq(projects.id, id));
+
     return owner.ownerId;
   },
 

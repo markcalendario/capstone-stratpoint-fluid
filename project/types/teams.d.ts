@@ -10,6 +10,20 @@ export interface TeamsSchema extends InferSelectModel<typeof team> {
 
 export interface Team extends InferSelectModel<typeof team> {}
 
+// Query Data
+
+export interface GetNonProjectMembersOptionsData {
+  projectId: ProjectSchema["id"];
+  name: UserSchema["name"];
+}
+
+// Payloads
+
 export interface GetProjectMembersOptionsPayload {
   projectId: ProjectSchema["id"];
+}
+
+export interface GetNonProjectMembersOptionsPayload {
+  projectId: ProjectSchema["id"];
+  name: UserSchema["name"];
 }

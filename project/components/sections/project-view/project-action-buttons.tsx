@@ -40,7 +40,7 @@ export default function ProjectActionButtons({
           <Settings size={20} />
         </LinkButton>
         <Dropdown
-          label={<Ellipsis />}
+          label={<Ellipsis size={20} />}
           items={[
             { onClick: toggleEditModal, label: "Edit Project", icon: Edit },
             {

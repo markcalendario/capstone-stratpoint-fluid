@@ -1,26 +1,28 @@
+import { ProjectSchema } from "@/types/projects";
 import Button from "../buttons/button";
-import Input from "../input-fields/input";
+import SelectNewProjectMembers from "../input-fields/select/select-new-project-members";
 import Modal from "./modal";
 
 interface AddTeamMemberModalProps {
+  projectId: ProjectSchema["id"];
   toggle: () => void;
 }
 
-export function AddTeamMemberModal({ toggle }: AddTeamMemberModalProps) {
+export function AddTeamMemberModal({
+  projectId = "0dd0b490-993f-440a-9c8d-1cf1e319b638",
+  toggle
+}: AddTeamMemberModalProps) {
   return (
     <Modal
       toggle={toggle}
       title="Add Member to Team">
       <form className="space-y-4">
-        <Input
-          id="user-name"
-          label="User Name"
-          placeholder="Enter name of user to add to your team"
-        />
+        <SelectNewProjectMembers projectId={projectId} />
+
         <div className="flex justify-end space-x-3 pt-4">
           <Button
             onClick={toggle}
-            className="text-neutral-800 dark:text-neutral-100">
+            className="bg-neutral-200 text-neutral-800 dark:bg-neutral-900 dark:text-neutral-100">
             Cancel
           </Button>
           <Button className="bg-primary text-neutral-100">

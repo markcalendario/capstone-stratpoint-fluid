@@ -41,6 +41,7 @@ export default function Dropdown({ className, label, items }: DropdownProps) {
       className="relative"
       ref={dropdownRef}>
       <button
+        type="button"
         onClick={toggleIsOpen}
         className={className}>
         {label}
@@ -56,7 +57,7 @@ interface RenderMenuProps {
 
 function RenderMenu({ items }: RenderMenuProps) {
   return (
-    <div className="border-primary/20 absolute right-0 mt-1 min-w-50 rounded-sm border-1 bg-white shadow-lg dark:bg-neutral-800">
+    <div className="border-primary/20 absolute right-0 z-1 mt-1 min-w-50 rounded-sm border-1 bg-white shadow-lg dark:bg-neutral-800">
       {items.map((item, i) => (
         <RenderItem
           key={i}
@@ -86,6 +87,7 @@ function RenderItem({ item }: RenderItemProps) {
   } else if (item.onClick) {
     return (
       <button
+        type="button"
         onClick={item.onClick}
         className={itemStyles}>
         {<item.icon size={14} />} {item.label}
