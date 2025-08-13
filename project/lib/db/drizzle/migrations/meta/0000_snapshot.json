@@ -491,6 +491,12 @@
           "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": false
+        },
+        "role_id": {
+          "name": "role_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
         }
       },
       "indexes": {},
@@ -522,6 +528,20 @@
           ],
           "onDelete": "cascade",
           "onUpdate": "no action"
+        },
+        "fk_teams_role_id_team_roles": {
+          "name": "fk_teams_role_id_team_roles",
+          "tableFrom": "teams",
+          "tableTo": "team_roles",
+          "schemaTo": "public",
+          "columnsFrom": [
+            "role_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -541,18 +561,38 @@
           "notNull": true,
           "default": "gen_random_uuid()"
         },
-        "role": {
-          "name": "role",
-          "type": "role_name",
-          "typeSchema": "public",
+        "title": {
+          "name": "title",
+          "type": "text",
           "primaryKey": false,
           "notNull": true
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
         }
       },
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
+      "uniqueConstraints": {
+        "team_roles_title_key": {
+          "columns": [
+            "title"
+          ],
+          "nullsNotDistinct": false,
+          "name": "team_roles_title_key"
+        },
+        "team_roles_role_key": {
+          "columns": [
+            "title"
+          ],
+          "nullsNotDistinct": false,
+          "name": "team_roles_role_key"
+        }
+      },
       "checkConstraints": {},
       "policies": {},
       "isRLSEnabled": false
@@ -633,15 +673,6 @@
         "low",
         "medium",
         "high"
-      ],
-      "schema": "public"
-    },
-    "public.role_name": {
-      "name": "role_name",
-      "values": [
-        "Viewer",
-        "Project Manager",
-        "Member"
       ],
       "schema": "public"
     }

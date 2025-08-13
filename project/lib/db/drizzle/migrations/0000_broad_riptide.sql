@@ -2,7 +2,6 @@
 -- If you want to run this migration please uncomment this code before executing migrations
 /*
 CREATE TYPE "public"."priority" AS ENUM('low', 'medium', 'high');--> statement-breakpoint
-CREATE TYPE "public"."role_name" AS ENUM('Viewer', 'Project Manager', 'Member');--> statement-breakpoint
 CREATE TABLE "users" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"clerk_id" text NOT NULL,
@@ -67,12 +66,16 @@ CREATE TABLE "teams" (
 	"project_id" uuid NOT NULL,
 	"is_accepted" boolean,
 	"invited_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-	"accepted_at" timestamp with time zone
+	"accepted_at" timestamp with time zone,
+	"role_id" uuid NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "team_roles" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
-	"role" "role_name" NOT NULL
+	"title" text NOT NULL,
+	"description" text,
+	CONSTRAINT "team_roles_title_key" UNIQUE("title"),
+	CONSTRAINT "team_roles_role_key" UNIQUE("title")
 );
 --> statement-breakpoint
 CREATE TABLE "task_assignments" (
@@ -91,6 +94,7 @@ ALTER TABLE "lists" ADD CONSTRAINT "fk_lists_project_id_projects" FOREIGN KEY ("
 ALTER TABLE "projects" ADD CONSTRAINT "fk_projects_owner_id_users" FOREIGN KEY ("owner_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "teams" ADD CONSTRAINT "fk_teams_user_id_users" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "teams" ADD CONSTRAINT "fk_teams_project_id_projects" FOREIGN KEY ("project_id") REFERENCES "public"."projects"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "teams" ADD CONSTRAINT "fk_teams_role_id_team_roles" FOREIGN KEY ("role_id") REFERENCES "public"."team_roles"("id") ON DELETE restrict ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "task_assignments" ADD CONSTRAINT "fk_task_assignments_task_id_tasks" FOREIGN KEY ("task_id") REFERENCES "public"."tasks"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "task_assignments" ADD CONSTRAINT "fk_user_task_assignments_user_id_users" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;
 */

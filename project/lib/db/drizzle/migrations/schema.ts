@@ -2,7 +2,6 @@ import { pgTable, unique, uuid, text, timestamp, boolean, foreignKey, date, inte
 import { sql } from "drizzle-orm"
 
 export const priority = pgEnum("priority", ['low', 'medium', 'high'])
-export const roleName = pgEnum("role_name", ['Viewer', 'Project Manager', 'Member'])
 
 
 export const users = pgTable("users", {
@@ -110,6 +109,7 @@ export const teams = pgTable("teams", {
 	isAccepted: boolean("is_accepted"),
 	invitedAt: timestamp("invited_at", { withTimezone: true, mode: 'string' }).default(sql`CURRENT_TIMESTAMP`).notNull(),
 	acceptedAt: timestamp("accepted_at", { withTimezone: true, mode: 'string' }),
+	roleId: uuid("role_id").notNull(),
 }, (table) => [
 	foreignKey({
 			columns: [table.userId],
@@ -121,12 +121,21 @@ export const teams = pgTable("teams", {
 			foreignColumns: [projects.id],
 			name: "fk_teams_project_id_projects"
 		}).onDelete("cascade"),
+	foreignKey({
+			columns: [table.roleId],
+			foreignColumns: [teamRoles.id],
+			name: "fk_teams_role_id_team_roles"
+		}).onDelete("restrict"),
 ]);
 
 export const teamRoles = pgTable("team_roles", {
 	id: uuid().defaultRandom().primaryKey().notNull(),
-	role: roleName().notNull(),
-});
+	title: text().notNull(),
+	description: text(),
+}, (table) => [
+	unique("team_roles_title_key").on(table.title),
+	unique("team_roles_role_key").on(table.title),
+]);
 
 export const taskAssignments = pgTable("task_assignments", {
 	id: uuid().defaultRandom().primaryKey().notNull(),
