@@ -1,6 +1,7 @@
 "use server";
 
 import {
+  AddTeamMembersPayload,
   GetNonProjectMembersOptionsPayload,
   GetProjectMembersOptionsPayload
 } from "@/types/teams";
@@ -10,6 +11,7 @@ import teamQueries from "..//queries/team";
 import { isUserProjectOwner } from "../utils/projects";
 import { getUserId } from "../utils/users";
 import {
+  addTeamMembersPayloadSchema,
   getNonProjectMembersOptionsPayloadSchema,
   getProjectMembersOptionsPayloadSchema
 } from "../validations/teams";
@@ -61,8 +63,6 @@ export async function getProjectNonMembersOptions(
   payload: GetNonProjectMembersOptionsPayload
 ) {
   try {
-    console.log(payload);
-
     const parsed = getNonProjectMembersOptionsPayloadSchema.parse(payload);
     const userId = await getUserId();
 
@@ -70,10 +70,12 @@ export async function getProjectNonMembersOptions(
       return { success: false, message: "You are not the project owner." };
     }
 
-    const nonMembers = await teamQueries.getNonProjectMembers(parsed);
+    const nonMembers = await teamQueries.getNonProjectMembersOptions(parsed);
+
     // Excluse owner
+    const ownerId = await projectQueries.getOwnerId(parsed.projectId);
     const excludedOwner = nonMembers
-      .filter((nonMember) => nonMember.id !== userId)
+      .filter((nonMember) => nonMember.id !== ownerId)
       .slice(0, 5);
 
     const formatted = excludedOwner.map((m) => {
@@ -94,5 +96,28 @@ export async function getProjectNonMembersOptions(
       success: false,
       message: "Error. Cannot retrieve non project members."
     };
+  }
+}
+
+export async function addTeamMembers(payload: AddTeamMembersPayload) {
+  try {
+    const parsed = addTeamMembersPayloadSchema.parse(payload);
+
+    for (const member of parsed.members) {
+      const data = { projectId: parsed.projectId, ...member };
+      await teamQueries.addMember(data);
+    }
+
+    return {
+      success: true,
+      message: `${parsed.members.length} user(s) added to team.`
+    };
+  } catch (error) {
+    if (error instanceof ZodError) {
+      return { success: false, message: error.issues[0].message };
+    }
+    console.log(error);
+
+    return { success: false, message: "Error. Cannot add team members." };
   }
 }

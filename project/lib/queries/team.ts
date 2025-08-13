@@ -1,6 +1,6 @@
 import { ProjectSchema } from "@/types/projects";
-import { GetNonProjectMembersOptionsData } from "@/types/teams";
-import { eq } from "drizzle-orm";
+import { AddMemberData, GetNonProjectMembersOptionsData } from "@/types/teams";
+import { and, eq, isNull, or } from "drizzle-orm";
 import db from "../db";
 import { teams } from "../db/drizzle/migrations/schema";
 
@@ -19,11 +19,21 @@ const teamQueries = {
     });
   },
 
-  getNonProjectMembers: async (data: GetNonProjectMembersOptionsData) => {
+  getNonProjectMembersOptions: async (
+    data: GetNonProjectMembersOptionsData
+  ) => {
     const members = await db
       .select({ id: teams.userId })
       .from(teams)
-      .where(eq(teams.projectId, data.projectId));
+      .where(
+        and(
+          eq(teams.projectId, data.projectId),
+          or(
+            eq(teams.isAccepted, true),
+            isNull(teams.isAccepted) // Invited users will not be included in options
+          )
+        )
+      );
 
     const memberIds = members.map((m) => m.id);
 
@@ -38,6 +48,18 @@ const teamQueries = {
         return and(...conditions);
       }
     });
+  },
+
+  addMember: async (data: AddMemberData) => {
+    const insertData = { ...data, isAccepted: null };
+
+    await db
+      .insert(teams)
+      .values(insertData)
+      .onConflictDoUpdate({
+        target: [teams.projectId, teams.userId],
+        set: { isAccepted: null }
+      });
   }
 };
 

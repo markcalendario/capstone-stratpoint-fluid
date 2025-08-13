@@ -17,6 +17,12 @@ export interface GetNonProjectMembersOptionsData {
   name: UserSchema["name"];
 }
 
+export interface AddMemberData {
+  projectId: ProjectSchema["id"];
+  userId: UserSchema["id"];
+  roleId: UserSchema["id"];
+}
+
 // Payloads
 
 export interface GetProjectMembersOptionsPayload {
@@ -26,4 +32,12 @@ export interface GetProjectMembersOptionsPayload {
 export interface GetNonProjectMembersOptionsPayload {
   projectId: ProjectSchema["id"];
   name: UserSchema["name"];
+}
+
+interface AddTeamMembersPayload {
+  projectId: ProjectSchema["id"];
+  members: {
+    userId: UserSchema["id"];
+    roleId: TeamRoles["id"];
+  }[];
 }

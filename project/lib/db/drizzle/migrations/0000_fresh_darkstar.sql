@@ -67,7 +67,8 @@ CREATE TABLE "teams" (
 	"is_accepted" boolean,
 	"invited_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
 	"accepted_at" timestamp with time zone,
-	"role_id" uuid NOT NULL
+	"role_id" uuid NOT NULL,
+	CONSTRAINT "teams_project_id_user_id_unique" UNIQUE("user_id","project_id")
 );
 --> statement-breakpoint
 CREATE TABLE "team_roles" (

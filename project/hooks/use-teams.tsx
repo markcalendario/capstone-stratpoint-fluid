@@ -1,13 +1,16 @@
+import { queryClient } from "@/components/ui/query-client-provider";
 import {
+  addTeamMembers,
   getProjectMembersOptions,
   getProjectNonMembersOptions
 } from "@/lib/actions/teams";
 import { ProjectSchema } from "@/types/projects";
-import { useQuery } from "@tanstack/react-query";
+import { AddTeamMembersPayload } from "@/types/teams";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 export function useProjectMembersOptions(projectId: ProjectSchema["id"]) {
   const { isPending, data } = useQuery({
-    queryKey: ["team", projectId],
+    queryKey: ["teams", projectId],
     queryFn: () => getProjectMembersOptions({ projectId })
   });
 
@@ -22,7 +25,7 @@ export function useNonProjectMembersOptions(
   name: string
 ) {
   const { isPending, data, refetch } = useQuery({
-    queryKey: ["team", projectId],
+    queryKey: ["teams", projectId],
     queryFn: () => getProjectNonMembersOptions({ projectId, name })
   });
 
@@ -31,4 +34,15 @@ export function useNonProjectMembersOptions(
     nonProjectMembersOptions: data,
     refetchNonProjectMembersOptions: refetch
   };
+}
+
+export function useAddTeamMembers(projectId: ProjectSchema["id"]) {
+  const { isPending, mutateAsync } = useMutation({
+    mutationFn: (payload: AddTeamMembersPayload) => addTeamMembers(payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["teams", projectId] });
+    }
+  });
+
+  return { isAddingTeamMembers: isPending, addTeamMembers: mutateAsync };
 }

@@ -126,6 +126,7 @@ export const teams = pgTable("teams", {
 			foreignColumns: [teamRoles.id],
 			name: "fk_teams_role_id_team_roles"
 		}).onDelete("restrict"),
+	unique("teams_project_id_user_id_unique").on(table.userId, table.projectId),
 ]);
 
 export const teamRoles = pgTable("team_roles", {

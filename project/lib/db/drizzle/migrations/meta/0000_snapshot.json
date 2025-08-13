@@ -545,7 +545,16 @@
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
+      "uniqueConstraints": {
+        "teams_project_id_user_id_unique": {
+          "columns": [
+            "user_id",
+            "project_id"
+          ],
+          "nullsNotDistinct": false,
+          "name": "teams_project_id_user_id_unique"
+        }
+      },
       "checkConstraints": {},
       "policies": {},
       "isRLSEnabled": false
