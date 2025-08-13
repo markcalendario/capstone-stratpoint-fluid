@@ -125,7 +125,7 @@ export const teams = pgTable("teams", {
 
 export const teamRoles = pgTable("team_roles", {
 	id: uuid().defaultRandom().primaryKey().notNull(),
-	role: roleName(),
+	role: roleName().notNull(),
 });
 
 export const taskAssignments = pgTable("task_assignments", {

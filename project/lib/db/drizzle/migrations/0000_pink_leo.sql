@@ -72,7 +72,7 @@ CREATE TABLE "teams" (
 --> statement-breakpoint
 CREATE TABLE "team_roles" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
-	"role" "role_name"
+	"role" "role_name" NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "task_assignments" (
