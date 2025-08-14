@@ -7,7 +7,7 @@ import { ProjectSchema } from "@/types/projects";
 import { TeamRoles, UserOption } from "@/types/teamRoles";
 import { UserSchema } from "@/types/users";
 import { useEffect, useState } from "react";
-import UserOptionRow from "./user-option";
+import UserOptionRow from "./options/user-option";
 
 interface OnChangeParams {
   userId: UserSchema["id"];
@@ -19,7 +19,7 @@ interface SelectNewProjectMembersProps {
   onChange: (params: OnChangeParams[]) => void;
 }
 
-export default function SelectNewProjectMembers({
+export default function SelectNonProjectMembers({
   projectId,
   onChange
 }: SelectNewProjectMembersProps) {
