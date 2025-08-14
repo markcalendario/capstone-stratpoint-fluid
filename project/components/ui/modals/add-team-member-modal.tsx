@@ -16,9 +16,13 @@ interface MembersState {
 
 interface AddTeamMemberModalProps {
   toggle: () => void;
+  preSelectedId?: ProjectSchema["id"] | null;
 }
 
-export function AddTeamMemberModal({ toggle }: AddTeamMemberModalProps) {
+export function AddTeamMemberModal({
+  preSelectedId,
+  toggle
+}: AddTeamMemberModalProps) {
   const [members, setMembers] = useState<MembersState[]>([]);
   const [projectId, setProjectId] = useState<ProjectSchema["id"] | null>(null);
   const { isAddingTeamMembers, addTeamMembers } = useAddTeamMembers(projectId);
@@ -41,7 +45,10 @@ export function AddTeamMemberModal({ toggle }: AddTeamMemberModalProps) {
       toggle={toggle}
       title="Add Member to Team">
       <form className="space-y-4">
-        <SelectProject onChange={(projectId) => setProjectId(projectId)} />
+        <SelectProject
+          preSelectedId={preSelectedId}
+          onChange={(projectId) => setProjectId(projectId)}
+        />
 
         {projectId && (
           <SelectNewProjectMembers

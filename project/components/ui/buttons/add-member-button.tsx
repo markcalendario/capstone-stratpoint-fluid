@@ -8,12 +8,12 @@ import Button from "./button";
 
 interface AddTeamMemberButtonProps {
   className?: string;
-  projectId?: ProjectSchema["id"];
+  preSelectedId?: ProjectSchema["id"] | null;
 }
 
 export function AddTeamMemberButton({
   className,
-  projectId
+  preSelectedId
 }: AddTeamMemberButtonProps) {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -30,7 +30,7 @@ export function AddTeamMemberButton({
 
       {isOpen && (
         <AddTeamMemberModal
-          projectId={projectId}
+          preSelectedId={preSelectedId}
           toggle={toggleIsOpen}
         />
       )}

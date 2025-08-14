@@ -1,4 +1,5 @@
 import { LucideIcon } from "lucide-react";
+import Link from "next/link";
 import { ReactNode, useCallback, useEffect, useRef, useState } from "react";
 
 interface DropdownItem {
@@ -78,11 +79,11 @@ function RenderItem({ item }: RenderItemProps) {
 
   if (item.href) {
     return (
-      <a
+      <Link
         href={item.href}
         className={itemStyles}>
         {<item.icon size={14} />} {item.label}
-      </a>
+      </Link>
     );
   } else if (item.onClick) {
     return (

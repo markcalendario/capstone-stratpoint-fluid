@@ -8,14 +8,25 @@ import TeamCard from "@/components/ui/team-card";
 import { useProjectMembers } from "@/hooks/use-teams";
 import { ProjectSchema } from "@/types/projects";
 import { Box } from "lucide-react";
+import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 
 export default function TeamMembersListGrid() {
-  const [projectId, setProjectId] = useState<ProjectSchema["id"] | null>(null);
+  const projectIdParam = useSearchParams().get("projectId");
+  const [projectId, setProjectId] = useState<ProjectSchema["id"] | null>(
+    projectIdParam
+  );
+
+  const handleSelectProject = (projectId: ProjectSchema["id"] | null) => {
+    setProjectId(projectId);
+  };
 
   return (
     <div>
-      <SelectProject onChange={(projectId) => setProjectId(projectId)} />
+      <SelectProject
+        preSelectedId={projectIdParam}
+        onChange={handleSelectProject}
+      />
       {projectId ? (
         <RenderMembers projectId={projectId} />
       ) : (
@@ -42,7 +53,10 @@ function RenderMembers({ projectId }: RenderMembersProps) {
 
   return (
     <div className="mt-5 grid grid-cols-1 gap-6 lg:grid-cols-2 xl:grid-cols-3">
-      <AddTeamMemberButton className="border-primary/20 text-primary border-2 border-dashed bg-white text-center text-lg dark:bg-neutral-800 dark:text-neutral-200" />
+      <AddTeamMemberButton
+        preSelectedId={projectId}
+        className="border-primary/20 text-primary border-2 border-dashed bg-white text-center text-lg dark:bg-neutral-800 dark:text-neutral-200"
+      />
       {projectMembers.members.map((member, i) => (
         <TeamCard
           key={i}

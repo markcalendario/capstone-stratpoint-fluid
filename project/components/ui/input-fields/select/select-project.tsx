@@ -11,9 +11,13 @@ import Input from "../input";
 
 interface SelectProjectProps {
   onChange: (projectId: ProjectSchema["id"] | null) => void;
+  preSelectedId?: ProjectSchema["id"] | null;
 }
 
-export default function SelectProject({ onChange }: SelectProjectProps) {
+export default function SelectProject({
+  onChange,
+  preSelectedId
+}: SelectProjectProps) {
   const [projectName, setProjectName] = useState("");
   const debounce = useDebounce(projectName, 300);
 
@@ -43,8 +47,16 @@ export default function SelectProject({ onChange }: SelectProjectProps) {
   // Load options into UI
   useEffect(() => {
     if (!projectOptions?.projects) return;
-    setProjects(projectOptions.projects);
-  }, [projectOptions]);
+    const projects = projectOptions.projects;
+
+    // When projectId is pre-selected, show it to selected
+    if (preSelectedId) {
+      const project = projects.find((project) => project.id === preSelectedId);
+      setSelectedProject(project ?? null);
+    }
+
+    setProjects(projects);
+  }, [projectOptions, preSelectedId]);
 
   // Notify parent
   useEffect(() => {
