@@ -10,6 +10,8 @@ interface TeamCardProps extends Pick<UserSchema, "name" | "email"> {
   className?: string;
   projectsCount: number;
   imageUrl: UserSchema["imageUrl"];
+  tasksDoneCount: number;
+  tasksUndoneCount: number;
   membershipStatus: (typeof MEMBERSHIP_STATUS)[keyof typeof MEMBERSHIP_STATUS];
 }
 
@@ -19,25 +21,16 @@ export default function TeamCard({
   role,
   email,
   projectsCount,
+  tasksDoneCount,
+  tasksUndoneCount,
   membershipStatus,
   className
 }: TeamCardProps) {
-  const statusClassMap = {
-    [MEMBERSHIP_STATUS.ACCEPTED]:
-      "bg-green-200 text-green-700 dark:bg-green-700/50 dark:text-green-200",
-    [MEMBERSHIP_STATUS.DECLINED]:
-      "bg-red-200 text-red-700 dark:bg-red-700/50 dark:text-red-200",
-    [MEMBERSHIP_STATUS.OWNER]:
-      "bg-blue-200 text-blue-700 dark:bg-blue-700/50 dark:text-blue-200",
-    [MEMBERSHIP_STATUS.INVITED]:
-      "bg-yellow-200 text-yellow-700 dark:bg-yellow-700/50 dark:text-yellow-200"
-  };
-
   return (
     <div className={cn("border-primary/20 rounded-sm border", className)}>
       <div className="mb-4 flex items-start justify-between">
         <div className="flex items-center space-x-3">
-          <div className="relative aspect-square w-12 overflow-hidden rounded-full">
+          <div className="ring-primary relative aspect-square w-10 overflow-hidden rounded-full ring-1">
             <Image
               fill
               alt={name}
@@ -47,10 +40,12 @@ export default function TeamCard({
           </div>
 
           <div>
-            <h3 className="font-semibold text-gray-800 dark:text-gray-100">
+            <h3 className="line-clamp-1 font-semibold text-gray-800 dark:text-gray-100">
               {name}
             </h3>
-            <p className="text-sm text-gray-500 dark:text-gray-400">{role}</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">
+              {role} • {membershipStatus}
+            </p>
           </div>
         </div>
         <button className="cursor-pointer rounded p-1 hover:bg-gray-200 dark:text-neutral-200 dark:hover:bg-gray-700">
@@ -63,17 +58,15 @@ export default function TeamCard({
           size={16}
           className="mr-2"
         />
-        {email}
+        <p className="line-clamp-1 break-all">{email}</p>
       </div>
 
-      <div className="flex items-center justify-between">
-        <span
-          className={cn(
-            statusClassMap[membershipStatus],
-            "rounded-full px-3 py-1 text-xs font-medium"
-          )}>
-          {membershipStatus}
-        </span>
+      <div className="flex flex-wrap items-center justify-between gap-1">
+        <div className="flex flex-wrap gap-1">
+          <span className="rounded-full bg-neutral-200 px-3 py-1 text-xs font-medium text-neutral-800 dark:bg-neutral-700 dark:text-neutral-300">
+            {`${tasksDoneCount} / ${tasksDoneCount + tasksUndoneCount} tasks done`}
+          </span>
+        </div>
         <div className="text-sm text-gray-500 dark:text-gray-400">
           {projectsCount} projects
         </div>

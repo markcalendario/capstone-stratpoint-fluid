@@ -28,6 +28,8 @@ export default function TeamMembersListGrid({ projectId }: TeamGridListProps) {
       name={member.name}
       role={member.role}
       email={member.email}
+      tasksDoneCount={member.tasksDoneCount}
+      tasksUndoneCount={member.tasksUndoneCount}
       membershipStatus={member.membershipStatus}
       projectsCount={member.projectsCount}
       imageUrl={member.imageUrl}
