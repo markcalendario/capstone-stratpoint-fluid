@@ -4,7 +4,7 @@ import { TeamRolesSchema } from "@/types/teamRoles";
 import { UserSchema } from "@/types/users";
 import { useCallback, useState } from "react";
 import Button from "../buttons/button";
-import SelectNewProjectMembers from "../input-fields/select/select-new-project-members";
+import SelectNewProjectMembers from "../input-fields/select/select-non-project-members/select-new-project-members";
 import SelectProject from "../input-fields/select/select-project";
 import { showErrorToast, showSuccessToast } from "../toast";
 import Modal from "./modal";
