@@ -37,7 +37,7 @@ export function useNonProjectMembersOptions(
   };
 }
 
-export function useAddTeamMembers(projectId: ProjectSchema["id"]) {
+export function useAddTeamMembers(projectId: ProjectSchema["id"] | null) {
   const { isPending, mutateAsync } = useMutation({
     mutationFn: (payload: AddTeamMembersPayload) => addTeamMembers(payload),
     onSuccess: () => {

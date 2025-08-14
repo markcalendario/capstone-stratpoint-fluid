@@ -1,5 +1,3 @@
-"use client";
-
 import { Check, LoaderCircle, Star, X } from "lucide-react";
 import Image from "next/image";
 import Dropdown from "../../dropdowns/drop-down";

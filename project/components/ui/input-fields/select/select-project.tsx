@@ -4,17 +4,16 @@ import {
   ProjectOption as IProjectOption,
   ProjectSchema
 } from "@/types/projects";
-import { Box, SquareDashed, X } from "lucide-react";
+import { Box, Maximize, Minimize } from "lucide-react";
 import { useEffect, useState } from "react";
 import SectionLoader from "../../section-loader";
 import Input from "../input";
 
 interface SelectProjectProps {
-  id?: ProjectSchema["id"];
-  onChange: (project: IProjectOption | null) => void;
+  onChange: (projectId: ProjectSchema["id"] | null) => void;
 }
 
-export default function SelectProject({ id, onChange }: SelectProjectProps) {
+export default function SelectProject({ onChange }: SelectProjectProps) {
   const [projectName, setProjectName] = useState("");
   const debounce = useDebounce(projectName, 300);
 
@@ -24,7 +23,7 @@ export default function SelectProject({ id, onChange }: SelectProjectProps) {
   );
 
   const { isProjectOptionsLoading, projectOptions, refetchProjectOptions } =
-    useProjectOptions(projectName, id);
+    useProjectOptions(projectName);
 
   // Handle selection/deselection
   const handleSelectProject = (project: IProjectOption) => {
@@ -44,17 +43,13 @@ export default function SelectProject({ id, onChange }: SelectProjectProps) {
   // Load options into UI
   useEffect(() => {
     if (!projectOptions?.projects) return;
-
-    if (id) {
-      setSelectedProject(projectOptions.projects[0] ?? null);
-    } else {
-      setProjects(projectOptions.projects);
-    }
-  }, [projectOptions, id]);
+    setProjects(projectOptions.projects);
+  }, [projectOptions]);
 
   // Notify parent
   useEffect(() => {
-    onChange(selectedProject);
+    if (!selectedProject) return onChange(null);
+    onChange(selectedProject.id);
   }, [selectedProject]);
 
   // Refetch on debounce
@@ -69,7 +64,7 @@ export default function SelectProject({ id, onChange }: SelectProjectProps) {
           id="project"
           label="Select Project"
           placeholder="Enter project name"
-          onChange={(e) => setProjectName(e.target.value)}
+          onChange={(evt) => setProjectName(evt.target.value)}
           required
         />
       )}
@@ -77,7 +72,7 @@ export default function SelectProject({ id, onChange }: SelectProjectProps) {
       {selectedProject && (
         <ProjectOption
           {...selectedProject}
-          deselectProject={!id ? handleDeselectProject : undefined}
+          deselectProject={handleDeselectProject}
         />
       )}
 
@@ -128,7 +123,7 @@ function ProjectOption({
           type="button"
           className="cursor-pointer"
           onClick={() => selectProject({ id, name })}>
-          <SquareDashed className="text-neutral-700 dark:text-neutral-300" />
+          <Maximize className="text-neutral-700 dark:text-neutral-300" />
         </button>
       )}
 
@@ -137,7 +132,7 @@ function ProjectOption({
           type="button"
           className="cursor-pointer"
           onClick={deselectProject}>
-          <X className="text-neutral-700 dark:text-neutral-300" />
+          <Minimize className="text-neutral-700 dark:text-neutral-300" />
         </button>
       )}
     </div>

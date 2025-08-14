@@ -51,6 +51,5 @@ interface ProjectCard
 export interface ProjectOption extends Pick<ProjectSchema, "id" | "name"> {}
 
 interface GetProjectOptionsPayload {
-  id?: ProjectSchema["id"];
   name: ProjectSchema["name"];
 }

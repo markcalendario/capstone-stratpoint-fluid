@@ -15,27 +15,18 @@ interface MembersState {
 }
 
 interface AddTeamMemberModalProps {
-  projectId?: ProjectSchema["id"];
   toggle: () => void;
 }
 
-export function AddTeamMemberModal({
-  projectId,
-  toggle
-}: AddTeamMemberModalProps) {
-  const [selectedProjectId, setSelectedProjectId] = useState(projectId);
+export function AddTeamMemberModal({ toggle }: AddTeamMemberModalProps) {
   const [members, setMembers] = useState<MembersState[]>([]);
-  const { isAddingTeamMembers, addTeamMembers } = useAddTeamMembers(
-    selectedProjectId ?? ""
-  );
+  const [projectId, setProjectId] = useState<ProjectSchema["id"] | null>(null);
+  const { isAddingTeamMembers, addTeamMembers } = useAddTeamMembers(projectId);
 
   const handleAddToTeam = async () => {
-    if (!selectedProjectId) return;
+    if (!projectId) return;
 
-    const { success, message } = await addTeamMembers({
-      projectId: selectedProjectId,
-      members
-    });
+    const { success, message } = await addTeamMembers({ projectId, members });
     if (!success) return showErrorToast(message);
     showSuccessToast(message);
     toggle();
@@ -50,14 +41,11 @@ export function AddTeamMemberModal({
       toggle={toggle}
       title="Add Member to Team">
       <form className="space-y-4">
-        <SelectProject
-          id={projectId}
-          onChange={(project) => setSelectedProjectId(project?.id)}
-        />
+        <SelectProject onChange={(projectId) => setProjectId(projectId)} />
 
-        {selectedProjectId && (
+        {projectId && (
           <SelectNewProjectMembers
-            projectId={selectedProjectId}
+            projectId={projectId}
             onChange={handleSelectNewMembers}
           />
         )}

@@ -87,12 +87,9 @@ export function useDeleteProject(id: ProjectSchema["id"]) {
   return { isProjectDeleting: isPending, deleteProject: mutateAsync };
 }
 
-export function useProjectOptions(
-  name: ProjectSchema["name"],
-  id?: ProjectSchema["id"]
-) {
+export function useProjectOptions(name: ProjectSchema["name"]) {
   const { isPending, data, refetch } = useQuery({
-    queryFn: () => getProjectOptions({ id, name }),
+    queryFn: () => getProjectOptions({ name }),
     queryKey: ["projects"]
   });
 

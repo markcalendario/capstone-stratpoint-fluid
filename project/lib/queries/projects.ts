@@ -84,11 +84,7 @@ const projectQueries = {
       .where(and(eq(projects.id, id), eq(projects.ownerId, userId)));
   },
 
-  getOptions: async (
-    name: ProjectSchema["name"],
-    userId: UserSchema["id"],
-    id?: ProjectSchema["id"]
-  ) => {
+  getOptions: async (name: ProjectSchema["name"], userId: UserSchema["id"]) => {
     const memberProjects = await db
       .select({ projectId: teams.projectId })
       .from(teams)
@@ -104,8 +100,7 @@ const projectQueries = {
             and(eq(projects.ownerId, userId), eq(projects.active, true)),
             and(eq(projects.active, true), inArray(projects.id, projectIds))
           ),
-          ilike(projects.name, `%${name}%`),
-          id ? eq(projects.id, id) : undefined
+          ilike(projects.name, `%${name}%`)
         )
     });
   }
