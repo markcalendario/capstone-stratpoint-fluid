@@ -41,8 +41,8 @@ export function useAddTeamMembers(projectId: ProjectSchema["id"]) {
   const { isPending, mutateAsync } = useMutation({
     mutationFn: (payload: AddTeamMembersPayload) => addTeamMembers(payload),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["teamsOptions", projectId] });
       queryClient.invalidateQueries({ queryKey: ["teams", projectId] });
+      queryClient.invalidateQueries({ queryKey: ["teamsOptions", projectId] });
       queryClient.invalidateQueries({ queryKey: ["analytics"] });
       queryClient.invalidateQueries({ queryKey: ["projects"] });
       queryClient.invalidateQueries({ queryKey: ["recentProjects"] });
