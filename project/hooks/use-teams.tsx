@@ -52,10 +52,14 @@ export function useAddTeamMembers(projectId: ProjectSchema["id"] | null) {
   return { isAddingTeamMembers: isPending, addTeamMembers: mutateAsync };
 }
 
-export function useProjectMembers(projectId: ProjectSchema["id"]) {
+export function useProjectMembers(projectId: ProjectSchema["id"] | null) {
   const { isPending, data } = useQuery({
     queryKey: ["teams", projectId],
-    queryFn: () => getProjectMembers({ projectId })
+    queryFn: () => {
+      if (!projectId) return;
+      return getProjectMembers({ projectId });
+    },
+    enabled: projectId !== null
   });
 
   return { isProjectMembersLoading: isPending, projectMembers: data };

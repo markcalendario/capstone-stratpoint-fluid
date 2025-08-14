@@ -1,39 +1,62 @@
 "use client";
 
+import { AddTeamMemberButton } from "@/components/ui/buttons/add-member-button";
+import SelectProject from "@/components/ui/input-fields/select/select-project";
+import SectionEmpty from "@/components/ui/section-empty";
 import SectionLoader from "@/components/ui/section-loader";
 import TeamCard from "@/components/ui/team-card";
 import { useProjectMembers } from "@/hooks/use-teams";
 import { ProjectSchema } from "@/types/projects";
+import { Box } from "lucide-react";
+import { useState } from "react";
 
-interface TeamGridListProps {
-  projectId?: ProjectSchema["id"];
+export default function TeamMembersListGrid() {
+  const [projectId, setProjectId] = useState<ProjectSchema["id"] | null>(null);
+
+  return (
+    <div>
+      <SelectProject onChange={(projectId) => setProjectId(projectId)} />
+      {projectId ? (
+        <RenderMembers projectId={projectId} />
+      ) : (
+        <SectionEmpty
+          icon={Box}
+          text="Select Project First"
+        />
+      )}
+    </div>
+  );
 }
 
-export default function TeamMembersListGrid({ projectId }: TeamGridListProps) {
-  const { isProjectMembersLoading, projectMembers } = useProjectMembers(
-    projectId ?? ""
-  );
+interface RenderMembersProps {
+  projectId: ProjectSchema["id"];
+}
+
+function RenderMembers({ projectId }: RenderMembersProps) {
+  const { isProjectMembersLoading, projectMembers } =
+    useProjectMembers(projectId);
 
   if (isProjectMembersLoading || !projectMembers?.members) {
     return <SectionLoader text="Loading Members" />;
   }
 
-  if (!projectId) {
-    return "Select Project First";
-  }
-
-  return projectMembers.members.map((member, i) => (
-    <TeamCard
-      key={i}
-      name={member.name}
-      role={member.role}
-      email={member.email}
-      tasksDoneCount={member.tasksDoneCount}
-      tasksUndoneCount={member.tasksUndoneCount}
-      membershipStatus={member.membershipStatus}
-      projectsCount={member.projectsCount}
-      imageUrl={member.imageUrl}
-      className="bg-white p-6 dark:bg-neutral-800"
-    />
-  ));
+  return (
+    <div className="mt-5 grid grid-cols-1 gap-6 lg:grid-cols-2 xl:grid-cols-3">
+      <AddTeamMemberButton className="border-primary/20 text-primary border-2 border-dashed bg-white text-center text-lg dark:bg-neutral-800 dark:text-neutral-200" />
+      {projectMembers.members.map((member, i) => (
+        <TeamCard
+          key={i}
+          name={member.name}
+          role={member.role}
+          email={member.email}
+          tasksDoneCount={member.tasksDoneCount}
+          tasksUndoneCount={member.tasksUndoneCount}
+          membershipStatus={member.membershipStatus}
+          projectsCount={member.projectsCount}
+          imageUrl={member.imageUrl}
+          className="bg-white p-6 dark:bg-neutral-800"
+        />
+      ))}
+    </div>
+  );
 }
