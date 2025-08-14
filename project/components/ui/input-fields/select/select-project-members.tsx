@@ -1,5 +1,3 @@
-"use client";
-
 import { useProjectMembersOptions } from "@/hooks/use-teams";
 import { ProjectSchema } from "@/types/projects";
 import { UserSchema } from "@/types/users";

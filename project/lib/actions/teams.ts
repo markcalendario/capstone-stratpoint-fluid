@@ -30,8 +30,7 @@ export async function getProjectMembersOptions(
       return { success: false, message: "You are not the project owner." };
     }
 
-    // TODO: Exclude declined and null isAccepted users from showing to options
-    const members = await teamQueries.getByProject(parsed.projectId);
+    const members = await teamQueries.getAcceptedByProject(parsed.projectId);
     const formatted = members.map((member) => {
       return {
         id: member.id,
@@ -132,7 +131,7 @@ export async function addTeamMembers(payload: AddTeamMembersPayload) {
 export async function getProjectMembers(payload: GetProjectMembers) {
   try {
     const parsed = getProjectMembersPayloadSchema.parse(payload);
-    const members = await teamQueries.getByProject(parsed.projectId);
+    const members = await teamQueries.getAllByProject(parsed.projectId);
 
     const formatted = members.map((member) => {
       const role =
