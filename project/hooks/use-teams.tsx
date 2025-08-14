@@ -1,6 +1,7 @@
 import { queryClient } from "@/components/ui/query-client-provider";
 import {
   addTeamMembers,
+  getProjectMembers,
   getProjectMembersOptions,
   getProjectNonMembersOptions
 } from "@/lib/actions/teams";
@@ -25,7 +26,7 @@ export function useNonProjectMembersOptions(
   name: string
 ) {
   const { isPending, data, refetch } = useQuery({
-    queryKey: ["teams", projectId],
+    queryKey: ["teamsOptions", projectId],
     queryFn: () => getProjectNonMembersOptions({ projectId, name })
   });
 
@@ -40,6 +41,7 @@ export function useAddTeamMembers(projectId: ProjectSchema["id"]) {
   const { isPending, mutateAsync } = useMutation({
     mutationFn: (payload: AddTeamMembersPayload) => addTeamMembers(payload),
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["teamsOptions", projectId] });
       queryClient.invalidateQueries({ queryKey: ["teams", projectId] });
       queryClient.invalidateQueries({ queryKey: ["analytics"] });
       queryClient.invalidateQueries({ queryKey: ["projects"] });
@@ -48,4 +50,13 @@ export function useAddTeamMembers(projectId: ProjectSchema["id"]) {
   });
 
   return { isAddingTeamMembers: isPending, addTeamMembers: mutateAsync };
+}
+
+export function useProjectMembers(projectId: ProjectSchema["id"]) {
+  const { isPending, data } = useQuery({
+    queryKey: ["teams", projectId],
+    queryFn: () => getProjectMembers({ projectId })
+  });
+
+  return { isProjectMembersLoading: isPending, projectMembers: data };
 }

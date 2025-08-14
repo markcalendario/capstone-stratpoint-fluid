@@ -1,6 +1,6 @@
 import { DashboardContent } from "@/components/layouts/dashboard/dashboard-content";
+import TeamMembersListGrid from "@/components/sections/team/team-grid-list";
 import { AddTeamMemberButton } from "@/components/ui/buttons/add-member-button";
-import TeamCard from "@/components/ui/team-card";
 
 export default function TeamPage() {
   return (
@@ -27,60 +27,7 @@ export default function TeamPage() {
         {/* Team Members Grid */}
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           <AddTeamMemberButton className="border-primary/20 text-primary border-2 border-dashed bg-white text-center text-lg dark:bg-neutral-800 dark:text-neutral-200" />
-          {[
-            {
-              name: "John Doe",
-              role: "Project Manager",
-              email: "john@example.com",
-              projectsCount: 3,
-              profilePictureUrl: "/placeholder-user.jpg"
-            },
-            {
-              name: "Jane Smith",
-              role: "Developer",
-              email: "jane@example.com",
-              projectsCount: 4,
-              profilePictureUrl: "/placeholder-user.jpg"
-            },
-            {
-              name: "Mike Johnson",
-              role: "Designer",
-              email: "mike@example.com",
-              projectsCount: 5,
-              profilePictureUrl: "/placeholder-user.jpg"
-            },
-            {
-              name: "Sarah Wilson",
-              role: "Developer",
-              email: "sarah@example.com",
-              projectsCount: 6,
-              profilePictureUrl: "/placeholder-user.jpg"
-            },
-            {
-              name: "Tom Brown",
-              role: "QA Engineer",
-              email: "tom@example.com",
-              projectsCount: 7,
-              profilePictureUrl: "/placeholder-user.jpg"
-            },
-            {
-              name: "Lisa Davis",
-              role: "Designer",
-              email: "lisa@example.com",
-              projectsCount: 8,
-              profilePictureUrl: "/placeholder-user.jpg"
-            }
-          ].map((member, i) => (
-            <TeamCard
-              key={i}
-              name={member.name}
-              role={member.role}
-              email={member.email}
-              projectsCount={member.projectsCount}
-              profilePictureUrl={member.profilePictureUrl}
-              className="bg-white p-6 dark:bg-neutral-800"
-            />
-          ))}
+          <TeamMembersListGrid projectId="29e5d329-92d9-49c9-91d5-ceae089f643f" />
         </div>
       </div>
     </DashboardContent>

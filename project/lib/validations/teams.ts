@@ -35,3 +35,7 @@ export const addTeamMembersPayloadSchema = z.object({
     )
     .min(1, "Select at least 1 user to add to team.")
 });
+
+export const getProjectMembersPayloadSchema = z.object({
+  projectId: teamSchema.shape.projectId
+});

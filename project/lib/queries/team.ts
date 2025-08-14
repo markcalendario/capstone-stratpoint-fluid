@@ -6,16 +6,29 @@ import { teams } from "../db/drizzle/migrations/schema";
 
 const teamQueries = {
   getByProject: async (projectId: ProjectSchema["id"]) => {
-    const members = await db
-      .select({ id: teams.userId })
-      .from(teams)
-      .where(eq(teams.projectId, projectId));
-
-    const memberIds = members.map((m) => m.id);
-
     return await db.query.users.findMany({
-      where: (users, { and, inArray, eq }) =>
-        and(inArray(users.id, memberIds), eq(users.isDeleted, false))
+      with: {
+        taskAssignments: { with: { task: { with: { list: true } } } },
+        teams: {
+          with: { teamRole: true },
+          where: (teams, { and, eq }) => {
+            return and(eq(teams.projectId, projectId));
+          }
+        }
+      },
+      where: (users, { and, exists, eq }) => {
+        return and(
+          eq(users.isDeleted, false),
+          exists(
+            db
+              .select()
+              .from(teams)
+              .where((teams) =>
+                and(eq(teams.userId, users.id), eq(teams.projectId, projectId))
+              )
+          )
+        );
+      }
     });
   },
 

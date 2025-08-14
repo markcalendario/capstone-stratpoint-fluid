@@ -3,17 +3,20 @@
 import {
   AddTeamMembersPayload,
   GetNonProjectMembersOptionsPayload,
+  GetProjectMembers,
   GetProjectMembersOptionsPayload
 } from "@/types/teams";
 import { ZodError } from "zod";
 import projectQueries from "..//queries/projects";
 import teamQueries from "..//queries/team";
 import { isUserProjectOwner } from "../utils/projects";
+import { getMembershipStatus, MEMBERSHIP_STATUS } from "../utils/teams";
 import { getUserId } from "../utils/users";
 import {
   addTeamMembersPayloadSchema,
   getNonProjectMembersOptionsPayloadSchema,
-  getProjectMembersOptionsPayloadSchema
+  getProjectMembersOptionsPayloadSchema,
+  getProjectMembersPayloadSchema
 } from "../validations/teams";
 
 export async function getProjectMembersOptions(
@@ -27,9 +30,14 @@ export async function getProjectMembersOptions(
       return { success: false, message: "You are not the project owner." };
     }
 
+    // TODO: Exclude declined and null isAccepted users from showing to options
     const members = await teamQueries.getByProject(parsed.projectId);
-    const formatted = members.map((m) => {
-      return { id: m.id, name: m.name, imageUrl: m.imageUrl };
+    const formatted = members.map((member) => {
+      return {
+        id: member.id,
+        name: member.name,
+        imageUrl: member.imageUrl
+      };
     });
 
     // Include owner
@@ -116,8 +124,85 @@ export async function addTeamMembers(payload: AddTeamMembersPayload) {
     if (error instanceof ZodError) {
       return { success: false, message: error.issues[0].message };
     }
-    console.log(error);
 
     return { success: false, message: "Error. Cannot add team members." };
+  }
+}
+
+export async function getProjectMembers(payload: GetProjectMembers) {
+  try {
+    const parsed = getProjectMembersPayloadSchema.parse(payload);
+    const members = await teamQueries.getByProject(parsed.projectId);
+
+    const formatted = members.map((member) => {
+      const role =
+        member.teams.find((team) => team.userId === member.id)?.teamRole
+          .title ?? "No Role";
+
+      const tasksDoneCount = member.taskAssignments.filter(
+        (assignment) => assignment.task.list.isFinal
+      ).length;
+
+      const tasksUndoneCount = member.taskAssignments.filter(
+        (assignment) => !assignment.task.list.isFinal
+      ).length;
+
+      const isAccepted = member.teams.find((teams) => {
+        return teams.projectId === parsed.projectId;
+      })?.isAccepted;
+
+      return {
+        id: member.id,
+        name: member.name,
+        email: member.email,
+        imageUrl: member.imageUrl,
+        projectsCount: member.teams.filter((team) => team.isAccepted).length,
+        membershipStatus: getMembershipStatus(isAccepted),
+        role,
+        tasksDoneCount,
+        tasksUndoneCount
+      };
+    });
+
+    // Include owner
+
+    const owner = await projectQueries.getOwner(parsed.projectId);
+    const ownerRole = "Project Owner";
+
+    const ownerTasksDoneCount = owner.taskAssignments.filter(
+      (assignment) => !assignment.task.list.isFinal
+    ).length;
+
+    const ownerTasksUndoneCount = owner.taskAssignments.filter(
+      (assignment) => assignment.task.list.isFinal
+    ).length;
+
+    formatted.unshift({
+      id: owner.id,
+      name: owner.name,
+      email: owner.email,
+      imageUrl: owner.imageUrl,
+      membershipStatus: MEMBERSHIP_STATUS.OWNER,
+      role: ownerRole,
+      projectsCount: owner.teams.length + 1,
+      tasksDoneCount: ownerTasksDoneCount,
+      tasksUndoneCount: ownerTasksUndoneCount
+    });
+
+    return {
+      success: true,
+      message: "Project members retrieved successfully.",
+      members: formatted
+    };
+  } catch (error) {
+    if (error instanceof ZodError) {
+      return { success: false, message: error.issues[0].message, members: [] };
+    }
+
+    return {
+      success: false,
+      message: "Error. Cannot retrieve project members.",
+      members: []
+    };
   }
 }

@@ -55,7 +55,14 @@ const projectQueries = {
   getOwner: async (id: ProjectSchema["id"]) => {
     const [owner] = await db.query.projects.findMany({
       where: (projects, { eq }) => eq(projects.id, id),
-      with: { user: true }
+      with: {
+        user: {
+          with: {
+            teams: { with: { teamRole: true } },
+            taskAssignments: { with: { task: { with: { list: true } } } }
+          }
+        }
+      }
     });
 
     return owner.user;
