@@ -1,7 +1,6 @@
-import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { LucideIcon } from "lucide-react";
 import Link from "next/link";
-import { ReactNode } from "react";
+import { ReactNode, useCallback, useEffect, useRef, useState } from "react";
 
 interface DropdownItem {
   onClick?: () => void;
@@ -17,46 +16,83 @@ interface DropdownProps {
 }
 
 export default function Dropdown({ className, label, items }: DropdownProps) {
-  const itemStyle =
-    "flex gap-2 p-3 items-center dark:hover:bg-neutral-700 hover:bg-neutral-100 cursor-pointer";
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const renderItem = (item: DropdownItem, i: number) => {
-    const { onClick, icon: Icon, href } = item;
+  const toggleIsOpen = () => setIsOpen((prev) => !prev);
 
-    if (onClick) {
-      return (
-        <MenuItem key={i}>
-          <button
-            type="button"
-            onClick={onClick}
-            className={itemStyle}>
-            <Icon size={16} /> {item.label}
-          </button>
-        </MenuItem>
-      );
+  const handleClickOutside = useCallback((event: MouseEvent) => {
+    if (
+      dropdownRef.current &&
+      !dropdownRef.current.contains(event.target as Node)
+    ) {
+      setIsOpen(false);
     }
+  }, []);
 
-    return (
-      <MenuItem key={i}>
-        <Link
-          href={href ?? "#"}
-          className={itemStyle}>
-          <Icon size={16} /> {item.label}
-        </Link>
-      </MenuItem>
-    );
-  };
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [handleClickOutside]);
 
   return (
-    <Menu>
-      <MenuButton className={className}>{label}</MenuButton>
+    <div
+      className="relative"
+      ref={dropdownRef}>
+      <button
+        type="button"
+        onClick={toggleIsOpen}
+        className={className}>
+        {label}
+      </button>
 
-      <MenuItems
-        transition
-        anchor="bottom end"
-        className="flex w-60 flex-col justify-start gap-1 rounded-sm border border-neutral-300 bg-neutral-50 text-sm/6 text-neutral-700 shadow-sm [--anchor-gap:--spacing(1)] focus:outline-none data-closed:scale-100 data-closed:opacity-0 dark:border-neutral-600 dark:bg-neutral-800 dark:text-neutral-300">
-        {items.map(renderItem)}
-      </MenuItems>
-    </Menu>
+      {isOpen && <RenderMenu items={items} />}
+    </div>
   );
+}
+interface RenderMenuProps {
+  items: DropdownItem[];
+}
+
+function RenderMenu({ items }: RenderMenuProps) {
+  return (
+    <div className="border-primary/20 absolute right-0 z-1 mt-1 w-max rounded-sm border-1 bg-white shadow-lg dark:bg-neutral-800">
+      {items.map((item, i) => (
+        <RenderItem
+          key={i}
+          item={item}
+        />
+      ))}
+    </div>
+  );
+}
+
+interface RenderItemProps {
+  item: DropdownItem;
+}
+
+function RenderItem({ item }: RenderItemProps) {
+  const itemStyles =
+    "flex w-full cursor-pointer font-medium duration-50 dark:hover:bg-neutral-700 dark:text-neutral-300 items-center py-2 px-3 hover:bg-neutral-100 gap-3 text-[14px] text-neutral-700";
+
+  if (item.href) {
+    return (
+      <Link
+        href={item.href}
+        className={itemStyles}>
+        {<item.icon size={14} />} {item.label}
+      </Link>
+    );
+  } else if (item.onClick) {
+    return (
+      <button
+        type="button"
+        onClick={item.onClick}
+        className={itemStyles}>
+        {<item.icon size={14} />} {item.label}
+      </button>
+    );
+  }
 }

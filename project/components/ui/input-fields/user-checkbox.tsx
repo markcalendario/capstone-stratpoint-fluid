@@ -37,7 +37,7 @@ export default function UserCheckbox({
           height={30}
           src={image}
           alt={name}
-          className="border-primary rounded-full border-1"
+          className="border-primary rounded-full border-1 object-cover"
         />
 
         <p className="text-sm">{userName}</p>

@@ -11,10 +11,12 @@ export default function Button({
   onClick,
   isProcessing,
   disabled,
-  children
+  children,
+  ...props
 }: ButtonProps) {
   return (
     <button
+      {...props}
       onClick={onClick}
       disabled={isProcessing || disabled}
       className={cn(

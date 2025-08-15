@@ -3,6 +3,7 @@
 import {
   CreateProjectPayload,
   DeleteProjectPayload,
+  GetProjectOptionsPayload,
   GetProjectPayload,
   UpdateProjectPayload
 } from "@/types/projects";
@@ -13,6 +14,7 @@ import { getUserId } from "../utils/users";
 import {
   createProjectPayloadSchema,
   deleteProjectPayloadSchema,
+  getProjectOptionsPayloadSchema,
   getProjectPayloadSchema,
   updateProjectPayloadSchema
 } from "../validations/projects";
@@ -196,5 +198,30 @@ export async function updateProject(payload: UpdateProjectPayload) {
       message: "Error. Cannot create project.",
       projectId: null
     };
+  }
+}
+
+export async function getProjectOptions(payload: GetProjectOptionsPayload) {
+  try {
+    const userId = await getUserId();
+
+    const parsed = getProjectOptionsPayloadSchema.parse(payload);
+    const projects = await projectQueries.getOptions(parsed.name, userId);
+
+    const formatted = projects.map((p) => ({ id: p.id, name: p.name }));
+
+    return {
+      success: true,
+      message: "Project options retrieved successfully.",
+      projects: formatted
+    };
+  } catch (error) {
+    console.log(error);
+
+    if (error instanceof ZodError) {
+      return { success: false, message: error.issues[0].message };
+    }
+
+    return { success: false, message: "Error. Cannot retrieve projects." };
   }
 }
