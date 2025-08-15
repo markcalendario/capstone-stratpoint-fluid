@@ -1,8 +1,11 @@
 "use server";
 
+import { UserOption } from "@/types/teamRoles";
 import {
   AddTeamMembersPayload,
   DeleteMemberPayload,
+  EditMemberRoleData,
+  GetMemberRolePayload,
   GetNonProjectMembersOptionsPayload,
   GetProjectMembersOptionsPayload,
   GetProjectMembers as GetProjectMembersPayload
@@ -15,6 +18,8 @@ import { getMembershipStatus, MEMBERSHIP_STATUS } from "../utils/teams";
 import { getUserId } from "../utils/users";
 import {
   addTeamMembersPayloadSchema,
+  editMemberRoleSchema,
+  getMembersRoleSchema,
   getNonProjectMembersOptionsPayloadSchema,
   getProjectMembersOptionsPayloadSchema,
   getProjectMembersPayloadSchema,
@@ -239,5 +244,70 @@ export async function removeTeamMember(payload: DeleteMemberPayload) {
     }
 
     return { success: false, message: "Error. Cannot remove member." };
+  }
+}
+
+export async function getMemberRole(payload: GetMemberRolePayload) {
+  // Retrieves the roles of members regardless of their membership status
+  try {
+    const parsed = getMembersRoleSchema.parse(payload);
+    const member = await teamQueries.get(parsed.projectId, parsed.userId);
+
+    if (!member) {
+      return { success: false, message: "Cannot find member." };
+    }
+
+    const data = {
+      userId: member.userId,
+      name: member.user.name,
+      projectId: member.projectId,
+      imageUrl: member.user.imageUrl,
+      role: {
+        id: member.teamRole.id,
+        title: member.teamRole.title
+      } satisfies UserOption["role"]
+    };
+
+    return {
+      success: true,
+      message: "Member role retrieved successfully.",
+      member: data
+    };
+  } catch (error) {
+    if (error instanceof ZodError) {
+      return { success: false, message: error.issues[0].message };
+    }
+
+    return {
+      success: false,
+      message: "Error. Cannot remove member."
+    };
+  }
+}
+
+export async function editMemberRole(payload: EditMemberRoleData) {
+  try {
+    const parsed = editMemberRoleSchema.parse(payload);
+
+    // Return when owner's role is being edited
+    if (await isUserProjectOwner(parsed.userId, parsed.projectId)) {
+      return {
+        success: false,
+        message: "You cannot edit the project owner."
+      };
+    }
+
+    await teamQueries.editMemberRole(parsed);
+
+    return {
+      success: true,
+      message: "Role edited successfully."
+    };
+  } catch (error) {
+    if (error instanceof ZodError) {
+      return { success: false, message: error.issues[0].message };
+    }
+
+    return { success: false, message: "Error. Edit role." };
   }
 }

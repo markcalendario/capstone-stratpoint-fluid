@@ -7,6 +7,7 @@ import { Crown, Mail, MoreHorizontal, UserX } from "lucide-react";
 import Image from "next/image";
 import { Fragment, useState } from "react";
 import Dropdown from "./dropdowns/drop-down";
+import EditMemberRoleModal from "./modals/edit-member-role-modal";
 import RemoveMemberModal from "./modals/remove-member-modal";
 
 interface TeamCardProps extends Pick<UserSchema, "name" | "email"> {
@@ -35,9 +36,33 @@ export default function TeamCard({
   className
 }: TeamCardProps) {
   const [isRemoveMemberModalOpen, setIsRemoveMemberModalOpen] = useState(false);
+  const [isEditMemberRoleModalOpen, setIsEditMemberRoleModalOpen] =
+    useState(false);
 
   const toggleRemoveMemberModal = () =>
     setIsRemoveMemberModalOpen((prev) => !prev);
+
+  const toggleEditMemberRoleModal = () =>
+    setIsEditMemberRoleModalOpen((prev) => !prev);
+
+  let dropdownActions;
+
+  if (membershipStatus === MEMBERSHIP_STATUS.OWNER) {
+    dropdownActions = [{ href: "#", label: "Owner", icon: Crown }];
+  } else {
+    dropdownActions = [
+      {
+        onClick: toggleEditMemberRoleModal,
+        label: "Change Role",
+        icon: Crown
+      },
+      {
+        onClick: toggleRemoveMemberModal,
+        label: "Remove from Team",
+        icon: UserX
+      }
+    ];
+  }
 
   return (
     <Fragment>
@@ -66,18 +91,7 @@ export default function TeamCard({
           <Dropdown
             className="cursor-pointer rounded p-1 hover:bg-gray-200 dark:text-neutral-200 dark:hover:bg-gray-700"
             label={<MoreHorizontal size={16} />}
-            items={[
-              {
-                href: `/team?projectIdprojectId}`,
-                label: "Change Permission",
-                icon: Crown
-              },
-              {
-                onClick: toggleRemoveMemberModal,
-                label: "Remove from Team",
-                icon: UserX
-              }
-            ]}
+            items={dropdownActions}
           />
         </div>
 
@@ -106,6 +120,14 @@ export default function TeamCard({
           userId={userId}
           projectId={projectId}
           toggle={toggleRemoveMemberModal}
+        />
+      )}
+
+      {isEditMemberRoleModalOpen && (
+        <EditMemberRoleModal
+          userId={userId}
+          projectId={projectId}
+          toggle={toggleEditMemberRoleModal}
         />
       )}
     </Fragment>

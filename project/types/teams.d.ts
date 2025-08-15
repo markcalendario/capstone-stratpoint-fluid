@@ -1,6 +1,7 @@
 import { teams } from "@/lib/db/drizzle/migrations/schema";
 import { InferSelectModel } from "drizzle-orm";
 import { ProjectSchema } from "./projects";
+import { TeamRoles } from "./teamRoles";
 import { UserSchema } from "./users";
 
 export interface TeamsSchema extends InferSelectModel<typeof teams> {
@@ -28,6 +29,12 @@ export interface RemoveMemberData {
   userId: UserSchema["id"];
 }
 
+export interface EditMemberRoleData {
+  projectId: ProjectSchema["id"];
+  userId: UserSchema["id"];
+  roleId: TeamRoles["id"];
+}
+
 // Payloads
 
 export interface GetProjectMembersOptionsPayload {
@@ -43,7 +50,7 @@ interface AddTeamMembersPayload {
   projectId: ProjectSchema["id"];
   members: {
     userId: UserSchema["id"];
-    roleId: TeamRoles["id"];
+    roleId: TeamRoles["id"] | null;
   }[];
 }
 
@@ -52,6 +59,17 @@ export interface GetProjectMembers {
 }
 
 export interface DeleteMemberPayload {
+  projectId: ProjectSchema["id"];
+  userId: UserSchema["id"];
+}
+
+export interface EditMemberRolePayload {
+  projectId: ProjectSchema["id"];
+  userId: UserSchema["id"];
+  roleId: TeamRoles["id"];
+}
+
+export interface GetMemberRolePayload {
   projectId: ProjectSchema["id"];
   userId: UserSchema["id"];
 }

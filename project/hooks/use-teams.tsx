@@ -1,13 +1,16 @@
 import { queryClient } from "@/components/ui/query-client-provider";
 import {
   addTeamMembers,
+  editMemberRole,
+  getMemberRole,
   getProjectMembers,
   getProjectMembersOptions,
   getProjectNonMembersOptions,
   removeTeamMember
 } from "@/lib/actions/teams";
 import { ProjectSchema } from "@/types/projects";
-import { AddTeamMembersPayload } from "@/types/teams";
+import { AddTeamMembersPayload, EditMemberRolePayload } from "@/types/teams";
+import { UserSchema } from "@/types/users";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
 export function useProjectMembersOptions(projectId: ProjectSchema["id"]) {
@@ -72,4 +75,31 @@ export function useRemoveTeamMember(projectId: ProjectSchema["id"]) {
   });
 
   return { isRemovingTeamMember: isPending, removeTeamMember: mutateAsync };
+}
+
+export function useMemberRole(
+  projectId: ProjectSchema["id"],
+  userId: UserSchema["id"]
+) {
+  const { isPending, data } = useQuery({
+    queryFn: () => getMemberRole({ projectId, userId }),
+    queryKey: ["teamRole", projectId, userId]
+  });
+
+  return { isMemberRoleLoading: isPending, memberRoleData: data };
+}
+
+export function useEditMemberRole(
+  projectId: ProjectSchema["id"],
+  userId: UserSchema["id"]
+) {
+  const { isPending, mutateAsync } = useMutation({
+    mutationFn: (payload: EditMemberRolePayload) => editMemberRole(payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["teams", projectId] });
+      queryClient.invalidateQueries({ queryKey: ["role", projectId, userId] });
+    }
+  });
+
+  return { isEditingMemberRole: isPending, editMemberRole: mutateAsync };
 }

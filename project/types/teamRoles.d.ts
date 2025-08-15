@@ -8,8 +8,5 @@ export interface TeamRoles extends InferSelectModel<typeof teamRoles> {}
 
 export interface UserOption
   extends Pick<UserSchema, "id" | "name" | "imageUrl"> {
-  role: {
-    id: TeamRoles["id"];
-    title: TeamRoles["title"];
-  } | null;
+  role: Pick<TeamRoles, "id" | "title"> | null;
 }

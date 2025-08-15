@@ -1,15 +1,17 @@
 import { ProjectSchema } from "@/types/projects";
 import {
   AddMemberData,
+  EditMemberRoleData,
   GetNonProjectMembersOptionsData,
   RemoveMemberData
 } from "@/types/teams";
+import { UserSchema } from "@/types/users";
 import { and, eq, isNull, or } from "drizzle-orm";
 import db from "../db";
 import { teams } from "../db/drizzle/migrations/schema";
 
 const teamQueries = {
-  // Retrive all project members with any status
+  // Retrive all project members regardless of their accepted status
   getAllByProject: async (projectId: ProjectSchema["id"]) => {
     return await db.query.teams.findMany({
       where: (teams, { eq }) => eq(teams.projectId, projectId),
@@ -74,6 +76,23 @@ const teamQueries = {
     });
   },
 
+  get: async (projectId: ProjectSchema["id"], userId: UserSchema["id"]) => {
+    return await db.query.teams.findFirst({
+      where: (teams, { eq, and }) => {
+        return and(eq(teams.projectId, projectId), eq(teams.userId, userId));
+      },
+      with: {
+        teamRole: true,
+        user: {
+          with: {
+            taskAssignments: { with: { task: { with: { list: true } } } },
+            teams: { where: (teams, { eq }) => eq(teams.isAccepted, true) }
+          }
+        }
+      }
+    });
+  },
+
   addMember: async (data: AddMemberData) => {
     const insertData = { ...data, isAccepted: null };
 
@@ -89,6 +108,15 @@ const teamQueries = {
   removeTeamMember: async (data: RemoveMemberData) => {
     await db
       .delete(teams)
+      .where(
+        and(eq(teams.userId, data.userId), eq(teams.projectId, data.projectId))
+      );
+  },
+
+  editMemberRole: async (data: EditMemberRoleData) => {
+    return db
+      .update(teams)
+      .set({ roleId: data.roleId })
       .where(
         and(eq(teams.userId, data.userId), eq(teams.projectId, data.projectId))
       );
