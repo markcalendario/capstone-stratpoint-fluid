@@ -2,9 +2,10 @@
 
 import {
   AddTeamMembersPayload,
+  DeleteMemberPayload,
   GetNonProjectMembersOptionsPayload,
-  GetProjectMembers,
-  GetProjectMembersOptionsPayload
+  GetProjectMembersOptionsPayload,
+  GetProjectMembers as GetProjectMembersPayload
 } from "@/types/teams";
 import { ZodError } from "zod";
 import projectQueries from "..//queries/projects";
@@ -16,7 +17,8 @@ import {
   addTeamMembersPayloadSchema,
   getNonProjectMembersOptionsPayloadSchema,
   getProjectMembersOptionsPayloadSchema,
-  getProjectMembersPayloadSchema
+  getProjectMembersPayloadSchema,
+  removeMemberPayloadSchema
 } from "../validations/teams";
 
 export async function getProjectMembersOptions(
@@ -128,7 +130,7 @@ export async function addTeamMembers(payload: AddTeamMembersPayload) {
   }
 }
 
-export async function getProjectMembers(payload: GetProjectMembers) {
+export async function getProjectMembers(payload: GetProjectMembersPayload) {
   // Retrieves all members including those who are invited and declined
   try {
     const parsed = getProjectMembersPayloadSchema.parse(payload);
@@ -216,5 +218,32 @@ export async function getProjectMembers(payload: GetProjectMembers) {
       message: "Error. Cannot retrieve project members.",
       members: []
     };
+  }
+}
+
+export async function removeTeamMember(payload: DeleteMemberPayload) {
+  try {
+    const parsed = removeMemberPayloadSchema.parse(payload);
+
+    // Return when owner is being deleted
+    if (await isUserProjectOwner(parsed.userId, parsed.projectId)) {
+      return {
+        success: false,
+        message: "You cannot remove the project owner."
+      };
+    }
+
+    await teamQueries.removeTeamMember(parsed);
+
+    return {
+      success: true,
+      message: "User removed successfully."
+    };
+  } catch (error) {
+    if (error instanceof ZodError) {
+      return { success: false, message: error.issues[0].message };
+    }
+
+    return { success: false, message: "Error. Cannot remove member." };
   }
 }

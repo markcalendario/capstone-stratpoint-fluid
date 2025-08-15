@@ -60,6 +60,8 @@ function RenderMembers({ projectId }: RenderMembersProps) {
       {projectMembers.members.map((member, i) => (
         <TeamCard
           key={i}
+          userId={member.id}
+          projectId={projectId}
           name={member.name}
           role={member.role}
           email={member.email}

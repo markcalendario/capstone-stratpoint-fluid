@@ -1,5 +1,9 @@
 import { ProjectSchema } from "@/types/projects";
-import { AddMemberData, GetNonProjectMembersOptionsData } from "@/types/teams";
+import {
+  AddMemberData,
+  GetNonProjectMembersOptionsData,
+  RemoveMemberData
+} from "@/types/teams";
 import { and, eq, isNull, or } from "drizzle-orm";
 import db from "../db";
 import { teams } from "../db/drizzle/migrations/schema";
@@ -109,6 +113,14 @@ const teamQueries = {
         target: [teams.projectId, teams.userId],
         set: { isAccepted: null }
       });
+  },
+
+  removeTeamMember: async (data: RemoveMemberData) => {
+    await db
+      .delete(teams)
+      .where(
+        and(eq(teams.userId, data.userId), eq(teams.projectId, data.projectId))
+      );
   }
 };
 

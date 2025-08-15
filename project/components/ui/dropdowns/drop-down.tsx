@@ -58,7 +58,7 @@ interface RenderMenuProps {
 
 function RenderMenu({ items }: RenderMenuProps) {
   return (
-    <div className="border-primary/20 absolute right-0 z-1 mt-1 min-w-50 rounded-sm border-1 bg-white shadow-lg dark:bg-neutral-800">
+    <div className="border-primary/20 absolute right-0 z-1 mt-1 w-max rounded-sm border-1 bg-white shadow-lg dark:bg-neutral-800">
       {items.map((item, i) => (
         <RenderItem
           key={i}
@@ -75,7 +75,7 @@ interface RenderItemProps {
 
 function RenderItem({ item }: RenderItemProps) {
   const itemStyles =
-    "flex w-full cursor-pointer font-medium duration-100 hover:gap-4 dark:hover:bg-neutral-700 dark:text-neutral-300 items-center py-2 px-3 hover:bg-neutral-100 gap-3 text-[14px] text-neutral-700";
+    "flex w-full cursor-pointer font-medium duration-50 dark:hover:bg-neutral-700 dark:text-neutral-300 items-center py-2 px-3 hover:bg-neutral-100 gap-3 text-[14px] text-neutral-700";
 
   if (item.href) {
     return (

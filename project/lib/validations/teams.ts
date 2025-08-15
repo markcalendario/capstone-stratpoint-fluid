@@ -39,3 +39,8 @@ export const addTeamMembersPayloadSchema = z.object({
 export const getProjectMembersPayloadSchema = z.object({
   projectId: teamSchema.shape.projectId
 });
+
+export const removeMemberPayloadSchema = z.object({
+  userId: userSchema.shape.id,
+  projectId: projectSchema.shape.id
+});

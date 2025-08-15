@@ -23,6 +23,11 @@ export interface AddMemberData {
   roleId: UserSchema["id"];
 }
 
+export interface RemoveMemberData {
+  projectId: ProjectSchema["id"];
+  userId: UserSchema["id"];
+}
+
 // Payloads
 
 export interface GetProjectMembersOptionsPayload {
@@ -44,4 +49,9 @@ interface AddTeamMembersPayload {
 
 export interface GetProjectMembers {
   projectId: ProjectSchema["id"];
+}
+
+export interface DeleteMemberPayload {
+  projectId: ProjectSchema["id"];
+  userId: UserSchema["id"];
 }

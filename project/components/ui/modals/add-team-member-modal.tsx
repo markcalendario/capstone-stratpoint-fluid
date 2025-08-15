@@ -25,7 +25,9 @@ export function AddTeamMemberModal({
 }: AddTeamMemberModalProps) {
   const [members, setMembers] = useState<MembersState[]>([]);
   const [projectId, setProjectId] = useState<ProjectSchema["id"] | null>(null);
-  const { isAddingTeamMembers, addTeamMembers } = useAddTeamMembers(projectId);
+  const { isAddingTeamMembers, addTeamMembers } = useAddTeamMembers(
+    projectId ?? ""
+  );
 
   const handleAddToTeam = async () => {
     if (!projectId) return;
