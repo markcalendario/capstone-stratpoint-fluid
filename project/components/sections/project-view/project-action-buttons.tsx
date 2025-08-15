@@ -1,11 +1,11 @@
 "use client";
 
-import LinkButton from "@/components/ui/buttons/link-button";
 import Dropdown from "@/components/ui/dropdowns/drop-down";
+import { AddTeamMemberModal } from "@/components/ui/modals/add-team-member-modal";
 import { DeleteProjectModal } from "@/components/ui/modals/delete-project-modal";
 import { EditProjectModal } from "@/components/ui/modals/edit-project-modal";
 import { ProjectSchema } from "@/types/projects";
-import { Calendar, Edit, Ellipsis, Settings, Trash, Users } from "lucide-react";
+import { Edit, MoreVertical, Trash, UserPlus, Users } from "lucide-react";
 import { Fragment, useState } from "react";
 
 interface ProjectActionButtons {
@@ -17,30 +17,33 @@ export default function ProjectActionButtons({
 }: ProjectActionButtons) {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
 
   const toggleDeleteModal = () => setIsDeleteModalOpen((prev) => !prev);
   const toggleEditModal = () => setIsEditModalOpen((prev) => !prev);
+  const toggleInviteModal = () => setIsInviteModalOpen((prev) => !prev);
 
   return (
     <Fragment>
-      <div className="flex items-center justify-end space-x-2">
-        <LinkButton
-          href="#"
-          className="bg-neutral-50 dark:bg-neutral-800 dark:text-neutral-300">
-          <Users size={20} />
-        </LinkButton>
-        <LinkButton
-          href="#"
-          className="bg-neutral-50 dark:bg-neutral-800 dark:text-neutral-300">
-          <Calendar size={20} />
-        </LinkButton>
-        <LinkButton
-          href="#"
-          className="bg-neutral-50 dark:bg-neutral-800 dark:text-neutral-300">
-          <Settings size={20} />
-        </LinkButton>
+      <div className="flex items-center justify-end space-x-1">
         <Dropdown
-          label={<Ellipsis />}
+          label={<Users size={20} />}
+          items={[
+            {
+              href: `/team?projectId=${projectId}`,
+              label: "View Team",
+              icon: Users
+            },
+            {
+              onClick: toggleInviteModal,
+              label: "Invite to Team",
+              icon: UserPlus
+            }
+          ]}
+          className="cursor-pointer p-2 text-neutral-700 dark:text-neutral-300"
+        />
+        <Dropdown
+          label={<MoreVertical size={20} />}
           items={[
             { onClick: toggleEditModal, label: "Edit Project", icon: Edit },
             {
@@ -49,7 +52,7 @@ export default function ProjectActionButtons({
               icon: Trash
             }
           ]}
-          className="inline-flex cursor-pointer items-center justify-center gap-[10px] rounded-sm bg-neutral-50 px-[20px] py-[10px] text-sm font-[500] shadow-sm dark:bg-neutral-800 dark:text-neutral-300"
+          className="cursor-pointer p-2 text-neutral-700 dark:text-neutral-300"
         />
       </div>
 
@@ -64,6 +67,13 @@ export default function ProjectActionButtons({
         <EditProjectModal
           projectId={projectId}
           toggle={toggleEditModal}
+        />
+      )}
+
+      {isInviteModalOpen && (
+        <AddTeamMemberModal
+          preSelectedId={projectId}
+          toggle={toggleInviteModal}
         />
       )}
     </Fragment>

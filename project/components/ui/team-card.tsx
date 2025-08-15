@@ -1,64 +1,135 @@
 import { cn } from "@/lib/utils";
+import { MEMBERSHIP_STATUS } from "@/lib/utils/teams";
+import { ProjectSchema } from "@/types/projects";
+import { TeamRoles } from "@/types/teamRoles";
 import { UserSchema } from "@/types/users";
-import { Mail, MoreHorizontal } from "lucide-react";
+import { Crown, Mail, MoreHorizontal, UserX } from "lucide-react";
 import Image from "next/image";
+import { Fragment, useState } from "react";
+import Dropdown from "./dropdowns/drop-down";
+import EditMemberRoleModal from "./modals/edit-member-role-modal";
+import RemoveMemberModal from "./modals/remove-member-modal";
 
 interface TeamCardProps extends Pick<UserSchema, "name" | "email"> {
-  role: string;
+  userId: UserSchema["id"];
+  projectId: ProjectSchema["id"];
+  role: TeamRoles["title"];
   className?: string;
   projectsCount: number;
-  profilePictureUrl: string;
+  imageUrl: UserSchema["imageUrl"];
+  tasksDoneCount: number;
+  tasksUndoneCount: number;
+  membershipStatus: (typeof MEMBERSHIP_STATUS)[keyof typeof MEMBERSHIP_STATUS];
 }
 
 export default function TeamCard({
-  profilePictureUrl,
+  userId,
+  projectId,
+  imageUrl,
   name,
   role,
   email,
   projectsCount,
+  tasksDoneCount,
+  tasksUndoneCount,
+  membershipStatus,
   className
 }: TeamCardProps) {
+  const [isRemoveMemberModalOpen, setIsRemoveMemberModalOpen] = useState(false);
+  const [isEditMemberRoleModalOpen, setIsEditMemberRoleModalOpen] =
+    useState(false);
+
+  const toggleRemoveMemberModal = () =>
+    setIsRemoveMemberModalOpen((prev) => !prev);
+
+  const toggleEditMemberRoleModal = () =>
+    setIsEditMemberRoleModalOpen((prev) => !prev);
+
+  let dropdownActions;
+
+  if (membershipStatus === MEMBERSHIP_STATUS.OWNER) {
+    dropdownActions = [{ href: "#", label: "Owner", icon: Crown }];
+  } else {
+    dropdownActions = [
+      {
+        onClick: toggleEditMemberRoleModal,
+        label: "Change Role",
+        icon: Crown
+      },
+      {
+        onClick: toggleRemoveMemberModal,
+        label: "Remove from Team",
+        icon: UserX
+      }
+    ];
+  }
+
   return (
-    <div className={cn("border-primary/20 rounded-sm border", className)}>
-      <div className="mb-4 flex items-start justify-between">
-        <div className="flex items-center space-x-3">
-          <div className="relative aspect-square w-12 overflow-hidden rounded-full">
-            <Image
-              fill
-              alt={name}
-              src={profilePictureUrl}
-              className="object-cover"
-            />
+    <Fragment>
+      <div className={cn("border-primary/20 rounded-sm border", className)}>
+        <div className="mb-4 flex items-start justify-between">
+          <div className="flex items-center space-x-3">
+            <div className="ring-primary relative aspect-square w-10 overflow-hidden rounded-full ring-1">
+              <Image
+                fill
+                alt={name}
+                src={imageUrl}
+                className="object-cover"
+              />
+            </div>
+
+            <div>
+              <h3 className="line-clamp-1 font-semibold text-gray-800 dark:text-gray-100">
+                {name}
+              </h3>
+              <p className="text-xs text-gray-500 dark:text-gray-400">
+                {role} • {membershipStatus}
+              </p>
+            </div>
           </div>
 
-          <div>
-            <h3 className="font-semibold text-gray-800 dark:text-gray-100">
-              {name}
-            </h3>
-            <p className="text-sm text-gray-500 dark:text-gray-400">{role}</p>
+          <Dropdown
+            className="cursor-pointer rounded p-1 hover:bg-gray-200 dark:text-neutral-200 dark:hover:bg-gray-700"
+            label={<MoreHorizontal size={16} />}
+            items={dropdownActions}
+          />
+        </div>
+
+        <div className="mb-4 flex items-center text-sm text-gray-500 dark:text-gray-400">
+          <Mail
+            size={16}
+            className="mr-2"
+          />
+          <p className="line-clamp-1 break-all">{email}</p>
+        </div>
+
+        <div className="flex flex-wrap items-center justify-between gap-1">
+          <div className="flex flex-wrap gap-1">
+            <span className="rounded-full bg-neutral-200 px-3 py-1 text-xs font-medium text-neutral-800 dark:bg-neutral-700 dark:text-neutral-300">
+              {`${tasksDoneCount} / ${tasksDoneCount + tasksUndoneCount} tasks done`}
+            </span>
+          </div>
+          <div className="text-xs text-gray-500 dark:text-gray-400">
+            {projectsCount} projects
           </div>
         </div>
-        <button className="cursor-pointer rounded p-1 hover:bg-gray-200 dark:text-neutral-200 dark:hover:bg-gray-700">
-          <MoreHorizontal size={16} />
-        </button>
       </div>
 
-      <div className="mb-4 flex items-center text-sm text-gray-500 dark:text-gray-400">
-        <Mail
-          size={16}
-          className="mr-2"
+      {isRemoveMemberModalOpen && (
+        <RemoveMemberModal
+          userId={userId}
+          projectId={projectId}
+          toggle={toggleRemoveMemberModal}
         />
-        {email}
-      </div>
+      )}
 
-      <div className="flex items-center justify-between">
-        <span className="rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-700 dark:bg-green-900 dark:text-green-300">
-          Active
-        </span>
-        <div className="text-sm text-gray-500 dark:text-gray-400">
-          {projectsCount} projects
-        </div>
-      </div>
-    </div>
+      {isEditMemberRoleModalOpen && (
+        <EditMemberRoleModal
+          userId={userId}
+          projectId={projectId}
+          toggle={toggleEditMemberRoleModal}
+        />
+      )}
+    </Fragment>
   );
 }
