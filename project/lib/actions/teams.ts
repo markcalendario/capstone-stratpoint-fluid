@@ -129,6 +129,7 @@ export async function addTeamMembers(payload: AddTeamMembersPayload) {
 }
 
 export async function getProjectMembers(payload: GetProjectMembers) {
+  // Retrieves all members including those who are invited and declined
   try {
     const parsed = getProjectMembersPayloadSchema.parse(payload);
     const members = await teamQueries.getAllByProject(parsed.projectId);
@@ -138,13 +139,19 @@ export async function getProjectMembers(payload: GetProjectMembers) {
         member.teams.find((team) => team.userId === member.id)?.teamRole
           .title ?? "No Role";
 
-      const tasksDoneCount = member.taskAssignments.filter(
-        (assignment) => assignment.task.list.isFinal
-      ).length;
+      const tasksDoneCount = member.taskAssignments.filter((assignment) => {
+        return (
+          assignment.task.list.isFinal &&
+          assignment.task.list.projectId === parsed.projectId
+        );
+      }).length;
 
-      const tasksUndoneCount = member.taskAssignments.filter(
-        (assignment) => !assignment.task.list.isFinal
-      ).length;
+      const tasksUndoneCount = member.taskAssignments.filter((assignment) => {
+        return (
+          !assignment.task.list.isFinal &&
+          assignment.task.list.projectId === parsed.projectId
+        );
+      }).length;
 
       const isAccepted = member.teams.find((teams) => {
         return teams.projectId === parsed.projectId;
@@ -168,13 +175,19 @@ export async function getProjectMembers(payload: GetProjectMembers) {
     const owner = await projectQueries.getOwner(parsed.projectId);
     const ownerRole = "Project Owner";
 
-    const ownerTasksDoneCount = owner.taskAssignments.filter(
-      (assignment) => !assignment.task.list.isFinal
-    ).length;
+    const ownerTasksDoneCount = owner.taskAssignments.filter((assignment) => {
+      return (
+        assignment.task.list.isFinal &&
+        assignment.task.list.projectId === parsed.projectId
+      );
+    }).length;
 
-    const ownerTasksUndoneCount = owner.taskAssignments.filter(
-      (assignment) => assignment.task.list.isFinal
-    ).length;
+    const ownerTasksUndoneCount = owner.taskAssignments.filter((assignment) => {
+      return (
+        assignment.task.list.isFinal &&
+        assignment.task.list.projectId === parsed.projectId
+      );
+    }).length;
 
     formatted.unshift({
       id: owner.id,
