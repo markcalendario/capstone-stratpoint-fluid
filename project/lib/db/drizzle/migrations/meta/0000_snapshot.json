@@ -4,160 +4,6 @@
   "version": "7",
   "dialect": "postgresql",
   "tables": {
-    "public.users": {
-      "name": "users",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "uuid",
-          "primaryKey": true,
-          "notNull": true,
-          "default": "gen_random_uuid()"
-        },
-        "clerk_id": {
-          "name": "clerk_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "email": {
-          "name": "email",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "name": {
-          "name": "name",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "CURRENT_TIMESTAMP"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "CURRENT_TIMESTAMP"
-        },
-        "image_url": {
-          "name": "image_url",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "is_deleted": {
-          "name": "is_deleted",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": true,
-          "default": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "users_clerk_id_key": {
-          "columns": [
-            "clerk_id"
-          ],
-          "nullsNotDistinct": false,
-          "name": "users_clerk_id_key"
-        }
-      },
-      "checkConstraints": {},
-      "policies": {},
-      "isRLSEnabled": false
-    },
-    "public.comments": {
-      "name": "comments",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "uuid",
-          "primaryKey": true,
-          "notNull": true,
-          "default": "gen_random_uuid()"
-        },
-        "content": {
-          "name": "content",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "task_id": {
-          "name": "task_id",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "author_id": {
-          "name": "author_id",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "CURRENT_TIMESTAMP"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "CURRENT_TIMESTAMP"
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "fk_tasks_task_id_comments": {
-          "name": "fk_tasks_task_id_comments",
-          "tableFrom": "comments",
-          "tableTo": "tasks",
-          "schemaTo": "public",
-          "columnsFrom": [
-            "task_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        },
-        "fk_comments_author_id_users": {
-          "name": "fk_comments_author_id_users",
-          "tableFrom": "comments",
-          "tableTo": "users",
-          "schemaTo": "public",
-          "columnsFrom": [
-            "author_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "checkConstraints": {},
-      "policies": {},
-      "isRLSEnabled": false
-    },
     "public.tasks": {
       "name": "tasks",
       "schema": "",
@@ -181,21 +27,21 @@
           "primaryKey": false,
           "notNull": true
         },
-        "list_id": {
-          "name": "list_id",
+        "listId": {
+          "name": "listId",
           "type": "uuid",
           "primaryKey": false,
           "notNull": true
         },
         "priority": {
           "name": "priority",
-          "type": "priority",
+          "type": "PRIORITY",
           "typeSchema": "public",
           "primaryKey": false,
           "notNull": true
         },
-        "due_date": {
-          "name": "due_date",
+        "dueDate": {
+          "name": "dueDate",
           "type": "date",
           "primaryKey": false,
           "notNull": true
@@ -206,15 +52,15 @@
           "primaryKey": false,
           "notNull": false
         },
-        "created_at": {
-          "name": "created_at",
+        "createdAt": {
+          "name": "createdAt",
           "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": true,
           "default": "CURRENT_TIMESTAMP"
         },
-        "updated_at": {
-          "name": "updated_at",
+        "updatedAt": {
+          "name": "updatedAt",
           "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": true,
@@ -232,8 +78,8 @@
           "primaryKey": false,
           "notNull": false
         },
-        "created_by": {
-          "name": "created_by",
+        "createdBy": {
+          "name": "createdBy",
           "type": "uuid",
           "primaryKey": false,
           "notNull": true
@@ -241,13 +87,13 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "fk_tasks_list_id_lists": {
-          "name": "fk_tasks_list_id_lists",
+        "listTask": {
+          "name": "listTask",
           "tableFrom": "tasks",
           "tableTo": "lists",
           "schemaTo": "public",
           "columnsFrom": [
-            "list_id"
+            "listId"
           ],
           "columnsTo": [
             "id"
@@ -255,13 +101,160 @@
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
-        "fk_tasks_created_by_users": {
-          "name": "fk_tasks_created_by_users",
+        "userTask": {
+          "name": "userTask",
           "tableFrom": "tasks",
           "tableTo": "users",
           "schemaTo": "public",
           "columnsFrom": [
-            "created_by"
+            "createdBy"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {},
+      "policies": {},
+      "isRLSEnabled": false
+    },
+    "public.users": {
+      "name": "users",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "clerkId": {
+          "name": "clerkId",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "email": {
+          "name": "email",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        "imageUrl": {
+          "name": "imageUrl",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "users_clerkId_key": {
+          "columns": [
+            "clerkId"
+          ],
+          "nullsNotDistinct": false,
+          "name": "users_clerkId_key"
+        }
+      },
+      "checkConstraints": {},
+      "policies": {},
+      "isRLSEnabled": false
+    },
+    "public.comments": {
+      "name": "comments",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "content": {
+          "name": "content",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "taskId": {
+          "name": "taskId",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "authorId": {
+          "name": "authorId",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "CURRENT_TIMESTAMP"
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "CURRENT_TIMESTAMP"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "taskComment": {
+          "name": "taskComment",
+          "tableFrom": "comments",
+          "tableTo": "tasks",
+          "schemaTo": "public",
+          "columnsFrom": [
+            "taskId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "commentAuthor": {
+          "name": "commentAuthor",
+          "tableFrom": "comments",
+          "tableTo": "users",
+          "schemaTo": "public",
+          "columnsFrom": [
+            "authorId"
           ],
           "columnsTo": [
             "id"
@@ -293,8 +286,8 @@
           "primaryKey": false,
           "notNull": true
         },
-        "project_id": {
-          "name": "project_id",
+        "projectId": {
+          "name": "projectId",
           "type": "uuid",
           "primaryKey": false,
           "notNull": true
@@ -305,29 +298,29 @@
           "primaryKey": false,
           "notNull": false
         },
-        "created_at": {
-          "name": "created_at",
+        "createdAt": {
+          "name": "createdAt",
           "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": false,
           "default": "CURRENT_TIMESTAMP"
         },
-        "updated_at": {
-          "name": "updated_at",
+        "updatedAt": {
+          "name": "updatedAt",
           "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": false,
           "default": "CURRENT_TIMESTAMP"
         },
-        "is_final": {
-          "name": "is_final",
+        "isFinal": {
+          "name": "isFinal",
           "type": "boolean",
           "primaryKey": false,
           "notNull": false,
           "default": false
         },
-        "created_by": {
-          "name": "created_by",
+        "createdBy": {
+          "name": "createdBy",
           "type": "uuid",
           "primaryKey": false,
           "notNull": true
@@ -335,13 +328,13 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "fk_lists_created_by_users": {
-          "name": "fk_lists_created_by_users",
+        "projectList": {
+          "name": "projectList",
           "tableFrom": "lists",
-          "tableTo": "users",
+          "tableTo": "projects",
           "schemaTo": "public",
           "columnsFrom": [
-            "created_by"
+            "projectId"
           ],
           "columnsTo": [
             "id"
@@ -349,13 +342,13 @@
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
-        "fk_lists_project_id_projects": {
-          "name": "fk_lists_project_id_projects",
+        "userList": {
+          "name": "userList",
           "tableFrom": "lists",
-          "tableTo": "projects",
+          "tableTo": "users",
           "schemaTo": "public",
           "columnsFrom": [
-            "project_id"
+            "createdBy"
           ],
           "columnsTo": [
             "id"
@@ -393,28 +386,28 @@
           "primaryKey": false,
           "notNull": true
         },
-        "owner_id": {
-          "name": "owner_id",
+        "ownerId": {
+          "name": "ownerId",
           "type": "uuid",
           "primaryKey": false,
           "notNull": true
         },
-        "created_at": {
-          "name": "created_at",
+        "createdAt": {
+          "name": "createdAt",
           "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": false,
           "default": "CURRENT_TIMESTAMP"
         },
-        "updated_at": {
-          "name": "updated_at",
+        "updatedAt": {
+          "name": "updatedAt",
           "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": false,
           "default": "CURRENT_TIMESTAMP"
         },
-        "due_date": {
-          "name": "due_date",
+        "dueDate": {
+          "name": "dueDate",
           "type": "date",
           "primaryKey": false,
           "notNull": true
@@ -429,13 +422,13 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "fk_projects_owner_id_users": {
-          "name": "fk_projects_owner_id_users",
+        "projectOwner": {
+          "name": "projectOwner",
           "tableFrom": "projects",
           "tableTo": "users",
           "schemaTo": "public",
           "columnsFrom": [
-            "owner_id"
+            "ownerId"
           ],
           "columnsTo": [
             "id"
@@ -461,53 +454,47 @@
           "notNull": true,
           "default": "gen_random_uuid()"
         },
-        "user_id": {
-          "name": "user_id",
+        "userId": {
+          "name": "userId",
           "type": "uuid",
           "primaryKey": false,
           "notNull": true
         },
-        "project_id": {
-          "name": "project_id",
+        "projectId": {
+          "name": "projectId",
           "type": "uuid",
           "primaryKey": false,
           "notNull": true
         },
-        "is_accepted": {
-          "name": "is_accepted",
+        "isAccepted": {
+          "name": "isAccepted",
           "type": "boolean",
           "primaryKey": false,
           "notNull": false
         },
-        "invited_at": {
-          "name": "invited_at",
+        "invitedAt": {
+          "name": "invitedAt",
           "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": true,
           "default": "CURRENT_TIMESTAMP"
         },
-        "accepted_at": {
-          "name": "accepted_at",
+        "acceptedAt": {
+          "name": "acceptedAt",
           "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": false
-        },
-        "role_id": {
-          "name": "role_id",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": true
         }
       },
       "indexes": {},
       "foreignKeys": {
-        "fk_teams_user_id_users": {
-          "name": "fk_teams_user_id_users",
+        "memberUserData": {
+          "name": "memberUserData",
           "tableFrom": "teams",
           "tableTo": "users",
           "schemaTo": "public",
           "columnsFrom": [
-            "user_id"
+            "userId"
           ],
           "columnsTo": [
             "id"
@@ -515,52 +502,29 @@
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
-        "fk_teams_project_id_projects": {
-          "name": "fk_teams_project_id_projects",
+        "projectMember": {
+          "name": "projectMember",
           "tableFrom": "teams",
           "tableTo": "projects",
           "schemaTo": "public",
           "columnsFrom": [
-            "project_id"
+            "projectId"
           ],
           "columnsTo": [
             "id"
           ],
           "onDelete": "cascade",
           "onUpdate": "no action"
-        },
-        "fk_teams_role_id_team_roles": {
-          "name": "fk_teams_role_id_team_roles",
-          "tableFrom": "teams",
-          "tableTo": "team_roles",
-          "schemaTo": "public",
-          "columnsFrom": [
-            "role_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "restrict",
-          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "teams_project_id_user_id_unique": {
-          "columns": [
-            "user_id",
-            "project_id"
-          ],
-          "nullsNotDistinct": false,
-          "name": "teams_project_id_user_id_unique"
-        }
-      },
+      "uniqueConstraints": {},
       "checkConstraints": {},
       "policies": {},
       "isRLSEnabled": false
     },
-    "public.team_roles": {
-      "name": "team_roles",
+    "public.taskAssignments": {
+      "name": "taskAssignments",
       "schema": "",
       "columns": {
         "id": {
@@ -570,67 +534,20 @@
           "notNull": true,
           "default": "gen_random_uuid()"
         },
-        "title": {
-          "name": "title",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "description": {
-          "name": "description",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "team_roles_title_key": {
-          "columns": [
-            "title"
-          ],
-          "nullsNotDistinct": false,
-          "name": "team_roles_title_key"
-        },
-        "team_roles_role_key": {
-          "columns": [
-            "title"
-          ],
-          "nullsNotDistinct": false,
-          "name": "team_roles_role_key"
-        }
-      },
-      "checkConstraints": {},
-      "policies": {},
-      "isRLSEnabled": false
-    },
-    "public.task_assignments": {
-      "name": "task_assignments",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "uuid",
-          "primaryKey": true,
-          "notNull": true,
-          "default": "gen_random_uuid()"
-        },
-        "task_id": {
-          "name": "task_id",
+        "taskId": {
+          "name": "taskId",
           "type": "uuid",
           "primaryKey": false,
           "notNull": true
         },
-        "user_id": {
-          "name": "user_id",
+        "userId": {
+          "name": "userId",
           "type": "uuid",
           "primaryKey": false,
           "notNull": true
         },
-        "assigned_at": {
-          "name": "assigned_at",
+        "assignedAt": {
+          "name": "assignedAt",
           "type": "timestamp with time zone",
           "primaryKey": false,
           "notNull": false,
@@ -639,13 +556,13 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "fk_task_assignments_task_id_tasks": {
-          "name": "fk_task_assignments_task_id_tasks",
-          "tableFrom": "task_assignments",
+        "taskAssignment": {
+          "name": "taskAssignment",
+          "tableFrom": "taskAssignments",
           "tableTo": "tasks",
           "schemaTo": "public",
           "columnsFrom": [
-            "task_id"
+            "taskId"
           ],
           "columnsTo": [
             "id"
@@ -653,13 +570,13 @@
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
-        "fk_user_task_assignments_user_id_users": {
-          "name": "fk_user_task_assignments_user_id_users",
-          "tableFrom": "task_assignments",
+        "userTaskAssignment": {
+          "name": "userTaskAssignment",
+          "tableFrom": "taskAssignments",
           "tableTo": "users",
           "schemaTo": "public",
           "columnsFrom": [
-            "user_id"
+            "userId"
           ],
           "columnsTo": [
             "id"
@@ -676,8 +593,8 @@
     }
   },
   "enums": {
-    "public.priority": {
-      "name": "priority",
+    "public.PRIORITY": {
+      "name": "PRIORITY",
       "values": [
         "low",
         "medium",

@@ -56,8 +56,3 @@ export const updateProjectPayloadSchema = z.object({
   description: projectSchema.shape.description,
   projectId: projectSchema.shape.id
 });
-
-export const getProjectOptionsPayloadSchema = z.object({
-  id: projectSchema.shape.id.optional(),
-  name: z.string("Project name must be string.") // Search query
-});

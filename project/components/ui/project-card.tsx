@@ -27,10 +27,10 @@ export default function ProjectCard({
         <div className="flex-1">
           <Link
             href={`/projects/${id}`}
-            className="text-primary line-clamp-1 font-medium dark:text-white">
+            className="text-primary font-medium dark:text-white">
             {name}
           </Link>
-          <p className="mt-1 line-clamp-1 text-sm text-gray-500 dark:text-gray-400">
+          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
             {description}
           </p>
 
