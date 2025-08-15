@@ -1,6 +1,4 @@
-"use client";
-
-import useProjectMembersOptions from "@/hooks/use-teams";
+import { useProjectMembersOptions } from "@/hooks/use-teams";
 import { ProjectSchema } from "@/types/projects";
 import { UserSchema } from "@/types/users";
 import { ChangeEvent, useEffect, useState } from "react";
@@ -42,8 +40,13 @@ export default function SelectProjectMembers({
   };
 
   useEffect(() => {
+    setSelectedIds(value);
+  }, [value]);
+
+  useEffect(() => {
+    if (selectedIds === value) return;
     onChange(selectedIds);
-  }, [selectedIds, onChange]);
+  }, [selectedIds]);
 
   const loaded =
     !isProjectMembersOptionsLoading && projectMembersOptions?.members;

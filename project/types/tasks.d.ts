@@ -10,6 +10,8 @@ export interface TaskSchema extends InferSelectModel<typeof tasks> {
 
 export interface Task extends InferSelectModel<typeof tasks> {}
 
+// Query Data
+
 export interface CreateAndAssignTaskData
   extends Pick<
     TaskSchema,
