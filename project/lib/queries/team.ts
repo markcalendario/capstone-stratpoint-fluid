@@ -11,63 +11,34 @@ import { teams } from "../db/drizzle/migrations/schema";
 const teamQueries = {
   // Retrive all project members with any status
   getAllByProject: async (projectId: ProjectSchema["id"]) => {
-    return await db.query.users.findMany({
+    return await db.query.teams.findMany({
+      where: (teams, { eq }) => eq(teams.projectId, projectId),
       with: {
-        taskAssignments: { with: { task: { with: { list: true } } } },
-        teams: {
-          with: { teamRole: true },
-          where: (teams, { and, eq }) => {
-            return and(eq(teams.projectId, projectId));
+        teamRole: true,
+        user: {
+          with: {
+            taskAssignments: { with: { task: { with: { list: true } } } },
+            teams: { where: (teams, { eq }) => eq(teams.isAccepted, true) }
           }
         }
-      },
-      where: (users, { and, exists, eq }) => {
-        return and(
-          eq(users.isDeleted, false),
-          exists(
-            db
-              .select()
-              .from(teams)
-              .where((teams) =>
-                and(eq(teams.userId, users.id), eq(teams.projectId, projectId))
-              )
-          )
-        );
       }
     });
   },
 
   // Retrive all project members with accepted status
   getAcceptedByProject: async (projectId: ProjectSchema["id"]) => {
-    return await db.query.users.findMany({
+    return await db.query.teams.findMany({
+      where: (teams, { eq, and }) => {
+        return and(eq(teams.projectId, projectId), eq(teams.isAccepted, true));
+      },
       with: {
-        taskAssignments: { with: { task: { with: { list: true } } } },
-        teams: {
-          with: { teamRole: true },
-          where: (teams, { and, eq }) => {
-            return and(
-              eq(teams.projectId, projectId),
-              eq(teams.isAccepted, true)
-            );
+        teamRole: true,
+        user: {
+          with: {
+            taskAssignments: { with: { task: { with: { list: true } } } },
+            teams: { where: (teams, { eq }) => eq(teams.isAccepted, true) }
           }
         }
-      },
-      where: (users, { and, exists, eq }) => {
-        return and(
-          eq(users.isDeleted, false),
-          exists(
-            db
-              .select()
-              .from(teams)
-              .where((teams) =>
-                and(
-                  eq(teams.userId, users.id),
-                  eq(teams.projectId, projectId),
-                  eq(teams.isAccepted, true)
-                )
-              )
-          )
-        );
       }
     });
   },

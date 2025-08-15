@@ -35,9 +35,9 @@ export async function getProjectMembersOptions(
     const members = await teamQueries.getAcceptedByProject(parsed.projectId);
     const formatted = members.map((member) => {
       return {
-        id: member.id,
-        name: member.name,
-        imageUrl: member.imageUrl
+        id: member.user.id,
+        name: member.user.name,
+        imageUrl: member.user.imageUrl
       };
     });
 
@@ -131,42 +131,36 @@ export async function addTeamMembers(payload: AddTeamMembersPayload) {
 }
 
 export async function getProjectMembers(payload: GetProjectMembersPayload) {
-  // Retrieves all members including those who are invited and declined
+  // Retrieves all members including those who are declined or current invited
   try {
     const parsed = getProjectMembersPayloadSchema.parse(payload);
-    const members = await teamQueries.getAllByProject(parsed.projectId);
+    const projectMembers = await teamQueries.getAllByProject(parsed.projectId);
 
-    const formatted = members.map((member) => {
-      const role =
-        member.teams.find((team) => team.userId === member.id)?.teamRole
-          .title ?? "No Role";
+    const members = projectMembers.map((projectMember) => {
+      const { user, isAccepted } = projectMember;
 
-      const tasksDoneCount = member.taskAssignments.filter((assignment) => {
-        return (
-          assignment.task.list.isFinal &&
-          assignment.task.list.projectId === parsed.projectId
-        );
+      const getIsProjectTask = (
+        assignment: (typeof user.taskAssignments)[number]
+      ) => assignment.task.list.projectId === parsed.projectId;
+
+      const tasksDoneCount = user.taskAssignments.filter((assignment) => {
+        return getIsProjectTask(assignment) && assignment.task.list.isFinal;
       }).length;
 
-      const tasksUndoneCount = member.taskAssignments.filter((assignment) => {
-        return (
-          !assignment.task.list.isFinal &&
-          assignment.task.list.projectId === parsed.projectId
-        );
+      const tasksUndoneCount = user.taskAssignments.filter((assignment) => {
+        return getIsProjectTask(assignment) && !assignment.task.list.isFinal;
       }).length;
 
-      const isAccepted = member.teams.find((teams) => {
-        return teams.projectId === parsed.projectId;
-      })?.isAccepted;
+      const projectsCount = user.teams.filter((team) => team.isAccepted).length;
 
       return {
-        id: member.id,
-        name: member.name,
-        email: member.email,
-        imageUrl: member.imageUrl,
-        projectsCount: member.teams.filter((team) => team.isAccepted).length,
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        imageUrl: user.imageUrl,
+        role: projectMember.teamRole.title,
         membershipStatus: getMembershipStatus(isAccepted),
-        role,
+        projectsCount,
         tasksDoneCount,
         tasksUndoneCount
       };
@@ -186,12 +180,12 @@ export async function getProjectMembers(payload: GetProjectMembersPayload) {
 
     const ownerTasksUndoneCount = owner.taskAssignments.filter((assignment) => {
       return (
-        assignment.task.list.isFinal &&
+        !assignment.task.list.isFinal &&
         assignment.task.list.projectId === parsed.projectId
       );
     }).length;
 
-    formatted.unshift({
+    members.unshift({
       id: owner.id,
       name: owner.name,
       email: owner.email,
@@ -205,8 +199,8 @@ export async function getProjectMembers(payload: GetProjectMembersPayload) {
 
     return {
       success: true,
-      message: "Project members retrieved successfully.",
-      members: formatted
+      message: "Members retrieved successfully.",
+      members
     };
   } catch (error) {
     if (error instanceof ZodError) {
