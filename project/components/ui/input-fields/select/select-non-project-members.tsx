@@ -113,8 +113,10 @@ export default function SelectNonProjectMembers({
         searchedUsers.map((user) => (
           <UserOptionRow
             key={user.id}
-            {...user}
             onSelect={handleSelectUser}
+            id={user.id}
+            name={user.name}
+            imageUrl={user.imageUrl}
           />
         ))}
     </div>

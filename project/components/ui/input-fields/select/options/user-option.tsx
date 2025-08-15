@@ -9,7 +9,7 @@ interface UserOptionRowProps {
   id: UserSchema["id"];
   name: UserSchema["name"];
   imageUrl: UserSchema["imageUrl"];
-  role?: UserOption["role"] | null;
+  role?: UserOption["role"];
   rolesOptions?: NonNullable<UserOption["role"]>[];
   onSelect?: (id: UserSchema["id"]) => void;
   onDeselect?: (id: UserSchema["id"]) => void;
