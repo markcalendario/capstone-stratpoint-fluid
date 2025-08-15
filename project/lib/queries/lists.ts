@@ -1,21 +1,21 @@
 import { lists } from "@/lib/db/drizzle/migrations/schema";
 import { CreateListData, ListSchema, UpdateListData } from "@/types/lists";
 import { ProjectSchema } from "@/types/projects";
-import { eq } from "drizzle-orm";
+import { asc, eq } from "drizzle-orm";
 import db from "../db";
 
 const listQueries = {
-  getAll: async () => {
-    return await db.select().from(lists);
-  },
-
   get: async (id: ListSchema["id"]) => {
     const [list] = await db.select().from(lists).where(eq(lists.id, id));
     return list;
   },
 
   getProjectLists: async (projectId: ProjectSchema["id"]) => {
-    return await db.select().from(lists).where(eq(lists.projectId, projectId));
+    return await db
+      .select()
+      .from(lists)
+      .where(eq(lists.projectId, projectId))
+      .orderBy(asc(lists.position), asc(lists.isFinal), asc(lists.createdAt));
   },
 
   getCreatorId: async (id: ListSchema["id"]) => {

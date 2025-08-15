@@ -4,7 +4,9 @@ import ListCardDropdown from "@/components/ui/dropdowns/list-card-dropdown";
 import { useListTasks } from "@/hooks/use-tasks";
 import { ListSchema } from "@/types/lists";
 import { ProjectSchema } from "@/types/projects";
+import { ListTodo } from "lucide-react";
 import AddTaskButton from "../buttons/add-task-button";
+import SectionEmpty from "../section-empty";
 import SectionLoader from "../section-loader";
 import { TaskCard } from "./task-card";
 
@@ -36,8 +38,15 @@ export default function ListCard({ id, name, projectId }: ListCardProps) {
       <div className="space-y-3 p-4">
         {!loaded && <SectionLoader text="Loading Tasks" />}
 
+        {loaded && !listTasksData.tasks.length && (
+          <SectionEmpty
+            icon={ListTodo}
+            text={`No Tasks for '${name}'.`}
+          />
+        )}
+
         {loaded &&
-          listTasksData?.tasks.map((task, i) => (
+          listTasksData.tasks.map((task, i) => (
             <TaskCard
               key={i}
               id={task.id}
