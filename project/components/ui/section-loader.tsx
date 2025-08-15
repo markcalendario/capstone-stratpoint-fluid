@@ -11,9 +11,7 @@ export default function SectionLoader({ text }: SectionLoaderProps) {
         size={50}
         className="animate-spin text-neutral-600 dark:text-neutral-400"
       />
-      <p className="text-md font-medium text-neutral-600 dark:text-neutral-400">
-        {text}
-      </p>
+      <p className="text-md text-neutral-600 dark:text-neutral-400">{text}</p>
     </div>
   );
 }

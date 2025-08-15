@@ -1,7 +1,7 @@
 @utility container {
   @apply m-auto;
   @apply px-[20px];
-  @apply max-w-[1440px];
+  @apply max-w-[1366px];
 }
 
 @utility svg-primary {
