@@ -1,6 +1,8 @@
 // TODO: Task 5.6 - Create task detail modals and editing interfaces
 
 import { TaskCard as TTaskCard } from "@/types/tasks";
+import { useDraggable } from "@dnd-kit/core";
+import { GripVertical } from "lucide-react";
 import Image from "next/image";
 import PriorityTab from "../priority-tab";
 
@@ -48,10 +50,24 @@ export function TaskCard({
   priority,
   assigneesImages
 }: TTaskCard) {
-  void id;
+  const { attributes, isDragging, listeners, setActivatorNodeRef, setNodeRef } =
+    useDraggable({ id });
 
   return (
-    <div className="border-primary/20 cursor-pointer rounded-xs border-2 bg-white p-4 shadow-sm hover:shadow-md dark:bg-neutral-800">
+    <div
+      ref={setNodeRef}
+      style={{
+        opacity: isDragging ? 0.5 : 1,
+        transition: "opacity 0.2s ease"
+      }}
+      className="border-primary/20 relative cursor-pointer rounded-xs border-2 bg-white p-4 shadow-sm hover:shadow-md dark:bg-neutral-800">
+      <button
+        {...listeners}
+        {...attributes}
+        ref={setActivatorNodeRef}
+        className="absolute top-0 right-0 m-1 cursor-pointer p-2 text-neutral-500 hover:bg-neutral-700">
+        <GripVertical size={16} />
+      </button>
       <h4 className="mb-1 text-sm font-medium text-neutral-800 dark:text-neutral-100">
         {title}
       </h4>

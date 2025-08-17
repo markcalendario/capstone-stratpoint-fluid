@@ -41,6 +41,8 @@ State management:
 - Handle conflicts with server state
 */
 
+import { DndContext } from "@dnd-kit/core";
+
 interface KanbanBoardProps {
   projectId: ProjectSchema["id"];
 }
@@ -51,26 +53,28 @@ export default function KanbanBoard({ projectId }: KanbanBoardProps) {
   const loaded = !isProjectListLoading && projectListsData?.lists;
 
   return (
-    <div className="outline-primary/20 w-full rounded-sm bg-white p-6 outline-2 dark:bg-neutral-800">
-      {!loaded && <SectionLoader text="Fetching Kanban Columns" />}
+    <DndContext>
+      <div className="outline-primary/20 w-full rounded-sm bg-white p-6 outline-2 dark:bg-neutral-800">
+        {!loaded && <SectionLoader text="Fetching Kanban Columns" />}
 
-      {loaded && (
-        <div className="flex min-w-full flex-nowrap items-stretch space-x-6 overflow-x-auto pb-4">
-          {projectListsData.lists.map((list) => (
-            <ListCard
-              key={list.id}
-              id={list.id}
+        {loaded && (
+          <div className="flex min-w-full flex-nowrap items-stretch space-x-6 overflow-x-auto pb-4">
+            {projectListsData.lists.map((list) => (
+              <ListCard
+                key={list.id}
+                id={list.id}
+                projectId={projectId}
+                name={list.name}
+              />
+            ))}
+
+            <CreateListButton
               projectId={projectId}
-              name={list.name}
+              className="border-primary/20 text-primary hover:bg-primary/10 flex min-h-[500px] min-w-100 cursor-pointer flex-nowrap items-center justify-center gap-2 rounded-sm border-2 border-dashed bg-neutral-50 dark:border-neutral-500 dark:bg-neutral-800 dark:text-neutral-300"
             />
-          ))}
-
-          <CreateListButton
-            projectId={projectId}
-            className="border-primary/20 text-primary hover:bg-primary/10 flex min-h-[500px] min-w-100 cursor-pointer flex-nowrap items-center justify-center gap-2 rounded-sm border-2 border-dashed bg-neutral-50 dark:border-neutral-500 dark:bg-neutral-800 dark:text-neutral-300"
-          />
-        </div>
-      )}
-    </div>
+          </div>
+        )}
+      </div>
+    </DndContext>
   );
 }
