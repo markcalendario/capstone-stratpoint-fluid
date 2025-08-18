@@ -30,7 +30,7 @@ CREATE TABLE "tasks" (
 	"list_id" uuid NOT NULL,
 	"priority" "priority" NOT NULL,
 	"due_date" date NOT NULL,
-	"position" integer,
+	"position" integer NOT NULL,
 	"created_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
 	"updated_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
 	"attachment" text,

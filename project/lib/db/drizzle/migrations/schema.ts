@@ -44,7 +44,7 @@ export const tasks = pgTable("tasks", {
 	listId: uuid("list_id").notNull(),
 	priority: priority().notNull(),
 	dueDate: date("due_date").notNull(),
-	position: integer(),
+	position: integer().notNull(),
 	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }).default(sql`CURRENT_TIMESTAMP`).notNull(),
 	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }).default(sql`CURRENT_TIMESTAMP`).notNull(),
 	attachment: text(),
