@@ -2,7 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import { TaskCard as ITaskCard } from "@/types/tasks";
-import { useDraggable } from "@dnd-kit/core";
+import { useDraggable, useDroppable } from "@dnd-kit/core";
 import { GripVertical } from "lucide-react";
 import Image from "next/image";
 import PriorityTab from "../priority-tab";
@@ -51,12 +51,44 @@ export function TaskCard({
   priority,
   assigneesImages
 }: ITaskCard) {
-  const { attributes, isDragging, listeners, setActivatorNodeRef, setNodeRef } =
-    useDraggable({ id });
+  const { setNodeRef: setDroppableRef } = useDroppable({
+    id,
+    data: {
+      type: "TASK" as const,
+      id,
+      title,
+      description,
+      priority,
+      assigneesImages
+    }
+  });
+
+  const {
+    attributes,
+    isDragging,
+    listeners,
+    setActivatorNodeRef,
+    setNodeRef: setDraggableRef
+  } = useDraggable({
+    id,
+    data: {
+      type: "TASK" as const,
+      id,
+      title,
+      description,
+      priority,
+      assigneesImages
+    }
+  });
+
+  const draggableAndDroppableRef = (node: HTMLElement | null) => {
+    setDraggableRef(node);
+    setDroppableRef(node);
+  };
 
   return (
     <div
-      ref={setNodeRef}
+      ref={draggableAndDroppableRef}
       className={cn(
         isDragging && "opacity-10",
         "border-primary/20 relative cursor-pointer rounded-xs border-2 bg-white p-4 shadow-sm duration-500 hover:shadow-md dark:bg-neutral-800"

@@ -1,10 +1,21 @@
 "use client";
 
 import { useProjectLists } from "@/hooks/use-lists";
+import { List } from "@/types/lists";
 import { ProjectSchema } from "@/types/projects";
+import { TaskCard as ITaskCard } from "@/types/tasks";
+import {
+  DndContext,
+  DragEndEvent,
+  DragOverEvent,
+  DragOverlay,
+  DragStartEvent
+} from "@dnd-kit/core";
+import { useState } from "react";
 import CreateListButton from "../buttons/create-list-button";
 import SectionLoader from "../section-loader";
 import ListCard from "./list-card";
+import { TaskCard } from "./task-card";
 
 // TODO: Task 5.1 - Design responsive Kanban board layout
 // TODO: Task 5.2 - Implement drag-and-drop functionality with dnd-kit
@@ -41,8 +52,6 @@ State management:
 - Handle conflicts with server state
 */
 
-import { DndContext } from "@dnd-kit/core";
-
 interface KanbanBoardProps {
   projectId: ProjectSchema["id"];
 }
@@ -50,31 +59,177 @@ interface KanbanBoardProps {
 export default function KanbanBoard({ projectId }: KanbanBoardProps) {
   const { isProjectListLoading, projectListsData } = useProjectLists(projectId);
 
-  const loaded = !isProjectListLoading && projectListsData?.lists;
+  const lists = projectListsData?.lists;
+  const isLoaded = !isProjectListLoading && lists;
 
   return (
-    <DndContext>
-      <div className="outline-primary/20 w-full rounded-sm bg-white p-6 outline-2 dark:bg-neutral-800">
-        {!loaded && <SectionLoader text="Fetching Kanban Columns" />}
+    <div className="outline-primary/20 w-full rounded-sm bg-white p-6 outline-2 dark:bg-neutral-800">
+      {!isLoaded && <SectionLoader text="Fetching Kanban Columns" />}
 
-        {loaded && (
-          <div className="flex min-w-full flex-nowrap items-stretch space-x-6 overflow-x-auto pb-4">
-            {projectListsData.lists.map((list) => (
-              <ListCard
-                key={list.id}
-                id={list.id}
-                projectId={projectId}
-                name={list.name}
-              />
-            ))}
+      {isLoaded && (
+        <div className="flex min-w-full flex-nowrap items-stretch space-x-6 overflow-x-auto pb-4">
+          <DraggableKanbanItems lists={lists} />
 
-            <CreateListButton
-              projectId={projectId}
-              className="border-primary/20 text-primary hover:bg-primary/10 flex min-h-[500px] min-w-100 cursor-pointer flex-nowrap items-center justify-center gap-2 rounded-sm border-2 border-dashed bg-neutral-50 dark:border-neutral-500 dark:bg-neutral-800 dark:text-neutral-300"
-            />
-          </div>
-        )}
-      </div>
+          <CreateListButton
+            projectId={projectId}
+            className="border-primary/20 text-primary hover:bg-primary/10 flex min-h-[500px] min-w-100 cursor-pointer flex-nowrap items-center justify-center gap-2 rounded-sm border-2 border-dashed bg-neutral-50 dark:border-neutral-500 dark:bg-neutral-800 dark:text-neutral-300"
+          />
+        </div>
+      )}
+    </div>
+  );
+}
+
+interface DraggableKanbanItems {
+  lists: List[];
+}
+
+interface DraggableList extends List {
+  type: "LIST";
+}
+
+interface DraggableTask extends ITaskCard {
+  type: "TASK";
+}
+
+type DraggableItem = DraggableList | DraggableTask;
+
+function DraggableKanbanItems({ lists }: DraggableKanbanItems) {
+  const [activeList, setActiveList] = useState<DraggableList | null>(null);
+  const [activeTask, setActiveTask] = useState<DraggableTask | null>(null);
+
+  const handleDragStart = (evt: DragStartEvent) => {
+    const dragItem = evt.active.data.current as DraggableItem;
+    const dragItemType = dragItem.type;
+
+    if (dragItemType === "TASK") {
+      setActiveTask(dragItem);
+      logAction("Drag", dragItemType, dragItem.title);
+    } else if (dragItemType === "LIST") {
+      setActiveList(dragItem);
+      logAction("Drag", dragItemType, dragItem.name);
+    }
+  };
+
+  const handleDragOver = (evt: DragOverEvent) => {
+    const dragItem = evt.active.data.current as DraggableItem;
+    const overItem = evt.over?.data?.current as DraggableItem;
+    const dragItemType = dragItem.type;
+    const overItemType = overItem.type;
+
+    if (!overItem) return;
+
+    if (dragItemType === "TASK" && overItemType === "LIST") {
+      logAction(
+        "Drag",
+        dragItemType,
+        dragItem.title,
+        overItemType,
+        overItem.name
+      );
+    } else if (dragItemType === "LIST" && overItemType === "LIST") {
+      logAction(
+        "Drag",
+        dragItemType,
+        dragItem.name,
+        overItemType,
+        overItem.name
+      );
+    } else if (dragItemType === "TASK" && overItemType === "TASK") {
+      logAction(
+        "Drag",
+        dragItemType,
+        dragItem.title,
+        overItemType,
+        overItem.title
+      );
+    } else if (dragItemType === "LIST" && overItemType === "TASK") {
+      logAction(
+        "Drag",
+        dragItemType,
+        dragItem.name,
+        overItemType,
+        overItem.title
+      );
+    }
+  };
+
+  const handleDragEnd = (evt: DragEndEvent) => {
+    const dragItem = evt.active.data.current as DraggableItem;
+    const overItem = evt.over?.data?.current as DraggableItem;
+    const dragItemType = dragItem.type;
+    const overItemType = overItem.type;
+
+    if (!overItem) {
+      return console.log(`${dragItem.type} dropped outside any valid target.`);
+    }
+
+    if (dragItemType === "TASK" && overItemType === "LIST") {
+      logAction(
+        "Drop",
+        dragItemType,
+        dragItem.title,
+        overItemType,
+        overItem.name
+      );
+    }
+
+    if (dragItem.type === "LIST" && overItem.type === "LIST") {
+      logAction(
+        "Drop",
+        dragItemType,
+        dragItem.name,
+        overItemType,
+        overItem.name
+      );
+    }
+
+    if (dragItem.type === "TASK" && overItem.type === "TASK") {
+      logAction(
+        "Drop",
+        dragItemType,
+        dragItem.title,
+        overItemType,
+        overItem.title
+      );
+    }
+
+    setActiveList(null);
+    setActiveTask(null);
+  };
+
+  return (
+    <DndContext
+      onDragStart={handleDragStart}
+      onDragOver={handleDragOver}
+      onDragEnd={handleDragEnd}>
+      {lists.map((list) => (
+        <ListCard
+          key={list.id}
+          {...list}
+        />
+      ))}
+
+      <DragOverlay>
+        {activeList && <ListCard {...activeList} />}
+        {activeTask && <TaskCard {...activeTask} />}
+      </DragOverlay>
     </DndContext>
   );
+}
+
+function logAction(
+  action: string,
+  activeType: string,
+  activeName: string,
+  overType?: string,
+  overName?: string
+) {
+  let message = `[${action}]: ${activeType} "${activeName}"`;
+
+  if (overType && overName) {
+    message += ` → ${overType} "${overName}"`;
+  }
+
+  console.log(message);
 }

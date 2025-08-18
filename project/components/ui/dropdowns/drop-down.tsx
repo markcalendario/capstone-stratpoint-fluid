@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import { LucideIcon } from "lucide-react";
 import Link from "next/link";
 import { ReactNode, useCallback, useEffect, useRef, useState } from "react";
@@ -44,7 +45,7 @@ export default function Dropdown({ className, label, items }: DropdownProps) {
       <button
         type="button"
         onClick={toggleIsOpen}
-        className={className}>
+        className={cn(className, "flex")}>
         {label}
       </button>
 

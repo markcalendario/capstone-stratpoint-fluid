@@ -2,18 +2,11 @@
 
 import ListCardDropdown from "@/components/ui/dropdowns/list-card-dropdown";
 import { useListTasks } from "@/hooks/use-tasks";
+import { cn } from "@/lib/utils";
 import { ListSchema } from "@/types/lists";
 import { ProjectSchema } from "@/types/projects";
-import { TaskCard as ITaskCard } from "@/types/tasks";
-import {
-  DndContext,
-  DragOverlay,
-  DragStartEvent,
-  UniqueIdentifier,
-  useDroppable
-} from "@dnd-kit/core";
-import { ListTodo } from "lucide-react";
-import { useState } from "react";
+import { useDraggable, useDroppable } from "@dnd-kit/core";
+import { GripHorizontal, ListTodo } from "lucide-react";
 import AddTaskButton from "../buttons/add-task-button";
 import SectionEmpty from "../section-empty";
 import SectionLoader from "../section-loader";
@@ -26,8 +19,28 @@ interface ListCardProps {
 }
 
 export default function ListCard({ id, name, projectId }: ListCardProps) {
-  const { setNodeRef } = useDroppable({ id });
   const { isListTasksLoading, listTasksData } = useListTasks(id);
+
+  const { setNodeRef: setDroppableRef } = useDroppable({
+    id,
+    data: { type: "LIST" as const, id, name, projectId }
+  });
+
+  const {
+    attributes,
+    isDragging,
+    listeners,
+    setActivatorNodeRef,
+    setNodeRef: setDraggableRef
+  } = useDraggable({
+    id,
+    data: { type: "LIST" as const, id, name, projectId }
+  });
+
+  const draggableAndDroppableRef = (node: HTMLElement | null) => {
+    setDraggableRef(node);
+    setDroppableRef(node);
+  };
 
   const tasks = listTasksData?.tasks;
   const isEmpty = !listTasksData?.tasks.length;
@@ -35,8 +48,11 @@ export default function ListCard({ id, name, projectId }: ListCardProps) {
 
   return (
     <div
-      ref={setNodeRef}
-      className="border-primary/20 max-h-[600px] min-h-[500px] min-w-100 overflow-auto rounded-sm border-3 bg-neutral-100 dark:bg-neutral-900">
+      ref={draggableAndDroppableRef}
+      className={cn(
+        isDragging && "opacity-20",
+        "border-primary/20 max-h-[600px] min-h-[500px] min-w-100 overflow-auto rounded-sm border-3 bg-neutral-100 duration-100 dark:bg-neutral-900"
+      )}>
       <div className="bg-primary px-3 py-2 dark:border-neutral-600">
         <div className="flex items-center justify-between">
           <h3 className="font-semibold text-neutral-200">
@@ -45,7 +61,20 @@ export default function ListCard({ id, name, projectId }: ListCardProps) {
               {isLoaded && listTasksData.tasks.length}
             </span>
           </h3>
-          <ListCardDropdown id={id} />
+
+          <div className="flex items-center gap-3">
+            <button
+              {...listeners}
+              {...attributes}
+              ref={setActivatorNodeRef}>
+              <GripHorizontal
+                size={16}
+                className="cursor-pointer text-neutral-100"
+              />
+            </button>
+
+            <ListCardDropdown id={id} />
+          </div>
         </div>
       </div>
 
@@ -59,7 +88,14 @@ export default function ListCard({ id, name, projectId }: ListCardProps) {
           />
         )}
 
-        {isLoaded && !isEmpty && <RenderDraggableTasks tasks={tasks} />}
+        {isLoaded &&
+          !isEmpty &&
+          tasks.map((task) => (
+            <TaskCard
+              key={task.id}
+              {...task}
+            />
+          ))}
 
         <AddTaskButton
           listId={id}
@@ -68,40 +104,5 @@ export default function ListCard({ id, name, projectId }: ListCardProps) {
         />
       </div>
     </div>
-  );
-}
-
-interface RenderDraggableTasks {
-  tasks: ITaskCard[];
-}
-
-function RenderDraggableTasks({ tasks }: RenderDraggableTasks) {
-  const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
-
-  const handleDragStart = (event: DragStartEvent) => {
-    setActiveId(event.active.id);
-  };
-
-  const handleDragEnd = () => {
-    setActiveId(null);
-  };
-
-  const activeTask = tasks.find((task) => task.id === activeId);
-
-  return (
-    <DndContext
-      onDragStart={handleDragStart}
-      onDragEnd={handleDragEnd}>
-      {tasks.map((task) => (
-        <TaskCard
-          key={task.id}
-          {...task}
-        />
-      ))}
-
-      <DragOverlay>
-        {activeTask ? <TaskCard {...activeTask} /> : null}
-      </DragOverlay>
-    </DndContext>
   );
 }
