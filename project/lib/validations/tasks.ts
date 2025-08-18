@@ -76,3 +76,8 @@ export const updateTaskPayloadSchema = z.object({
   attachment: z.file("Attachment must be a file.").nullable(),
   projectId: projectSchema.shape.id
 });
+
+export const changePositionPayloadSchema = z.object({
+  taskId: taskSchema.shape.id,
+  overTaskId: taskSchema.shape.id
+});

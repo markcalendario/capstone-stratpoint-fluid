@@ -1,6 +1,7 @@
 "use server";
 
 import {
+  ChangePositionPayload,
   CreateAndAssignTaskPayload,
   DeleteTaskPayload,
   GetListTasksPayload,
@@ -13,6 +14,7 @@ import { isUserProjectOwner } from "../utils/projects";
 import { toTaskCard } from "../utils/tasks";
 import { getUserId } from "../utils/users";
 import {
+  changePositionPayloadSchema,
   createAndAssignTaskPayloadSchema,
   deleteTaskPayloadSchema,
   getListTasksPayloadSchema,
@@ -60,6 +62,8 @@ export async function createAndAssignTask(payload: CreateAndAssignTaskPayload) {
       };
     }
 
+    const position = (await taskQueries.getMaxPosition(parsed.listId)) + 1;
+
     const createTaskData = {
       title: parsed.title,
       description: parsed.description,
@@ -67,15 +71,16 @@ export async function createAndAssignTask(payload: CreateAndAssignTaskPayload) {
       listId: parsed.listId,
       priority: parsed.priority,
       createdBy: userId,
-      attachment: "",
-      label: parsed.label
+      label: parsed.label,
+      position,
+      attachment: ""
     };
 
-    const taskId = await taskQueries.createAndAssignTask(createTaskData);
+    const taskId = await taskQueries.createTask(createTaskData);
 
     if (parsed.assignees.length) {
       const assignmentData = { taskId, userIds: parsed.assignees };
-      await taskAssignmentsQueries.createMany(assignmentData);
+      await taskAssignmentsQueries.assignMany(assignmentData);
     }
 
     return { success: true, message: "Task created successfully." };
@@ -141,7 +146,7 @@ export async function updateTask(payload: UpdatetaskPayload) {
 
     if (parsed.assignees.length) {
       const assignmentData = { taskId, userIds: parsed.assignees };
-      await taskAssignmentsQueries.createMany(assignmentData);
+      await taskAssignmentsQueries.assignMany(assignmentData);
     }
 
     return { success: true, message: "Task created successfully." };
@@ -154,5 +159,47 @@ export async function updateTask(payload: UpdatetaskPayload) {
       success: false,
       message: "Error. Cannot create task."
     };
+  }
+}
+
+export async function changeTaskPosition(payload: ChangePositionPayload) {
+  try {
+    const parsed = changePositionPayloadSchema.parse(payload);
+    const { taskId, overTaskId } = parsed;
+
+    const task = await taskQueries.getTask(taskId);
+    if (!task) {
+      return { success: false, message: "Cannot find the task data." };
+    }
+
+    const overTask = await taskQueries.getTask(overTaskId);
+    if (!overTask) {
+      return { success: false, message: "Cannot find the task being hovered." };
+    }
+
+    const overListId = overTask.listId;
+    const overListTasks = await taskQueries.getListTasks(overListId);
+
+    // Remove the dragged task from the list
+    const filteredTasks = overListTasks.filter((t) => t.id !== taskId);
+
+    // Find the index of the hovered task
+    const newPosition = filteredTasks.findIndex((t) => t.id === overTaskId);
+
+    // Insert the task at the new position
+    filteredTasks.splice(newPosition, 0, task);
+
+    // Reorder all tasks
+    for (let pos = 0; pos < filteredTasks.length; pos++) {
+      await taskQueries.changePosition(
+        filteredTasks[pos].id,
+        overListId,
+        pos + 1
+      );
+    }
+
+    return { success: true, message: "Task moved successfully." };
+  } catch {
+    return { success: false, message: "Error. Cannot change position." };
   }
 }

@@ -7,7 +7,6 @@ export interface TaskAssignmentsSchema
   user: User;
 }
 
-export interface CreateTaskAssignmentSchema
-  extends Pick<TaskAssignmentsSchema, "taskId"> {
+export interface AssignManyData extends Pick<TaskAssignmentsSchema, "taskId"> {
   userIds: UserSchema["id"][];
 }

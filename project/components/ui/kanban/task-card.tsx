@@ -51,7 +51,7 @@ export function TaskCard({
   priority,
   assigneesImages
 }: ITaskCard) {
-  const { setNodeRef: setDroppableRef } = useDroppable({
+  const { isOver, setNodeRef: setDroppableRef } = useDroppable({
     id,
     data: {
       type: "TASK" as const,
@@ -90,7 +90,8 @@ export function TaskCard({
     <div
       ref={draggableAndDroppableRef}
       className={cn(
-        isDragging && "opacity-10",
+        isOver && "mt-[100px]",
+        isDragging && "opacity-20",
         "border-primary/20 relative cursor-pointer rounded-xs border-2 bg-white p-4 shadow-sm duration-500 hover:shadow-md dark:bg-neutral-800"
       )}>
       <button

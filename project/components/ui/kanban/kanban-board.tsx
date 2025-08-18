@@ -1,6 +1,7 @@
 "use client";
 
 import { useProjectLists } from "@/hooks/use-lists";
+import { useChangeTaskPosition } from "@/hooks/use-tasks";
 import { List } from "@/types/lists";
 import { ProjectSchema } from "@/types/projects";
 import { TaskCard as ITaskCard } from "@/types/tasks";
@@ -95,6 +96,7 @@ interface DraggableTask extends ITaskCard {
 type DraggableItem = DraggableList | DraggableTask;
 
 function DraggableKanbanItems({ lists }: DraggableKanbanItems) {
+  const { changeTaskPosition } = useChangeTaskPosition();
   const [activeList, setActiveList] = useState<DraggableList | null>(null);
   const [activeTask, setActiveTask] = useState<DraggableTask | null>(null);
 
@@ -154,7 +156,7 @@ function DraggableKanbanItems({ lists }: DraggableKanbanItems) {
     }
   };
 
-  const handleDragEnd = (evt: DragEndEvent) => {
+  const handleDragEnd = async (evt: DragEndEvent) => {
     const dragItem = evt.active.data.current as DraggableItem;
     const overItem = evt.over?.data?.current as DraggableItem;
     const dragItemType = dragItem.type;
@@ -185,13 +187,10 @@ function DraggableKanbanItems({ lists }: DraggableKanbanItems) {
     }
 
     if (dragItem.type === "TASK" && overItem.type === "TASK") {
-      logAction(
-        "Drop",
-        dragItemType,
-        dragItem.title,
-        overItemType,
-        overItem.title
-      );
+      await changeTaskPosition({
+        taskId: dragItem.id,
+        overTaskId: overItem.id
+      });
     }
 
     setActiveList(null);
