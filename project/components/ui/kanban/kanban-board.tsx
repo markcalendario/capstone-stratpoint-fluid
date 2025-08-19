@@ -2,6 +2,7 @@
 
 import { useListsAndTasks } from "@/hooks/use-lists";
 import { useMoveTask } from "@/hooks/use-tasks";
+import { moveList } from "@/lib/actions/lists";
 import { KanbanList } from "@/types/kanban";
 import { ListSchema } from "@/types/lists";
 import { ProjectSchema } from "@/types/projects";
@@ -76,7 +77,10 @@ export default function KanbanBoard({ projectId }: KanbanBoardProps) {
 
       {isLoaded && (
         <div className="flex min-w-full flex-nowrap items-stretch space-x-6 overflow-x-auto pb-4">
-          <KanbanItems lists={listsAndTasks} />
+          <KanbanItems
+            projectId={projectId}
+            lists={listsAndTasks}
+          />
 
           <CreateListButton
             projectId={projectId}
@@ -90,6 +94,7 @@ export default function KanbanBoard({ projectId }: KanbanBoardProps) {
 
 interface KanbanItemsProps {
   lists: KanbanList[];
+  projectId: ProjectSchema["id"];
 }
 
 interface DraggableList {
@@ -103,7 +108,7 @@ interface DraggableTask {
 
 type DraggableItem = DraggableList | DraggableTask;
 
-function KanbanItems({ lists }: KanbanItemsProps) {
+function KanbanItems({ projectId, lists }: KanbanItemsProps) {
   const [listsData, setListsData] = useState(lists);
 
   const { moveTask } = useMoveTask();
@@ -270,7 +275,7 @@ function KanbanItems({ lists }: KanbanItemsProps) {
     const item = evt.active.data.current as DraggableItem;
     const itemType = item.type;
 
-    // Task Movement
+    // Moving Task Mutation
     if (itemType === "TASK") {
       // Find the list where the task was dropped
       const list = listsData.find((list) =>
@@ -278,13 +283,21 @@ function KanbanItems({ lists }: KanbanItemsProps) {
       );
 
       const newListId = list?.id;
-      const newPosition = list?.tasks.findIndex((task) => task.id === itemId);
       const taskId = itemId as TaskSchema["id"];
+      const newPosition = list?.tasks.findIndex((task) => task.id === itemId);
 
       if (!newListId || newPosition === undefined || !taskId) return;
 
-      const a = await moveTask({ newListId, newPosition, taskId });
-      console.log(a);
+      await moveTask({ newListId, newPosition, taskId });
+    }
+
+    // Moving List Mutation
+    else if (itemType === "LIST") {
+      const listId = itemId as ListSchema["id"];
+      const listIds = listsData.map((list) => list.id);
+      const newPosition = listIds.findIndex((listId) => listId === itemId);
+
+      await moveList({ listId, newPosition, projectId });
     }
   };
 

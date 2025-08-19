@@ -57,10 +57,6 @@ const taskQueries = {
     return deletedComment.id;
   },
 
-  moveToList: async (id: TaskSchema["id"], listId: ListSchema["id"]) => {
-    await db.update(tasks).set({ listId }).where(eq(tasks.id, id));
-  },
-
   changePosition: async (
     id: TaskSchema["id"],
     listId: ListSchema["id"],

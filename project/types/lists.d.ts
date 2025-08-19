@@ -9,7 +9,10 @@ export interface ListSchema extends InferSelectModel<typeof lists> {
 export interface List extends InferSelectModel<typeof lists> {}
 
 export interface CreateListData
-  extends Pick<ListSchema, "name" | "isFinal" | "projectId" | "createdBy"> {}
+  extends Pick<
+    ListSchema,
+    "name" | "isFinal" | "position" | "projectId" | "createdBy"
+  > {}
 
 export interface UpdateListData
   extends Pick<ListSchema, "name" | "isFinal" | "updatedAt"> {}
@@ -32,4 +35,10 @@ export interface CreateListPayload
 
 export interface DeleteListPayload {
   id: ListSchema["id"];
+}
+
+export interface MoveListPayload {
+  listId: ListSchema["id"];
+  newPosition: ListSchema["position"];
+  projectId: ProjectSchema["id"];
 }

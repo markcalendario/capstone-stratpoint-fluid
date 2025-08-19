@@ -67,7 +67,7 @@ export const lists = pgTable("lists", {
 	id: uuid().defaultRandom().primaryKey().notNull(),
 	name: text().notNull(),
 	projectId: uuid("project_id").notNull(),
-	position: integer(),
+	position: integer().notNull(),
 	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }).default(sql`CURRENT_TIMESTAMP`),
 	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }).default(sql`CURRENT_TIMESTAMP`),
 	isFinal: boolean("is_final").default(false),

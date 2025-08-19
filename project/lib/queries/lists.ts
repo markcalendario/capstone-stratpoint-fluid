@@ -1,7 +1,7 @@
 import { lists } from "@/lib/db/drizzle/migrations/schema";
 import { CreateListData, ListSchema, UpdateListData } from "@/types/lists";
 import { ProjectSchema } from "@/types/projects";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import db from "../db";
 
 const listQueries = {
@@ -32,6 +32,15 @@ const listQueries = {
     return result.createdBy;
   },
 
+  getMaxPosition: async (projectId: ListSchema["id"]) => {
+    const [{ max }] = await db
+      .select({ max: sql<number>`COALESCE(MAX(${lists.position}), 0)` })
+      .from(lists)
+      .where(eq(lists.projectId, projectId));
+
+    return max;
+  },
+
   create: async (data: CreateListData) => {
     const [newList] = await db
       .insert(lists)
@@ -53,6 +62,13 @@ const listQueries = {
 
   delete: async (id: ListSchema["id"]) => {
     await db.delete(lists).where(eq(lists.id, id));
+  },
+
+  changePosition: async (
+    id: ListSchema["id"],
+    position: ListSchema["position"]
+  ) => {
+    await db.update(lists).set({ position }).where(eq(lists.id, id));
   }
 };
 

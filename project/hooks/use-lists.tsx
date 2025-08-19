@@ -4,6 +4,7 @@ import {
   deleteList,
   getList,
   getListsAndTasks,
+  moveList,
   updateList
 } from "@/lib/actions/lists";
 import {
@@ -27,7 +28,9 @@ export function useList(id: ListSchema["id"]) {
 export function useListsAndTasks(projectId: ProjectSchema["id"]) {
   const { isPending, data } = useQuery({
     queryKey: ["listsAndTasks"],
-    queryFn: () => getListsAndTasks({ projectId })
+    queryFn: () => getListsAndTasks({ projectId }),
+    refetchInterval: 3000,
+    refetchIntervalInBackground: false
   });
 
   return { isListsAndTasksLoading: isPending, listsAndTasksData: data };
@@ -69,4 +72,15 @@ export function useDeleteList(id: ListSchema["id"]) {
   });
 
   return { isListDeleting: isPending, deleteList: mutateAsync };
+}
+
+export function useMoveList() {
+  const { isPending, mutateAsync } = useMutation({
+    mutationFn: moveList,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["listAndTasks"] });
+    }
+  });
+
+  return { isMovingList: isPending, moveList: mutateAsync };
 }

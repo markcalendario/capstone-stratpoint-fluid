@@ -42,7 +42,7 @@ CREATE TABLE "lists" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"name" text NOT NULL,
 	"project_id" uuid NOT NULL,
-	"position" integer,
+	"position" integer NOT NULL,
 	"created_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
 	"updated_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
 	"is_final" boolean DEFAULT false,

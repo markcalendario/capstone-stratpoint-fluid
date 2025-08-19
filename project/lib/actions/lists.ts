@@ -16,6 +16,7 @@ import {
   DeleteListPayload,
   GetListPayload,
   GetProjectListsPayload,
+  MoveListPayload,
   UpdateListPayload
 } from "@/types/lists";
 import { ZodError } from "zod";
@@ -31,11 +32,14 @@ export async function createList(payload: CreateListPayload) {
       return { success: false, message: "You are not the project owner." };
     }
 
+    const position = await listQueries.getMaxPosition(parsed.projectId);
+
     const data = {
-      createdBy: userId,
       name: parsed.name,
+      createdBy: userId,
       isFinal: parsed.isFinal,
-      projectId: parsed.projectId
+      projectId: parsed.projectId,
+      position: position + 1
     };
 
     // Create list
@@ -133,5 +137,30 @@ export async function deleteList(payload: DeleteListPayload) {
     }
 
     return { success: false, message: "Error. Cannot delete list." };
+  }
+}
+
+export async function moveList(payload: MoveListPayload) {
+  const { listId, newPosition, projectId } = payload;
+
+  // Get list IDs of the project
+  const lists = await listQueries.getListsAndTasks(projectId);
+  const listIds = lists.map((list) => list.id);
+
+  // Filter out the list being moved
+  const filteredListIds = listIds.filter((id) => id !== listId);
+
+  // Calculate a safe new position
+  const safeNewPosition = Math.max(
+    0,
+    Math.min(newPosition, filteredListIds.length)
+  );
+
+  // Insert the listId into the new position
+  filteredListIds.splice(safeNewPosition, 0, listId);
+
+  // Update positions for all lists
+  for (let i = 0; i < filteredListIds.length; i++) {
+    await listQueries.changePosition(filteredListIds[i], i + 1);
   }
 }
