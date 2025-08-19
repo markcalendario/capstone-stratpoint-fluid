@@ -2,7 +2,8 @@
 
 import { cn } from "@/lib/utils";
 import { KanbanTask } from "@/types/kanban";
-import { useDraggable, useDroppable } from "@dnd-kit/core";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import { GripVertical } from "lucide-react";
 import Image from "next/image";
 import PriorityTab from "../priority-tab";
@@ -47,58 +48,39 @@ Features to implement:
 export function TaskCard({
   id,
   title,
+  listId,
   description,
   priority,
   taskAssignments
 }: KanbanTask) {
-  const { isOver, setNodeRef: setDroppableRef } = useDroppable({
-    id,
-    data: {
-      type: "TASK" as const,
-      id,
-      title,
-      description,
-      priority,
-      taskAssignments
-    }
-  });
-
   const {
-    attributes,
     isDragging,
+    transform,
+    transition,
+    attributes,
     listeners,
-    setActivatorNodeRef,
-    setNodeRef: setDraggableRef
-  } = useDraggable({
+    setNodeRef,
+    setActivatorNodeRef
+  } = useSortable({
     id,
-    data: {
-      type: "TASK" as const,
-      id,
-      title,
-      description,
-      priority,
-      taskAssignments
-    }
+    data: { type: "TASK" as const, listId }
   });
 
-  const draggableAndDroppableRef = (node: HTMLElement | null) => {
-    setDraggableRef(node);
-    setDroppableRef(node);
-  };
+  const style = { transform: CSS.Transform.toString(transform), transition };
 
   return (
     <div
-      ref={draggableAndDroppableRef}
+      style={style}
+      ref={setNodeRef}
       className={cn(
-        isOver && "mt-[100px]",
-        isDragging && "opacity-20",
-        "border-primary/20 relative cursor-pointer rounded-xs border-2 bg-white p-4 shadow-sm duration-500 hover:shadow-md dark:bg-neutral-800"
+        isDragging && "opacity-70",
+        "border-primary/20 relative rounded-xs border-2 bg-white p-4 shadow-sm duration-500 hover:shadow-md dark:bg-neutral-800"
       )}>
       <button
         {...listeners}
         {...attributes}
         ref={setActivatorNodeRef}
-        className="absolute top-0 right-0 m-1 cursor-pointer p-2 text-neutral-500 hover:bg-neutral-700">
+        className="absolute top-0 right-0 m-1 cursor-move p-2 text-neutral-500 hover:bg-neutral-700">
         <GripVertical size={16} />
       </button>
       <h4 className="mb-1 text-sm font-medium text-neutral-800 dark:text-neutral-100">

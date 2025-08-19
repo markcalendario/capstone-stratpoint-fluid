@@ -1,17 +1,24 @@
 "use client";
 
 import { useListsAndTasks } from "@/hooks/use-lists";
-import { useChangeTaskPosition } from "@/hooks/use-tasks";
-import { KanbanList, KanbanTask } from "@/types/kanban";
+import { useMoveTask } from "@/hooks/use-tasks";
+import { KanbanList } from "@/types/kanban";
+import { ListSchema } from "@/types/lists";
 import { ProjectSchema } from "@/types/projects";
+import { TaskSchema } from "@/types/tasks";
 import {
   DndContext,
   DragEndEvent,
   DragOverEvent,
   DragOverlay,
-  DragStartEvent
+  DragStartEvent,
+  UniqueIdentifier
 } from "@dnd-kit/core";
-import { useState } from "react";
+import {
+  horizontalListSortingStrategy,
+  SortableContext
+} from "@dnd-kit/sortable";
+import { useEffect, useState } from "react";
 import CreateListButton from "../buttons/create-list-button";
 import SectionLoader from "../section-loader";
 import ListCard from "./list-card";
@@ -69,7 +76,7 @@ export default function KanbanBoard({ projectId }: KanbanBoardProps) {
 
       {isLoaded && (
         <div className="flex min-w-full flex-nowrap items-stretch space-x-6 overflow-x-auto pb-4">
-          <KanbanItemsProps lists={listsAndTasks} />
+          <KanbanItems lists={listsAndTasks} />
 
           <CreateListButton
             projectId={projectId}
@@ -85,133 +92,236 @@ interface KanbanItemsProps {
   lists: KanbanList[];
 }
 
-interface DraggableList extends KanbanList {
+interface DraggableList {
   type: "LIST";
 }
 
-interface DraggableTask extends KanbanTask {
+interface DraggableTask {
   type: "TASK";
+  listId: ListSchema["id"];
 }
 
 type DraggableItem = DraggableList | DraggableTask;
 
-function KanbanItemsProps({ lists }: KanbanItemsProps) {
-  const { changeTaskPosition } = useChangeTaskPosition();
-  const [activeList, setActiveList] = useState<DraggableList | null>(null);
-  const [activeTask, setActiveTask] = useState<DraggableTask | null>(null);
+function KanbanItems({ lists }: KanbanItemsProps) {
+  const [listsData, setListsData] = useState(lists);
+
+  const { moveTask } = useMoveTask();
+
+  const [activeListId, setActiveListId] = useState<UniqueIdentifier | null>(
+    null
+  );
+  const [activeTaskId, setActiveTaskId] = useState<UniqueIdentifier | null>(
+    null
+  );
 
   const handleDragStart = (evt: DragStartEvent) => {
-    const dragItem = evt.active.data.current as DraggableItem;
-    const dragItemType = dragItem.type;
+    const draggableItem = evt.active.data.current as DraggableItem;
+    const itemType = draggableItem.type;
 
-    if (dragItemType === "TASK") {
-      setActiveTask(dragItem);
-      logAction("Drag", dragItemType, dragItem.title);
-    } else if (dragItemType === "LIST") {
-      setActiveList(dragItem);
-      logAction("Drag", dragItemType, dragItem.name);
+    if (itemType === "TASK") {
+      setActiveTaskId(evt.active.id);
+    } else if (itemType === "LIST") {
+      setActiveListId(evt.active.id);
     }
   };
 
   const handleDragOver = (evt: DragOverEvent) => {
+    const dragId = evt.active.id;
+    const overId = evt.over?.id;
     const dragItem = evt.active.data.current as DraggableItem;
-    const overItem = evt.over?.data?.current as DraggableItem;
-    const dragItemType = dragItem.type;
-    const overItemType = overItem.type;
+    const overItem = evt.over?.data.current as DraggableItem;
 
-    if (!overItem) return;
+    if (!dragItem || !overItem || !overId) return;
 
-    if (dragItemType === "TASK" && overItemType === "LIST") {
-      logAction(
-        "Drag",
-        dragItemType,
-        dragItem.title,
-        overItemType,
-        overItem.name
-      );
-    } else if (dragItemType === "LIST" && overItemType === "LIST") {
-      logAction(
-        "Drag",
-        dragItemType,
-        dragItem.name,
-        overItemType,
-        overItem.name
-      );
-    } else if (dragItemType === "TASK" && overItemType === "TASK") {
-      logAction(
-        "Drag",
-        dragItemType,
-        dragItem.title,
-        overItemType,
-        overItem.title
-      );
-    } else if (dragItemType === "LIST" && overItemType === "TASK") {
-      logAction(
-        "Drag",
-        dragItemType,
-        dragItem.name,
-        overItemType,
-        overItem.title
-      );
+    const dragType = dragItem.type;
+    const overType = overItem.type;
+
+    // Task -> List
+    if (dragType === "TASK" && overType === "LIST") {
+      setListsData((prev) => {
+        // Get the list of source and target
+        const targetList = prev.find((list) => list.id === overId);
+        const sourceList = prev.find((list) =>
+          list.tasks.some((task) => task.id === dragId)
+        );
+
+        if (!sourceList || !targetList) return prev;
+
+        const sourceListId = sourceList.id;
+        const targetListId = overId;
+
+        // Skip if already in same list
+        if (sourceListId === targetListId) return prev;
+
+        // Get the tasks of the source and target lists
+        const sourceTasks = sourceList.tasks;
+        const targetTasks = targetList.tasks;
+
+        // Get the source task
+        const sourceTask = sourceTasks.find((task) => task.id === dragId);
+        if (!sourceTask) return prev;
+
+        // Remove the source task
+        const filteredSourceTasks = sourceTasks.filter(
+          (task) => task.id !== dragId
+        );
+
+        // Append to the target tasks
+        const newTargetTasks = [...targetTasks, sourceTask];
+
+        return prev.map((list) => {
+          if (list.id === targetListId) {
+            return {
+              ...list,
+              tasks: newTargetTasks
+            };
+          }
+
+          if (list.id === sourceListId) {
+            return {
+              ...list,
+              tasks: filteredSourceTasks
+            };
+          }
+
+          return list;
+        });
+      });
+    }
+
+    // Task -> Task
+    else if (dragType === "TASK" && overType === "TASK") {
+      setListsData((prev) => {
+        const sourceList = prev.find((list) =>
+          list.tasks.some((task) => task.id === dragId)
+        );
+        const targetList = prev.find((list) =>
+          list.tasks.some((task) => task.id === overId)
+        );
+
+        if (!sourceList || !targetList) return prev;
+
+        const sourceTask = sourceList.tasks.find((task) => task.id === dragId);
+        if (!sourceTask) return prev;
+
+        const isSameList = sourceList.id === targetList.id;
+
+        const overIndex = targetList.tasks.findIndex(
+          (task) => task.id === overId
+        );
+        if (overIndex === -1) return prev;
+
+        const updatedSourceTasks = sourceList.tasks.filter(
+          (task) => task.id !== dragId
+        );
+
+        let updatedTargetTasks = [...targetList.tasks];
+        if (isSameList) {
+          updatedTargetTasks = updatedSourceTasks;
+        }
+
+        updatedTargetTasks.splice(overIndex, 0, sourceTask);
+
+        return prev.map((list) => {
+          if (list.id === sourceList.id) {
+            return {
+              ...list,
+              tasks: isSameList ? updatedTargetTasks : updatedSourceTasks
+            };
+          }
+
+          if (list.id === targetList.id && !isSameList) {
+            return {
+              ...list,
+              tasks: updatedTargetTasks
+            };
+          }
+
+          return list;
+        });
+      });
+    }
+
+    // List -> List
+    else if (dragType === "LIST" && overType === "LIST") {
+      setListsData((prev) => {
+        const dragIndex = prev.findIndex((list) => list.id === dragId);
+        const overIndex = prev.findIndex((list) => list.id === overId);
+
+        if (dragIndex === -1 || overIndex === -1 || dragIndex === overIndex) {
+          return prev;
+        }
+
+        const updated = [...prev];
+        const [draggedList] = updated.splice(dragIndex, 1);
+        updated.splice(overIndex, 0, draggedList);
+
+        return updated;
+      });
     }
   };
 
   const handleDragEnd = async (evt: DragEndEvent) => {
-    const dragItem = evt.active.data.current as DraggableItem;
-    const overItem = evt.over?.data?.current as DraggableItem;
-    const dragItemType = dragItem.type;
-    const overItemType = overItem.type;
+    setActiveListId(null);
+    setActiveTaskId(null);
 
-    if (!overItem) {
-      return console.log(`${dragItem.type} dropped outside any valid target.`);
-    }
+    const itemId = evt.active.id;
+    const item = evt.active.data.current as DraggableItem;
+    const itemType = item.type;
 
-    if (dragItemType === "TASK" && overItemType === "LIST") {
-      logAction(
-        "Drop",
-        dragItemType,
-        dragItem.title,
-        overItemType,
-        overItem.name
+    // Task Movement
+    if (itemType === "TASK") {
+      // Find the list where the task was dropped
+      const list = listsData.find((list) =>
+        list.tasks.some((task) => task.id === itemId)
       );
-    }
 
-    if (dragItem.type === "LIST" && overItem.type === "LIST") {
-      logAction(
-        "Drop",
-        dragItemType,
-        dragItem.name,
-        overItemType,
-        overItem.name
-      );
-    }
+      const newListId = list?.id;
+      const newPosition = list?.tasks.findIndex((task) => task.id === itemId);
+      const taskId = itemId as TaskSchema["id"];
 
-    if (dragItem.type === "TASK" && overItem.type === "TASK") {
-      await changeTaskPosition({
-        taskId: dragItem.id,
-        overTaskId: overItem.id
-      });
-    }
+      if (!newListId || newPosition === undefined || !taskId) return;
 
-    setActiveList(null);
-    setActiveTask(null);
+      const a = await moveTask({ newListId, newPosition, taskId });
+      console.log(a);
+    }
   };
+
+  useEffect(() => {
+    setListsData(lists);
+  }, [lists]);
 
   return (
     <DndContext
       onDragStart={handleDragStart}
       onDragOver={handleDragOver}
       onDragEnd={handleDragEnd}>
-      {lists.map((list) => (
-        <ListCard
-          key={list.id}
-          {...list}
-        />
-      ))}
+      <SortableContext
+        items={listsData.map((list) => list.id)}
+        strategy={horizontalListSortingStrategy}>
+        {listsData.map((list) => (
+          <ListCard
+            key={list.id}
+            {...list}
+          />
+        ))}
+      </SortableContext>
 
       <DragOverlay>
-        {activeList && <ListCard {...activeList} />}
-        {activeTask && <TaskCard {...activeTask} />}
+        {activeListId &&
+          (() => {
+            const list = listsData.find((list) => list.id === activeListId);
+            return list ? <ListCard {...list} /> : null;
+          })()}
+
+        {activeTaskId &&
+          (() => {
+            const task = listsData
+              .flatMap((list) => list.tasks)
+              .find((task) => task.id === activeTaskId);
+            return task ? <TaskCard {...task} /> : null;
+          })()}
       </DragOverlay>
     </DndContext>
   );

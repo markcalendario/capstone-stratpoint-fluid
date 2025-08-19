@@ -3,39 +3,39 @@
 import ListCardDropdown from "@/components/ui/dropdowns/list-card-dropdown";
 import { cn } from "@/lib/utils";
 import { KanbanList } from "@/types/kanban";
-import { useDraggable, useDroppable } from "@dnd-kit/core";
+import {
+  SortableContext,
+  useSortable,
+  verticalListSortingStrategy
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import { GripHorizontal, ListTodo } from "lucide-react";
 import AddTaskButton from "../buttons/add-task-button";
 import SectionEmpty from "../section-empty";
 import { TaskCard } from "./task-card";
 
 export default function ListCard({ id, name, projectId, tasks }: KanbanList) {
-  const { setNodeRef: setDroppableRef } = useDroppable({
-    id,
-    data: { type: "LIST" as const, id, name, projectId, tasks }
-  });
-
   const {
-    attributes,
     isDragging,
+    transform,
+    transition,
+    attributes,
     listeners,
     setActivatorNodeRef,
-    setNodeRef: setDraggableRef
-  } = useDraggable({
+    setNodeRef
+  } = useSortable({
     id,
-    data: { type: "LIST" as const, id, name, projectId }
+    data: { type: "LIST" as const }
   });
 
-  const draggableAndDroppableRef = (node: HTMLElement | null) => {
-    setDraggableRef(node);
-    setDroppableRef(node);
-  };
+  const style = { transform: CSS.Transform.toString(transform), transition };
 
   const isEmpty = !tasks.length;
 
   return (
     <div
-      ref={draggableAndDroppableRef}
+      style={style}
+      ref={setNodeRef}
       className={cn(
         isDragging && "opacity-20",
         "border-primary/20 max-h-[600px] min-h-[500px] min-w-100 overflow-auto rounded-sm border-3 bg-neutral-100 duration-100 dark:bg-neutral-900"
@@ -73,13 +73,17 @@ export default function ListCard({ id, name, projectId, tasks }: KanbanList) {
           />
         )}
 
-        {!isEmpty &&
-          tasks.map((task) => (
-            <TaskCard
-              key={task.id}
-              {...task}
-            />
-          ))}
+        <SortableContext
+          items={tasks.map((task) => task.id)}
+          strategy={verticalListSortingStrategy}>
+          {!isEmpty &&
+            tasks.map((task) => (
+              <TaskCard
+                key={task.id}
+                {...task}
+              />
+            ))}
+        </SortableContext>
 
         <AddTaskButton
           listId={id}

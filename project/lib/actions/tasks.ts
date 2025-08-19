@@ -1,9 +1,9 @@
 "use server";
 
 import {
-  ChangePositionPayload,
   CreateAndAssignTaskPayload,
   DeleteTaskPayload,
+  MoveTaskPayload,
   UpdatetaskPayload
 } from "@/types/tasks";
 import { ZodError } from "zod";
@@ -12,9 +12,9 @@ import taskQueries from "../queries/tasks";
 import { isUserProjectOwner } from "../utils/projects";
 import { getUserId } from "../utils/users";
 import {
-  changePositionPayloadSchema,
   createAndAssignTaskPayloadSchema,
   deleteTaskPayloadSchema,
+  moveTaskPayloadSchema,
   updateTaskPayloadSchema
 } from "../validations/tasks";
 
@@ -130,44 +130,51 @@ export async function updateTask(payload: UpdatetaskPayload) {
   }
 }
 
-export async function changeTaskPosition(payload: ChangePositionPayload) {
+export async function moveTask(payload: MoveTaskPayload) {
   try {
-    const parsed = changePositionPayloadSchema.parse(payload);
-    const { taskId, overTaskId } = parsed;
+    const parsed = moveTaskPayloadSchema.parse(payload);
+    const { taskId, newListId, newPosition } = parsed;
 
-    const task = await taskQueries.getTask(taskId);
-    if (!task) {
-      return { success: false, message: "Cannot find the task data." };
-    }
+    // Get tasks in the new list (in order)
+    const tasks = await taskQueries.getListTasks(newListId);
+    const taskIds = tasks.map((task) => task.id);
 
-    const overTask = await taskQueries.getTask(overTaskId);
-    if (!overTask) {
-      return { success: false, message: "Cannot find the task being hovered." };
-    }
+    // Remove the task ID if it already exists in the list (prevent duplicates)
+    const filteredTaskIds = taskIds.filter((id) => id !== taskId);
 
-    const overListId = overTask.listId;
-    const overListTasks = await taskQueries.getListTasks(overListId);
-
-    // Remove the dragged task from the list
-    const filteredTasks = overListTasks.filter((t) => t.id !== taskId);
-
-    // Find the index of the hovered task
-    const newPosition = filteredTasks.findIndex((t) => t.id === overTaskId);
+    // Clamp new position within bounds
+    const safeNewPosition = Math.max(
+      0,
+      Math.min(newPosition, filteredTaskIds.length)
+    );
 
     // Insert the task at the new position
-    filteredTasks.splice(newPosition, 0, task);
+    const updatedTaskIds = filteredTaskIds.toSpliced(
+      safeNewPosition,
+      0,
+      taskId
+    );
 
-    // Reorder all tasks
-    for (let pos = 0; pos < filteredTasks.length; pos++) {
-      await taskQueries.changePosition(
-        filteredTasks[pos].id,
-        overListId,
-        pos + 1
-      );
+    for (let i = 0; i < updatedTaskIds.length; i++) {
+      const id = updatedTaskIds[i];
+      const position = i + 1;
+
+      // Only update if the task actually needs to change
+      const originalTask = tasks.find((task) => task.id === id);
+      const needsListChange = originalTask?.listId !== newListId;
+      const needsPositionChange = originalTask?.position !== position;
+
+      if (needsListChange || needsPositionChange) {
+        await taskQueries.changePosition(id, newListId, position);
+      }
     }
 
     return { success: true, message: "Task moved successfully." };
-  } catch {
-    return { success: false, message: "Error. Cannot change position." };
+  } catch (error) {
+    if (error instanceof ZodError) {
+      return { success: false, message: error.issues[0].message };
+    }
+
+    return { success: false, message: "Error. Cannot move task." };
   }
 }

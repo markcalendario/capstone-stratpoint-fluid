@@ -1,12 +1,12 @@
 import { queryClient } from "@/components/ui/query-client-provider";
-import { changeTaskPosition, createAndAssignTask } from "@/lib/actions/tasks";
+import { createAndAssignTask, moveTask } from "@/lib/actions/tasks";
 import { useMutation } from "@tanstack/react-query";
 
 export function useCreateAndAssignTask() {
   const { isPending, mutateAsync } = useMutation({
     mutationFn: createAndAssignTask,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["listTasks"] });
+      queryClient.invalidateQueries({ queryKey: ["listsAndTasks"] });
       queryClient.invalidateQueries({ queryKey: ["analytics"] });
     }
   });
@@ -17,17 +17,14 @@ export function useCreateAndAssignTask() {
   };
 }
 
-export function useChangeTaskPosition() {
+export function useMoveTask() {
   const { isPending, mutateAsync } = useMutation({
-    mutationFn: changeTaskPosition,
+    mutationFn: moveTask,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["listTasks"] });
+      queryClient.invalidateQueries({ queryKey: ["listsAndTasks"] });
       queryClient.invalidateQueries({ queryKey: ["analytics"] });
     }
   });
 
-  return {
-    changeTaskPosition: mutateAsync,
-    isChangingPosition: isPending
-  };
+  return { moveTask: mutateAsync, isMovingTask: isPending };
 }
