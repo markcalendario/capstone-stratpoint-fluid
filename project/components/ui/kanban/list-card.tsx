@@ -1,29 +1,18 @@
 "use client";
 
 import ListCardDropdown from "@/components/ui/dropdowns/list-card-dropdown";
-import { useListTasks } from "@/hooks/use-tasks";
 import { cn } from "@/lib/utils";
-import { ListSchema } from "@/types/lists";
-import { ProjectSchema } from "@/types/projects";
+import { KanbanList } from "@/types/kanban";
 import { useDraggable, useDroppable } from "@dnd-kit/core";
 import { GripHorizontal, ListTodo } from "lucide-react";
 import AddTaskButton from "../buttons/add-task-button";
 import SectionEmpty from "../section-empty";
-import SectionLoader from "../section-loader";
 import { TaskCard } from "./task-card";
 
-interface ListCardProps {
-  id: ListSchema["id"];
-  name: ListSchema["name"];
-  projectId: ProjectSchema["id"];
-}
-
-export default function ListCard({ id, name, projectId }: ListCardProps) {
-  const { isListTasksLoading, listTasksData } = useListTasks(id);
-
+export default function ListCard({ id, name, projectId, tasks }: KanbanList) {
   const { setNodeRef: setDroppableRef } = useDroppable({
     id,
-    data: { type: "LIST" as const, id, name, projectId }
+    data: { type: "LIST" as const, id, name, projectId, tasks }
   });
 
   const {
@@ -42,9 +31,7 @@ export default function ListCard({ id, name, projectId }: ListCardProps) {
     setDroppableRef(node);
   };
 
-  const tasks = listTasksData?.tasks;
-  const isEmpty = !listTasksData?.tasks.length;
-  const isLoaded = !isListTasksLoading && tasks;
+  const isEmpty = !tasks.length;
 
   return (
     <div
@@ -58,7 +45,7 @@ export default function ListCard({ id, name, projectId }: ListCardProps) {
           <h3 className="font-semibold text-neutral-200">
             {name}
             <span className="ml-2 rounded-sm bg-white/20 px-2 py-1 text-xs">
-              {isLoaded && listTasksData.tasks.length}
+              {tasks.length}
             </span>
           </h3>
 
@@ -79,17 +66,14 @@ export default function ListCard({ id, name, projectId }: ListCardProps) {
       </div>
 
       <div className="space-y-3 p-4">
-        {!isLoaded && <SectionLoader text="Loading Tasks" />}
-
-        {isLoaded && isEmpty && (
+        {isEmpty && (
           <SectionEmpty
             icon={ListTodo}
             text={`No Tasks for '${name}'.`}
           />
         )}
 
-        {isLoaded &&
-          !isEmpty &&
+        {!isEmpty &&
           tasks.map((task) => (
             <TaskCard
               key={task.id}

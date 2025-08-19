@@ -1,7 +1,7 @@
 // TODO: Task 5.6 - Create task detail modals and editing interfaces
 
 import { cn } from "@/lib/utils";
-import { TaskCard as ITaskCard } from "@/types/tasks";
+import { KanbanTask } from "@/types/kanban";
 import { useDraggable, useDroppable } from "@dnd-kit/core";
 import { GripVertical } from "lucide-react";
 import Image from "next/image";
@@ -49,8 +49,8 @@ export function TaskCard({
   title,
   description,
   priority,
-  assigneesImages
-}: ITaskCard) {
+  taskAssignments
+}: KanbanTask) {
   const { isOver, setNodeRef: setDroppableRef } = useDroppable({
     id,
     data: {
@@ -59,7 +59,7 @@ export function TaskCard({
       title,
       description,
       priority,
-      assigneesImages
+      taskAssignments
     }
   });
 
@@ -77,7 +77,7 @@ export function TaskCard({
       title,
       description,
       priority,
-      assigneesImages
+      taskAssignments
     }
   });
 
@@ -111,13 +111,13 @@ export function TaskCard({
         <PriorityTab priority={priority} />
 
         <div className="flex gap-1">
-          {assigneesImages.map((assigneeImage, i) => (
+          {taskAssignments.map((taskAssignment, i) => (
             <Image
               key={i}
               width={15}
               height={15}
               alt={`user ${i}`}
-              src={assigneeImage}
+              src={taskAssignment.user.imageUrl}
               className="outline-primary/20 rounded-full outline-2"
             />
           ))}

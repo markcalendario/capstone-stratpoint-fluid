@@ -1,7 +1,7 @@
 import { lists } from "@/lib/db/drizzle/migrations/schema";
 import { CreateListData, ListSchema, UpdateListData } from "@/types/lists";
 import { ProjectSchema } from "@/types/projects";
-import { asc, eq } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import db from "../db";
 
 const listQueries = {
@@ -10,12 +10,17 @@ const listQueries = {
     return list;
   },
 
-  getProjectLists: async (projectId: ProjectSchema["id"]) => {
-    return await db
-      .select()
-      .from(lists)
-      .where(eq(lists.projectId, projectId))
-      .orderBy(asc(lists.position), asc(lists.isFinal), asc(lists.createdAt));
+  getListsAndTasks: async (projectId: ProjectSchema["id"]) => {
+    return await db.query.lists.findMany({
+      with: {
+        tasks: {
+          with: { taskAssignments: { with: { user: true } } },
+          orderBy: (tasks, { asc }) => asc(tasks.position)
+        }
+      },
+      where: (lists, { eq }) => eq(lists.projectId, projectId),
+      orderBy: (lists, { asc }) => asc(lists.position)
+    });
   },
 
   getCreatorId: async (id: ListSchema["id"]) => {

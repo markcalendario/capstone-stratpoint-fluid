@@ -1,10 +1,9 @@
 "use client";
 
-import { useProjectLists } from "@/hooks/use-lists";
+import { useListsAndTasks } from "@/hooks/use-lists";
 import { useChangeTaskPosition } from "@/hooks/use-tasks";
-import { List } from "@/types/lists";
+import { KanbanList, KanbanTask } from "@/types/kanban";
 import { ProjectSchema } from "@/types/projects";
-import { TaskCard as ITaskCard } from "@/types/tasks";
 import {
   DndContext,
   DragEndEvent,
@@ -58,10 +57,11 @@ interface KanbanBoardProps {
 }
 
 export default function KanbanBoard({ projectId }: KanbanBoardProps) {
-  const { isProjectListLoading, projectListsData } = useProjectLists(projectId);
+  const { isListsAndTasksLoading, listsAndTasksData } =
+    useListsAndTasks(projectId);
 
-  const lists = projectListsData?.lists;
-  const isLoaded = !isProjectListLoading && lists;
+  const listsAndTasks = listsAndTasksData?.listsAndTasks;
+  const isLoaded = !isListsAndTasksLoading && listsAndTasks;
 
   return (
     <div className="outline-primary/20 w-full rounded-sm bg-white p-6 outline-2 dark:bg-neutral-800">
@@ -69,7 +69,7 @@ export default function KanbanBoard({ projectId }: KanbanBoardProps) {
 
       {isLoaded && (
         <div className="flex min-w-full flex-nowrap items-stretch space-x-6 overflow-x-auto pb-4">
-          <DraggableKanbanItems lists={lists} />
+          <KanbanItemsProps lists={listsAndTasks} />
 
           <CreateListButton
             projectId={projectId}
@@ -81,21 +81,21 @@ export default function KanbanBoard({ projectId }: KanbanBoardProps) {
   );
 }
 
-interface DraggableKanbanItems {
-  lists: List[];
+interface KanbanItemsProps {
+  lists: KanbanList[];
 }
 
-interface DraggableList extends List {
+interface DraggableList extends KanbanList {
   type: "LIST";
 }
 
-interface DraggableTask extends ITaskCard {
+interface DraggableTask extends KanbanTask {
   type: "TASK";
 }
 
 type DraggableItem = DraggableList | DraggableTask;
 
-function DraggableKanbanItems({ lists }: DraggableKanbanItems) {
+function KanbanItemsProps({ lists }: KanbanItemsProps) {
   const { changeTaskPosition } = useChangeTaskPosition();
   const [activeList, setActiveList] = useState<DraggableList | null>(null);
   const [activeTask, setActiveTask] = useState<DraggableTask | null>(null);

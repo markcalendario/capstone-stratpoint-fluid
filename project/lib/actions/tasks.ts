@@ -4,51 +4,19 @@ import {
   ChangePositionPayload,
   CreateAndAssignTaskPayload,
   DeleteTaskPayload,
-  GetListTasksPayload,
   UpdatetaskPayload
 } from "@/types/tasks";
 import { ZodError } from "zod";
 import taskAssignmentsQueries from "../queries/taskAssignments";
 import taskQueries from "../queries/tasks";
 import { isUserProjectOwner } from "../utils/projects";
-import { toTaskCard } from "../utils/tasks";
 import { getUserId } from "../utils/users";
 import {
   changePositionPayloadSchema,
   createAndAssignTaskPayloadSchema,
   deleteTaskPayloadSchema,
-  getListTasksPayloadSchema,
   updateTaskPayloadSchema
 } from "../validations/tasks";
-
-export async function getListTasks(payload: GetListTasksPayload) {
-  try {
-    const parsed = getListTasksPayloadSchema.parse(payload);
-    const tasks = await taskQueries.getListTasks(parsed.listId);
-    const formattedTasks = [];
-
-    for (const task of tasks) {
-      const formattedTask = await toTaskCard(task);
-      formattedTasks.push(formattedTask);
-    }
-
-    return {
-      success: true,
-      message: "Tasks retrieved successfully.",
-      tasks: formattedTasks
-    };
-  } catch (error) {
-    if (error instanceof ZodError) {
-      return { success: false, message: error.issues[0].message, tasks: [] };
-    }
-
-    return {
-      success: false,
-      message: "Error. Cannot get tasks by list.",
-      tasks: []
-    };
-  }
-}
 
 export async function createAndAssignTask(payload: CreateAndAssignTaskPayload) {
   try {

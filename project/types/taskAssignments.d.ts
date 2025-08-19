@@ -7,6 +7,9 @@ export interface TaskAssignmentsSchema
   user: User;
 }
 
+export interface TaskAssignments
+  extends InferSelectModel<typeof taskAssignments> {}
+
 export interface AssignManyData extends Pick<TaskAssignmentsSchema, "taskId"> {
   userIds: UserSchema["id"][];
 }

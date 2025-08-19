@@ -51,15 +51,15 @@ export async function createList(payload: CreateListPayload) {
   }
 }
 
-export async function getProjectLists(payload: GetProjectListsPayload) {
+export async function getListsAndTasks(payload: GetProjectListsPayload) {
   try {
     const parsed = getProjectListsPayloadSchema.parse(payload);
-    const lists = await listQueries.getProjectLists(parsed.projectId);
+    const listsAndTasks = await listQueries.getListsAndTasks(parsed.projectId);
 
     return {
       success: true,
       message: "Success getting lists with tasks.",
-      lists
+      listsAndTasks
     };
   } catch (error) {
     if (error instanceof ZodError) {
