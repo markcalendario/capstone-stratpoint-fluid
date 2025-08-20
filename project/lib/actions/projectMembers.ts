@@ -1,30 +1,33 @@
 "use server";
 
-import { UserOption } from "@/types/teamRoles";
 import {
-  AddTeamMembersPayload,
+  AddProjectMembersPayload,
   DeleteMemberPayload,
-  EditMemberRoleData,
-  GetMemberRolePayload,
+  EditProjectMemberRoleData,
   GetNonProjectMembersOptionsPayload,
+  GetProjectMemberRolePayload,
   GetProjectMembersOptionsPayload,
   GetProjectMembers as GetProjectMembersPayload
-} from "@/types/teams";
+} from "@/types/projectMembers";
+import { UserOption } from "@/types/teamRoles";
 import { ZodError } from "zod";
-import projectQueries from "..//queries/projects";
-import teamQueries from "..//queries/team";
+import projectMembersQueries from "../queries/projectMembers";
+import projectQueries from "../queries/projects";
+import {
+  getMembershipStatus,
+  MEMBERSHIP_STATUS
+} from "../utils/projectMembers";
 import { isUserProjectOwner } from "../utils/projects";
-import { getMembershipStatus, MEMBERSHIP_STATUS } from "../utils/teams";
 import { getUserId } from "../utils/users";
 import {
-  addTeamMembersPayloadSchema,
-  editMemberRoleSchema,
-  getMembersRoleSchema,
+  addProjectMembersPayloadSchema,
+  editProjectMemberRoleSchema,
   getNonProjectMembersOptionsPayloadSchema,
   getProjectMembersOptionsPayloadSchema,
   getProjectMembersPayloadSchema,
-  removeMemberPayloadSchema
-} from "../validations/teams";
+  getProjectMembersRoleSchema,
+  removeProjectMemberPayloadSchema
+} from "../validations/projectMembers";
 
 export async function getProjectMembersOptions(
   payload: GetProjectMembersOptionsPayload
@@ -37,7 +40,7 @@ export async function getProjectMembersOptions(
       return { success: false, message: "You are not the project owner." };
     }
 
-    const members = await teamQueries.getAcceptedByProject(parsed.projectId);
+    const members = await projectMembersQueries.getAccepted(parsed.projectId);
     const formatted = members.map((member) => {
       return {
         id: member.user.id,
@@ -73,7 +76,7 @@ export async function getProjectMembersOptions(
   }
 }
 
-export async function getProjectNonMembersOptions(
+export async function getNonProjectMembersOptions(
   payload: GetNonProjectMembersOptionsPayload
 ) {
   try {
@@ -84,7 +87,8 @@ export async function getProjectNonMembersOptions(
       return { success: false, message: "You are not the project owner." };
     }
 
-    const nonMembers = await teamQueries.getNonProjectMembersOptions(parsed);
+    const nonMembers =
+      await projectMembersQueries.getNonProjectMembersOptions(parsed);
 
     // Excluse owner
     const ownerId = await projectQueries.getOwnerId(parsed.projectId);
@@ -113,13 +117,13 @@ export async function getProjectNonMembersOptions(
   }
 }
 
-export async function addTeamMembers(payload: AddTeamMembersPayload) {
+export async function addProjectMembers(payload: AddProjectMembersPayload) {
   try {
-    const parsed = addTeamMembersPayloadSchema.parse(payload);
+    const parsed = addProjectMembersPayloadSchema.parse(payload);
 
     for (const member of parsed.members) {
       const data = { projectId: parsed.projectId, ...member };
-      await teamQueries.addMember(data);
+      await projectMembersQueries.addMember(data);
     }
 
     return {
@@ -139,7 +143,9 @@ export async function getProjectMembers(payload: GetProjectMembersPayload) {
   // Retrieves all members including those who are declined or current invited
   try {
     const parsed = getProjectMembersPayloadSchema.parse(payload);
-    const projectMembers = await teamQueries.getAllByProject(parsed.projectId);
+    const projectMembers = await projectMembersQueries.getByProject(
+      parsed.projectId
+    );
 
     const members = projectMembers.map((projectMember) => {
       const { user, isAccepted } = projectMember;
@@ -156,7 +162,9 @@ export async function getProjectMembers(payload: GetProjectMembersPayload) {
         return getIsProjectTask(assignment) && !assignment.task.list.isFinal;
       }).length;
 
-      const projectsCount = user.teams.filter((team) => team.isAccepted).length;
+      const projectsCount = user.projectMembers.filter(
+        (team) => team.isAccepted
+      ).length;
 
       return {
         id: user.id,
@@ -197,7 +205,7 @@ export async function getProjectMembers(payload: GetProjectMembersPayload) {
       imageUrl: owner.imageUrl,
       membershipStatus: MEMBERSHIP_STATUS.OWNER,
       role: ownerRole,
-      projectsCount: owner.teams.length + 1,
+      projectsCount: owner.projectMembers.length + 1,
       tasksDoneCount: ownerTasksDoneCount,
       tasksUndoneCount: ownerTasksUndoneCount
     });
@@ -220,9 +228,9 @@ export async function getProjectMembers(payload: GetProjectMembersPayload) {
   }
 }
 
-export async function removeTeamMember(payload: DeleteMemberPayload) {
+export async function removeProjectMember(payload: DeleteMemberPayload) {
   try {
-    const parsed = removeMemberPayloadSchema.parse(payload);
+    const parsed = removeProjectMemberPayloadSchema.parse(payload);
 
     // Return when owner is being deleted
     if (await isUserProjectOwner(parsed.userId, parsed.projectId)) {
@@ -232,7 +240,7 @@ export async function removeTeamMember(payload: DeleteMemberPayload) {
       };
     }
 
-    await teamQueries.removeTeamMember(parsed);
+    await projectMembersQueries.removeTeamMember(parsed);
 
     return {
       success: true,
@@ -247,11 +255,16 @@ export async function removeTeamMember(payload: DeleteMemberPayload) {
   }
 }
 
-export async function getMemberRole(payload: GetMemberRolePayload) {
+export async function getProjectMemberRole(
+  payload: GetProjectMemberRolePayload
+) {
   // Retrieves the roles of members regardless of their membership status
   try {
-    const parsed = getMembersRoleSchema.parse(payload);
-    const member = await teamQueries.get(parsed.projectId, parsed.userId);
+    const parsed = getProjectMembersRoleSchema.parse(payload);
+    const member = await projectMembersQueries.getByUser(
+      parsed.projectId,
+      parsed.userId
+    );
 
     if (!member) {
       return { success: false, message: "Cannot find member." };
@@ -285,9 +298,11 @@ export async function getMemberRole(payload: GetMemberRolePayload) {
   }
 }
 
-export async function editMemberRole(payload: EditMemberRoleData) {
+export async function editProjectMemberRole(
+  payload: EditProjectMemberRoleData
+) {
   try {
-    const parsed = editMemberRoleSchema.parse(payload);
+    const parsed = editProjectMemberRoleSchema.parse(payload);
 
     // Return when owner's role is being edited
     if (await isUserProjectOwner(parsed.userId, parsed.projectId)) {
@@ -297,7 +312,7 @@ export async function editMemberRole(payload: EditMemberRoleData) {
       };
     }
 
-    await teamQueries.editMemberRole(parsed);
+    await projectMembersQueries.editMemberRole(parsed);
 
     return {
       success: true,

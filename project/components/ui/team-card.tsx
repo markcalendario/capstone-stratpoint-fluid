@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { MEMBERSHIP_STATUS } from "@/lib/utils/teams";
+import { MEMBERSHIP_STATUS } from "@/lib/utils/projectMembers";
 import { ProjectSchema } from "@/types/projects";
 import { TeamRoles } from "@/types/teamRoles";
 import { UserSchema } from "@/types/users";

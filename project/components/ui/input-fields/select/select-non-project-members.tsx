@@ -1,8 +1,8 @@
 import Input from "@/components/ui/input-fields/input";
 import SectionLoader from "@/components/ui/section-loader";
 import useDebounce from "@/hooks/use-debounce";
+import { useNonProjectMembersOptions } from "@/hooks/use-project-members";
 import useTeamRoles from "@/hooks/use-team-roles";
-import { useNonProjectMembersOptions } from "@/hooks/use-teams";
 import { ProjectSchema } from "@/types/projects";
 import { TeamRoles, UserOption } from "@/types/teamRoles";
 import { UserSchema } from "@/types/users";

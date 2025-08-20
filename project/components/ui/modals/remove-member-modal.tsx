@@ -1,4 +1,4 @@
-import { useRemoveTeamMember } from "@/hooks/use-teams";
+import { useRemoveProjectMember } from "@/hooks/use-project-members";
 import { ProjectSchema } from "@/types/projects";
 import { UserSchema } from "@/types/users";
 import { useState } from "react";
@@ -20,8 +20,8 @@ export default function RemoveMemberModal({
 }: RemoveMemberModalProps) {
   const CONFIRM_TEXT = "REMOVE MEMBER";
   const [confirmText, setConfirmText] = useState("");
-  const { isRemovingTeamMember, removeTeamMember } =
-    useRemoveTeamMember(projectId);
+  const { isRemovingTeamMember, removeProjectMember: removeTeamMember } =
+    useRemoveProjectMember(projectId);
 
   const handleRemoveTeamMember = async () => {
     if (confirmText !== CONFIRM_TEXT) {

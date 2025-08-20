@@ -1,13 +1,13 @@
 import { List } from "@/types/lists";
+import { ProjectMember } from "@/types/projectMembers";
 import { Project, ProjectSchema } from "@/types/projects";
 import { Task } from "@/types/tasks";
-import { Team } from "@/types/teams";
 import { UserSchema } from "@/types/users";
 import projectQueries from "..//queries/projects";
 import { formatDate } from "./date-and-time";
 
-interface ToCardData extends Omit<Project, "teams" | "lists"> {
-  teams: Team[];
+interface ToCardData extends Project {
+  projectMembers: ProjectMember[];
   lists: Array<
     List & {
       tasks: Task[];
@@ -36,7 +36,7 @@ export function toCardData(projects: ToCardData[]) {
       name: project.name,
       description: project.description,
       dueDate: formatDate(project.dueDate),
-      members: project.teams.length + 1, // Plus the owner
+      members: project.projectMembers.length + 1, // Plus the owner
       progress
     });
   }

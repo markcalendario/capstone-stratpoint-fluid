@@ -1,4 +1,4 @@
-import { projects, teams } from "@/lib/db/drizzle/migrations/schema";
+import { projectMembers, projects } from "@/lib/db/drizzle/migrations/schema";
 import {
   CreateProjectData,
   ProjectSchema,
@@ -20,21 +20,26 @@ const projectQueries = {
 
   get: async (id: ProjectSchema["id"]) => {
     return await db.query.projects.findFirst({
-      with: { teams: true, lists: { with: { tasks: true } } },
+      with: { projectMembers: true, lists: { with: { tasks: true } } },
       where: (projects, { eq }) => eq(projects.id, id)
     });
   },
 
   ownedOrMember: async (userId: UserSchema["id"]) => {
     const memberProjects = await db
-      .select({ projectId: teams.projectId })
-      .from(teams)
-      .where(and(eq(teams.userId, userId), eq(teams.isAccepted, true)));
+      .select({ projectId: projectMembers.projectId })
+      .from(projectMembers)
+      .where(
+        and(
+          eq(projectMembers.userId, userId),
+          eq(projectMembers.isAccepted, true)
+        )
+      );
 
     const projectIds = memberProjects.map((m) => m.projectId);
 
     return await db.query.projects.findMany({
-      with: { teams: true, lists: { with: { tasks: true } } },
+      with: { projectMembers: true, lists: { with: { tasks: true } } },
       where: (projects, { eq, or, and, inArray }) =>
         or(
           and(eq(projects.ownerId, userId), eq(projects.active, true)),
@@ -58,7 +63,7 @@ const projectQueries = {
       with: {
         user: {
           with: {
-            teams: { with: { teamRole: true } },
+            projectMembers: { with: { teamRole: true } },
             taskAssignments: { with: { task: { with: { list: true } } } }
           }
         }
@@ -86,14 +91,19 @@ const projectQueries = {
 
   getOptions: async (name: ProjectSchema["name"], userId: UserSchema["id"]) => {
     const memberProjects = await db
-      .select({ projectId: teams.projectId })
-      .from(teams)
-      .where(and(eq(teams.userId, userId), eq(teams.isAccepted, true)));
+      .select({ projectId: projectMembers.projectId })
+      .from(projectMembers)
+      .where(
+        and(
+          eq(projectMembers.userId, userId),
+          eq(projectMembers.isAccepted, true)
+        )
+      );
 
     const projectIds = memberProjects.map((m) => m.projectId);
 
     return await db.query.projects.findMany({
-      with: { teams: true, lists: { with: { tasks: true } } },
+      with: { projectMembers: true, lists: { with: { tasks: true } } },
       where: (projects, { eq, or, and, ilike, inArray }) =>
         and(
           or(

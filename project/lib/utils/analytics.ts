@@ -47,17 +47,22 @@ export async function getTeamMembersStatus(userId: UserSchema["id"]) {
   const projects = await projectQueries.ownedOrMember(userId);
 
   const currentMembers = new Set(
-    projects.flatMap((p) => p.teams.map((m) => m.userId))
+    projects.flatMap((p) =>
+      p.projectMembers.map((projectMember) => projectMember.userId)
+    )
   );
 
   const previousMembers = new Set(
     projects.flatMap((p) =>
-      p.teams
-        .filter(
-          (m) =>
-            m.isAccepted && m.invitedAt && new Date(m.invitedAt) < oneWeekAgo
-        )
-        .map((m) => m.userId)
+      p.projectMembers
+        .filter((projectMember) => {
+          return (
+            projectMember.isAccepted &&
+            projectMember.invitedAt &&
+            new Date(projectMember.invitedAt) < oneWeekAgo
+          );
+        })
+        .map((projectMember) => projectMember.userId)
     )
   );
 
