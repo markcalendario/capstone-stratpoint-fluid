@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { toTitleCase } from "@/lib/utils/formatters";
 
 interface PriorityTabProps {
   priority: "medium" | "low" | "high";
@@ -17,7 +18,7 @@ export default function PriorityTab({ priority }: PriorityTabProps) {
         color[priority],
         "rounded-sm px-2 py-1 text-[10px] font-medium"
       )}>
-      {priority.toUpperCase()}
+      {toTitleCase(priority)}
     </p>
   );
 }
