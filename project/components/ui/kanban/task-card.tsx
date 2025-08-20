@@ -80,7 +80,7 @@ export function TaskCard({
         {...listeners}
         {...attributes}
         ref={setActivatorNodeRef}
-        className="absolute top-0 right-0 m-1 cursor-move p-2 text-neutral-500 hover:bg-neutral-700">
+        className="absolute top-0 right-0 m-1 cursor-move p-1 text-neutral-500">
         <GripVertical size={16} />
       </button>
       <h4 className="mb-1 text-sm font-medium text-neutral-800 dark:text-neutral-100">
@@ -96,8 +96,8 @@ export function TaskCard({
           {taskAssignments.map((taskAssignment, i) => (
             <Image
               key={i}
-              width={15}
-              height={15}
+              width={20}
+              height={20}
               alt={`user ${i}`}
               src={taskAssignment.user.imageUrl}
               className="outline-primary/20 rounded-full outline-2"

@@ -56,7 +56,7 @@ export default function ListCard({ id, name, projectId, tasks }: KanbanList) {
               ref={setActivatorNodeRef}>
               <GripHorizontal
                 size={16}
-                className="cursor-pointer text-neutral-100"
+                className="cursor-move text-neutral-100"
               />
             </button>
 
