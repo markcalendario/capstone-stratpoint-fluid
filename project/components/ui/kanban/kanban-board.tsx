@@ -339,19 +339,3 @@ function KanbanItems({ projectId, lists }: KanbanItemsProps) {
     </DndContext>
   );
 }
-
-function logAction(
-  action: string,
-  activeType: string,
-  activeName: string,
-  overType?: string,
-  overName?: string
-) {
-  let message = `[${action}]: ${activeType} "${activeName}"`;
-
-  if (overType && overName) {
-    message += ` → ${overType} "${overName}"`;
-  }
-
-  console.log(message);
-}
