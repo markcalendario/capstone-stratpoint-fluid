@@ -3,50 +3,20 @@
 import {
   CreateAndAssignTaskPayload,
   DeleteTaskPayload,
-  GetListTasksPayload,
+  MoveTaskPayload,
   UpdatetaskPayload
 } from "@/types/tasks";
 import { ZodError } from "zod";
 import taskAssignmentsQueries from "../queries/taskAssignments";
 import taskQueries from "../queries/tasks";
 import { isUserProjectOwner } from "../utils/projects";
-import { toTaskCard } from "../utils/tasks";
 import { getUserId } from "../utils/users";
 import {
   createAndAssignTaskPayloadSchema,
   deleteTaskPayloadSchema,
-  getListTasksPayloadSchema,
+  moveTaskPayloadSchema,
   updateTaskPayloadSchema
 } from "../validations/tasks";
-
-export async function getListTasks(payload: GetListTasksPayload) {
-  try {
-    const parsed = getListTasksPayloadSchema.parse(payload);
-    const tasks = await taskQueries.getListTasks(parsed.listId);
-    const formattedTasks = [];
-
-    for (const task of tasks) {
-      const formattedTask = await toTaskCard(task);
-      formattedTasks.push(formattedTask);
-    }
-
-    return {
-      success: true,
-      message: "Tasks retrieved successfully.",
-      tasks: formattedTasks
-    };
-  } catch (error) {
-    if (error instanceof ZodError) {
-      return { success: false, message: error.issues[0].message, tasks: [] };
-    }
-
-    return {
-      success: false,
-      message: "Error. Cannot get tasks by list.",
-      tasks: []
-    };
-  }
-}
 
 export async function createAndAssignTask(payload: CreateAndAssignTaskPayload) {
   try {
@@ -60,6 +30,8 @@ export async function createAndAssignTask(payload: CreateAndAssignTaskPayload) {
       };
     }
 
+    const position = (await taskQueries.getMaxPosition(parsed.listId)) + 1;
+
     const createTaskData = {
       title: parsed.title,
       description: parsed.description,
@@ -67,15 +39,16 @@ export async function createAndAssignTask(payload: CreateAndAssignTaskPayload) {
       listId: parsed.listId,
       priority: parsed.priority,
       createdBy: userId,
-      attachment: "",
-      label: parsed.label
+      label: parsed.label,
+      position,
+      attachment: ""
     };
 
-    const taskId = await taskQueries.createAndAssignTask(createTaskData);
+    const taskId = await taskQueries.createTask(createTaskData);
 
     if (parsed.assignees.length) {
       const assignmentData = { taskId, userIds: parsed.assignees };
-      await taskAssignmentsQueries.createMany(assignmentData);
+      await taskAssignmentsQueries.assignMany(assignmentData);
     }
 
     return { success: true, message: "Task created successfully." };
@@ -141,7 +114,7 @@ export async function updateTask(payload: UpdatetaskPayload) {
 
     if (parsed.assignees.length) {
       const assignmentData = { taskId, userIds: parsed.assignees };
-      await taskAssignmentsQueries.createMany(assignmentData);
+      await taskAssignmentsQueries.assignMany(assignmentData);
     }
 
     return { success: true, message: "Task created successfully." };
@@ -154,5 +127,54 @@ export async function updateTask(payload: UpdatetaskPayload) {
       success: false,
       message: "Error. Cannot create task."
     };
+  }
+}
+
+export async function moveTask(payload: MoveTaskPayload) {
+  try {
+    const parsed = moveTaskPayloadSchema.parse(payload);
+    const { taskId, newListId, newPosition } = parsed;
+
+    // Get tasks in the new list (in order)
+    const tasks = await taskQueries.getListTasks(newListId);
+    const taskIds = tasks.map((task) => task.id);
+
+    // Remove the task ID if it already exists in the list (prevent duplicates)
+    const filteredTaskIds = taskIds.filter((id) => id !== taskId);
+
+    // Clamp new position within bounds
+    const safeNewPosition = Math.max(
+      0,
+      Math.min(newPosition, filteredTaskIds.length)
+    );
+
+    // Insert the task at the new position
+    const updatedTaskIds = filteredTaskIds.toSpliced(
+      safeNewPosition,
+      0,
+      taskId
+    );
+
+    for (let i = 0; i < updatedTaskIds.length; i++) {
+      const id = updatedTaskIds[i];
+      const position = i + 1;
+
+      // Only update if the task actually needs to change
+      const originalTask = tasks.find((task) => task.id === id);
+      const needsListChange = originalTask?.listId !== newListId;
+      const needsPositionChange = originalTask?.position !== position;
+
+      if (needsListChange || needsPositionChange) {
+        await taskQueries.changePosition(id, newListId, position);
+      }
+    }
+
+    return { success: true, message: "Task moved successfully." };
+  } catch (error) {
+    if (error instanceof ZodError) {
+      return { success: false, message: error.issues[0].message };
+    }
+
+    return { success: false, message: "Error. Cannot move task." };
   }
 }

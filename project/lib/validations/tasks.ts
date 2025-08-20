@@ -33,7 +33,7 @@ export const taskSchema = z.object({
   dueDate: z.iso
     .date("Due date must be a valid date.")
     .refine(isFutureDate, "Due date cannot be today or in the past."),
-  position: z.number("Position must be a number").positive("Invalid position."),
+  position: z.number("Position must be a number").min(0, "Invalid position."),
   createdAt: z.iso.datetime("Field 'createdAt' must be datetime."),
   updatedAt: z.iso.datetime("Field 'updatedAt' must be datetime."),
   attachment: z.url("Attachment must be URL."),
@@ -75,4 +75,10 @@ export const updateTaskPayloadSchema = z.object({
   label: taskSchema.shape.label,
   attachment: z.file("Attachment must be a file.").nullable(),
   projectId: projectSchema.shape.id
+});
+
+export const moveTaskPayloadSchema = z.object({
+  taskId: taskSchema.shape.id,
+  newListId: listSchema.shape.id,
+  newPosition: taskSchema.shape.position
 });

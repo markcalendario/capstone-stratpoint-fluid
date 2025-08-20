@@ -1,53 +1,89 @@
 "use client";
 
 import ListCardDropdown from "@/components/ui/dropdowns/list-card-dropdown";
-import { useListTasks } from "@/hooks/use-tasks";
-import { ListSchema } from "@/types/lists";
-import { ProjectSchema } from "@/types/projects";
+import { cn } from "@/lib/utils";
+import { KanbanList } from "@/types/kanban";
+import {
+  SortableContext,
+  useSortable,
+  verticalListSortingStrategy
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import { GripHorizontal, ListTodo } from "lucide-react";
 import AddTaskButton from "../buttons/add-task-button";
-import SectionLoader from "../section-loader";
+import SectionEmpty from "../section-empty";
 import { TaskCard } from "./task-card";
 
-interface ListCardProps {
-  id: ListSchema["id"];
-  name: ListSchema["name"];
-  projectId: ProjectSchema["id"];
-}
+export default function ListCard({ id, name, projectId, tasks }: KanbanList) {
+  const {
+    isDragging,
+    transform,
+    transition,
+    attributes,
+    listeners,
+    setActivatorNodeRef,
+    setNodeRef
+  } = useSortable({
+    id,
+    data: { type: "LIST" as const }
+  });
 
-export default function ListCard({ id, name, projectId }: ListCardProps) {
-  const { isListTasksLoading, listTasksData } = useListTasks(id);
+  const style = { transform: CSS.Transform.toString(transform), transition };
 
-  const loaded = !isListTasksLoading && listTasksData?.tasks;
+  const isEmpty = !tasks.length;
 
   return (
-    <div className="border-primary/20 max-h-[600px] min-h-[500px] min-w-100 overflow-auto rounded-sm border-3 bg-neutral-100 dark:bg-neutral-900">
+    <div
+      style={style}
+      ref={setNodeRef}
+      className={cn(
+        isDragging && "opacity-20",
+        "border-primary/20 max-h-[600px] min-h-[500px] min-w-100 overflow-auto rounded-sm border-3 bg-neutral-100 duration-100 dark:bg-neutral-900"
+      )}>
       <div className="bg-primary px-3 py-2 dark:border-neutral-600">
         <div className="flex items-center justify-between">
           <h3 className="font-semibold text-neutral-200">
             {name}
             <span className="ml-2 rounded-sm bg-white/20 px-2 py-1 text-xs">
-              {loaded && listTasksData.tasks.length}
+              {tasks.length}
             </span>
           </h3>
-          <ListCardDropdown id={id} />
+
+          <div className="flex items-center gap-3">
+            <button
+              {...listeners}
+              {...attributes}
+              ref={setActivatorNodeRef}>
+              <GripHorizontal
+                size={16}
+                className="cursor-move text-neutral-100"
+              />
+            </button>
+
+            <ListCardDropdown id={id} />
+          </div>
         </div>
       </div>
 
       <div className="space-y-3 p-4">
-        {!loaded && <SectionLoader text="Loading Tasks" />}
+        {isEmpty && (
+          <SectionEmpty
+            icon={ListTodo}
+            text={`No Tasks for '${name}'.`}
+          />
+        )}
 
-        {loaded &&
-          listTasksData?.tasks.map((task, i) => (
-            <TaskCard
-              key={i}
-              id={task.id}
-              title={task.title}
-              dueDate={task.dueDate}
-              priority={task.priority}
-              description={task.description}
-              assigneesImages={task.assigneesImages}
-            />
-          ))}
+        <SortableContext
+          items={tasks.map((task) => task.id)}
+          strategy={verticalListSortingStrategy}>
+          {!isEmpty &&
+            tasks.map((task) => (
+              <TaskCard
+                key={task.id}
+                {...task}
+              />
+            ))}
+        </SortableContext>
 
         <AddTaskButton
           listId={id}

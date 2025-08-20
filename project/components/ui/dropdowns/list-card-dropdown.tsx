@@ -26,7 +26,7 @@ export default function ListCardDropdown({ id }: ListCardDropdownProps) {
   return (
     <Fragment>
       <Dropdown
-        label={<MoreHorizontal size={14} />}
+        label={<MoreHorizontal size={16} />}
         className="cursor-pointer text-neutral-100"
         items={dropdownItems}
       />

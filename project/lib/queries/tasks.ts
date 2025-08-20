@@ -1,23 +1,35 @@
 import { tasks } from "@/lib/db/drizzle/migrations/schema";
 import { ListSchema } from "@/types/lists";
-import {
-  CreateAndAssignTaskData,
-  TaskSchema,
-  UpdateTaskData
-} from "@/types/tasks";
-import { eq } from "drizzle-orm";
+import { CreateTaskData, TaskSchema, UpdateTaskData } from "@/types/tasks";
+import { eq, sql } from "drizzle-orm";
 import db from "../db";
 
 const taskQueries = {
   getListTasks: async (listId: ListSchema["id"]) => {
-    const tasks = await db.query.tasks.findMany({
+    return await db.query.tasks.findMany({
       where: (tasks, { eq }) => eq(tasks.listId, listId),
-      with: { taskAssignments: { with: { user: true } } }
+      with: { taskAssignments: { with: { user: true } } },
+      orderBy: (tasks, { asc }) => [asc(tasks.position)]
     });
-    return tasks;
   },
 
-  createAndAssignTask: async (data: CreateAndAssignTaskData) => {
+  getTask: async (taskId: TaskSchema["id"]) => {
+    return await db.query.tasks.findFirst({
+      where: (tasks, { eq }) => eq(tasks.id, taskId),
+      with: { taskAssignments: { with: { user: true } } }
+    });
+  },
+
+  getMaxPosition: async (listId: ListSchema["id"]) => {
+    const [{ max }] = await db
+      .select({ max: sql<number>`COALESCE(MAX(${tasks.position}), 0)` })
+      .from(tasks)
+      .where(eq(tasks.listId, listId));
+
+    return max;
+  },
+
+  createTask: async (data: CreateTaskData) => {
     const [taskId] = await db
       .insert(tasks)
       .values(data)
@@ -43,6 +55,14 @@ const taskQueries = {
       .returning({ id: tasks.id });
 
     return deletedComment.id;
+  },
+
+  changePosition: async (
+    id: TaskSchema["id"],
+    listId: ListSchema["id"],
+    position: TaskSchema["position"]
+  ) => {
+    await db.update(tasks).set({ position, listId }).where(eq(tasks.id, id));
   }
 };
 

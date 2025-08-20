@@ -12,13 +12,14 @@ export interface Task extends InferSelectModel<typeof tasks> {}
 
 // Query Data
 
-export interface CreateAndAssignTaskData
+export interface CreateTaskData
   extends Pick<
     TaskSchema,
     | "description"
     | "dueDate"
     | "listId"
     | "priority"
+    | "position"
     | "title"
     | "createdBy"
     | "attachment"
@@ -72,6 +73,12 @@ export interface UpdatetaskPayload
 export interface DeleteTaskPayload {
   id: TaskSchema["id"];
   projectId: ProjectSchema["id"];
+}
+
+export interface MoveTaskPayload {
+  taskId: TaskSchema["id"];
+  newListId: ListSchema["id"];
+  newPosition: TaskSchema["position"];
 }
 
 // Misc

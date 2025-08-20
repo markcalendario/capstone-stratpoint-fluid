@@ -1,22 +1,12 @@
 import { queryClient } from "@/components/ui/query-client-provider";
-import { createAndAssignTask, getListTasks } from "@/lib/actions/tasks";
-import { ListSchema } from "@/types/lists";
-import { useMutation, useQuery } from "@tanstack/react-query";
-
-export function useListTasks(id: ListSchema["id"]) {
-  const { isPending, data } = useQuery({
-    queryKey: ["listTasks", id],
-    queryFn: () => getListTasks({ listId: id })
-  });
-
-  return { isListTasksLoading: isPending, listTasksData: data };
-}
+import { createAndAssignTask, moveTask } from "@/lib/actions/tasks";
+import { useMutation } from "@tanstack/react-query";
 
 export function useCreateAndAssignTask() {
   const { isPending, mutateAsync } = useMutation({
     mutationFn: createAndAssignTask,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["listTasks"] });
+      queryClient.invalidateQueries({ queryKey: ["listsAndTasks"] });
       queryClient.invalidateQueries({ queryKey: ["analytics"] });
     }
   });
@@ -25,4 +15,16 @@ export function useCreateAndAssignTask() {
     createAndAssignTask: mutateAsync,
     isCreatingAndAssignTaskLoading: isPending
   };
+}
+
+export function useMoveTask() {
+  const { isPending, mutateAsync } = useMutation({
+    mutationFn: moveTask,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["listsAndTasks"] });
+      queryClient.invalidateQueries({ queryKey: ["analytics"] });
+    }
+  });
+
+  return { moveTask: mutateAsync, isMovingTask: isPending };
 }

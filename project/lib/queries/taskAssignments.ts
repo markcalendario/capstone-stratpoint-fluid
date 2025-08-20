@@ -1,9 +1,9 @@
-import { CreateTaskAssignmentSchema } from "@/types/taskAssignments";
+import { AssignManyData } from "@/types/taskAssignments";
 import db from "../db";
 import { taskAssignments } from "../db/drizzle/migrations/schema";
 
 const taskAssignmentsQueries = {
-  createMany: async (data: CreateTaskAssignmentSchema) => {
+  assignMany: async (data: AssignManyData) => {
     const { taskId, userIds } = data;
 
     await db

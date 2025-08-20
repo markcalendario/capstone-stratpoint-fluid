@@ -3,7 +3,8 @@ import {
   createList,
   deleteList,
   getList,
-  getProjectLists,
+  getListsAndTasks,
+  moveList,
   updateList
 } from "@/lib/actions/lists";
 import {
@@ -24,13 +25,15 @@ export function useList(id: ListSchema["id"]) {
   return { isListLoading: isPending, listData: data };
 }
 
-export function useProjectLists(projectId: ProjectSchema["id"]) {
+export function useListsAndTasks(projectId: ProjectSchema["id"]) {
   const { isPending, data } = useQuery({
-    queryKey: ["projectLists"],
-    queryFn: () => getProjectLists({ projectId })
+    queryKey: ["listsAndTasks"],
+    queryFn: () => getListsAndTasks({ projectId }),
+    refetchInterval: 3000,
+    refetchIntervalInBackground: false
   });
 
-  return { isProjectListLoading: isPending, projectListsData: data };
+  return { isListsAndTasksLoading: isPending, listsAndTasksData: data };
 }
 
 export function useUpdateList(id: ListSchema["id"]) {
@@ -38,7 +41,7 @@ export function useUpdateList(id: ListSchema["id"]) {
     mutationFn: (payload: UpdateListPayload) => updateList(payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["list", id] });
-      queryClient.invalidateQueries({ queryKey: ["projectLists"] });
+      queryClient.invalidateQueries({ queryKey: ["listsAndTasks"] });
       queryClient.invalidateQueries({ queryKey: ["analytics"] });
     }
   });
@@ -50,7 +53,7 @@ export function useCreateList() {
   const { isPending, mutateAsync } = useMutation({
     mutationFn: (payload: CreateListPayload) => createList(payload),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["projectLists"] });
+      queryClient.invalidateQueries({ queryKey: ["listsAndTasks"] });
       queryClient.invalidateQueries({ queryKey: ["analytics"] });
     }
   });
@@ -63,10 +66,21 @@ export function useDeleteList(id: ListSchema["id"]) {
     mutationFn: (payload: DeleteListPayload) => deleteList(payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["list", id] });
-      queryClient.invalidateQueries({ queryKey: ["projectLists"] });
+      queryClient.invalidateQueries({ queryKey: ["listsAndTasks"] });
       queryClient.invalidateQueries({ queryKey: ["analytics"] });
     }
   });
 
   return { isListDeleting: isPending, deleteList: mutateAsync };
+}
+
+export function useMoveList() {
+  const { isPending, mutateAsync } = useMutation({
+    mutationFn: moveList,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["listAndTasks"] });
+    }
+  });
+
+  return { isMovingList: isPending, moveList: mutateAsync };
 }
