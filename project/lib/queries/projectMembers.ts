@@ -21,6 +21,7 @@ const projectMembersQueries = {
         teamRole: true,
         user: {
           with: {
+            projects: true,
             taskAssignments: { with: { task: { with: { list: true } } } },
             projectMembers: {
               where: (projectMembers, { eq }) =>

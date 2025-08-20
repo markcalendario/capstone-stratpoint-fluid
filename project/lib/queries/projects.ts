@@ -65,6 +65,7 @@ const projectQueries = {
       with: {
         user: {
           with: {
+            projects: true,
             projectMembers: { with: { teamRole: true } },
             taskAssignments: { with: { task: { with: { list: true } } } }
           }

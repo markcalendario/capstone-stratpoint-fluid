@@ -162,9 +162,11 @@ export async function getProjectMembers(payload: GetProjectMembersPayload) {
         return getIsProjectTask(assignment) && !assignment.task.list.isFinal;
       }).length;
 
-      const projectsCount = user.projectMembers.filter(
+      const projectsOwned = user.projectMembers.filter(
         (team) => team.isAccepted
       ).length;
+
+      const projectsMemberOf = user.projects.length;
 
       return {
         id: user.id,
@@ -173,7 +175,7 @@ export async function getProjectMembers(payload: GetProjectMembersPayload) {
         imageUrl: user.imageUrl,
         role: projectMember.teamRole.title,
         membershipStatus: getMembershipStatus(isAccepted),
-        projectsCount,
+        projectsCount: projectsMemberOf + projectsOwned,
         tasksDoneCount,
         tasksUndoneCount
       };
@@ -198,6 +200,10 @@ export async function getProjectMembers(payload: GetProjectMembersPayload) {
       );
     }).length;
 
+    const projectsMemberOfCount = owner.projectMembers.length;
+
+    const projectsOwnedCount = owner.projects.length;
+
     members.unshift({
       id: owner.id,
       name: owner.name,
@@ -205,7 +211,7 @@ export async function getProjectMembers(payload: GetProjectMembersPayload) {
       imageUrl: owner.imageUrl,
       membershipStatus: MEMBERSHIP_STATUS.OWNER,
       role: ownerRole,
-      projectsCount: owner.projectMembers.length + 1,
+      projectsCount: projectsMemberOfCount + projectsOwnedCount,
       tasksDoneCount: ownerTasksDoneCount,
       tasksUndoneCount: ownerTasksUndoneCount
     });
