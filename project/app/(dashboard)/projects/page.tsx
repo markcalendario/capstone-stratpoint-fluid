@@ -8,7 +8,7 @@ export default function ProjectsPage() {
   return (
     <DashboardContent
       title="Projects"
-      description="Manage and organize your team projects">
+      description="Manage and organize your projects.">
       <div className="space-y-6">
         {/* Implementation Tasks Banner */}
         <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-4 dark:border-yellow-800 dark:bg-yellow-900/20">

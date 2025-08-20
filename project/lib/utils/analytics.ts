@@ -40,7 +40,7 @@ export async function getActiveProjectsStatus(userId: UserSchema["id"]) {
   };
 }
 
-export async function getTeamMembersStatus(userId: UserSchema["id"]) {
+export async function getProjectMembersStatus(userId: UserSchema["id"]) {
   const oneWeekAgo = new Date();
   oneWeekAgo.setDate(new Date().getDate() - 7);
 

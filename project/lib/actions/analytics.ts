@@ -4,7 +4,7 @@ import {
   getActiveProjectsStatus,
   getCompletedTasksStatus,
   getPendingTasksStatus,
-  getTeamMembersStatus
+  getProjectMembersStatus
 } from "@/lib/utils/analytics";
 import { getUserId } from "@/lib/utils/users";
 import { ZodError } from "zod";
@@ -13,10 +13,10 @@ export async function getDashboardStatus() {
   try {
     const userId = await getUserId();
 
-    const [activeProjects, teamMembers, completedTasks, pendingTasks] =
+    const [activeProjects, projectMembers, completedTasks, pendingTasks] =
       await Promise.all([
         getActiveProjectsStatus(userId),
-        getTeamMembersStatus(userId),
+        getProjectMembersStatus(userId),
         getCompletedTasksStatus(userId),
         getPendingTasksStatus(userId)
       ]);
@@ -24,7 +24,7 @@ export async function getDashboardStatus() {
     return {
       success: true,
       message: "Dashboard status retrieved successfully",
-      status: { teamMembers, pendingTasks, activeProjects, completedTasks }
+      status: { projectMembers, pendingTasks, activeProjects, completedTasks }
     };
   } catch (error) {
     if (error instanceof ZodError) {

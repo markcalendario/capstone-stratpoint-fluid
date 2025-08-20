@@ -45,7 +45,7 @@ export function AddTeamMemberModal({
   return (
     <Modal
       toggle={toggle}
-      title="Add Member to Team">
+      title="Add Member to Project">
       <form className="space-y-4">
         <SelectProject
           preSelectedId={preSelectedId}
