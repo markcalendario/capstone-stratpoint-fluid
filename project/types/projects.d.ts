@@ -1,11 +1,11 @@
 import { projects } from "@/lib/db/drizzle/migrations/schema";
 import { InferSelectModel } from "drizzle-orm";
 import { ListSchema } from "./lists";
-import { Teams } from "./projectMembers";
+import { ProjectMember } from "./projectMembers";
 
 export interface ProjectSchema extends InferSelectModel<typeof projects> {
   lists: ListSchema[];
-  teams: Teams[];
+  projectMembers: ProjectMember[];
 }
 
 type Project = InferSelectModel<typeof projects>;

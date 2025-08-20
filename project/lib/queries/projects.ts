@@ -40,11 +40,13 @@ const projectQueries = {
 
     return await db.query.projects.findMany({
       with: { projectMembers: true, lists: { with: { tasks: true } } },
-      where: (projects, { eq, or, and, inArray }) =>
-        or(
+      where: (projects, { eq, or, and, inArray }) => {
+        return or(
           and(eq(projects.ownerId, userId), eq(projects.active, true)),
           and(eq(projects.active, true), inArray(projects.id, projectIds))
-        )
+        );
+      },
+      orderBy: (projects, { asc }) => asc(projects.name)
     });
   },
 

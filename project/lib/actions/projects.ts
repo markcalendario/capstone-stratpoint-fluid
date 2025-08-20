@@ -95,13 +95,7 @@ export async function getProjects() {
     const userId = await getUserId();
     const projects = await projectQueries.ownedOrMember(userId);
 
-    const sortedProjects = projects.sort((a, b) => {
-      const aTime = a.createdAt ? new Date(a.createdAt).getTime() : 0;
-      const bTime = b.createdAt ? new Date(b.createdAt).getTime() : 0;
-      return bTime - aTime;
-    });
-
-    const formattedProjects = toCardData(sortedProjects);
+    const formattedProjects = toCardData(projects);
 
     return {
       success: true,

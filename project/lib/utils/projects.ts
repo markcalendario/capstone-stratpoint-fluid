@@ -6,13 +6,13 @@ import { UserSchema } from "@/types/users";
 import projectQueries from "..//queries/projects";
 import { formatDate } from "./date-and-time";
 
+interface ToCardDataList extends List {
+  tasks: Task[];
+}
+
 interface ToCardData extends Project {
   projectMembers: ProjectMember[];
-  lists: Array<
-    List & {
-      tasks: Task[];
-    }
-  >;
+  lists: ToCardDataList[];
 }
 
 export function toCardData(projects: ToCardData[]) {
