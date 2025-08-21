@@ -1,8 +1,8 @@
 import { cn } from "@/lib/utils";
-import { projectType } from "@/lib/utils/constants";
+import { projectTypes } from "@/lib/utils/constants";
 import { toTitleCase } from "@/lib/utils/formatters";
 
-type ProjectType = (typeof projectType)[number];
+type ProjectType = (typeof projectTypes)[number];
 
 interface ProjectTypeBadgeProps {
   type: ProjectType;

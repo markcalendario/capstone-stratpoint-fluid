@@ -1,6 +1,6 @@
-export const priority = ["low", "medium", "high"] as const;
+export const priorities = ["low", "medium", "high"] as const;
 
-export const projectType = [
+export const projectTypes = [
   "development",
   "design",
   "quality assurance",

@@ -8,7 +8,7 @@ import { useProjects } from "@/hooks/use-projects";
 export default function ProjectsList() {
   const { isProjectsLoading, projectsData } = useProjects();
 
-  if (isProjectsLoading || !projectsData) {
+  if (isProjectsLoading || !projectsData?.projects) {
     return <SectionLoader text="Loading Projects" />;
   }
 

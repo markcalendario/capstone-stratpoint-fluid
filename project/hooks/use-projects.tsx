@@ -8,12 +8,7 @@ import {
   getRecentProjects,
   updateProject
 } from "@/lib/actions/projects";
-import {
-  CreateProjectPayload,
-  DeleteProjectPayload,
-  ProjectSchema,
-  UpdateProjectPayload
-} from "@/types/projects";
+import { DeleteProjectPayload, ProjectSchema } from "@/types/projects";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
 export function useProjects() {
@@ -27,7 +22,7 @@ export function useProjects() {
 
 export function useCreateProject() {
   const { isPending, mutateAsync } = useMutation({
-    mutationFn: (payload: CreateProjectPayload) => createProject(payload),
+    mutationFn: createProject,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["projects"] });
       queryClient.invalidateQueries({ queryKey: ["recentProjects"] });
@@ -47,7 +42,7 @@ export function useRecentProjects() {
   return { isRecentProjectsLoading: isPending, recentProjectsData: data };
 }
 
-export function useUserProject(id: ProjectSchema["id"]) {
+export function useProject(id: ProjectSchema["id"]) {
   const { isPending, data } = useQuery({
     queryKey: ["project", id],
     queryFn: () => getProject({ id })
@@ -58,7 +53,7 @@ export function useUserProject(id: ProjectSchema["id"]) {
 
 export function useUpdateProject(id: ProjectSchema["id"]) {
   const { isPending, mutateAsync } = useMutation({
-    mutationFn: (payload: UpdateProjectPayload) => updateProject(payload),
+    mutationFn: updateProject,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["projects"] });
       queryClient.invalidateQueries({ queryKey: ["project", id] });
@@ -90,7 +85,7 @@ export function useDeleteProject(id: ProjectSchema["id"]) {
 export function useProjectOptions(name: ProjectSchema["name"]) {
   const { isPending, data, refetch } = useQuery({
     queryFn: () => getProjectOptions({ name }),
-    queryKey: ["projects"]
+    queryKey: ["projects", name]
   });
 
   return {

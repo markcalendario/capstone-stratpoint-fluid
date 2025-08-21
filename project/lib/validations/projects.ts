@@ -1,6 +1,6 @@
 import { isFutureDate } from "@/lib/utils/date-and-time";
 import z from "zod";
-import { projectType } from "../utils/constants";
+import { projectTypes } from "../utils/constants";
 import { userSchema } from "./users";
 
 const MIN_NAME = 3;
@@ -26,7 +26,7 @@ export const projectSchema = z.object({
       MAX_DESCRIPTION,
       `Max description length is ${MAX_DESCRIPTION} characters.`
     ),
-  projectType: z.enum(projectType, "Invalid project type."),
+  projectType: z.enum(projectTypes, "Invalid project type."),
   imageUrl: z.url("Image URL must be a valid URL."),
   ownerId: userSchema.shape.id,
   createdAt: z.iso.datetime("Invalid date for date created.").trim(),
@@ -34,7 +34,13 @@ export const projectSchema = z.object({
   dueDate: z.iso
     .date("Due date must be in YYYY-MM-DD format.")
     .trim()
-    .refine(isFutureDate, "Due date cannot be in the past.")
+    .refine(isFutureDate, "Due date cannot be in the past."),
+  image: z
+    .file("Image file must be provided.")
+    .min(1, "Image file is required.")
+    .max(1024 * 1024, "Image file size must be less than 1 MB.")
+    .mime("image/jpeg", "Image file must be JPG.")
+    .nullable()
 });
 
 // Project Payload validations
@@ -44,11 +50,7 @@ export const createProjectPayloadSchema = z.object({
   description: projectSchema.shape.description,
   dueDate: projectSchema.shape.dueDate,
   projectType: projectSchema.shape.projectType,
-  imageFile: z
-    .file("Image file must be provided.")
-    .min(1, "Image file is required.")
-    .max(1024 * 1024, "Image file size must be less than 1 MB.")
-    .mime("image/jpg", "Image file must be JPG.")
+  image: projectSchema.shape.image
 });
 
 export const getProjectPayloadSchema = z.object({
@@ -60,10 +62,12 @@ export const deleteProjectPayloadSchema = z.object({
 });
 
 export const updateProjectPayloadSchema = z.object({
+  projectId: projectSchema.shape.id,
   name: projectSchema.shape.name,
   dueDate: projectSchema.shape.dueDate,
   description: projectSchema.shape.description,
-  projectId: projectSchema.shape.id
+  projectType: projectSchema.shape.projectType,
+  image: projectSchema.shape.image
 });
 
 export const getProjectOptionsPayloadSchema = z.object({

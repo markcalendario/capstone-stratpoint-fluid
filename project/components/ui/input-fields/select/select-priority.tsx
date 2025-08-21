@@ -1,4 +1,4 @@
-import { priority } from "@/lib/utils/constants";
+import { priorities } from "@/lib/utils/constants";
 import { toTitleCase } from "@/lib/utils/formatters";
 import { SelectHTMLAttributes } from "react";
 import Select from "./select";
@@ -21,7 +21,7 @@ export default function SelectPriority({
       {...props}
       onChange={onChange}>
       <option value="">Select Priority</option>
-      {priority.map((priority) => (
+      {priorities.map((priority) => (
         <option
           key={priority}
           value={priority}>

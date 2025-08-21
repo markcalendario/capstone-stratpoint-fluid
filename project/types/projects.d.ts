@@ -18,19 +18,27 @@ export type CreateProjectData = Pick<
   "name" | "description" | "dueDate" | "ownerId" | "imageUrl" | "projectType"
 >;
 
-interface CreateProjectPayload
-  extends Pick<ProjectSchema, "name" | "description" | "dueDate"> {}
-
-export type UpdateProjectData = Pick<
-  ProjectSchema,
-  "name" | "description" | "dueDate" | "ownerId" | "updatedAt"
->;
+export interface UpdateProjectData
+  extends Pick<
+    ProjectSchema,
+    "name" | "description" | "dueDate" | "ownerId" | "updatedAt" | "projectType"
+  > {
+  imageUrl?: ProjectSchema["imageUrl"];
+}
 
 // Payloads
+
+export interface CreateProjectPayload
+  extends Pick<ProjectSchema, "name" | "description" | "dueDate"> {
+  projectType: string;
+  image: File | null;
+}
 
 interface UpdateProjectPayload
   extends Pick<ProjectSchema, "name" | "dueDate" | "description"> {
   projectId: ProjectSchema["id"];
+  projectType: string;
+  image: File | null;
 }
 
 interface DeleteProjectPayload {

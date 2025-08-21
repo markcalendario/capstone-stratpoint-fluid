@@ -30,12 +30,14 @@ Integration:
 - Handle errors gracefully
 */
 
-import { useUpdateProject, useUserProject } from "@/hooks/use-projects";
+import { useProject, useUpdateProject } from "@/hooks/use-projects";
 import { ProjectSchema } from "@/types/projects";
-import { useRouter } from "next/navigation";
 import { ChangeEvent, MouseEvent, useEffect, useState } from "react";
 import Button from "../buttons/button";
+import ImageUpload from "../input-fields/image-upload";
 import Input from "../input-fields/input";
+import ProjectTypeOptions from "../input-fields/select/options/project-type-options";
+import Select from "../input-fields/select/select";
 import Textarea from "../input-fields/textarea";
 import SectionLoader from "../section-loader";
 import { showErrorToast, showSuccessToast } from "../toast";
@@ -47,14 +49,16 @@ interface EditProjectModalProps {
 }
 
 export function EditProjectModal({ projectId, toggle }: EditProjectModalProps) {
-  const { isProjectLoading, projectData } = useUserProject(projectId);
+  const { isProjectLoading, projectData } = useProject(projectId);
   const { isProjectUpdating, updateProject } = useUpdateProject(projectId);
-  const router = useRouter();
 
   const [formData, setFormData] = useState({
     name: "",
     description: "",
-    dueDate: ""
+    dueDate: "",
+    projectType: "",
+    imageUrl: "",
+    image: null as File | null
   });
 
   // Populate formData when projectData is loaded
@@ -64,12 +68,15 @@ export function EditProjectModal({ projectId, toggle }: EditProjectModalProps) {
     setFormData({
       name: projectData.project.name,
       description: projectData.project.description,
-      dueDate: projectData.project.dueDate
+      dueDate: projectData.project.dueDate,
+      projectType: projectData.project.projectType,
+      imageUrl: projectData.project.imageUrl,
+      image: null
     });
   }, [projectData]);
 
   const handleChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -82,16 +89,22 @@ export function EditProjectModal({ projectId, toggle }: EditProjectModalProps) {
       projectId,
       name: formData.name.trim(),
       description: formData.description.trim(),
-      dueDate: formData.dueDate
+      dueDate: formData.dueDate,
+      projectType: formData.projectType,
+      image: formData.image
     };
 
-    const { success, message, projectId: id } = await updateProject(payload);
+    const { success, message } = await updateProject(payload);
 
     if (!success) return showErrorToast(message);
     showSuccessToast(message);
 
     toggle();
-    router.push(`/projects/${id}`);
+  };
+
+  const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) setFormData((prev) => ({ ...prev, image: file }));
   };
 
   return (
@@ -131,6 +144,24 @@ export function EditProjectModal({ projectId, toggle }: EditProjectModalProps) {
             required
             value={formData.dueDate}
             onChange={handleChange}
+          />
+
+          <Select
+            id="projectType"
+            label="Project Type"
+            name="projectType"
+            required
+            onChange={handleChange}
+            value={formData.projectType}>
+            <ProjectTypeOptions />
+          </Select>
+
+          <ImageUpload
+            id="image"
+            name="image"
+            label="Project Image"
+            placeholderImageUrl={formData.imageUrl}
+            onChange={handleImageChange}
           />
 
           <div className="flex justify-end space-x-3 pt-4">

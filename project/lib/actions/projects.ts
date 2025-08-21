@@ -9,6 +9,7 @@ import {
 } from "@/types/projects";
 import { ZodError } from "zod";
 import projectQueries from "..//queries/projects";
+import { upload } from "../utils/files";
 import { isUserProjectOwner, toCardData } from "../utils/projects";
 import { getUserId } from "../utils/users";
 import {
@@ -24,13 +25,19 @@ export async function createProject(payload: CreateProjectPayload) {
     const userId = await getUserId();
     const parsed = createProjectPayloadSchema.parse(payload);
 
-    const data = {
+    let imageUrl: string | undefined = undefined;
+
+    if (parsed.image) {
+      imageUrl = await upload({ file: parsed.image });
+    }
+
+    const data: any = {
       name: parsed.name,
       description: parsed.description,
       dueDate: parsed.dueDate,
       ownerId: userId,
       projectType: parsed.projectType,
-      imageUrl: ""
+      ...(imageUrl && { imageUrl })
     };
 
     const projectId = await projectQueries.create(data);
@@ -48,6 +55,7 @@ export async function createProject(payload: CreateProjectPayload) {
         projectId: null
       };
     }
+    console.log(error);
 
     return {
       success: false,
@@ -160,6 +168,13 @@ export async function updateProject(payload: UpdateProjectPayload) {
   try {
     const userId = await getUserId();
     const parsed = updateProjectPayloadSchema.parse(payload);
+    console.log(parsed);
+
+    let imageUrl: string | undefined = undefined;
+
+    if (parsed.image) {
+      imageUrl = await upload({ file: parsed.image });
+    }
 
     if (!(await isUserProjectOwner(userId, parsed.projectId))) {
       return { success: false, message: "You are not the project owner." };
@@ -170,15 +185,16 @@ export async function updateProject(payload: UpdateProjectPayload) {
       description: parsed.description,
       dueDate: parsed.dueDate,
       ownerId: userId,
-      updatedAt: new Date().toISOString()
+      projectType: parsed.projectType,
+      updatedAt: new Date().toISOString(),
+      ...(imageUrl && { imageUrl })
     };
 
-    const projectId = await projectQueries.update(parsed.projectId, data);
+    await projectQueries.update(parsed.projectId, data);
 
     return {
       success: true,
-      message: "Project updated successfully.",
-      projectId
+      message: "Project updated successfully."
     };
   } catch (error) {
     if (error instanceof ZodError) {
