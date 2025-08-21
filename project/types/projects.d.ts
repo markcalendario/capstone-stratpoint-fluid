@@ -2,6 +2,7 @@ import { projects } from "@/lib/db/drizzle/migrations/schema";
 import { InferSelectModel } from "drizzle-orm";
 import { ListSchema } from "./lists";
 import { ProjectMember } from "./projectMembers";
+import { UserSchema } from "./users";
 
 export interface ProjectSchema extends InferSelectModel<typeof projects> {
   lists: ListSchema[];
@@ -42,10 +43,13 @@ export interface GetProjectPayload {
 
 // Misc
 
-interface ProjectCard
-  extends Pick<ProjectSchema, "id" | "name" | "description" | "dueDate"> {
-  members: number;
-  progress: number;
+export interface ProjectCardData
+  extends Pick<ProjectSchema, "id" | "name" | "description" | "imageUrl"> {
+  isActive: boolean;
+  isOverdue: boolean;
+  daysRemaining: string;
+  progress: number; // In Percent
+  memberImages: UserSchema["imageUrl"][];
 }
 
 export interface ProjectOption extends Pick<ProjectSchema, "id" | "name"> {}

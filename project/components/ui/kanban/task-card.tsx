@@ -5,9 +5,9 @@ import { KanbanTask } from "@/types/kanban";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { GripVertical } from "lucide-react";
-import Image from "next/image";
 import DueDateTab from "../due-date-tab";
 import PriorityTab from "../priority-tab";
+import UserImagesStack from "../user-images-stack";
 
 /*
 TODO: Implementation Notes for Interns:
@@ -100,18 +100,10 @@ export function TaskCard({
             daysRemaining={remainingDays}
           />
         </div>
-        <div className="flex justify-end gap-1 -space-x-3">
-          {assigneesImages.map((assigneesImage, i) => (
-            <Image
-              key={i}
-              width={25}
-              height={25}
-              alt={`user ${i}`}
-              src={assigneesImage}
-              className={`outline-primary/20 rounded-full outline-2`}
-            />
-          ))}
-        </div>
+        <UserImagesStack
+          images={assigneesImages}
+          show={7}
+        />
       </div>
     </div>
   );

@@ -21,7 +21,7 @@ export default function ProjectCardDropdown({ id }: ProjectCardDropdownProps) {
   return (
     <Fragment>
       <Dropdown
-        className="hover:bg-primary/10 cursor-pointer rounded p-1"
+        className="hover:bg-primary/10 absolute top-0 right-0 cursor-pointer rounded p-1"
         label={
           <MoreHorizontal
             size={16}

@@ -27,9 +27,11 @@ export async function getActiveProjectsStatus(userId: UserSchema["id"]) {
   const projects = await projectQueries.ownedOrMember(userId);
 
   const currentCount = projects.length;
-  const previousCount = projects.filter((p) =>
-    p.createdAt ? new Date(p.createdAt) < oneWeekAgo : false
-  ).length;
+  const previousCount = projects.filter((p) => {
+    const isOneWeekAgo = new Date(p.createdAt) < oneWeekAgo;
+    const isActive = p.isActive;
+    return isOneWeekAgo && isActive;
+  }).length;
 
   const change = calcChange(currentCount, previousCount);
 

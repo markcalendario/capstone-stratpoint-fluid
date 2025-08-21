@@ -1,18 +1,23 @@
 import { List } from "@/types/lists";
 import { ProjectMember } from "@/types/projectMembers";
-import { Project, ProjectSchema } from "@/types/projects";
+import { Project, ProjectCardData, ProjectSchema } from "@/types/projects";
 import { Task } from "@/types/tasks";
-import { UserSchema } from "@/types/users";
+import { User, UserSchema } from "@/types/users";
 import projectQueries from "..//queries/projects";
-import { formatDate } from "./date-and-time";
+import { getDaysRemaining, isOverdue } from "./date-and-time";
 
 interface ToCardDataList extends List {
   tasks: Task[];
 }
 
+interface ToCardDataProjectMembers extends ProjectMember {
+  user: User;
+}
+
 interface ToCardData extends Project {
-  projectMembers: ProjectMember[];
+  projectMembers: ToCardDataProjectMembers[];
   lists: ToCardDataList[];
+  user: User;
 }
 
 export function toCardData(projects: ToCardData[]) {
@@ -34,14 +39,20 @@ export function toCardData(projects: ToCardData[]) {
     projectCardData.push({
       id: project.id,
       name: project.name,
+      progress: progress,
+      imageUrl: project.imageUrl,
+      isActive: project.isActive,
       description: project.description,
-      dueDate: formatDate(project.dueDate),
-      members: project.projectMembers.length + 1, // Plus the owner
-      progress
+      isOverdue: isOverdue(project.dueDate),
+      daysRemaining: getDaysRemaining(project.dueDate),
+      memberImages: [
+        project.user.imageUrl,
+        ...project.projectMembers.map((member) => member.user.imageUrl)
+      ]
     });
   }
 
-  return projectCardData;
+  return projectCardData satisfies ProjectCardData[];
 }
 
 export async function isUserProjectOwner(

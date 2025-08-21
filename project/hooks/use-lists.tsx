@@ -27,7 +27,7 @@ export function useList(id: ListSchema["id"]) {
 
 export function useListsAndTasks(projectId: ProjectSchema["id"]) {
   const { isPending, data } = useQuery({
-    queryKey: ["listsAndTasks"],
+    queryKey: ["listsAndTasks", projectId],
     queryFn: () => getListsAndTasks({ projectId }),
     refetchInterval: 3000,
     refetchIntervalInBackground: false

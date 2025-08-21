@@ -79,9 +79,9 @@ export async function getListsAndTasks(payload: GetProjectListsPayload) {
             isOverdue: isOverdue(task.dueDate),
             description: stripHTML(task.description),
             remainingDays: getDaysRemaining(task.dueDate),
-            assigneesImages: task.taskAssignments
-              .slice(0, 7)
-              .map((assignment) => assignment.user.imageUrl)
+            assigneesImages: task.taskAssignments.map(
+              (assignment) => assignment.user.imageUrl
+            )
           };
         })
       };

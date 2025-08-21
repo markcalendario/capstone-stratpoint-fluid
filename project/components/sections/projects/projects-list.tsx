@@ -21,10 +21,13 @@ export default function ProjectsList() {
           key={project.id}
           id={project.id}
           name={project.name}
-          description={project.description}
-          dueDate={project.dueDate}
-          members={project.members}
+          isActive={project.isActive}
+          imageUrl={project.imageUrl}
           progress={project.progress}
+          isOverdue={project.isOverdue}
+          description={project.description}
+          memberImages={project.memberImages}
+          daysRemaining={project.daysRemaining}
         />
       ))}
     </div>

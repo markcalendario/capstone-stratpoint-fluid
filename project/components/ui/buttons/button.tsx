@@ -20,7 +20,7 @@ export default function Button({
       onClick={onClick}
       disabled={isProcessing || disabled}
       className={cn(
-        "inline-flex cursor-pointer items-center justify-center gap-[10px] rounded-sm px-[20px] py-[10px] text-sm font-[500] shadow-sm",
+        "inline-flex cursor-pointer items-center justify-center gap-[10px] rounded-sm px-[20px] py-[10px] text-sm font-[500]",
         className
       )}>
       {isProcessing && (

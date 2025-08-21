@@ -17,7 +17,7 @@ export default function DueDateTab({
     <p
       className={cn(
         color,
-        "rounded-sm px-2 py-1 text-[10px] font-medium whitespace-nowrap"
+        "inline-block rounded-sm px-2 py-1 text-[10px] font-medium whitespace-nowrap"
       )}>
       {daysRemaining}
     </p>

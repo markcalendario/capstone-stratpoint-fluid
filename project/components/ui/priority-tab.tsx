@@ -17,7 +17,7 @@ export default function PriorityTab({ priority }: PriorityTabProps) {
     <p
       className={cn(
         color[priority],
-        "rounded-sm px-2 py-1 text-[10px] font-medium"
+        "inline-block rounded-sm px-2 py-1 text-[10px] font-medium"
       )}>
       {toTitleCase(priority)}
     </p>

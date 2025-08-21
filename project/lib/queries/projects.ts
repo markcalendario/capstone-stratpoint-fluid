@@ -39,11 +39,15 @@ const projectQueries = {
     const projectIds = memberProjects.map((m) => m.projectId);
 
     return await db.query.projects.findMany({
-      with: { projectMembers: true, lists: { with: { tasks: true } } },
-      where: (projects, { eq, or, and, inArray }) => {
+      with: {
+        user: true,
+        lists: { with: { tasks: true } },
+        projectMembers: { with: { user: true } }
+      },
+      where: (projects, { eq, or, inArray }) => {
         return or(
-          and(eq(projects.ownerId, userId), eq(projects.active, true)),
-          and(eq(projects.active, true), inArray(projects.id, projectIds))
+          eq(projects.ownerId, userId),
+          inArray(projects.id, projectIds)
         );
       },
       orderBy: (projects, { asc }) => asc(projects.name)
@@ -109,10 +113,7 @@ const projectQueries = {
       with: { projectMembers: true, lists: { with: { tasks: true } } },
       where: (projects, { eq, or, and, ilike, inArray }) =>
         and(
-          or(
-            and(eq(projects.ownerId, userId), eq(projects.active, true)),
-            and(eq(projects.active, true), inArray(projects.id, projectIds))
-          ),
+          or(eq(projects.ownerId, userId), inArray(projects.id, projectIds)),
           ilike(projects.name, `%${name}%`)
         )
     });
