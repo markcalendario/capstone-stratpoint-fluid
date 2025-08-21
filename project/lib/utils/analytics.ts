@@ -24,7 +24,7 @@ export async function getActiveProjectsStatus(userId: UserSchema["id"]) {
   const oneWeekAgo = new Date();
   oneWeekAgo.setDate(new Date().getDate() - 7);
 
-  const projects = await projectQueries.ownedOrMember(userId);
+  const projects = await projectQueries.getAll(userId);
 
   const currentCount = projects.length;
   const previousCount = projects.filter((p) => {
@@ -46,7 +46,7 @@ export async function getProjectMembersStatus(userId: UserSchema["id"]) {
   const oneWeekAgo = new Date();
   oneWeekAgo.setDate(new Date().getDate() - 7);
 
-  const projects = await projectQueries.ownedOrMember(userId);
+  const projects = await projectQueries.getAll(userId);
 
   const currentMembers = new Set(
     projects.flatMap((p) =>
@@ -81,7 +81,7 @@ export async function getCompletedTasksStatus(userId: UserSchema["id"]) {
   const oneWeekAgo = new Date();
   oneWeekAgo.setDate(new Date().getDate() - 7);
 
-  const projects = await projectQueries.ownedOrMember(userId);
+  const projects = await projectQueries.getAll(userId);
 
   let current = 0;
   let previous = 0;
@@ -111,7 +111,7 @@ export async function getPendingTasksStatus(userId: UserSchema["id"]) {
   const oneWeekAgo = new Date();
   oneWeekAgo.setDate(new Date().getDate() - 7);
 
-  const projects = await projectQueries.ownedOrMember(userId);
+  const projects = await projectQueries.getAll(userId);
 
   let current = 0;
   let previous = 0;

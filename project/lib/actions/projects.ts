@@ -28,7 +28,9 @@ export async function createProject(payload: CreateProjectPayload) {
       name: parsed.name,
       description: parsed.description,
       dueDate: parsed.dueDate,
-      ownerId: userId
+      ownerId: userId,
+      projectType: parsed.projectType,
+      imageUrl: ""
     };
 
     const projectId = await projectQueries.create(data);
@@ -58,7 +60,7 @@ export async function createProject(payload: CreateProjectPayload) {
 export async function getRecentProjects() {
   try {
     const userId = await getUserId();
-    const projects = await projectQueries.ownedOrMember(userId);
+    const projects = await projectQueries.getAll(userId);
 
     const recentProjects = projects
       .sort((a, b) => {
@@ -93,7 +95,7 @@ export async function getRecentProjects() {
 export async function getProjects() {
   try {
     const userId = await getUserId();
-    const projects = await projectQueries.ownedOrMember(userId);
+    const projects = await projectQueries.getAll(userId);
 
     const formattedProjects = toCardData(projects);
 

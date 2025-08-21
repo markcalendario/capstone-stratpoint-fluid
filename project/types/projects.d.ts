@@ -15,7 +15,7 @@ type Project = InferSelectModel<typeof projects>;
 
 export type CreateProjectData = Pick<
   ProjectSchema,
-  "name" | "description" | "dueDate" | "ownerId"
+  "name" | "description" | "dueDate" | "ownerId" | "imageUrl" | "projectType"
 >;
 
 interface CreateProjectPayload

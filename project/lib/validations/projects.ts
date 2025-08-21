@@ -1,5 +1,6 @@
 import { isFutureDate } from "@/lib/utils/date-and-time";
 import z from "zod";
+import { projectType } from "../utils/constants";
 import { userSchema } from "./users";
 
 const MIN_NAME = 3;
@@ -25,6 +26,8 @@ export const projectSchema = z.object({
       MAX_DESCRIPTION,
       `Max description length is ${MAX_DESCRIPTION} characters.`
     ),
+  projectType: z.enum(projectType, "Invalid project type."),
+  imageUrl: z.url("Image URL must be a valid URL."),
   ownerId: userSchema.shape.id,
   createdAt: z.iso.datetime("Invalid date for date created.").trim(),
   updatedAt: z.iso.datetime("Invalid date for date modified.").trim(),
@@ -39,7 +42,13 @@ export const projectSchema = z.object({
 export const createProjectPayloadSchema = z.object({
   name: projectSchema.shape.name,
   description: projectSchema.shape.description,
-  dueDate: projectSchema.shape.dueDate
+  dueDate: projectSchema.shape.dueDate,
+  projectType: projectSchema.shape.projectType,
+  imageFile: z
+    .file("Image file must be provided.")
+    .min(1, "Image file is required.")
+    .max(1024 * 1024, "Image file size must be less than 1 MB.")
+    .mime("image/jpg", "Image file must be JPG.")
 });
 
 export const getProjectPayloadSchema = z.object({

@@ -20,12 +20,21 @@ const projectQueries = {
 
   get: async (id: ProjectSchema["id"]) => {
     return await db.query.projects.findFirst({
-      with: { projectMembers: true, lists: { with: { tasks: true } } },
+      with: {
+        user: true,
+        projectMembers: {
+          with: { user: true },
+          where: (projectMember, { eq }) => eq(projectMember.isAccepted, true)
+        },
+        lists: { with: { tasks: true } }
+      },
       where: (projects, { eq }) => eq(projects.id, id)
     });
   },
 
-  ownedOrMember: async (userId: UserSchema["id"]) => {
+  getAll: async (userId: UserSchema["id"]) => {
+    // Get all projects where the user is owner or a member.
+
     const memberProjects = await db
       .select({ projectId: projectMembers.projectId })
       .from(projectMembers)
@@ -42,7 +51,10 @@ const projectQueries = {
       with: {
         user: true,
         lists: { with: { tasks: true } },
-        projectMembers: { with: { user: true } }
+        projectMembers: {
+          with: { user: true },
+          where: (projectMember, { eq }) => eq(projectMember.isAccepted, true)
+        }
       },
       where: (projects, { eq, or, inArray }) => {
         return or(
@@ -114,7 +126,8 @@ const projectQueries = {
       where: (projects, { eq, or, and, ilike, inArray }) =>
         and(
           or(eq(projects.ownerId, userId), inArray(projects.id, projectIds)),
-          ilike(projects.name, `%${name}%`)
+          ilike(projects.name, `%${name}%`),
+          eq(projects.isActive, true)
         )
     });
   }
