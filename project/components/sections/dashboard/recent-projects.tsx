@@ -30,16 +30,8 @@ export default function RecentProjects() {
           recentProjectsData &&
           recentProjectsData.recentProjects.map((project) => (
             <ProjectCard
+              {...project}
               key={project.id}
-              id={project.id}
-              name={project.name}
-              imageUrl={project.imageUrl}
-              isActive={project.isActive}
-              progress={project.progress}
-              isOverdue={project.isOverdue}
-              description={project.description}
-              memberImages={project.memberImages}
-              daysRemaining={project.daysRemaining}
             />
           ))}
       </div>

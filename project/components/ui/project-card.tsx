@@ -4,10 +4,9 @@ import { cn } from "@/lib/utils";
 import { ProjectCardData as IProjectCard } from "@/types/projects";
 import Image from "next/image";
 import Link from "next/link";
-import ActiveIndicator from "./active-indicator";
+import Badge from "./badge";
 import ProjectCardDropdown from "./dropdowns/project-card-dropdown";
-import DueDateTab from "./due-date-tab";
-import PriorityTab from "./priority-tab";
+import ProjectTypeBadge from "./project-type-badge";
 import UserImagesStack from "./user-images-stack";
 
 interface ProjectCardProps extends IProjectCard {
@@ -21,8 +20,10 @@ export default function ProjectCard({
   isActive,
   progress,
   className,
+  openTasks,
   isOverdue,
   description,
+  projectType,
   memberImages,
   daysRemaining
 }: ProjectCardProps) {
@@ -34,10 +35,12 @@ export default function ProjectCard({
       )}>
       <ProjectCardDropdown id={id} />
 
+      <ProjectTypeBadge type={projectType} />
+
       {/* Primary Info */}
       <Link
         href={`/projects/${id}`}
-        className="flex items-start gap-2">
+        className="mt-3 flex items-start gap-2">
         {/* Image */}
         <div className="relative aspect-square h-8 w-8">
           <Image
@@ -76,17 +79,16 @@ export default function ProjectCard({
       <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
         {/* Indicators */}
         <div className="flex items-center gap-1">
-          <DueDateTab
-            isOverdue={isOverdue}
-            daysRemaining={daysRemaining}
-          />
-          <ActiveIndicator isActive={isActive} />
-          <PriorityTab priority="low" />
+          <Badge type={isOverdue ? "error" : "warning"}>{daysRemaining}</Badge>
+          <Badge type={isActive ? "info" : "gray"}>
+            {isActive ? "Active" : "Inactive"}
+          </Badge>
+          <Badge type="gray">{openTasks} open tasks</Badge>
         </div>
 
         {/* Members Images */}
         <UserImagesStack
-          show={5}
+          show={3}
           images={memberImages}
         />
       </div>

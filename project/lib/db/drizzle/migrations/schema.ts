@@ -1,7 +1,8 @@
-import { pgTable, foreignKey, uuid, timestamp, unique, text, boolean, integer, date, pgEnum } from "drizzle-orm/pg-core"
+import { pgTable, foreignKey, uuid, timestamp, unique, text, boolean, date, integer, pgEnum } from "drizzle-orm/pg-core"
 import { sql } from "drizzle-orm"
 
 export const priority = pgEnum("priority", ['low', 'medium', 'high'])
+export const projectType = pgEnum("project_type", ['development', 'design', 'quality assurance', 'testing', 'devops', 'data', 'artificial intelligence', 'maintenance'])
 
 
 export const taskAssignments = pgTable("task_assignments", {
@@ -33,6 +34,25 @@ export const users = pgTable("users", {
 	isDeleted: boolean("is_deleted").default(false).notNull(),
 }, (table) => [
 	unique("users_clerk_id_key").on(table.clerkId),
+]);
+
+export const projects = pgTable("projects", {
+	id: uuid().defaultRandom().primaryKey().notNull(),
+	name: text().notNull(),
+	description: text().notNull(),
+	ownerId: uuid("owner_id").notNull(),
+	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }).default(sql`CURRENT_TIMESTAMP`).notNull(),
+	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }).default(sql`CURRENT_TIMESTAMP`).notNull(),
+	dueDate: date("due_date").notNull(),
+	isActive: boolean().default(true).notNull(),
+	imageUrl: text().default('/assets/images/misc/project-default.jpg').notNull(),
+	projectType: projectType("project_type").notNull(),
+}, (table) => [
+	foreignKey({
+			columns: [table.ownerId],
+			foreignColumns: [users.id],
+			name: "fk_projects_owner_id_users"
+		}).onDelete("cascade"),
 ]);
 
 export const lists = pgTable("lists", {
@@ -116,24 +136,6 @@ export const teamRoles = pgTable("team_roles", {
 	description: text(),
 }, (table) => [
 	unique("team_roles_title_key").on(table.title),
-]);
-
-export const projects = pgTable("projects", {
-	id: uuid().defaultRandom().primaryKey().notNull(),
-	name: text().notNull(),
-	description: text().notNull(),
-	ownerId: uuid("owner_id").notNull(),
-	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }).default(sql`CURRENT_TIMESTAMP`).notNull(),
-	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }).default(sql`CURRENT_TIMESTAMP`).notNull(),
-	dueDate: date("due_date").notNull(),
-	isActive: boolean().default(true).notNull(),
-	imageUrl: text().default('/assets/images/misc/project-default.jpg').notNull(),
-}, (table) => [
-	foreignKey({
-			columns: [table.ownerId],
-			foreignColumns: [users.id],
-			name: "fk_projects_owner_id_users"
-		}).onDelete("cascade"),
 ]);
 
 export const comments = pgTable("comments", {

@@ -1,12 +1,12 @@
 // TODO: Task 5.6 - Create task detail modals and editing interfaces
 
 import { cn } from "@/lib/utils";
+import { toTitleCase } from "@/lib/utils/formatters";
 import { KanbanTask } from "@/types/kanban";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { GripVertical } from "lucide-react";
-import DueDateTab from "../due-date-tab";
-import PriorityTab from "../priority-tab";
+import Badge from "../badge";
 import UserImagesStack from "../user-images-stack";
 
 /*
@@ -70,6 +70,11 @@ export function TaskCard({
   });
 
   const style = { transform: CSS.Transform.toString(transform), transition };
+  const priorityColor = {
+    low: "success",
+    medium: "warning",
+    high: "error"
+  } as const;
 
   return (
     <div
@@ -94,11 +99,8 @@ export function TaskCard({
       </p>
       <div className="mt-2 flex justify-between gap-2">
         <div className="flex items-stretch gap-1">
-          <PriorityTab priority={priority} />
-          <DueDateTab
-            isOverdue={isOverdue}
-            daysRemaining={remainingDays}
-          />
+          <Badge type={priorityColor[priority]}>{toTitleCase(priority)}</Badge>
+          <Badge type={isOverdue ? "error" : "warning"}>{remainingDays}</Badge>
         </div>
         <UserImagesStack
           images={assigneesImages}

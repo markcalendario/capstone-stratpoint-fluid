@@ -2,6 +2,7 @@
 -- If you want to run this migration please uncomment this code before executing migrations
 /*
 CREATE TYPE "public"."priority" AS ENUM('low', 'medium', 'high');--> statement-breakpoint
+CREATE TYPE "public"."project_type" AS ENUM('development', 'design', 'quality assurance', 'testing', 'devops', 'data', 'artificial intelligence', 'maintenance');--> statement-breakpoint
 CREATE TABLE "task_assignments" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"task_id" uuid NOT NULL,
@@ -19,6 +20,19 @@ CREATE TABLE "users" (
 	"image_url" text NOT NULL,
 	"is_deleted" boolean DEFAULT false NOT NULL,
 	CONSTRAINT "users_clerk_id_key" UNIQUE("clerk_id")
+);
+--> statement-breakpoint
+CREATE TABLE "projects" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"name" text NOT NULL,
+	"description" text NOT NULL,
+	"owner_id" uuid NOT NULL,
+	"created_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	"updated_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	"due_date" date NOT NULL,
+	"isActive" boolean DEFAULT true NOT NULL,
+	"imageUrl" text DEFAULT '/assets/images/misc/project-default.jpg' NOT NULL,
+	"project_type" "project_type" NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "lists" (
@@ -65,18 +79,6 @@ CREATE TABLE "team_roles" (
 	CONSTRAINT "team_roles_title_key" UNIQUE("title")
 );
 --> statement-breakpoint
-CREATE TABLE "projects" (
-	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
-	"name" text NOT NULL,
-	"description" text NOT NULL,
-	"owner_id" uuid NOT NULL,
-	"created_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-	"updated_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-	"due_date" date NOT NULL,
-	"isActive" boolean DEFAULT true NOT NULL,
-	"imageUrl" text DEFAULT '/assets/images/misc/project-default.jpg' NOT NULL
-);
---> statement-breakpoint
 CREATE TABLE "comments" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"content" text NOT NULL,
@@ -88,6 +90,7 @@ CREATE TABLE "comments" (
 --> statement-breakpoint
 ALTER TABLE "task_assignments" ADD CONSTRAINT "fk_task_assignments_task_id_tasks" FOREIGN KEY ("task_id") REFERENCES "public"."tasks"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "task_assignments" ADD CONSTRAINT "fk_user_task_assignments_user_id_users" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "projects" ADD CONSTRAINT "fk_projects_owner_id_users" FOREIGN KEY ("owner_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "lists" ADD CONSTRAINT "fk_lists_created_by_users" FOREIGN KEY ("created_by") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "lists" ADD CONSTRAINT "fk_lists_project_id_projects" FOREIGN KEY ("project_id") REFERENCES "public"."projects"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "project_members" ADD CONSTRAINT "fk_project_members_project_id_projects" FOREIGN KEY ("project_id") REFERENCES "public"."projects"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
@@ -95,7 +98,6 @@ ALTER TABLE "project_members" ADD CONSTRAINT "fk_project_members_role_id_team_ro
 ALTER TABLE "project_members" ADD CONSTRAINT "fk_project_members_user_id_users" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "tasks" ADD CONSTRAINT "fk_tasks_list_id_lists" FOREIGN KEY ("list_id") REFERENCES "public"."lists"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "tasks" ADD CONSTRAINT "fk_tasks_created_by_users" FOREIGN KEY ("created_by") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "projects" ADD CONSTRAINT "fk_projects_owner_id_users" FOREIGN KEY ("owner_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "comments" ADD CONSTRAINT "fk_tasks_task_id_comments" FOREIGN KEY ("task_id") REFERENCES "public"."tasks"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "comments" ADD CONSTRAINT "fk_comments_author_id_users" FOREIGN KEY ("author_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;
 */

@@ -46,10 +46,12 @@ export interface GetProjectPayload {
 export interface ProjectCardData
   extends Pick<ProjectSchema, "id" | "name" | "description" | "imageUrl"> {
   isActive: boolean;
+  openTasks: number;
   isOverdue: boolean;
   daysRemaining: string;
   progress: number; // In Percent
   memberImages: UserSchema["imageUrl"][];
+  projectType: ProjectSchema["projectType"];
 }
 
 export interface ProjectOption extends Pick<ProjectSchema, "id" | "name"> {}

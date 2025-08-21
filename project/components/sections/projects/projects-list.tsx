@@ -17,17 +17,9 @@ export default function ProjectsList() {
       <CreateProjectButton className="border-primary/20 text-primary min-h-[150px] border-2 border-dashed bg-white text-center text-lg dark:bg-neutral-800 dark:text-neutral-200" />
       {projectsData.projects.map((project) => (
         <ProjectCard
-          className="bg-white dark:bg-neutral-800"
+          {...project}
           key={project.id}
-          id={project.id}
-          name={project.name}
-          isActive={project.isActive}
-          imageUrl={project.imageUrl}
-          progress={project.progress}
-          isOverdue={project.isOverdue}
-          description={project.description}
-          memberImages={project.memberImages}
-          daysRemaining={project.daysRemaining}
+          className="bg-white dark:bg-neutral-800"
         />
       ))}
     </div>

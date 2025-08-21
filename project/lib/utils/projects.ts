@@ -42,9 +42,13 @@ export function toCardData(projects: ToCardData[]) {
       progress: progress,
       imageUrl: project.imageUrl,
       isActive: project.isActive,
+      projectType: project.projectType,
       description: project.description,
       isOverdue: isOverdue(project.dueDate),
       daysRemaining: getDaysRemaining(project.dueDate),
+      openTasks: project.lists
+        .filter((list) => !list.isFinal)
+        .reduce((count, list) => count + list.tasks.length, 0),
       memberImages: [
         project.user.imageUrl,
         ...project.projectMembers.map((member) => member.user.imageUrl)
