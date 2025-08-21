@@ -9,7 +9,13 @@ import {
   verticalListSortingStrategy
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { Grid2X2Check, GripHorizontal } from "lucide-react";
+import {
+  CircleDashed,
+  CircleDot,
+  Grid2X2Check,
+  GripHorizontal,
+  TableProperties
+} from "lucide-react";
 import AddTaskButton from "../buttons/add-task-button";
 import SectionEmpty from "../section-empty";
 import { TaskCard } from "./task-card";
@@ -17,9 +23,10 @@ import { TaskCard } from "./task-card";
 export default function ListCard({
   id,
   name,
+  tasks,
+  isFinal,
   projectId,
-  tasksCount,
-  tasks
+  tasksCount
 }: KanbanList) {
   const {
     isDragging,
@@ -44,59 +51,60 @@ export default function ListCard({
       ref={setNodeRef}
       className={cn(
         isDragging && "opacity-20",
-        "border-primary/20 max-h-[600px] min-h-[500px] min-w-100 overflow-auto rounded-sm border-3 bg-neutral-50 duration-100 dark:bg-neutral-900"
+        "flex max-h-[600px] min-h-[500px] min-w-100 flex-col gap-3 overflow-auto duration-100 dark:bg-neutral-900"
       )}>
-      <div className="bg-primary px-3 py-2 dark:border-neutral-600">
-        <div className="flex items-center justify-between">
-          <h3 className="font-semibold text-neutral-200">
+      {/* List Header */}
+      <div className="bg-primary flex items-center justify-between rounded-t-sm px-4 py-3">
+        <div className="flex items-center gap-3">
+          <p className="flex items-center gap-2 font-bold text-neutral-100">
+            {isFinal ? <CircleDot size={14} /> : <CircleDashed size={14} />}
             {name}
-            <span className="ml-2 rounded-sm bg-white/20 px-2 py-1 text-xs">
-              {tasksCount}
-            </span>
-          </h3>
+          </p>
+          <p className="flex items-center gap-1 rounded-sm bg-neutral-100/10 p-1 text-xs text-neutral-300">
+            <TableProperties size={12} />
+            {tasksCount}
+          </p>
+        </div>
 
-          <div className="flex items-center gap-3">
-            <button
-              {...listeners}
-              {...attributes}
-              ref={setActivatorNodeRef}>
-              <GripHorizontal
-                size={16}
-                className="cursor-move text-neutral-100"
-              />
-            </button>
+        <div className="flex items-center gap-3">
+          <button
+            {...listeners}
+            {...attributes}
+            ref={setActivatorNodeRef}>
+            <GripHorizontal
+              size={16}
+              className="cursor-move text-neutral-100"
+            />
+          </button>
 
-            <ListCardDropdown id={id} />
-          </div>
+          <ListCardDropdown id={id} />
         </div>
       </div>
 
-      <div className="space-y-3 p-4">
-        {isEmpty && (
-          <SectionEmpty
-            icon={Grid2X2Check}
-            text="No Tasks"
-          />
-        )}
-
-        <SortableContext
-          items={tasks.map((task) => task.id)}
-          strategy={verticalListSortingStrategy}>
-          {!isEmpty &&
-            tasks.map((task) => (
-              <TaskCard
-                key={task.id}
-                {...task}
-              />
-            ))}
-        </SortableContext>
-
-        <AddTaskButton
-          listId={id}
-          projectId={projectId}
-          className="border-primary bg-primary/20 text-primary sticky bottom-2 flex w-full cursor-pointer items-center justify-center gap-2 rounded-sm border-1 border-dashed p-2 text-sm backdrop-blur-md dark:text-neutral-200"
+      {isEmpty && (
+        <SectionEmpty
+          icon={Grid2X2Check}
+          text="No Tasks"
         />
-      </div>
+      )}
+
+      <SortableContext
+        items={tasks.map((task) => task.id)}
+        strategy={verticalListSortingStrategy}>
+        {!isEmpty &&
+          tasks.map((task) => (
+            <TaskCard
+              key={task.id}
+              {...task}
+            />
+          ))}
+      </SortableContext>
+
+      <AddTaskButton
+        listId={id}
+        projectId={projectId}
+        className="border-primary/50 text-primary sticky bottom-2 flex w-full cursor-pointer items-center justify-center gap-2 rounded-sm border-1 border-dashed bg-white p-3 text-sm font-medium backdrop-blur-md dark:bg-neutral-800 dark:text-neutral-200"
+      />
     </div>
   );
 }

@@ -67,6 +67,7 @@ export async function getListsAndTasks(payload: GetProjectListsPayload) {
       return {
         id: list.id,
         name: list.name,
+        isFinal: list.isFinal,
         projectId: list.projectId,
         tasksCount: list.tasks.length,
         tasks: list.tasks.map((task) => {

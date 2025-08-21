@@ -8,7 +8,8 @@ export interface KanbanTask
   assigneesImages: string[];
 }
 
-export interface KanbanList extends Pick<List, "id" | "name" | "projectId"> {
+export interface KanbanList
+  extends Pick<List, "id" | "name" | "isFinal" | "projectId"> {
   tasksCount: number;
   tasks: KanbanTask[];
 }

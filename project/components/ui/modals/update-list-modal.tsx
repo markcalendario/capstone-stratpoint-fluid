@@ -1,6 +1,6 @@
 import { useList, useUpdateList } from "@/hooks/use-lists";
 import { ProjectSchema } from "@/types/projects";
-import { GitCommitHorizontal, GitGraph } from "lucide-react";
+import { CircleDashed, CircleDot } from "lucide-react";
 import { ChangeEvent, MouseEvent, useEffect, useState } from "react";
 import Button from "../buttons/button";
 import Input from "../input-fields/input";
@@ -74,7 +74,7 @@ export function UpdateListModal({ id, toggle }: UpdateListModalProps) {
               value="progress"
               title="Progress"
               description="Mark tasks in progress."
-              icon={GitGraph}
+              icon={CircleDashed}
               checked={formData.listType === "progress"}
               onChange={handleChange}
             />
@@ -85,7 +85,7 @@ export function UpdateListModal({ id, toggle }: UpdateListModalProps) {
               value="final"
               title="Final"
               description="Mark tasks as final."
-              icon={GitCommitHorizontal}
+              icon={CircleDot}
               checked={formData.listType === "final"}
               onChange={handleChange}
             />

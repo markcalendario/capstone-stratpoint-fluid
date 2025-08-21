@@ -77,13 +77,13 @@ export function TaskCard({
       ref={setNodeRef}
       className={cn(
         isDragging && "opacity-70",
-        "border-primary/20 relative rounded-xs border-2 bg-white p-4 shadow-sm duration-500 hover:shadow-md dark:bg-neutral-800"
+        "ring-primary/20 relative rounded-sm bg-white p-4 ring-1 duration-500 ring-inset dark:bg-neutral-800"
       )}>
       <button
         {...listeners}
         {...attributes}
         ref={setActivatorNodeRef}
-        className="absolute top-0 right-0 m-1 cursor-move p-1 text-neutral-500">
+        className="absolute top-0 right-0 m-2 cursor-move p-1 text-neutral-500">
         <GripVertical size={16} />
       </button>
       <h4 className="text-sm font-medium text-neutral-800 dark:text-neutral-100">
