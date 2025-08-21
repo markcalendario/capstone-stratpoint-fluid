@@ -1,8 +1,9 @@
 import { cn } from "@/lib/utils";
+import { priority } from "@/lib/utils/constants";
 import { toTitleCase } from "@/lib/utils/formatters";
 
 interface PriorityTabProps {
-  priority: "medium" | "low" | "high";
+  priority: (typeof priority)[number];
 }
 
 const color = {
