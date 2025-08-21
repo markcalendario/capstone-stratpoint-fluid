@@ -30,7 +30,7 @@ export function UpdateListModal({ id, toggle }: UpdateListModalProps) {
     const payload = {
       id,
       name: formData.name,
-      isFinal: formData.listType === "terminal"
+      isFinal: formData.listType === "final"
     };
 
     const { success, message } = await updateList(payload);
@@ -45,7 +45,7 @@ export function UpdateListModal({ id, toggle }: UpdateListModalProps) {
 
     setFormData({
       name: listData.list.name,
-      listType: listData.list.isFinal ? "terminal" : "progress"
+      listType: listData.list.isFinal ? "final" : "progress"
     });
   }, [listData]);
 
@@ -62,6 +62,7 @@ export function UpdateListModal({ id, toggle }: UpdateListModalProps) {
             name="name"
             label="List Name"
             placeholder="Enter list name"
+            required
             value={formData.name}
             onChange={handleChange}
           />
@@ -79,13 +80,13 @@ export function UpdateListModal({ id, toggle }: UpdateListModalProps) {
             />
 
             <Radio
-              id="terminal"
+              id="final"
               name="listType"
-              value="terminal"
-              title="Terminal"
+              value="final"
+              title="Final"
               description="Mark tasks as final."
               icon={GitCommitHorizontal}
-              checked={formData.listType === "terminal"}
+              checked={formData.listType === "final"}
               onChange={handleChange}
             />
           </div>

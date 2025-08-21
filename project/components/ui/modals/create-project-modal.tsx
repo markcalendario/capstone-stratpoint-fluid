@@ -50,6 +50,7 @@ export function CreateProjectModal({ toggle }: CreateProjectModalProps) {
           name="description"
           label="Project Description"
           placeholder="Enter project description"
+          required
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         />
@@ -59,6 +60,7 @@ export function CreateProjectModal({ toggle }: CreateProjectModalProps) {
           name="dueDate"
           label="Project Due Date"
           placeholder="Select due date"
+          required
           type="date"
           value={dueDate}
           onChange={(e) => setDueDate(e.target.value)}

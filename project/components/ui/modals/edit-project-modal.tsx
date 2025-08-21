@@ -107,6 +107,7 @@ export function EditProjectModal({ projectId, toggle }: EditProjectModalProps) {
             name="name"
             label="Project Name"
             placeholder="Enter project name"
+            required
             value={formData.name}
             onChange={handleChange}
           />
@@ -116,6 +117,7 @@ export function EditProjectModal({ projectId, toggle }: EditProjectModalProps) {
             name="description"
             label="Project Description"
             placeholder="Enter project description"
+            required
             value={formData.description}
             onChange={handleChange}
           />
@@ -126,6 +128,7 @@ export function EditProjectModal({ projectId, toggle }: EditProjectModalProps) {
             label="Project Due Date"
             placeholder="Enter due date"
             type="date"
+            required
             value={formData.dueDate}
             onChange={handleChange}
           />
