@@ -1,6 +1,7 @@
 import { priority } from "@/lib/db/drizzle/migrations/schema";
 import { isFutureDate } from "@/lib/utils/date-and-time";
 import z from "zod";
+import { stripHTML } from "../utils/formatters";
 import { listSchema } from "./lists";
 import { projectSchema } from "./projects";
 import { userSchema } from "./users";
@@ -19,6 +20,7 @@ export const taskSchema = z.object({
     .max(TITLE_MAX, `Max title length is ${TITLE_MAX} characters.`),
   description: z
     .string("Description must be a string.")
+    .refine((val) => stripHTML(val).length > 0, "Description cannot be empty.")
     .trim()
     .min(
       DESCRIPTION_MIN,

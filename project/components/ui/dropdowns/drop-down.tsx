@@ -59,7 +59,7 @@ interface RenderMenuProps {
 
 function RenderMenu({ items }: RenderMenuProps) {
   return (
-    <div className="border-primary/20 absolute right-0 z-1 mt-1 w-max rounded-sm border-1 bg-white shadow-lg dark:bg-neutral-800">
+    <div className="border-primary/20 absolute right-0 z-1 mt-1 w-max min-w-[150px] rounded-sm border-1 bg-white shadow-lg dark:bg-neutral-800">
       {items.map((item, i) => (
         <RenderItem
           key={i}

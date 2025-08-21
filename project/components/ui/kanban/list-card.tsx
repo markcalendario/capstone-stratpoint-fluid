@@ -9,12 +9,18 @@ import {
   verticalListSortingStrategy
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { GripHorizontal, ListTodo } from "lucide-react";
+import { Grid2X2Check, GripHorizontal } from "lucide-react";
 import AddTaskButton from "../buttons/add-task-button";
 import SectionEmpty from "../section-empty";
 import { TaskCard } from "./task-card";
 
-export default function ListCard({ id, name, projectId, tasks }: KanbanList) {
+export default function ListCard({
+  id,
+  name,
+  projectId,
+  tasksCount,
+  tasks
+}: KanbanList) {
   const {
     isDragging,
     transform,
@@ -38,14 +44,14 @@ export default function ListCard({ id, name, projectId, tasks }: KanbanList) {
       ref={setNodeRef}
       className={cn(
         isDragging && "opacity-20",
-        "border-primary/20 max-h-[600px] min-h-[500px] min-w-100 overflow-auto rounded-sm border-3 bg-neutral-100 duration-100 dark:bg-neutral-900"
+        "border-primary/20 max-h-[600px] min-h-[500px] min-w-100 overflow-auto rounded-sm border-3 bg-neutral-50 duration-100 dark:bg-neutral-900"
       )}>
       <div className="bg-primary px-3 py-2 dark:border-neutral-600">
         <div className="flex items-center justify-between">
           <h3 className="font-semibold text-neutral-200">
             {name}
             <span className="ml-2 rounded-sm bg-white/20 px-2 py-1 text-xs">
-              {tasks.length}
+              {tasksCount}
             </span>
           </h3>
 
@@ -68,8 +74,8 @@ export default function ListCard({ id, name, projectId, tasks }: KanbanList) {
       <div className="space-y-3 p-4">
         {isEmpty && (
           <SectionEmpty
-            icon={ListTodo}
-            text={`No Tasks for '${name}'.`}
+            icon={Grid2X2Check}
+            text="No Tasks"
           />
         )}
 

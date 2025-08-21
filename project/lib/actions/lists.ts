@@ -11,6 +11,7 @@ import {
   listSchema,
   updateListPayloadSchema
 } from "@/lib/validations/lists";
+import { KanbanList } from "@/types/kanban";
 import {
   CreateListPayload,
   DeleteListPayload,
@@ -20,6 +21,8 @@ import {
   UpdateListPayload
 } from "@/types/lists";
 import { ZodError } from "zod";
+import { getDaysRemaining, isOverdue } from "../utils/date-and-time";
+import { stripHTML } from "../utils/formatters";
 
 export async function createList(payload: CreateListPayload) {
   try {
@@ -60,10 +63,33 @@ export async function getListsAndTasks(payload: GetProjectListsPayload) {
     const parsed = getProjectListsPayloadSchema.parse(payload);
     const listsAndTasks = await listQueries.getListsAndTasks(parsed.projectId);
 
+    const formatted = listsAndTasks.map((list) => {
+      return {
+        id: list.id,
+        name: list.name,
+        projectId: list.projectId,
+        tasksCount: list.tasks.length,
+        tasks: list.tasks.map((task) => {
+          return {
+            id: task.id,
+            title: task.title,
+            listId: task.listId,
+            priority: task.priority,
+            isOverdue: isOverdue(task.dueDate),
+            description: stripHTML(task.description),
+            remainingDays: getDaysRemaining(task.dueDate),
+            assigneesImages: task.taskAssignments
+              .slice(0, 7)
+              .map((assignment) => assignment.user.imageUrl)
+          };
+        })
+      };
+    }) satisfies KanbanList[];
+
     return {
       success: true,
       message: "Success getting lists with tasks.",
-      listsAndTasks
+      listsAndTasks: formatted
     };
   } catch (error) {
     if (error instanceof ZodError) {

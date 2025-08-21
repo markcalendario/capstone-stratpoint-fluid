@@ -76,7 +76,7 @@ export default function KanbanBoard({ projectId }: KanbanBoardProps) {
       {!isLoaded && <SectionLoader text="Fetching Kanban Columns" />}
 
       {isLoaded && (
-        <div className="flex min-w-full flex-nowrap items-stretch space-x-6 overflow-x-auto pb-4">
+        <div className="flex min-w-full flex-nowrap items-stretch space-x-2 overflow-x-auto pb-4">
           <KanbanItems
             projectId={projectId}
             lists={listsAndTasks}

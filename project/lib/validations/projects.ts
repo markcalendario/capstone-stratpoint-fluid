@@ -4,8 +4,8 @@ import { userSchema } from "./users";
 
 const MIN_NAME = 3;
 const MIN_DESCRIPTION = 5;
-const MAX_NAME = 20;
-const MAX_DESCRIPTION = 50;
+const MAX_NAME = 50;
+const MAX_DESCRIPTION = 100;
 
 export const projectSchema = z.object({
   id: z.uuidv4("Project ID must be UUID.").trim(),

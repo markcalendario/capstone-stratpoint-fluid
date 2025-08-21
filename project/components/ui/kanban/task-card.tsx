@@ -6,6 +6,7 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { GripVertical } from "lucide-react";
 import Image from "next/image";
+import DueDateTab from "../due-date-tab";
 import PriorityTab from "../priority-tab";
 
 /*
@@ -49,9 +50,11 @@ export function TaskCard({
   id,
   title,
   listId,
-  description,
+  isOverdue,
   priority,
-  taskAssignments
+  description,
+  remainingDays,
+  assigneesImages
 }: KanbanTask) {
   const {
     isDragging,
@@ -83,24 +86,29 @@ export function TaskCard({
         className="absolute top-0 right-0 m-1 cursor-move p-1 text-neutral-500">
         <GripVertical size={16} />
       </button>
-      <h4 className="mb-1 text-sm font-medium text-neutral-800 dark:text-neutral-100">
+      <h4 className="text-sm font-medium text-neutral-800 dark:text-neutral-100">
         {title}
       </h4>
-      <p className="mb-2 text-xs text-neutral-500 dark:text-neutral-300">
+      <p className="text-xs text-neutral-500 dark:text-neutral-300">
         {description}
       </p>
-      <div className="flex items-center justify-between">
-        <PriorityTab priority={priority} />
-
-        <div className="flex gap-1">
-          {taskAssignments.map((taskAssignment, i) => (
+      <div className="mt-2 flex justify-between gap-2">
+        <div className="flex items-stretch gap-1">
+          <PriorityTab priority={priority} />
+          <DueDateTab
+            isOverdue={isOverdue}
+            daysRemaining={remainingDays}
+          />
+        </div>
+        <div className="flex justify-end gap-1 -space-x-3">
+          {assigneesImages.map((assigneesImage, i) => (
             <Image
               key={i}
-              width={20}
-              height={20}
+              width={25}
+              height={25}
               alt={`user ${i}`}
-              src={taskAssignment.user.imageUrl}
-              className="outline-primary/20 rounded-full outline-2"
+              src={assigneesImage}
+              className={`outline-primary/20 rounded-full outline-2`}
             />
           ))}
         </div>
