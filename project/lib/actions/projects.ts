@@ -220,7 +220,12 @@ export async function getProjectOptions(payload: GetProjectOptionsPayload) {
     const parsed = getProjectOptionsPayloadSchema.parse(payload);
     const projects = await projectQueries.getOptions(parsed.name, userId);
 
-    const formatted = projects.map((p) => ({ id: p.id, name: p.name }));
+    const formatted = projects.map((project) => ({
+      id: project.id,
+      name: project.name,
+      imageUrl: project.imageUrl,
+      projectType: project.projectType
+    }));
 
     return {
       success: true,

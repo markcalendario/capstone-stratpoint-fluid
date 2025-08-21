@@ -49,6 +49,10 @@ export interface GetProjectPayload {
   id: ProjectSchema["id"];
 }
 
+export interface GetProjectOptionsPayload {
+  name: ProjectSchema["name"];
+}
+
 // Misc
 
 export interface ProjectCardData
@@ -62,8 +66,5 @@ export interface ProjectCardData
   projectType: ProjectSchema["projectType"];
 }
 
-export interface ProjectOption extends Pick<ProjectSchema, "id" | "name"> {}
-
-interface GetProjectOptionsPayload {
-  name: ProjectSchema["name"];
-}
+export interface ProjectOption
+  extends Pick<ProjectSchema, "id" | "name" | "imageUrl" | "projectType"> {}
