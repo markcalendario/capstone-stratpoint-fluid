@@ -12,12 +12,15 @@ import {
 import { UserOption } from "@/types/teamRoles";
 import { ZodError } from "zod";
 import projectMembersQueries from "../queries/projectMembers";
-import projectQueries from "../queries/projects";
 import {
   getMembershipStatus,
   MEMBERSHIP_STATUS
 } from "../utils/projectMembers";
-import { isUserProjectOwner } from "../utils/projects";
+import {
+  getProjectOwner,
+  getProjectOwnerId,
+  isUserProjectOwner
+} from "../utils/projects";
 import { getUserId } from "../utils/users";
 import {
   addProjectMembersPayloadSchema,
@@ -50,13 +53,16 @@ export async function getProjectMembersOptions(
     });
 
     // Include owner
+    const owner = await getProjectOwner(parsed.projectId);
 
-    const user = await projectQueries.getOwner(parsed.projectId);
+    if (!owner) {
+      return { success: false, message: "Cannot find project owner." };
+    }
 
     formatted.push({
-      id: user.id,
-      name: user.name,
-      imageUrl: user.imageUrl
+      id: owner.id,
+      name: owner.name,
+      imageUrl: owner.imageUrl
     });
 
     return {
@@ -91,7 +97,7 @@ export async function getNonProjectMembersOptions(
       await projectMembersQueries.getNonProjectMembersOptions(parsed);
 
     // Excluse owner
-    const ownerId = await projectQueries.getOwnerId(parsed.projectId);
+    const ownerId = await getProjectOwnerId(parsed.projectId);
     const excludedOwner = nonMembers
       .filter((nonMember) => nonMember.id !== ownerId)
       .slice(0, 5);
@@ -183,8 +189,12 @@ export async function getProjectMembers(payload: GetProjectMembersPayload) {
 
     // Include owner
 
-    const owner = await projectQueries.getOwner(parsed.projectId);
+    const owner = await getProjectOwner(parsed.projectId);
     const ownerRole = "Project Owner";
+
+    if (!owner) {
+      return { success: false, message: "Cannot find project owner." };
+    }
 
     const ownerTasksDoneCount = owner.taskAssignments.filter((assignment) => {
       return (

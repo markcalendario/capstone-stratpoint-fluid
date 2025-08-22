@@ -21,7 +21,13 @@ const projectQueries = {
   get: async (id: ProjectSchema["id"]) => {
     return await db.query.projects.findFirst({
       with: {
-        user: true,
+        user: {
+          with: {
+            projects: true,
+            projectMembers: { with: { teamRole: true } },
+            taskAssignments: { with: { task: { with: { list: true } } } }
+          }
+        },
         projectMembers: {
           with: { user: true },
           where: (projectMember, { eq }) => eq(projectMember.isAccepted, true)
@@ -49,8 +55,14 @@ const projectQueries = {
 
     return await db.query.projects.findMany({
       with: {
-        user: true,
         lists: { with: { tasks: true } },
+        user: {
+          with: {
+            projects: true,
+            projectMembers: { with: { teamRole: true } },
+            taskAssignments: { with: { task: { with: { list: true } } } }
+          }
+        },
         projectMembers: {
           with: { user: true },
           where: (projectMember, { eq }) => eq(projectMember.isAccepted, true)
@@ -64,32 +76,6 @@ const projectQueries = {
       },
       orderBy: (projects, { asc }) => asc(projects.name)
     });
-  },
-
-  getOwnerId: async (id: ProjectSchema["id"]) => {
-    const [owner] = await db
-      .select({ ownerId: projects.ownerId })
-      .from(projects)
-      .where(eq(projects.id, id));
-
-    return owner.ownerId;
-  },
-
-  getOwner: async (id: ProjectSchema["id"]) => {
-    const [owner] = await db.query.projects.findMany({
-      where: (projects, { eq }) => eq(projects.id, id),
-      with: {
-        user: {
-          with: {
-            projects: true,
-            projectMembers: { with: { teamRole: true } },
-            taskAssignments: { with: { task: { with: { list: true } } } }
-          }
-        }
-      }
-    });
-
-    return owner.user;
   },
 
   update: async (id: ProjectSchema["id"], data: UpdateProjectData) => {
@@ -109,7 +95,7 @@ const projectQueries = {
   },
 
   getOptions: async (name: ProjectSchema["name"], userId: UserSchema["id"]) => {
-    const memberProjects = await db
+    const userProjects = await db
       .select({ projectId: projectMembers.projectId })
       .from(projectMembers)
       .where(
@@ -119,7 +105,7 @@ const projectQueries = {
         )
       );
 
-    const projectIds = memberProjects.map((m) => m.projectId);
+    const projectIds = userProjects.map((m) => m.projectId);
 
     return await db.query.projects.findMany({
       with: { projectMembers: true, lists: { with: { tasks: true } } },

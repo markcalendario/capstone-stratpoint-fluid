@@ -63,6 +63,16 @@ export async function isUserProjectOwner(
   userId: UserSchema["id"],
   projectId: ProjectSchema["id"]
 ) {
-  const ownerId = await projectQueries.getOwnerId(projectId);
+  const ownerId = await getProjectOwnerId(projectId);
   return userId === ownerId;
+}
+
+export async function getProjectOwnerId(id: ProjectSchema["id"]) {
+  const project = await projectQueries.get(id);
+  return project?.user.id;
+}
+
+export async function getProjectOwner(id: ProjectSchema["id"]) {
+  const project = await projectQueries.get(id);
+  return project?.user;
 }

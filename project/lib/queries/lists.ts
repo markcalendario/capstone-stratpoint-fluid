@@ -10,7 +10,7 @@ const listQueries = {
     return list;
   },
 
-  getListsAndTasks: async (projectId: ProjectSchema["id"]) => {
+  getListsWithTasks: async (projectId: ProjectSchema["id"]) => {
     return await db.query.lists.findMany({
       with: {
         tasks: {
@@ -21,15 +21,6 @@ const listQueries = {
       where: (lists, { eq }) => eq(lists.projectId, projectId),
       orderBy: (lists, { asc }) => asc(lists.position)
     });
-  },
-
-  getCreatorId: async (id: ListSchema["id"]) => {
-    const [result] = await db
-      .select({ createdBy: lists.createdBy })
-      .from(lists)
-      .where(eq(lists.id, id));
-
-    return result.createdBy;
   },
 
   getMaxPosition: async (projectId: ListSchema["id"]) => {
