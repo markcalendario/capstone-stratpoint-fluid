@@ -20,8 +20,8 @@ export default function ProjectBanner({
   memberImages
 }: ProjectBannerProps) {
   return (
-    <div className="ring-primary/20 space-y-3 rounded-sm bg-white p-7 ring-2 ring-inset dark:bg-neutral-800">
-      <div className="flex items-start justify-between">
+    <div className="ring-primary/20 space-y-3 rounded-sm bg-white p-3 ring-2 ring-inset md:p-7 dark:bg-neutral-800">
+      <div className="flex flex-wrap items-start justify-between gap-2 md:gap-4">
         <div className="flex items-center gap-4">
           <Image
             src={imageUrl}
@@ -42,7 +42,7 @@ export default function ProjectBanner({
         <ProjectActionButtons projectId={id} />
       </div>
 
-      <div className="flex gap-5 text-sm">
+      <div className="flex flex-wrap gap-2 text-sm md:gap-4">
         <p className="flex items-center gap-2 text-neutral-500 dark:text-neutral-400">
           <Calendar size={14} />
           {dueDate}
@@ -53,7 +53,7 @@ export default function ProjectBanner({
         </p>
       </div>
 
-      <div className="flex gap-5">
+      <div className="flex flex-wrap gap-2 md:gap-4">
         <div className="flex items-center gap-2 text-neutral-500 dark:text-neutral-400">
           <Crown size={14} />
           <UserImagesStack
