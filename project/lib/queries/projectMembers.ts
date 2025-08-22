@@ -34,7 +34,7 @@ const projectMembersQueries = {
   },
 
   // Retrive all project members with accepted status
-  getAccepted: async (projectId: ProjectSchema["id"]) => {
+  getAcceptedByProject: async (projectId: ProjectSchema["id"]) => {
     return await db.query.projectMembers.findMany({
       where: (projectMembers, { eq, and }) => {
         return and(
@@ -88,7 +88,7 @@ const projectMembersQueries = {
     });
   },
 
-  getByUser: async (
+  getByUserAndProject: async (
     projectId: ProjectSchema["id"],
     userId: UserSchema["id"]
   ) => {

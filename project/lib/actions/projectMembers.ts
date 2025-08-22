@@ -43,7 +43,9 @@ export async function getProjectMembersOptions(
       return { success: false, message: "You are not the project owner." };
     }
 
-    const members = await projectMembersQueries.getAccepted(parsed.projectId);
+    const members = await projectMembersQueries.getAcceptedByProject(
+      parsed.projectId
+    );
     const formatted = members.map((member) => {
       return {
         id: member.user.id,
@@ -277,7 +279,7 @@ export async function getProjectMemberRole(
   // Retrieves the roles of members regardless of their membership status
   try {
     const parsed = getProjectMembersRoleSchema.parse(payload);
-    const member = await projectMembersQueries.getByUser(
+    const member = await projectMembersQueries.getByUserAndProject(
       parsed.projectId,
       parsed.userId
     );

@@ -215,7 +215,6 @@ export async function updateProject(payload: UpdateProjectPayload) {
   try {
     const userId = await getUserId();
     const parsed = updateProjectPayloadSchema.parse(payload);
-    console.log(parsed);
 
     let imageUrl: string | undefined = undefined;
 
@@ -245,18 +244,10 @@ export async function updateProject(payload: UpdateProjectPayload) {
     };
   } catch (error) {
     if (error instanceof ZodError) {
-      return {
-        success: false,
-        message: error.issues[0].message,
-        projectId: null
-      };
+      return { success: false, message: error.issues[0].message };
     }
 
-    return {
-      success: false,
-      message: "Error. Cannot create project.",
-      projectId: null
-    };
+    return { success: false, message: "Error. Cannot create project." };
   }
 }
 
