@@ -1,6 +1,5 @@
 import { useDeleteProject } from "@/hooks/use-projects";
 import { ProjectSchema } from "@/types/projects";
-import { redirect, RedirectType } from "next/navigation";
 import { ChangeEvent, useState } from "react";
 import Alert from "../alert";
 import Button from "../buttons/button";
@@ -36,7 +35,6 @@ export function DeleteProjectModal({
     showSuccessToast(message);
 
     toggle();
-    redirect("/projects", RedirectType.push);
   };
 
   return (
