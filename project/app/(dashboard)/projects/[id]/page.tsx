@@ -4,20 +4,20 @@ import { DashboardContent } from "@/components/layouts/dashboard/dashboard-conte
 import ProjectBanner from "@/components/sections/project-view/project-banner";
 import KanbanBoard from "@/components/ui/kanban/kanban-board";
 import SectionLoader from "@/components/ui/section-loader";
-import { useProjectInfo } from "@/hooks/use-projects";
+import { useProjectSlug } from "@/hooks/use-projects";
 import { useParams } from "next/navigation";
 
 export default function ProjectPage() {
   const params = useParams();
   const id = params.id as string;
 
-  const { isProjectInfoLoading, projectInfo } = useProjectInfo(id);
+  const { isProjectSlugDataLoading, projectSlugData } = useProjectSlug(id);
 
-  if (isProjectInfoLoading || !projectInfo?.project) {
+  if (isProjectSlugDataLoading || !projectSlugData?.project) {
     return <SectionLoader text="Loading Project" />;
   }
 
-  const { project } = projectInfo;
+  const { project } = projectSlugData;
 
   return (
     <DashboardContent className="space-y-6">

@@ -6,16 +6,16 @@ import SectionLoader from "@/components/ui/section-loader";
 import { useProjects } from "@/hooks/use-projects";
 
 export default function ProjectsList() {
-  const { isProjectsLoading, projectsData } = useProjects();
+  const { isProjectsListDataLoading, projectsListData } = useProjects();
 
-  if (isProjectsLoading || !projectsData?.projects) {
+  if (isProjectsListDataLoading || !projectsListData?.projects) {
     return <SectionLoader text="Loading Projects" />;
   }
 
   return (
     <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 xl:grid-cols-3">
       <CreateProjectButton className="border-primary/20 text-primary min-h-[150px] border-2 border-dashed bg-white text-center text-lg dark:bg-neutral-800 dark:text-neutral-200" />
-      {projectsData.projects.map((project) => (
+      {projectsListData.projects.map((project) => (
         <ProjectCard
           {...project}
           key={project.id}

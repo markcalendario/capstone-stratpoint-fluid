@@ -30,7 +30,7 @@ Integration:
 - Handle errors gracefully
 */
 
-import { useProjectData, useUpdateProject } from "@/hooks/use-projects";
+import { useProjectEditData, useUpdateProject } from "@/hooks/use-projects";
 import { ProjectSchema } from "@/types/projects";
 import { ChangeEvent, MouseEvent, useEffect, useState } from "react";
 import Button from "../buttons/button";
@@ -49,8 +49,9 @@ interface EditProjectModalProps {
 }
 
 export function EditProjectModal({ projectId, toggle }: EditProjectModalProps) {
-  const { isProjectLoading, projectData } = useProjectData(projectId);
   const { isProjectUpdating, updateProject } = useUpdateProject(projectId);
+  const { isProjectEditDataLoading, editProjectData } =
+    useProjectEditData(projectId);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -63,17 +64,17 @@ export function EditProjectModal({ projectId, toggle }: EditProjectModalProps) {
 
   // Populate formData when projectData is loaded
   useEffect(() => {
-    if (!projectData?.project) return;
+    if (!editProjectData?.project) return;
 
     setFormData({
-      name: projectData.project.name,
-      description: projectData.project.description,
-      dueDate: projectData.project.dueDate,
-      projectType: projectData.project.projectType,
-      imageUrl: projectData.project.imageUrl,
+      name: editProjectData.project.name,
+      description: editProjectData.project.description,
+      dueDate: editProjectData.project.dueDate,
+      projectType: editProjectData.project.projectType,
+      imageUrl: editProjectData.project.imageUrl,
       image: null
     });
-  }, [projectData]);
+  }, [editProjectData]);
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -111,9 +112,11 @@ export function EditProjectModal({ projectId, toggle }: EditProjectModalProps) {
     <Modal
       toggle={toggle}
       title="Edit Project">
-      {isProjectLoading && <SectionLoader text="Getting project data." />}
+      {isProjectEditDataLoading && (
+        <SectionLoader text="Getting project data." />
+      )}
 
-      {!isProjectLoading && (
+      {!isProjectEditDataLoading && (
         <form className="space-y-4">
           <Input
             id="name"

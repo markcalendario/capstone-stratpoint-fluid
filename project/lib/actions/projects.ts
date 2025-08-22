@@ -128,15 +128,26 @@ export async function getProjects() {
   }
 }
 
-export async function getProjectData(payload: GetProjectDataPayload) {
+export async function getProjectEditData(payload: GetProjectDataPayload) {
   try {
     const parsed = getProjectPayloadSchema.parse(payload);
     const project = await projectQueries.get(parsed.id);
 
+    if (!project) return { success: false, message: "Project not found." };
+
+    const formatted = {
+      id: project.id,
+      name: project.name,
+      dueDate: project.dueDate,
+      imageUrl: project.imageUrl,
+      description: project.description,
+      projectType: project.projectType
+    };
+
     return {
       success: true,
       message: "Project retrieved successfully.",
-      project
+      project: formatted
     };
   } catch (error) {
     if (error instanceof ZodError) {
@@ -147,7 +158,7 @@ export async function getProjectData(payload: GetProjectDataPayload) {
   }
 }
 
-export async function getProjectInfo(payload: GetProjectInfoPayload) {
+export async function getProjectSlug(payload: GetProjectInfoPayload) {
   try {
     const parsed = getProjectPayloadSchema.parse(payload);
     const project = await projectQueries.get(parsed.id);

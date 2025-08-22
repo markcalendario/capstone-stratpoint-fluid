@@ -2,15 +2,24 @@ import { queryClient } from "@/components/ui/query-client-provider";
 import {
   createProject,
   deleteProject,
-  getProjectData,
-  getProjectInfo,
+  getProjectEditData,
   getProjectOptions,
   getProjects,
+  getProjectSlug,
   getRecentProjects,
   updateProject
 } from "@/lib/actions/projects";
 import { DeleteProjectPayload, ProjectSchema } from "@/types/projects";
 import { useMutation, useQuery } from "@tanstack/react-query";
+
+export function useProjectSlug(id: ProjectSchema["id"]) {
+  const { isPending, data } = useQuery({
+    queryKey: ["projectInfo", id],
+    queryFn: () => getProjectSlug({ id })
+  });
+
+  return { isProjectSlugDataLoading: isPending, projectSlugData: data };
+}
 
 export function useProjects() {
   const { isPending, data } = useQuery({
@@ -18,16 +27,38 @@ export function useProjects() {
     queryFn: getProjects
   });
 
-  return { isProjectsLoading: isPending, projectsData: data };
+  return { isProjectsListDataLoading: isPending, projectsListData: data };
 }
 
-export function useProjectInfo(id: ProjectSchema["id"]) {
+export function useRecentProjects() {
   const { isPending, data } = useQuery({
-    queryKey: ["projectInfo", id],
-    queryFn: () => getProjectInfo({ id })
+    queryKey: ["recentProjects"],
+    queryFn: getRecentProjects
   });
 
-  return { isProjectInfoLoading: isPending, projectInfo: data };
+  return { isRecentProjectsLoading: isPending, recentProjectsData: data };
+}
+
+export function useProjectOptions(name: ProjectSchema["name"]) {
+  const { isPending, data, refetch } = useQuery({
+    queryFn: () => getProjectOptions({ name }),
+    queryKey: ["projects", name]
+  });
+
+  return {
+    isProjectOptionsLoading: isPending,
+    projectOptions: data,
+    refetchProjectOptions: refetch
+  };
+}
+
+export function useProjectEditData(id: ProjectSchema["id"]) {
+  const { isPending, data } = useQuery({
+    queryKey: ["project", id],
+    queryFn: () => getProjectEditData({ id })
+  });
+
+  return { isProjectEditDataLoading: isPending, editProjectData: data };
 }
 
 export function useCreateProject() {
@@ -41,24 +72,6 @@ export function useCreateProject() {
   });
 
   return { isCreatingProject: isPending, createProject: mutateAsync };
-}
-
-export function useRecentProjects() {
-  const { isPending, data } = useQuery({
-    queryKey: ["recentProjects"],
-    queryFn: getRecentProjects
-  });
-
-  return { isRecentProjectsLoading: isPending, recentProjectsData: data };
-}
-
-export function useProjectData(id: ProjectSchema["id"]) {
-  const { isPending, data } = useQuery({
-    queryKey: ["project", id],
-    queryFn: () => getProjectData({ id })
-  });
-
-  return { isProjectLoading: isPending, projectData: data };
 }
 
 export function useUpdateProject(id: ProjectSchema["id"]) {
@@ -92,17 +105,4 @@ export function useDeleteProject(id: ProjectSchema["id"]) {
   });
 
   return { isProjectDeleting: isPending, deleteProject: mutateAsync };
-}
-
-export function useProjectOptions(name: ProjectSchema["name"]) {
-  const { isPending, data, refetch } = useQuery({
-    queryFn: () => getProjectOptions({ name }),
-    queryKey: ["projects", name]
-  });
-
-  return {
-    isProjectOptionsLoading: isPending,
-    projectOptions: data,
-    refetchProjectOptions: refetch
-  };
 }
