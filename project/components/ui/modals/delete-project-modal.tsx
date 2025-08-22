@@ -1,7 +1,7 @@
 import { useDeleteProject } from "@/hooks/use-projects";
 import { ProjectSchema } from "@/types/projects";
-import { redirect, RedirectType } from "next/navigation";
 import { ChangeEvent, useState } from "react";
+import Alert from "../alert";
 import Button from "../buttons/button";
 import Input from "../input-fields/input";
 import { showErrorToast, showSuccessToast } from "../toast";
@@ -35,7 +35,6 @@ export function DeleteProjectModal({
     showSuccessToast(message);
 
     toggle();
-    redirect("/projects", RedirectType.push);
   };
 
   return (
@@ -43,10 +42,16 @@ export function DeleteProjectModal({
       toggle={toggle}
       title="Delete Project">
       <div className="space-y-3">
+        <Alert
+          type="warning"
+          title="Deletion Warning"
+          description="Deleting this project will also permanently delete all the members and kanban data of this project."
+        />
         <Input
           id="confirm-delete"
           value={confirmText}
           placeholder="DELETE PROJECT"
+          required
           onChange={handleConfirmChange}
           label={`Type ${TARGET_CONFIRM_TEXT} to delete this project.`}
         />

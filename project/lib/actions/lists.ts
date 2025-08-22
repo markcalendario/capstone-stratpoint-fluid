@@ -1,7 +1,6 @@
 "use server";
 
 import listQueries from "@/lib/queries/lists";
-import { isUserListCreator } from "@/lib/utils/lists";
 import { isUserProjectOwner } from "@/lib/utils/projects";
 import { getUserId } from "@/lib/utils/users";
 import {
@@ -11,6 +10,7 @@ import {
   listSchema,
   updateListPayloadSchema
 } from "@/lib/validations/lists";
+import { KanbanList } from "@/types/kanban";
 import {
   CreateListPayload,
   DeleteListPayload,
@@ -20,6 +20,8 @@ import {
   UpdateListPayload
 } from "@/types/lists";
 import { ZodError } from "zod";
+import { getDaysRemaining, isOverdue } from "../utils/date-and-time";
+import { stripHTML } from "../utils/formatters";
 
 export async function createList(payload: CreateListPayload) {
   try {
@@ -55,15 +57,39 @@ export async function createList(payload: CreateListPayload) {
   }
 }
 
-export async function getListsAndTasks(payload: GetProjectListsPayload) {
+export async function getListsWithTasks(payload: GetProjectListsPayload) {
   try {
     const parsed = getProjectListsPayloadSchema.parse(payload);
-    const listsAndTasks = await listQueries.getListsAndTasks(parsed.projectId);
+    const listsAndTasks = await listQueries.getListsWithTasks(parsed.projectId);
+
+    const formatted = listsAndTasks.map((list) => {
+      return {
+        id: list.id,
+        name: list.name,
+        isFinal: list.isFinal,
+        projectId: list.projectId,
+        tasksCount: list.tasks.length,
+        tasks: list.tasks.map((task) => {
+          return {
+            id: task.id,
+            title: task.title,
+            listId: task.listId,
+            priority: task.priority,
+            isOverdue: isOverdue(task.dueDate),
+            description: stripHTML(task.description),
+            remainingDays: getDaysRemaining(task.dueDate),
+            assigneesImages: task.taskAssignments.map(
+              (assignment) => assignment.user.imageUrl
+            )
+          };
+        })
+      };
+    }) satisfies KanbanList[];
 
     return {
       success: true,
       message: "Success getting lists with tasks.",
-      listsAndTasks
+      listsAndTasks: formatted
     };
   } catch (error) {
     if (error instanceof ZodError) {
@@ -77,13 +103,7 @@ export async function getListsAndTasks(payload: GetProjectListsPayload) {
 export async function updateList(payload: UpdateListPayload) {
   try {
     // Validate payload
-    const userId = await getUserId();
     const parsed = updateListPayloadSchema.parse(payload);
-
-    // Check if user is the creator of the list
-    if (!(await isUserListCreator(parsed.id, userId))) {
-      return { success: false, message: "You are not the list creator." };
-    }
 
     const data = {
       name: parsed.name,
@@ -121,13 +141,7 @@ export async function getList(payload: GetListPayload) {
 
 export async function deleteList(payload: DeleteListPayload) {
   try {
-    const userId = await getUserId();
     const parsed = deleteListPayloadSchema.parse(payload);
-
-    if (!(await isUserListCreator(parsed.id, userId))) {
-      return { success: false, message: "You are not the owner if this list." };
-    }
-
     await listQueries.delete(parsed.id);
 
     return { success: true, message: "List deleted successfully." };
@@ -144,7 +158,7 @@ export async function moveList(payload: MoveListPayload) {
   const { listId, newPosition, projectId } = payload;
 
   // Get list IDs of the project
-  const lists = await listQueries.getListsAndTasks(projectId);
+  const lists = await listQueries.getListsWithTasks(projectId);
   const listIds = lists.map((list) => list.id);
 
   // Filter out the list being moved

@@ -36,7 +36,7 @@ export default function Textarea({
         id={id}
         {...props}
         placeholder={placeholder}
-        className="border-primary w-full rounded-sm border-1 p-[10px] font-[500] placeholder-neutral-500 outline-0 dark:text-neutral-300 dark:placeholder-neutral-400"
+        className="outline-primary w-full rounded-xs p-[10px] font-[500] placeholder-neutral-500 outline-2 dark:text-neutral-300 dark:placeholder-neutral-400"
       />
     </div>
   );

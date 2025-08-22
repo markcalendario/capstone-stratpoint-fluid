@@ -1,4 +1,4 @@
-import { useAddTeamMembers } from "@/hooks/use-teams";
+import { useAddProjectMembers } from "@/hooks/use-project-members";
 import { ProjectSchema } from "@/types/projects";
 import { TeamRolesSchema } from "@/types/teamRoles";
 import { UserSchema } from "@/types/users";
@@ -25,7 +25,7 @@ export function AddTeamMemberModal({
 }: AddTeamMemberModalProps) {
   const [members, setMembers] = useState<MembersState[]>([]);
   const [projectId, setProjectId] = useState<ProjectSchema["id"] | null>(null);
-  const { isAddingTeamMembers, addTeamMembers } = useAddTeamMembers(
+  const { isAddingTeamMembers, addTeamMembers } = useAddProjectMembers(
     projectId ?? ""
   );
 
@@ -45,7 +45,7 @@ export function AddTeamMemberModal({
   return (
     <Modal
       toggle={toggle}
-      title="Add Member to Team">
+      title="Add Member to Project">
       <form className="space-y-4">
         <SelectProject
           preSelectedId={preSelectedId}

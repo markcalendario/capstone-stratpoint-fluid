@@ -1,45 +1,36 @@
 "use client";
 
 import { DashboardContent } from "@/components/layouts/dashboard/dashboard-content";
-import ProjectActionButtons from "@/components/sections/project-view/project-action-buttons";
+import ProjectBanner from "@/components/sections/project-view/project-banner";
 import KanbanBoard from "@/components/ui/kanban/kanban-board";
 import SectionLoader from "@/components/ui/section-loader";
-import { useUserProject } from "@/hooks/use-projects";
+import { useProjectSlug } from "@/hooks/use-projects";
 import { useParams } from "next/navigation";
 
 export default function ProjectPage() {
   const params = useParams();
   const id = params.id as string;
 
-  const { isProjectLoading, projectData } = useUserProject(id);
+  const { isProjectSlugDataLoading, projectSlugData } = useProjectSlug(id);
 
-  if (isProjectLoading || !projectData) {
+  if (isProjectSlugDataLoading || !projectSlugData?.project) {
     return <SectionLoader text="Loading Project" />;
   }
 
-  return (
-    <DashboardContent
-      className="space-y-6"
-      title={`${projectData.project?.name}`}
-      description="List and tasks for this project.">
-      <ProjectActionButtons projectId={id} />
+  const { project } = projectSlugData;
 
-      {/* Implementation Tasks Banner */}
-      <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-900/20">
-        <h3 className="mb-2 text-sm font-medium text-blue-900 dark:text-blue-100">
-          🎯 Kanban Board Implementation Tasks
-        </h3>
-        <ul className="space-y-1 text-sm text-blue-800 dark:text-blue-200">
-          <li>• Task 5.1: Design responsive Kanban board layout</li>
-          <li>
-            • Task 5.2: Implement drag-and-drop functionality with dnd-kit
-          </li>
-          <li>
-            • Task 5.4: Implement optimistic UI updates for smooth interactions
-          </li>
-          <li>• Task 5.6: Create task detail modals and editing interfaces</li>
-        </ul>
-      </div>
+  return (
+    <DashboardContent className="space-y-6">
+      <ProjectBanner
+        id={project.id}
+        name={project.name}
+        dueDate={project.dueDate}
+        imageUrl={project.imageUrl}
+        ownerImage={project.ownerImage}
+        projectType={project.projectType}
+        description={project.description}
+        memberImages={project.memberImages}
+      />
 
       {/* Kanban Board Placeholder */}
       <KanbanBoard projectId={id} />

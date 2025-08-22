@@ -24,10 +24,10 @@ export default function DashboardStatus() {
       icon: TrendingUp
     },
     {
-      name: "Team Members",
-      value: status.teamMembers.count,
-      change: status.teamMembers.change,
-      changeType: status.teamMembers.changeType,
+      name: "Project Members",
+      value: status.projectMembers.count,
+      change: status.projectMembers.change,
+      changeType: status.projectMembers.changeType,
       icon: Users
     },
     {

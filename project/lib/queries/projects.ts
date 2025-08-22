@@ -1,4 +1,4 @@
-import { projects, teams } from "@/lib/db/drizzle/migrations/schema";
+import { projectMembers, projects } from "@/lib/db/drizzle/migrations/schema";
 import {
   CreateProjectData,
   ProjectSchema,
@@ -20,52 +20,62 @@ const projectQueries = {
 
   get: async (id: ProjectSchema["id"]) => {
     return await db.query.projects.findFirst({
-      with: { teams: true, lists: { with: { tasks: true } } },
+      with: {
+        user: {
+          with: {
+            projects: true,
+            projectMembers: { with: { teamRole: true } },
+            taskAssignments: { with: { task: { with: { list: true } } } }
+          }
+        },
+        projectMembers: {
+          with: { user: true },
+          where: (projectMember, { eq }) => eq(projectMember.isAccepted, true)
+        },
+        lists: { with: { tasks: true } }
+      },
       where: (projects, { eq }) => eq(projects.id, id)
     });
   },
 
-  ownedOrMember: async (userId: UserSchema["id"]) => {
+  getAll: async (userId: UserSchema["id"]) => {
+    // Get all projects where the user is owner or a member.
+
     const memberProjects = await db
-      .select({ projectId: teams.projectId })
-      .from(teams)
-      .where(and(eq(teams.userId, userId), eq(teams.isAccepted, true)));
+      .select({ projectId: projectMembers.projectId })
+      .from(projectMembers)
+      .where(
+        and(
+          eq(projectMembers.userId, userId),
+          eq(projectMembers.isAccepted, true)
+        )
+      );
 
     const projectIds = memberProjects.map((m) => m.projectId);
 
     return await db.query.projects.findMany({
-      with: { teams: true, lists: { with: { tasks: true } } },
-      where: (projects, { eq, or, and, inArray }) =>
-        or(
-          and(eq(projects.ownerId, userId), eq(projects.active, true)),
-          and(eq(projects.active, true), inArray(projects.id, projectIds))
-        )
-    });
-  },
-
-  getOwnerId: async (id: ProjectSchema["id"]) => {
-    const [owner] = await db
-      .select({ ownerId: projects.ownerId })
-      .from(projects)
-      .where(eq(projects.id, id));
-
-    return owner.ownerId;
-  },
-
-  getOwner: async (id: ProjectSchema["id"]) => {
-    const [owner] = await db.query.projects.findMany({
-      where: (projects, { eq }) => eq(projects.id, id),
       with: {
+        lists: { with: { tasks: true } },
         user: {
           with: {
-            teams: { with: { teamRole: true } },
+            projects: true,
+            projectMembers: { with: { teamRole: true } },
             taskAssignments: { with: { task: { with: { list: true } } } }
           }
+        },
+        projectMembers: {
+          with: { user: true },
+          where: (projectMember, { eq }) => eq(projectMember.isAccepted, true)
         }
-      }
+      },
+      where: (projects, { eq, or, inArray }) => {
+        return or(
+          eq(projects.ownerId, userId),
+          inArray(projects.id, projectIds)
+        );
+      },
+      orderBy: (projects, { asc }) => asc(projects.name)
     });
-
-    return owner.user;
   },
 
   update: async (id: ProjectSchema["id"], data: UpdateProjectData) => {
@@ -85,22 +95,25 @@ const projectQueries = {
   },
 
   getOptions: async (name: ProjectSchema["name"], userId: UserSchema["id"]) => {
-    const memberProjects = await db
-      .select({ projectId: teams.projectId })
-      .from(teams)
-      .where(and(eq(teams.userId, userId), eq(teams.isAccepted, true)));
+    const userProjects = await db
+      .select({ projectId: projectMembers.projectId })
+      .from(projectMembers)
+      .where(
+        and(
+          eq(projectMembers.userId, userId),
+          eq(projectMembers.isAccepted, true)
+        )
+      );
 
-    const projectIds = memberProjects.map((m) => m.projectId);
+    const projectIds = userProjects.map((m) => m.projectId);
 
     return await db.query.projects.findMany({
-      with: { teams: true, lists: { with: { tasks: true } } },
+      with: { projectMembers: true, lists: { with: { tasks: true } } },
       where: (projects, { eq, or, and, ilike, inArray }) =>
         and(
-          or(
-            and(eq(projects.ownerId, userId), eq(projects.active, true)),
-            and(eq(projects.active, true), inArray(projects.id, projectIds))
-          ),
-          ilike(projects.name, `%${name}%`)
+          or(eq(projects.ownerId, userId), inArray(projects.id, projectIds)),
+          ilike(projects.name, `%${name}%`),
+          eq(projects.isActive, true)
         )
     });
   }

@@ -13,7 +13,7 @@ export function useCreateAndAssignTask() {
 
   return {
     createAndAssignTask: mutateAsync,
-    isCreatingAndAssignTaskLoading: isPending
+    isCreatingAndAssigningTask: isPending
   };
 }
 

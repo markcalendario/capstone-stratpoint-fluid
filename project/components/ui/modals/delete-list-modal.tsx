@@ -1,6 +1,7 @@
 import { useDeleteList } from "@/hooks/use-lists";
 import { ListSchema } from "@/types/lists";
 import { ChangeEvent, useState } from "react";
+import Alert from "../alert";
 import Button from "../buttons/button";
 import Input from "../input-fields/input";
 import { showErrorToast, showSuccessToast } from "../toast";
@@ -38,10 +39,16 @@ export function DeleteListModal({ toggle, listId }: DeleteListModalProps) {
       toggle={toggle}
       title="Delete List">
       <div className="space-y-3">
+        <Alert
+          type="warning"
+          title="Deletion Warning"
+          description="Deleting this kanban list will also permanently delete all the tasks placed in this list."
+        />
         <Input
           id="confirm-delete"
           value={confirmText}
           placeholder="DELETE LIST"
+          required
           onChange={handleConfirmChange}
           label={`Type ${TARGET_CONFIRM_TEXT} to delete this list.`}
         />

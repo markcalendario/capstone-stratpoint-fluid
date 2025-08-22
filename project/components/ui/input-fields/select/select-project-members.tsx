@@ -1,4 +1,4 @@
-import { useProjectMembersOptions } from "@/hooks/use-teams";
+import { useProjectMembersOptions } from "@/hooks/use-project-members";
 import { ProjectSchema } from "@/types/projects";
 import { UserSchema } from "@/types/users";
 import { ChangeEvent, useEffect, useState } from "react";

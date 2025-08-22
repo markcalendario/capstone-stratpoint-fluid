@@ -1,11 +1,12 @@
 import { cn } from "@/lib/utils";
-import { MEMBERSHIP_STATUS } from "@/lib/utils/teams";
+import { MEMBERSHIP_STATUS } from "@/lib/utils/projectMembers";
 import { ProjectSchema } from "@/types/projects";
 import { TeamRoles } from "@/types/teamRoles";
 import { UserSchema } from "@/types/users";
 import { Crown, Mail, MoreHorizontal, UserX } from "lucide-react";
 import Image from "next/image";
 import { Fragment, useState } from "react";
+import Badge from "./badge";
 import Dropdown from "./dropdowns/drop-down";
 import EditMemberRoleModal from "./modals/edit-member-role-modal";
 import RemoveMemberModal from "./modals/remove-member-modal";
@@ -104,11 +105,9 @@ export default function TeamCard({
         </div>
 
         <div className="flex flex-wrap items-center justify-between gap-1">
-          <div className="flex flex-wrap gap-1">
-            <span className="rounded-full bg-neutral-200 px-3 py-1 text-xs font-medium text-neutral-800 dark:bg-neutral-700 dark:text-neutral-300">
-              {`${tasksDoneCount} / ${tasksDoneCount + tasksUndoneCount} tasks done`}
-            </span>
-          </div>
+          <Badge type="gray">
+            {`${tasksDoneCount} / ${tasksDoneCount + tasksUndoneCount} tasks done`}
+          </Badge>
           <div className="text-xs text-gray-500 dark:text-gray-400">
             {projectsCount} projects
           </div>

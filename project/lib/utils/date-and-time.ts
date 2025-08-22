@@ -7,6 +7,7 @@ export function isFutureDate(date: string) {
 
   return targetDate >= currentDate;
 }
+
 export function formatDate(date: string) {
   const d = new Date(date);
   if (isNaN(d.getTime())) return "Invalid Date";
@@ -15,4 +16,36 @@ export function formatDate(date: string) {
     month: "short",
     day: "numeric"
   });
+}
+
+export function getDaysRemaining(dueDate: string | Date): string {
+  const today = new Date();
+  const due = new Date(dueDate);
+
+  // Zero out the time for accurate day comparison
+  today.setHours(0, 0, 0, 0);
+  due.setHours(0, 0, 0, 0);
+
+  const diffInMs = due.getTime() - today.getTime();
+  const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
+
+  if (diffInDays > 0) {
+    return `${diffInDays} day${diffInDays === 1 ? "" : "s"} left`;
+  } else if (diffInDays < 0) {
+    const overdueDays = Math.abs(diffInDays);
+    return `${overdueDays} day${overdueDays === 1 ? "" : "s"} late`;
+  } else {
+    return "Due today";
+  }
+}
+
+export function isOverdue(dueDate: string | Date): boolean {
+  const today = new Date();
+  const due = new Date(dueDate);
+
+  // Zero out time parts for accurate date-only comparison
+  today.setHours(0, 0, 0, 0);
+  due.setHours(0, 0, 0, 0);
+
+  return due < today;
 }

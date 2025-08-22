@@ -1,5 +1,8 @@
+import {
+  useEditProjectMemberRole,
+  useProjectMemberRole
+} from "@/hooks/use-project-members";
 import useTeamRoles from "@/hooks/use-team-roles";
-import { useEditMemberRole, useMemberRole } from "@/hooks/use-teams";
 import { ProjectSchema } from "@/types/projects";
 import { TeamRolesSchema } from "@/types/teamRoles";
 import { UserSchema } from "@/types/users";
@@ -20,16 +23,13 @@ export default function EditMemberRoleModal({
   userId,
   projectId
 }: EditMemberRoleModalProps) {
-  const { isTeamRolesLoading, teamRoles } = useTeamRoles();
+  const { teamRoles } = useTeamRoles();
 
-  const { isEditingMemberRole, editMemberRole } = useEditMemberRole(
-    projectId,
-    userId
-  );
-  const { isMemberRoleLoading, memberRoleData } = useMemberRole(
-    projectId,
-    userId
-  );
+  const { isEditingMemberRole, editProjectMemberRole: editMemberRole } =
+    useEditProjectMemberRole(projectId, userId);
+
+  const { isMemberRoleLoading, projectMemberRoleData: memberRoleData } =
+    useProjectMemberRole(projectId, userId);
 
   const handleEditRole = async (
     userId: UserSchema["id"],
@@ -68,6 +68,7 @@ export default function EditMemberRoleModal({
           <div className="flex justify-end gap-3">
             <Button
               onClick={toggle}
+              isProcessing={isEditingMemberRole}
               className="bg-neutral-200 text-neutral-800 dark:bg-neutral-900 dark:text-neutral-200">
               Done
             </Button>

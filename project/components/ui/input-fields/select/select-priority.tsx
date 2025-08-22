@@ -1,3 +1,5 @@
+import { priorities } from "@/lib/utils/constants";
+import { toTitleCase } from "@/lib/utils/formatters";
 import { SelectHTMLAttributes } from "react";
 import Select from "./select";
 
@@ -19,9 +21,13 @@ export default function SelectPriority({
       {...props}
       onChange={onChange}>
       <option value="">Select Priority</option>
-      <option value="low">Low</option>
-      <option value="medium">Medium</option>
-      <option value="high">High</option>
+      {priorities.map((priority) => (
+        <option
+          key={priority}
+          value={priority}>
+          {toTitleCase(priority)}
+        </option>
+      ))}
     </Select>
   );
 }

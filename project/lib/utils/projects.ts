@@ -1,18 +1,23 @@
 import { List } from "@/types/lists";
-import { Project, ProjectSchema } from "@/types/projects";
+import { ProjectMember } from "@/types/projectMembers";
+import { Project, ProjectCardData, ProjectSchema } from "@/types/projects";
 import { Task } from "@/types/tasks";
-import { Team } from "@/types/teams";
-import { UserSchema } from "@/types/users";
+import { User, UserSchema } from "@/types/users";
 import projectQueries from "..//queries/projects";
-import { formatDate } from "./date-and-time";
+import { getDaysRemaining, isOverdue } from "./date-and-time";
 
-interface ToCardData extends Omit<Project, "teams" | "lists"> {
-  teams: Team[];
-  lists: Array<
-    List & {
-      tasks: Task[];
-    }
-  >;
+interface ToCardDataList extends List {
+  tasks: Task[];
+}
+
+interface ToCardDataProjectMembers extends ProjectMember {
+  user: User;
+}
+
+interface ToCardData extends Project {
+  projectMembers: ToCardDataProjectMembers[];
+  lists: ToCardDataList[];
+  user: User;
 }
 
 export function toCardData(projects: ToCardData[]) {
@@ -34,20 +39,40 @@ export function toCardData(projects: ToCardData[]) {
     projectCardData.push({
       id: project.id,
       name: project.name,
+      progress: progress,
+      imageUrl: project.imageUrl,
+      isActive: project.isActive,
+      projectType: project.projectType,
       description: project.description,
-      dueDate: formatDate(project.dueDate),
-      members: project.teams.length + 1, // Plus the owner
-      progress
+      isOverdue: isOverdue(project.dueDate),
+      daysRemaining: getDaysRemaining(project.dueDate),
+      openTasks: project.lists
+        .filter((list) => !list.isFinal)
+        .reduce((count, list) => count + list.tasks.length, 0),
+      memberImages: [
+        project.user.imageUrl,
+        ...project.projectMembers.map((member) => member.user.imageUrl)
+      ]
     });
   }
 
-  return projectCardData;
+  return projectCardData satisfies ProjectCardData[];
 }
 
 export async function isUserProjectOwner(
   userId: UserSchema["id"],
   projectId: ProjectSchema["id"]
 ) {
-  const ownerId = await projectQueries.getOwnerId(projectId);
+  const ownerId = await getProjectOwnerId(projectId);
   return userId === ownerId;
+}
+
+export async function getProjectOwnerId(id: ProjectSchema["id"]) {
+  const project = await projectQueries.get(id);
+  return project?.user.id;
+}
+
+export async function getProjectOwner(id: ProjectSchema["id"]) {
+  const project = await projectQueries.get(id);
+  return project?.user;
 }

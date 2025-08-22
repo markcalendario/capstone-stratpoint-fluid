@@ -1,5 +1,7 @@
+import { toTitleCase } from "@/lib/utils/formatters";
 import { ProjectOption as IProjectOption } from "@/types/projects";
-import { Box, Maximize, Minimize } from "lucide-react";
+import { Maximize, Minimize } from "lucide-react";
+import Image from "next/image";
 
 interface ProjectOptionProps extends IProjectOption {
   selectProject?: (project: IProjectOption) => void;
@@ -9,39 +11,47 @@ interface ProjectOptionProps extends IProjectOption {
 export default function ProjectOption({
   id,
   name,
+  imageUrl,
+  projectType,
   selectProject,
   deselectProject
 }: ProjectOptionProps) {
+  const handleClick = () => {
+    if (selectProject) selectProject({ id, name, imageUrl, projectType });
+    else if (deselectProject) deselectProject();
+  };
+
   return (
-    <div className="flex items-center justify-between rounded-sm bg-neutral-100 p-4 dark:bg-neutral-900">
+    <div
+      onClick={handleClick}
+      className="group flex cursor-pointer items-center justify-between rounded-sm bg-neutral-900/5 p-4 duration-100 hover:bg-neutral-900/10 dark:bg-neutral-100/5 dark:hover:bg-neutral-100/5">
       <div className="flex flex-wrap items-center gap-3">
-        <Box className="text-neutral-700 dark:text-neutral-300" />
-        <div className="grid gap-1">
-          <p className="leading-[15px] text-neutral-700 dark:text-neutral-300">
+        {/* Image */}
+        <div className="relative aspect-square h-8 w-8">
+          <Image
+            fill
+            alt={name}
+            src={imageUrl}
+            className="rounded-sm object-cover"
+            sizes="(max-width: 768px) 100vw, 33vw"
+          />
+        </div>
+        <div className="space-y-1">
+          <p className="group-hover:text-primary leading-none font-bold text-neutral-700 dark:text-neutral-300 dark:group-hover:text-neutral-100">
             {name}
           </p>
           <p className="text-xs leading-[10px] text-neutral-700 dark:text-neutral-300">
-            {id}
+            {toTitleCase(projectType)}
           </p>
         </div>
       </div>
 
       {selectProject && (
-        <button
-          type="button"
-          className="cursor-pointer"
-          onClick={() => selectProject({ id, name })}>
-          <Maximize className="text-neutral-700 dark:text-neutral-300" />
-        </button>
+        <Maximize className="text-neutral-700 dark:text-neutral-300" />
       )}
 
       {deselectProject && (
-        <button
-          type="button"
-          className="cursor-pointer"
-          onClick={deselectProject}>
-          <Minimize className="text-neutral-700 dark:text-neutral-300" />
-        </button>
+        <Minimize className="text-neutral-700 dark:text-neutral-300" />
       )}
     </div>
   );

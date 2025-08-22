@@ -3,12 +3,16 @@
 import {
   CreateProjectPayload,
   DeleteProjectPayload,
+  GetProjectDataPayload,
+  GetProjectInfoPayload,
   GetProjectOptionsPayload,
-  GetProjectPayload,
+  ProjectInfo,
   UpdateProjectPayload
 } from "@/types/projects";
 import { ZodError } from "zod";
 import projectQueries from "..//queries/projects";
+import { formatDate } from "../utils/date-and-time";
+import { upload } from "../utils/files";
 import { isUserProjectOwner, toCardData } from "../utils/projects";
 import { getUserId } from "../utils/users";
 import {
@@ -24,11 +28,19 @@ export async function createProject(payload: CreateProjectPayload) {
     const userId = await getUserId();
     const parsed = createProjectPayloadSchema.parse(payload);
 
-    const data = {
+    let imageUrl: string | undefined = undefined;
+
+    if (parsed.image) {
+      imageUrl = await upload({ file: parsed.image });
+    }
+
+    const data: any = {
       name: parsed.name,
       description: parsed.description,
       dueDate: parsed.dueDate,
-      ownerId: userId
+      ownerId: userId,
+      projectType: parsed.projectType,
+      ...(imageUrl && { imageUrl })
     };
 
     const projectId = await projectQueries.create(data);
@@ -46,6 +58,7 @@ export async function createProject(payload: CreateProjectPayload) {
         projectId: null
       };
     }
+    console.log(error);
 
     return {
       success: false,
@@ -58,7 +71,7 @@ export async function createProject(payload: CreateProjectPayload) {
 export async function getRecentProjects() {
   try {
     const userId = await getUserId();
-    const projects = await projectQueries.ownedOrMember(userId);
+    const projects = await projectQueries.getAll(userId);
 
     const recentProjects = projects
       .sort((a, b) => {
@@ -93,15 +106,9 @@ export async function getRecentProjects() {
 export async function getProjects() {
   try {
     const userId = await getUserId();
-    const projects = await projectQueries.ownedOrMember(userId);
+    const projects = await projectQueries.getAll(userId);
 
-    const sortedProjects = projects.sort((a, b) => {
-      const aTime = a.createdAt ? new Date(a.createdAt).getTime() : 0;
-      const bTime = b.createdAt ? new Date(b.createdAt).getTime() : 0;
-      return bTime - aTime;
-    });
-
-    const formattedProjects = toCardData(sortedProjects);
+    const formattedProjects = toCardData(projects);
 
     return {
       success: true,
@@ -121,14 +128,58 @@ export async function getProjects() {
   }
 }
 
-export async function getProject(payload: GetProjectPayload) {
+export async function getProjectEditData(payload: GetProjectDataPayload) {
   try {
     const parsed = getProjectPayloadSchema.parse(payload);
     const project = await projectQueries.get(parsed.id);
+
+    if (!project) return { success: false, message: "Project not found." };
+
+    const formatted = {
+      id: project.id,
+      name: project.name,
+      dueDate: project.dueDate,
+      imageUrl: project.imageUrl,
+      description: project.description,
+      projectType: project.projectType
+    };
+
     return {
       success: true,
       message: "Project retrieved successfully.",
-      project
+      project: formatted
+    };
+  } catch (error) {
+    if (error instanceof ZodError) {
+      return { success: false, message: error.issues[0].message };
+    }
+
+    return { success: false, message: "Error. Cannot get project." };
+  }
+}
+
+export async function getProjectSlug(payload: GetProjectInfoPayload) {
+  try {
+    const parsed = getProjectPayloadSchema.parse(payload);
+    const project = await projectQueries.get(parsed.id);
+
+    if (!project) return { success: true, message: "Project not found." };
+
+    const formatted = {
+      id: project.id,
+      name: project.name,
+      imageUrl: project.imageUrl,
+      description: project.description,
+      projectType: project.projectType,
+      ownerImage: project.user.imageUrl,
+      dueDate: formatDate(project.dueDate),
+      memberImages: project.projectMembers.map((m) => m.user.imageUrl)
+    } satisfies ProjectInfo;
+
+    return {
+      success: true,
+      message: "Project retrieved successfully.",
+      project: formatted
     };
   } catch (error) {
     if (error instanceof ZodError) {
@@ -165,6 +216,12 @@ export async function updateProject(payload: UpdateProjectPayload) {
     const userId = await getUserId();
     const parsed = updateProjectPayloadSchema.parse(payload);
 
+    let imageUrl: string | undefined = undefined;
+
+    if (parsed.image) {
+      imageUrl = await upload({ file: parsed.image });
+    }
+
     if (!(await isUserProjectOwner(userId, parsed.projectId))) {
       return { success: false, message: "You are not the project owner." };
     }
@@ -174,30 +231,23 @@ export async function updateProject(payload: UpdateProjectPayload) {
       description: parsed.description,
       dueDate: parsed.dueDate,
       ownerId: userId,
-      updatedAt: new Date().toISOString()
+      projectType: parsed.projectType,
+      updatedAt: new Date().toISOString(),
+      ...(imageUrl && { imageUrl })
     };
 
-    const projectId = await projectQueries.update(parsed.projectId, data);
+    await projectQueries.update(parsed.projectId, data);
 
     return {
       success: true,
-      message: "Project updated successfully.",
-      projectId
+      message: "Project updated successfully."
     };
   } catch (error) {
     if (error instanceof ZodError) {
-      return {
-        success: false,
-        message: error.issues[0].message,
-        projectId: null
-      };
+      return { success: false, message: error.issues[0].message };
     }
 
-    return {
-      success: false,
-      message: "Error. Cannot create project.",
-      projectId: null
-    };
+    return { success: false, message: "Error. Cannot create project." };
   }
 }
 
@@ -208,7 +258,12 @@ export async function getProjectOptions(payload: GetProjectOptionsPayload) {
     const parsed = getProjectOptionsPayloadSchema.parse(payload);
     const projects = await projectQueries.getOptions(parsed.name, userId);
 
-    const formatted = projects.map((p) => ({ id: p.id, name: p.name }));
+    const formatted = projects.map((project) => ({
+      id: project.id,
+      name: project.name,
+      imageUrl: project.imageUrl,
+      projectType: project.projectType
+    }));
 
     return {
       success: true,

@@ -15,6 +15,7 @@ export default function Select({
   children,
   className,
   required,
+  value,
   ...props
 }: SelectProps) {
   return (
@@ -35,6 +36,7 @@ export default function Select({
 
       <select
         id={id}
+        value={value}
         {...props}
         className="border-primary w-full rounded-sm border-2 p-[10px] font-[500] placeholder-neutral-500 outline-0 dark:text-neutral-300 dark:placeholder-neutral-400">
         {children}

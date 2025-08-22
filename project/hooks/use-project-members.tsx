@@ -1,21 +1,24 @@
 import { queryClient } from "@/components/ui/query-client-provider";
 import {
-  addTeamMembers,
-  editMemberRole,
-  getMemberRole,
+  addProjectMembers,
+  editProjectMemberRole,
+  getNonProjectMembersOptions,
+  getProjectMemberRole,
   getProjectMembers,
   getProjectMembersOptions,
-  getProjectNonMembersOptions,
-  removeTeamMember
-} from "@/lib/actions/teams";
+  removeProjectMember
+} from "@/lib/actions/projectMembers";
+import {
+  AddProjectMembersPayload,
+  EditProjectMemberRolePayload
+} from "@/types/projectMembers";
 import { ProjectSchema } from "@/types/projects";
-import { AddTeamMembersPayload, EditMemberRolePayload } from "@/types/teams";
 import { UserSchema } from "@/types/users";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
 export function useProjectMembersOptions(projectId: ProjectSchema["id"]) {
   const { isPending, data } = useQuery({
-    queryKey: ["teams", projectId],
+    queryKey: ["projectMembers", projectId],
     queryFn: () => getProjectMembersOptions({ projectId })
   });
 
@@ -30,8 +33,8 @@ export function useNonProjectMembersOptions(
   name: string
 ) {
   const { isPending, data, refetch } = useQuery({
-    queryKey: ["teamsOptions", projectId],
-    queryFn: () => getProjectNonMembersOptions({ projectId, name })
+    queryKey: ["projectMembersOptions", projectId],
+    queryFn: () => getNonProjectMembersOptions({ projectId, name })
   });
 
   return {
@@ -41,12 +44,17 @@ export function useNonProjectMembersOptions(
   };
 }
 
-export function useAddTeamMembers(projectId: ProjectSchema["id"]) {
+export function useAddProjectMembers(projectId: ProjectSchema["id"]) {
   const { isPending, mutateAsync } = useMutation({
-    mutationFn: (payload: AddTeamMembersPayload) => addTeamMembers(payload),
+    mutationFn: (payload: AddProjectMembersPayload) =>
+      addProjectMembers(payload),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["teams", projectId] });
-      queryClient.invalidateQueries({ queryKey: ["teamsOptions", projectId] });
+      queryClient.invalidateQueries({
+        queryKey: ["projectMembers", projectId]
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["projectMembersOptions", projectId]
+      });
       queryClient.invalidateQueries({ queryKey: ["analytics"] });
       queryClient.invalidateQueries({ queryKey: ["projects"] });
       queryClient.invalidateQueries({ queryKey: ["recentProjects"] });
@@ -58,7 +66,7 @@ export function useAddTeamMembers(projectId: ProjectSchema["id"]) {
 
 export function useProjectMembers(projectId: ProjectSchema["id"]) {
   const { isPending, data } = useQuery({
-    queryKey: ["teams", projectId],
+    queryKey: ["projectMembers", projectId],
     queryFn: () => getProjectMembers({ projectId }),
     enabled: projectId !== ""
   });
@@ -66,40 +74,45 @@ export function useProjectMembers(projectId: ProjectSchema["id"]) {
   return { isProjectMembersLoading: isPending, projectMembers: data };
 }
 
-export function useRemoveTeamMember(projectId: ProjectSchema["id"]) {
+export function useRemoveProjectMember(projectId: ProjectSchema["id"]) {
   const { isPending, mutateAsync } = useMutation({
-    mutationFn: removeTeamMember,
+    mutationFn: removeProjectMember,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["teams", projectId] });
+      queryClient.invalidateQueries({
+        queryKey: ["projectMembers", projectId]
+      });
     }
   });
 
-  return { isRemovingTeamMember: isPending, removeTeamMember: mutateAsync };
+  return { isRemovingTeamMember: isPending, removeProjectMember: mutateAsync };
 }
 
-export function useMemberRole(
+export function useProjectMemberRole(
   projectId: ProjectSchema["id"],
   userId: UserSchema["id"]
 ) {
   const { isPending, data } = useQuery({
-    queryFn: () => getMemberRole({ projectId, userId }),
+    queryFn: () => getProjectMemberRole({ projectId, userId }),
     queryKey: ["teamRole", projectId, userId]
   });
 
-  return { isMemberRoleLoading: isPending, memberRoleData: data };
+  return { isMemberRoleLoading: isPending, projectMemberRoleData: data };
 }
 
-export function useEditMemberRole(
+export function useEditProjectMemberRole(
   projectId: ProjectSchema["id"],
   userId: UserSchema["id"]
 ) {
   const { isPending, mutateAsync } = useMutation({
-    mutationFn: (payload: EditMemberRolePayload) => editMemberRole(payload),
+    mutationFn: (payload: EditProjectMemberRolePayload) =>
+      editProjectMemberRole(payload),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["teams", projectId] });
+      queryClient.invalidateQueries({
+        queryKey: ["projectMembers", projectId]
+      });
       queryClient.invalidateQueries({ queryKey: ["role", projectId, userId] });
     }
   });
 
-  return { isEditingMemberRole: isPending, editMemberRole: mutateAsync };
+  return { isEditingMemberRole: isPending, editProjectMemberRole: mutateAsync };
 }

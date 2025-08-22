@@ -1,12 +1,13 @@
 // TODO: Task 5.6 - Create task detail modals and editing interfaces
 
 import { cn } from "@/lib/utils";
+import { toTitleCase } from "@/lib/utils/formatters";
 import { KanbanTask } from "@/types/kanban";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { GripVertical } from "lucide-react";
-import Image from "next/image";
-import PriorityTab from "../priority-tab";
+import Badge from "../badge";
+import UserImagesStack from "../user-images-stack";
 
 /*
 TODO: Implementation Notes for Interns:
@@ -49,9 +50,11 @@ export function TaskCard({
   id,
   title,
   listId,
-  description,
+  isOverdue,
   priority,
-  taskAssignments
+  description,
+  remainingDays,
+  assigneesImages
 }: KanbanTask) {
   const {
     isDragging,
@@ -67,6 +70,11 @@ export function TaskCard({
   });
 
   const style = { transform: CSS.Transform.toString(transform), transition };
+  const priorityColor = {
+    low: "success",
+    medium: "warning",
+    high: "error"
+  } as const;
 
   return (
     <div
@@ -74,36 +82,30 @@ export function TaskCard({
       ref={setNodeRef}
       className={cn(
         isDragging && "opacity-70",
-        "border-primary/20 relative rounded-xs border-2 bg-white p-4 shadow-sm duration-500 hover:shadow-md dark:bg-neutral-800"
+        "ring-primary/20 relative rounded-sm bg-white p-4 ring-1 duration-500 ring-inset dark:bg-neutral-800"
       )}>
       <button
         {...listeners}
         {...attributes}
         ref={setActivatorNodeRef}
-        className="absolute top-0 right-0 m-1 cursor-move p-1 text-neutral-500">
+        className="absolute top-0 right-0 m-2 cursor-move p-1 text-neutral-500">
         <GripVertical size={16} />
       </button>
-      <h4 className="mb-1 text-sm font-medium text-neutral-800 dark:text-neutral-100">
+      <h4 className="text-sm font-medium text-neutral-800 dark:text-neutral-100">
         {title}
       </h4>
-      <p className="mb-2 text-xs text-neutral-500 dark:text-neutral-300">
+      <p className="text-xs text-neutral-500 dark:text-neutral-300">
         {description}
       </p>
-      <div className="flex items-center justify-between">
-        <PriorityTab priority={priority} />
-
-        <div className="flex gap-1">
-          {taskAssignments.map((taskAssignment, i) => (
-            <Image
-              key={i}
-              width={20}
-              height={20}
-              alt={`user ${i}`}
-              src={taskAssignment.user.imageUrl}
-              className="outline-primary/20 rounded-full outline-2"
-            />
-          ))}
+      <div className="mt-2 flex justify-between gap-2">
+        <div className="flex items-stretch gap-1">
+          <Badge type={priorityColor[priority]}>{toTitleCase(priority)}</Badge>
+          <Badge type={isOverdue ? "error" : "warning"}>{remainingDays}</Badge>
         </div>
+        <UserImagesStack
+          images={assigneesImages}
+          show={7}
+        />
       </div>
     </div>
   );

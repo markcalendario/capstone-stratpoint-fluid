@@ -30,13 +30,8 @@ export default function RecentProjects() {
           recentProjectsData &&
           recentProjectsData.recentProjects.map((project) => (
             <ProjectCard
+              {...project}
               key={project.id}
-              id={project.id}
-              name={project.name}
-              description={project.description}
-              dueDate={project.dueDate}
-              members={project.members}
-              progress={project.progress}
             />
           ))}
       </div>

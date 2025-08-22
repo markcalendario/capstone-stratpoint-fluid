@@ -136,7 +136,7 @@ export async function moveTask(payload: MoveTaskPayload) {
     const { taskId, newListId, newPosition } = parsed;
 
     // Get tasks in the new list (in order)
-    const tasks = await taskQueries.getListTasks(newListId);
+    const tasks = await taskQueries.getByList(newListId);
     const taskIds = tasks.map((task) => task.id);
 
     // Remove the task ID if it already exists in the list (prevent duplicates)

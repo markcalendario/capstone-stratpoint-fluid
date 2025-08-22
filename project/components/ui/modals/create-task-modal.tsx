@@ -36,8 +36,10 @@ export function CreateTaskModal({
   listId,
   projectId
 }: CreateTaskModalProps) {
-  const { isCreatingAndAssignTaskLoading, createAndAssignTask } =
-    useCreateAndAssignTask();
+  const {
+    isCreatingAndAssigningTask: isCreatingAndAssignTaskLoading,
+    createAndAssignTask
+  } = useCreateAndAssignTask();
 
   const [payload, setPayload] = useState<Payload>({
     label: "",

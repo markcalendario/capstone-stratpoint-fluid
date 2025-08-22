@@ -5,7 +5,7 @@ import { eq, sql } from "drizzle-orm";
 import db from "../db";
 
 const taskQueries = {
-  getListTasks: async (listId: ListSchema["id"]) => {
+  getByList: async (listId: ListSchema["id"]) => {
     return await db.query.tasks.findMany({
       where: (tasks, { eq }) => eq(tasks.listId, listId),
       with: { taskAssignments: { with: { user: true } } },

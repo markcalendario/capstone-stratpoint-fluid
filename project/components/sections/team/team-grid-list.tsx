@@ -5,7 +5,7 @@ import SelectProject from "@/components/ui/input-fields/select/select-project";
 import SectionEmpty from "@/components/ui/section-empty";
 import SectionLoader from "@/components/ui/section-loader";
 import TeamCard from "@/components/ui/team-card";
-import { useProjectMembers } from "@/hooks/use-teams";
+import { useProjectMembers } from "@/hooks/use-project-members";
 import { ProjectSchema } from "@/types/projects";
 import { Box } from "lucide-react";
 import { useSearchParams } from "next/navigation";

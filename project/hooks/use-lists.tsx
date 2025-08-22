@@ -3,7 +3,7 @@ import {
   createList,
   deleteList,
   getList,
-  getListsAndTasks,
+  getListsWithTasks,
   moveList,
   updateList
 } from "@/lib/actions/lists";
@@ -25,10 +25,10 @@ export function useList(id: ListSchema["id"]) {
   return { isListLoading: isPending, listData: data };
 }
 
-export function useListsAndTasks(projectId: ProjectSchema["id"]) {
+export function useListsWithTasks(projectId: ProjectSchema["id"]) {
   const { isPending, data } = useQuery({
-    queryKey: ["listsAndTasks"],
-    queryFn: () => getListsAndTasks({ projectId }),
+    queryKey: ["listsAndTasks", projectId],
+    queryFn: () => getListsWithTasks({ projectId }),
     refetchInterval: 3000,
     refetchIntervalInBackground: false
   });

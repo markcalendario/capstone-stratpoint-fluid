@@ -30,12 +30,14 @@ Integration:
 - Handle errors gracefully
 */
 
-import { useUpdateProject, useUserProject } from "@/hooks/use-projects";
+import { useProjectEditData, useUpdateProject } from "@/hooks/use-projects";
 import { ProjectSchema } from "@/types/projects";
-import { useRouter } from "next/navigation";
 import { ChangeEvent, MouseEvent, useEffect, useState } from "react";
 import Button from "../buttons/button";
+import ImageUpload from "../input-fields/image-upload";
 import Input from "../input-fields/input";
+import ProjectTypeOptions from "../input-fields/select/options/project-type-options";
+import Select from "../input-fields/select/select";
 import Textarea from "../input-fields/textarea";
 import SectionLoader from "../section-loader";
 import { showErrorToast, showSuccessToast } from "../toast";
@@ -47,29 +49,35 @@ interface EditProjectModalProps {
 }
 
 export function EditProjectModal({ projectId, toggle }: EditProjectModalProps) {
-  const { isProjectLoading, projectData } = useUserProject(projectId);
   const { isProjectUpdating, updateProject } = useUpdateProject(projectId);
-  const router = useRouter();
+  const { isProjectEditDataLoading, editProjectData } =
+    useProjectEditData(projectId);
 
   const [formData, setFormData] = useState({
     name: "",
     description: "",
-    dueDate: ""
+    dueDate: "",
+    projectType: "",
+    imageUrl: "",
+    image: null as File | null
   });
 
   // Populate formData when projectData is loaded
   useEffect(() => {
-    if (!projectData?.project) return;
+    if (!editProjectData?.project) return;
 
     setFormData({
-      name: projectData.project.name,
-      description: projectData.project.description,
-      dueDate: projectData.project.dueDate
+      name: editProjectData.project.name,
+      description: editProjectData.project.description,
+      dueDate: editProjectData.project.dueDate,
+      projectType: editProjectData.project.projectType,
+      imageUrl: editProjectData.project.imageUrl,
+      image: null
     });
-  }, [projectData]);
+  }, [editProjectData]);
 
   const handleChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -82,31 +90,40 @@ export function EditProjectModal({ projectId, toggle }: EditProjectModalProps) {
       projectId,
       name: formData.name.trim(),
       description: formData.description.trim(),
-      dueDate: formData.dueDate
+      dueDate: formData.dueDate,
+      projectType: formData.projectType,
+      image: formData.image
     };
 
-    const { success, message, projectId: id } = await updateProject(payload);
+    const { success, message } = await updateProject(payload);
 
     if (!success) return showErrorToast(message);
     showSuccessToast(message);
 
     toggle();
-    router.push(`/projects/${id}`);
+  };
+
+  const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) setFormData((prev) => ({ ...prev, image: file }));
   };
 
   return (
     <Modal
       toggle={toggle}
       title="Edit Project">
-      {isProjectLoading && <SectionLoader text="Getting project data." />}
+      {isProjectEditDataLoading && (
+        <SectionLoader text="Getting project data." />
+      )}
 
-      {!isProjectLoading && (
+      {!isProjectEditDataLoading && (
         <form className="space-y-4">
           <Input
             id="name"
             name="name"
             label="Project Name"
             placeholder="Enter project name"
+            required
             value={formData.name}
             onChange={handleChange}
           />
@@ -116,6 +133,7 @@ export function EditProjectModal({ projectId, toggle }: EditProjectModalProps) {
             name="description"
             label="Project Description"
             placeholder="Enter project description"
+            required
             value={formData.description}
             onChange={handleChange}
           />
@@ -126,8 +144,27 @@ export function EditProjectModal({ projectId, toggle }: EditProjectModalProps) {
             label="Project Due Date"
             placeholder="Enter due date"
             type="date"
+            required
             value={formData.dueDate}
             onChange={handleChange}
+          />
+
+          <Select
+            id="projectType"
+            label="Project Type"
+            name="projectType"
+            required
+            onChange={handleChange}
+            value={formData.projectType}>
+            <ProjectTypeOptions />
+          </Select>
+
+          <ImageUpload
+            id="image"
+            name="image"
+            label="Project Image"
+            placeholderImageUrl={formData.imageUrl}
+            onChange={handleImageChange}
           />
 
           <div className="flex justify-end space-x-3 pt-4">

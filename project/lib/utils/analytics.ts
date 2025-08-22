@@ -24,12 +24,14 @@ export async function getActiveProjectsStatus(userId: UserSchema["id"]) {
   const oneWeekAgo = new Date();
   oneWeekAgo.setDate(new Date().getDate() - 7);
 
-  const projects = await projectQueries.ownedOrMember(userId);
+  const projects = await projectQueries.getAll(userId);
 
   const currentCount = projects.length;
-  const previousCount = projects.filter((p) =>
-    p.createdAt ? new Date(p.createdAt) < oneWeekAgo : false
-  ).length;
+  const previousCount = projects.filter((p) => {
+    const isOneWeekAgo = new Date(p.createdAt) < oneWeekAgo;
+    const isActive = p.isActive;
+    return isOneWeekAgo && isActive;
+  }).length;
 
   const change = calcChange(currentCount, previousCount);
 
@@ -40,24 +42,29 @@ export async function getActiveProjectsStatus(userId: UserSchema["id"]) {
   };
 }
 
-export async function getTeamMembersStatus(userId: UserSchema["id"]) {
+export async function getProjectMembersStatus(userId: UserSchema["id"]) {
   const oneWeekAgo = new Date();
   oneWeekAgo.setDate(new Date().getDate() - 7);
 
-  const projects = await projectQueries.ownedOrMember(userId);
+  const projects = await projectQueries.getAll(userId);
 
   const currentMembers = new Set(
-    projects.flatMap((p) => p.teams.map((m) => m.userId))
+    projects.flatMap((p) =>
+      p.projectMembers.map((projectMember) => projectMember.userId)
+    )
   );
 
   const previousMembers = new Set(
     projects.flatMap((p) =>
-      p.teams
-        .filter(
-          (m) =>
-            m.isAccepted && m.invitedAt && new Date(m.invitedAt) < oneWeekAgo
-        )
-        .map((m) => m.userId)
+      p.projectMembers
+        .filter((projectMember) => {
+          return (
+            projectMember.isAccepted &&
+            projectMember.invitedAt &&
+            new Date(projectMember.invitedAt) < oneWeekAgo
+          );
+        })
+        .map((projectMember) => projectMember.userId)
     )
   );
 
@@ -74,7 +81,7 @@ export async function getCompletedTasksStatus(userId: UserSchema["id"]) {
   const oneWeekAgo = new Date();
   oneWeekAgo.setDate(new Date().getDate() - 7);
 
-  const projects = await projectQueries.ownedOrMember(userId);
+  const projects = await projectQueries.getAll(userId);
 
   let current = 0;
   let previous = 0;
@@ -104,7 +111,7 @@ export async function getPendingTasksStatus(userId: UserSchema["id"]) {
   const oneWeekAgo = new Date();
   oneWeekAgo.setDate(new Date().getDate() - 7);
 
-  const projects = await projectQueries.ownedOrMember(userId);
+  const projects = await projectQueries.getAll(userId);
 
   let current = 0;
   let previous = 0;

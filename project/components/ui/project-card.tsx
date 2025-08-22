@@ -1,10 +1,13 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { ProjectCard as IProjectCard } from "@/types/projects";
-import { Calendar, Users } from "lucide-react";
+import { ProjectCardData as IProjectCard } from "@/types/projects";
+import Image from "next/image";
 import Link from "next/link";
+import Badge from "./badge";
 import ProjectCardDropdown from "./dropdowns/project-card-dropdown";
+import ProjectTypeBadge from "./project-type-badge";
+import UserImagesStack from "./user-images-stack";
 
 interface ProjectCardProps extends IProjectCard {
   className?: string;
@@ -13,61 +16,81 @@ interface ProjectCardProps extends IProjectCard {
 export default function ProjectCard({
   id,
   name,
+  imageUrl,
+  isActive,
+  progress,
   className,
+  openTasks,
+  isOverdue,
   description,
-  dueDate,
-  members,
-  progress
+  projectType,
+  memberImages,
+  daysRemaining
 }: ProjectCardProps) {
   return (
     <div
-      key={id}
-      className={cn("border-primary/20 rounded-sm border p-4", className)}>
-      <div className="flex items-start justify-between">
-        <div className="flex-1">
-          <Link
-            href={`/projects/${id}`}
-            className="text-primary line-clamp-1 font-medium dark:text-white">
-            {name}
-          </Link>
-          <p className="mt-1 line-clamp-1 text-sm text-gray-500 dark:text-gray-400">
-            {description}
-          </p>
+      className={cn(
+        "ring-primary/20 relative block rounded-sm p-5 ring-2 ring-inset",
+        className
+      )}>
+      <ProjectCardDropdown id={id} />
 
-          <div className="mt-3 flex items-center space-x-4 text-sm text-gray-500 dark:text-gray-400">
-            <div className="flex items-center">
-              <Users
-                size={16}
-                className="mr-1"
-              />
-              {members}
-            </div>
-            <div className="flex items-center">
-              <Calendar
-                size={16}
-                className="mr-1"
-              />
-              {dueDate}
-            </div>
-          </div>
+      <ProjectTypeBadge type={projectType} />
 
-          <div className="mt-3">
-            <div className="mb-1 flex items-center justify-between text-sm">
-              <span className="text-gray-500 dark:text-gray-400">Progress</span>
-              <span className="text-gray-900 dark:text-gray-100">
-                {progress}%
-              </span>
-            </div>
-            <div className="h-2 w-full rounded-full bg-gray-200 dark:bg-gray-700">
-              <div
-                className="bg-primary h-2 rounded-full transition-all duration-300"
-                style={{ width: `${progress}%` }}
-              />
-            </div>
-          </div>
+      {/* Primary Info */}
+      <Link
+        href={`/projects/${id}`}
+        className="mt-3 flex items-start gap-2">
+        {/* Image */}
+        <div className="relative aspect-square h-8 w-8">
+          <Image
+            fill
+            alt={name}
+            src={imageUrl}
+            className="rounded-sm object-cover"
+            sizes="(max-width: 768px) 100vw, 33vw"
+          />
         </div>
 
-        <ProjectCardDropdown id={id} />
+        {/* Info */}
+        <div className="">
+          <p className="leading-none font-bold text-neutral-900 dark:text-neutral-100">
+            {name}
+          </p>
+          <p className="mt-1 text-sm leading-none text-neutral-700 dark:text-neutral-300">
+            {description}
+          </p>
+        </div>
+      </Link>
+      {/* Progress Bar */}
+      <div className="mt-3">
+        <div className="mb-1 flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
+          <span>Progress</span>
+          <span>{progress}%</span>
+        </div>
+        <div className="h-2 w-full rounded-full bg-gray-200 dark:bg-gray-700">
+          <div
+            className="bg-primary h-2 rounded-full transition-all duration-300"
+            style={{ width: `${progress}%` }}
+          />
+        </div>
+      </div>
+
+      <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
+        {/* Indicators */}
+        <div className="flex items-center gap-1">
+          <Badge type={isOverdue ? "error" : "warning"}>{daysRemaining}</Badge>
+          <Badge type={isActive ? "info" : "gray"}>
+            {isActive ? "Active" : "Inactive"}
+          </Badge>
+          <Badge type="gray">{openTasks} open tasks</Badge>
+        </div>
+
+        {/* Members Images */}
+        <UserImagesStack
+          show={3}
+          images={memberImages}
+        />
       </div>
     </div>
   );

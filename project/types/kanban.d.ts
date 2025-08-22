@@ -1,15 +1,15 @@
 import { List } from "./lists";
 import { Task } from "./tasks";
-import { User } from "./users";
 
-export interface KanbanTaskAssignment extends TaskAssignments {
-  user: User;
+export interface KanbanTask
+  extends Pick<Task, "id" | "title" | "listId" | "priority" | "description"> {
+  isOverdue: boolean;
+  remainingDays: string;
+  assigneesImages: string[];
 }
 
-export interface KanbanTask extends Task {
-  taskAssignments: KanbanTaskAssignment[];
-}
-
-export interface KanbanList extends List {
+export interface KanbanList
+  extends Pick<List, "id" | "name" | "isFinal" | "projectId"> {
+  tasksCount: number;
   tasks: KanbanTask[];
 }
