@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
     // Webhook: On user deleted
     else if (type === "user.deleted") {
       const validatedClerkId = userClerkIdSchema.parse(data.id);
-      await userQueries.deleteByClerkId(validatedClerkId);
+      await userQueries.softDeleteByClerkId(validatedClerkId);
       return new Response("[Synced] Account deleted.", { status: 200 });
     }
   } catch (error) {

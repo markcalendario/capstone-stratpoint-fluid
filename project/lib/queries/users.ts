@@ -5,13 +5,6 @@ import { v4 as uuidv4 } from "uuid";
 import db from "../db";
 
 const userQueries = {
-  getAll: async () => {
-    return await db.select().from(users);
-  },
-  getById: async (id: UserSchema["id"]) => {
-    const [user] = await db.select().from(users).where(eq(users.id, id));
-    return user;
-  },
   getIdByClerkId: async (clerkId: UserSchema["clerkId"]) => {
     const [user] = await db
       .select()
@@ -20,6 +13,7 @@ const userQueries = {
 
     return user.id;
   },
+
   create: async (data: CreateUserData) => {
     const [newUser] = await db
       .insert(users)
@@ -28,15 +22,7 @@ const userQueries = {
 
     return newUser.id;
   },
-  update: async (id: UserSchema["id"], data: UpdateUserData) => {
-    const [updatedUser] = await db
-      .update(users)
-      .set(data)
-      .where(eq(users.id, id))
-      .returning({ id: users.id });
 
-    return updatedUser.id;
-  },
   updateByClerkId: async (
     clerkId: UserSchema["clerkId"],
     data: UpdateUserData
@@ -49,24 +35,8 @@ const userQueries = {
 
     return updatedUser.clerkId;
   },
-  delete: async (id: UserSchema["id"]) => {
-    const deletedEmail = `${uuidv4()}@deleted.com`;
-    const now = new Date().toISOString();
 
-    const [deletedUser] = await db
-      .update(users)
-      .set({
-        email: deletedEmail,
-        name: "[Deleted User]",
-        updatedAt: now
-      })
-      .where(eq(users.id, id))
-      .returning({ id: users.id });
-
-    return deletedUser;
-  },
-
-  deleteByClerkId: async (clerkId: UserSchema["clerkId"]) => {
+  softDeleteByClerkId: async (clerkId: UserSchema["clerkId"]) => {
     const deletedEmail = `${uuidv4()}@deleted.com`;
     const now = new Date().toISOString();
 
