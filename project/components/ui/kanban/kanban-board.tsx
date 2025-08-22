@@ -1,6 +1,6 @@
 "use client";
 
-import { useListsAndTasks } from "@/hooks/use-lists";
+import { useListsWithTasks } from "@/hooks/use-lists";
 import { useMoveTask } from "@/hooks/use-tasks";
 import { moveList } from "@/lib/actions/lists";
 import { KanbanList } from "@/types/kanban";
@@ -66,7 +66,7 @@ interface KanbanBoardProps {
 
 export default function KanbanBoard({ projectId }: KanbanBoardProps) {
   const { isListsAndTasksLoading, listsAndTasksData } =
-    useListsAndTasks(projectId);
+    useListsWithTasks(projectId);
 
   const listsAndTasks = listsAndTasksData?.listsAndTasks;
   const isLoaded = !isListsAndTasksLoading && listsAndTasks;

@@ -57,7 +57,7 @@ export async function createList(payload: CreateListPayload) {
   }
 }
 
-export async function getListsAndTasks(payload: GetProjectListsPayload) {
+export async function getListsWithTasks(payload: GetProjectListsPayload) {
   try {
     const parsed = getProjectListsPayloadSchema.parse(payload);
     const listsAndTasks = await listQueries.getListsWithTasks(parsed.projectId);
