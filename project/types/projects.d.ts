@@ -45,7 +45,11 @@ interface DeleteProjectPayload {
   id: ProjectSchema["id"];
 }
 
-export interface GetProjectPayload {
+export interface GetProjectDataPayload {
+  id: ProjectSchema["id"];
+}
+
+export interface GetProjectInfoPayload {
   id: ProjectSchema["id"];
 }
 
@@ -68,3 +72,12 @@ export interface ProjectCardData
 
 export interface ProjectOption
   extends Pick<ProjectSchema, "id" | "name" | "imageUrl" | "projectType"> {}
+
+export interface ProjectInfo
+  extends Pick<
+    ProjectSchema,
+    "id" | "name" | "dueDate" | "imageUrl" | "projectType" | "description"
+  > {
+  ownerImage: UserSchema["imageUrl"];
+  memberImages: string[];
+}

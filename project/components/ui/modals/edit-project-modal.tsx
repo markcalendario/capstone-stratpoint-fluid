@@ -30,7 +30,7 @@ Integration:
 - Handle errors gracefully
 */
 
-import { useProject, useUpdateProject } from "@/hooks/use-projects";
+import { useProjectData, useUpdateProject } from "@/hooks/use-projects";
 import { ProjectSchema } from "@/types/projects";
 import { ChangeEvent, MouseEvent, useEffect, useState } from "react";
 import Button from "../buttons/button";
@@ -49,7 +49,7 @@ interface EditProjectModalProps {
 }
 
 export function EditProjectModal({ projectId, toggle }: EditProjectModalProps) {
-  const { isProjectLoading, projectData } = useProject(projectId);
+  const { isProjectLoading, projectData } = useProjectData(projectId);
   const { isProjectUpdating, updateProject } = useUpdateProject(projectId);
 
   const [formData, setFormData] = useState({

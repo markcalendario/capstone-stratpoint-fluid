@@ -3,12 +3,15 @@
 import {
   CreateProjectPayload,
   DeleteProjectPayload,
+  GetProjectDataPayload,
+  GetProjectInfoPayload,
   GetProjectOptionsPayload,
-  GetProjectPayload,
+  ProjectInfo,
   UpdateProjectPayload
 } from "@/types/projects";
 import { ZodError } from "zod";
 import projectQueries from "..//queries/projects";
+import { formatDate } from "../utils/date-and-time";
 import { upload } from "../utils/files";
 import { isUserProjectOwner, toCardData } from "../utils/projects";
 import { getUserId } from "../utils/users";
@@ -125,14 +128,47 @@ export async function getProjects() {
   }
 }
 
-export async function getProject(payload: GetProjectPayload) {
+export async function getProjectData(payload: GetProjectDataPayload) {
   try {
     const parsed = getProjectPayloadSchema.parse(payload);
     const project = await projectQueries.get(parsed.id);
+
     return {
       success: true,
       message: "Project retrieved successfully.",
       project
+    };
+  } catch (error) {
+    if (error instanceof ZodError) {
+      return { success: false, message: error.issues[0].message };
+    }
+
+    return { success: false, message: "Error. Cannot get project." };
+  }
+}
+
+export async function getProjectInfo(payload: GetProjectInfoPayload) {
+  try {
+    const parsed = getProjectPayloadSchema.parse(payload);
+    const project = await projectQueries.get(parsed.id);
+
+    if (!project) return { success: true, message: "Project not found." };
+
+    const formatted = {
+      id: project.id,
+      name: project.name,
+      imageUrl: project.imageUrl,
+      description: project.description,
+      projectType: project.projectType,
+      ownerImage: project.user.imageUrl,
+      dueDate: formatDate(project.dueDate),
+      memberImages: project.projectMembers.map((m) => m.user.imageUrl)
+    } satisfies ProjectInfo;
+
+    return {
+      success: true,
+      message: "Project retrieved successfully.",
+      project: formatted
     };
   } catch (error) {
     if (error instanceof ZodError) {
