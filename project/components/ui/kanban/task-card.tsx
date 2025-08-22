@@ -93,7 +93,7 @@ export function TaskCard({
       <h4 className="text-sm font-medium text-neutral-800 dark:text-neutral-100">
         {title}
       </h4>
-      <p className="text-xs text-neutral-500 dark:text-neutral-300">
+      <p className="line-clamp-1 text-xs text-neutral-500 dark:text-neutral-300">
         {description}
       </p>
       <div className="mt-2 flex justify-between gap-2">

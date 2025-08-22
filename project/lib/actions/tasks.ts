@@ -15,6 +15,7 @@ import {
   getDaysRemaining,
   isOverdue
 } from "../utils/date-and-time";
+import { upload } from "../utils/files";
 import { isUserProjectOwner } from "../utils/projects";
 import { getUserId } from "../utils/users";
 import {
@@ -37,6 +38,12 @@ export async function createAndAssignTask(payload: CreateAndAssignTaskPayload) {
       };
     }
 
+    let attachment: string | null = null;
+
+    if (parsed.attachment) {
+      attachment = await upload({ file: parsed.attachment });
+    }
+
     const position = (await taskQueries.getMaxPosition(parsed.listId)) + 1;
 
     const createTaskData = {
@@ -48,7 +55,7 @@ export async function createAndAssignTask(payload: CreateAndAssignTaskPayload) {
       createdBy: userId,
       label: parsed.label,
       position,
-      attachment: ""
+      attachment
     };
 
     const taskId = await taskQueries.createTask(createTaskData);
@@ -196,6 +203,7 @@ export async function getTaskSlug(payload: GetTaskSlugPayload) {
     const formatted = {
       title: task.title,
       priority: task.priority,
+      attachment: task.attachment,
       remainingDays: getDaysRemaining(task.dueDate),
       isOverdue: isOverdue(task.dueDate),
       createdAt: formatDate(task.createdAt),

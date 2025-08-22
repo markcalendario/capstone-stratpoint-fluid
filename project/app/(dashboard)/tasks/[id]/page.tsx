@@ -1,5 +1,6 @@
 "use client";
 
+import TaskAttachment from "@/components/sections/task-slug/task-attachment";
 import TaskDescription from "@/components/sections/task-slug/task-description";
 import TaskSlugBanner from "@/components/sections/task-slug/task-slug-banner";
 import SectionLoader from "@/components/ui/section-loader";
@@ -20,6 +21,7 @@ export default function TaskSlugPage() {
   return (
     <Fragment>
       <TaskSlugBanner {...taskSlugData.task} />
+      <TaskAttachment attachment={taskSlugData.task.attachment} />
       <TaskDescription description={taskSlugData.task.description} />
     </Fragment>
   );

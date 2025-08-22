@@ -57,7 +57,11 @@ export const createAndAssignTaskPayloadSchema = z.object({
   priority: taskSchema.shape.priority,
   dueDate: taskSchema.shape.dueDate,
   label: taskSchema.shape.label,
-  attachment: z.file("Attachment must be a file.").nullable(),
+  attachment: z
+    .file("Attachment must be a file.")
+    .min(1, "Attachment file is required.")
+    .max(1024 * 1024 * 2, "Attachment file size must be less than 2 MB.")
+    .nullable(),
   projectId: projectSchema.shape.id
 });
 
