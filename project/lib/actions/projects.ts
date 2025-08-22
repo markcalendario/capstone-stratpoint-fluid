@@ -3,9 +3,9 @@
 import {
   CreateProjectPayload,
   DeleteProjectPayload,
-  GetProjectDataPayload,
-  GetProjectInfoPayload,
+  GetProjectEditDataPayload,
   GetProjectOptionsPayload,
+  GetProjectSlugPayload,
   ProjectInfo,
   UpdateProjectPayload
 } from "@/types/projects";
@@ -18,8 +18,9 @@ import { getUserId } from "../utils/users";
 import {
   createProjectPayloadSchema,
   deleteProjectPayloadSchema,
+  getProjectEditDataSchema,
   getProjectOptionsPayloadSchema,
-  getProjectPayloadSchema,
+  getProjectSlugSchema,
   updateProjectPayloadSchema
 } from "../validations/projects";
 
@@ -128,9 +129,9 @@ export async function getProjects() {
   }
 }
 
-export async function getProjectEditData(payload: GetProjectDataPayload) {
+export async function getProjectEditData(payload: GetProjectEditDataPayload) {
   try {
-    const parsed = getProjectPayloadSchema.parse(payload);
+    const parsed = getProjectEditDataSchema.parse(payload);
     const project = await projectQueries.get(parsed.id);
 
     if (!project) return { success: false, message: "Project not found." };
@@ -158,9 +159,9 @@ export async function getProjectEditData(payload: GetProjectDataPayload) {
   }
 }
 
-export async function getProjectSlug(payload: GetProjectInfoPayload) {
+export async function getProjectSlug(payload: GetProjectSlugPayload) {
   try {
-    const parsed = getProjectPayloadSchema.parse(payload);
+    const parsed = getProjectSlugSchema.parse(payload);
     const project = await projectQueries.get(parsed.id);
 
     if (!project) return { success: true, message: "Project not found." };

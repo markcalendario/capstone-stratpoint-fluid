@@ -1,6 +1,11 @@
 import { queryClient } from "@/components/ui/query-client-provider";
-import { createAndAssignTask, moveTask } from "@/lib/actions/tasks";
-import { useMutation } from "@tanstack/react-query";
+import {
+  createAndAssignTask,
+  getTaskSlug,
+  moveTask
+} from "@/lib/actions/tasks";
+import { TaskSchema } from "@/types/tasks";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 export function useCreateAndAssignTask() {
   const { isPending, mutateAsync } = useMutation({
@@ -27,4 +32,13 @@ export function useMoveTask() {
   });
 
   return { moveTask: mutateAsync, isMovingTask: isPending };
+}
+
+export function useTaskSlug(id: TaskSchema["id"]) {
+  const { isPending, data } = useQuery({
+    queryKey: ["task", id],
+    queryFn: () => getTaskSlug({ id })
+  });
+
+  return { isTaskSlugDataLoading: isPending, taskSlugData: data };
 }

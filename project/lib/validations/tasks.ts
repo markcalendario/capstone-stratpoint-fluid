@@ -84,3 +84,7 @@ export const moveTaskPayloadSchema = z.object({
   newListId: listSchema.shape.id,
   newPosition: taskSchema.shape.position
 });
+
+export const getTaskSlugSchema = z.object({
+  id: taskSchema.shape.id
+});

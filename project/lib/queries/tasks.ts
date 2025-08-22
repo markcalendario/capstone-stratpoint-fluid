@@ -8,7 +8,10 @@ const taskQueries = {
   getByList: async (listId: ListSchema["id"]) => {
     return await db.query.tasks.findMany({
       where: (tasks, { eq }) => eq(tasks.listId, listId),
-      with: { taskAssignments: { with: { user: true } } },
+      with: {
+        list: { with: { project: true } },
+        taskAssignments: { with: { user: true } }
+      },
       orderBy: (tasks, { asc }) => [asc(tasks.position)]
     });
   },
@@ -16,7 +19,10 @@ const taskQueries = {
   getTask: async (taskId: TaskSchema["id"]) => {
     return await db.query.tasks.findFirst({
       where: (tasks, { eq }) => eq(tasks.id, taskId),
-      with: { taskAssignments: { with: { user: true } } }
+      with: {
+        list: { with: { project: true } },
+        taskAssignments: { with: { user: true } }
+      }
     });
   },
 

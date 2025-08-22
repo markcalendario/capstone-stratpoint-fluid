@@ -81,6 +81,8 @@ export interface MoveTaskPayload {
   newPosition: TaskSchema["position"];
 }
 
+export interface GetTaskSlugPayload extends Pick<TaskSchema, "id"> {}
+
 // Misc
 
 export interface TaskCard

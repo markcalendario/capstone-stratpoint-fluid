@@ -3,17 +3,24 @@
 import {
   CreateAndAssignTaskPayload,
   DeleteTaskPayload,
+  GetTaskSlugPayload,
   MoveTaskPayload,
   UpdatetaskPayload
 } from "@/types/tasks";
 import { ZodError } from "zod";
 import taskAssignmentsQueries from "../queries/taskAssignments";
 import taskQueries from "../queries/tasks";
+import {
+  formatDate,
+  getDaysRemaining,
+  isOverdue
+} from "../utils/date-and-time";
 import { isUserProjectOwner } from "../utils/projects";
 import { getUserId } from "../utils/users";
 import {
   createAndAssignTaskPayloadSchema,
   deleteTaskPayloadSchema,
+  getTaskSlugSchema,
   moveTaskPayloadSchema,
   updateTaskPayloadSchema
 } from "../validations/tasks";
@@ -176,5 +183,45 @@ export async function moveTask(payload: MoveTaskPayload) {
     }
 
     return { success: false, message: "Error. Cannot move task." };
+  }
+}
+
+export async function getTaskSlug(payload: GetTaskSlugPayload) {
+  try {
+    const parsed = getTaskSlugSchema.parse(payload);
+    const task = await taskQueries.getTask(parsed.id);
+
+    if (!task) return { success: false, message: "Task not found." };
+
+    const formatted = {
+      title: task.title,
+      priority: task.priority,
+      remainingDays: getDaysRemaining(task.dueDate),
+      isOverdue: isOverdue(task.dueDate),
+      createdAt: formatDate(task.createdAt),
+      dueDate: formatDate(task.dueDate),
+      projectId: task.list.project.id,
+      projectName: task.list.project.name,
+      projectImageUrl: task.list.project.imageUrl,
+      description: task.description,
+      assigneesImages: task.taskAssignments.map(
+        (assignment) => assignment.user.imageUrl
+      )
+    };
+
+    return {
+      success: true,
+      message: "Task retrieved successfully.",
+      task: formatted
+    };
+  } catch (error) {
+    if (error instanceof ZodError) {
+      return { success: false, message: error.issues[0].message };
+    }
+
+    return {
+      success: false,
+      message: "Error. Cannot retrieve task slug data."
+    };
   }
 }

@@ -45,11 +45,11 @@ interface DeleteProjectPayload {
   id: ProjectSchema["id"];
 }
 
-export interface GetProjectDataPayload {
+export interface GetProjectEditDataPayload {
   id: ProjectSchema["id"];
 }
 
-export interface GetProjectInfoPayload {
+export interface GetProjectSlugPayload {
   id: ProjectSchema["id"];
 }
 
