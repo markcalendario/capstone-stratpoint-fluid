@@ -2,7 +2,10 @@ import { List } from "./lists";
 import { Task } from "./tasks";
 
 export interface KanbanTask
-  extends Pick<Task, "id" | "title" | "listId" | "priority" | "description"> {
+  extends Pick<
+    Task,
+    "id" | "title" | "listId" | "priority" | "description" | "label"
+  > {
   isOverdue: boolean;
   remainingDays: string;
   assigneesImages: string[];

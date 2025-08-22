@@ -1,5 +1,3 @@
-"use client";
-
 import { useCreateAndAssignTask } from "@/hooks/use-tasks";
 import { ListSchema } from "@/types/lists";
 import { ProjectSchema } from "@/types/projects";

@@ -204,6 +204,7 @@ export async function getTaskSlug(payload: GetTaskSlugPayload) {
       projectName: task.list.project.name,
       projectImageUrl: task.list.project.imageUrl,
       description: task.description,
+      label: task.label,
       assigneesImages: task.taskAssignments.map(
         (assignment) => assignment.user.imageUrl
       )

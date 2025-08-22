@@ -15,6 +15,7 @@ interface TaskSlugBannerProps {
   createdAt: string;
   isOverdue: boolean;
   remainingDays: string;
+  label: TaskSchema["label"];
   title: TaskSchema["title"];
   projectId: ProjectSchema["id"];
   priority: TaskSchema["priority"];
@@ -28,6 +29,7 @@ export default function TaskSlugBanner({
   priority,
   remainingDays,
   title,
+  label,
   isOverdue,
   dueDate,
   createdAt,
@@ -46,6 +48,7 @@ export default function TaskSlugBanner({
             <Badge type={isOverdue ? "error" : "warning"}>
               {remainingDays}
             </Badge>
+            {label && <Badge type="gray">{label}</Badge>}
           </div>
 
           <p className="text-primary text-xl leading-none font-bold md:text-2xl dark:text-neutral-100">

@@ -51,6 +51,7 @@ Features to implement:
 export function TaskCard({
   id,
   title,
+  label,
   listId,
   isOverdue,
   priority,
@@ -99,6 +100,7 @@ export function TaskCard({
         <div className="flex items-stretch gap-1">
           <Badge type={priorityColors[priority]}>{toTitleCase(priority)}</Badge>
           <Badge type={isOverdue ? "error" : "warning"}>{remainingDays}</Badge>
+          {label && <Badge type="gray">{label}</Badge>}
         </div>
         <UserImagesStack
           images={assigneesImages}
