@@ -7,6 +7,8 @@ interface UserImagesStack {
 }
 
 export default function UserImagesStack({ images, show }: UserImagesStack) {
+  if (!images.length) return;
+
   return (
     <div className="flex items-center gap-1 -space-x-3">
       {images.slice(0, show).map((image, i) => (

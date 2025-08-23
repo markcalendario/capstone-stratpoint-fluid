@@ -18,7 +18,7 @@ export function DashboardContent({
   tight
 }: DashboardContentProps) {
   return (
-    <section className={cn(className, "p-[30px]")}>
+    <section className={cn(className, "p-[25px]")}>
       <div className={cn("m-auto", tight ? "max-w-[900px]" : "max-w-[1366px]")}>
         <Title
           title={title}
