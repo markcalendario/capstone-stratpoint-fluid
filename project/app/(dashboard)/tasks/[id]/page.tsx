@@ -30,7 +30,10 @@ export default function TaskSlugPage() {
 
   return (
     <Fragment>
-      <TaskSlugBanner {...task} />
+      <TaskSlugBanner
+        id={id}
+        {...task}
+      />
 
       <DashboardContent tight>
         <SliderTab

@@ -1,6 +1,8 @@
 import { queryClient } from "@/components/ui/query-client-provider";
 import {
   createAndAssignTask,
+  editTask,
+  getTaskEditData,
   getTaskSlug,
   moveTask
 } from "@/lib/actions/tasks";
@@ -41,4 +43,26 @@ export function useTaskSlug(id: TaskSchema["id"]) {
   });
 
   return { isTaskSlugDataLoading: isPending, taskSlugData: data };
+}
+
+export function useTaskEditData(id: TaskSchema["id"]) {
+  const { isPending, data } = useQuery({
+    queryKey: ["taskEditData", id],
+    queryFn: () => getTaskEditData({ id })
+  });
+
+  return { isTaskEditDataLoading: isPending, editTaskData: data };
+}
+
+export function useEditTask(id: TaskSchema["id"]) {
+  const { isPending, mutateAsync } = useMutation({
+    mutationFn: editTask,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["task", id] });
+      queryClient.invalidateQueries({ queryKey: ["taskEditData", id] });
+      queryClient.invalidateQueries({ queryKey: ["listsAndTasks"] });
+    }
+  });
+
+  return { isEditingTask: isPending, editTask: mutateAsync };
 }

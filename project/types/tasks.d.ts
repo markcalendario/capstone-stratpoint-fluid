@@ -26,18 +26,19 @@ export interface CreateTaskData
     | "label"
   > {}
 
-export type UpdateTaskData = Pick<
-  TaskSchema,
-  | "id"
-  | "description"
-  | "dueDate"
-  | "listId"
-  | "priority"
-  | "title"
-  | "updatedAt"
-  | "attachment"
-  | "label"
->;
+export interface UpdateTaskData
+  extends Pick<
+    TaskSchema,
+    | "id"
+    | "title"
+    | "description"
+    | "dueDate"
+    | "priority"
+    | "updatedAt"
+    | "label"
+  > {
+  attachment?: TaskSchema["attachment"];
+}
 
 // Payload
 
@@ -53,21 +54,9 @@ export interface CreateAndAssignTaskPayload
   assignees: UserSchema["id"][];
 }
 
-export interface UpdatetaskPayload
-  extends Pick<
-    Task,
-    | "id"
-    | "listId"
-    | "title"
-    | "description"
-    | "dueDate"
-    | "label"
-    | "updatedAt"
-  > {
-  attachment: File | null;
+export interface EditTaskPayload
+  extends Pick<Task, "id" | "title" | "label" | "dueDate" | "description"> {
   priority: string;
-  projectId: ProjectSchema["id"];
-  assignees: UserSchema["id"][];
 }
 
 export interface DeleteTaskPayload {
@@ -82,6 +71,8 @@ export interface MoveTaskPayload {
 }
 
 export interface GetTaskSlugPayload extends Pick<TaskSchema, "id"> {}
+
+export interface GetTaskEditDataPayload extends Pick<TaskSchema, "id"> {}
 
 // Misc
 

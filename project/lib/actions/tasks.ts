@@ -3,9 +3,10 @@
 import {
   CreateAndAssignTaskPayload,
   DeleteTaskPayload,
+  EditTaskPayload,
+  GetTaskEditDataPayload,
   GetTaskSlugPayload,
-  MoveTaskPayload,
-  UpdatetaskPayload
+  MoveTaskPayload
 } from "@/types/tasks";
 import { ZodError } from "zod";
 import taskAssignmentsQueries from "../queries/taskAssignments";
@@ -39,7 +40,6 @@ export async function createAndAssignTask(payload: CreateAndAssignTaskPayload) {
     }
 
     let attachment: string | null = null;
-
     if (parsed.attachment) {
       attachment = await upload({ file: parsed.attachment });
     }
@@ -99,39 +99,23 @@ export async function deleteTask(payload: DeleteTaskPayload) {
   }
 }
 
-export async function updateTask(payload: UpdatetaskPayload) {
+export async function editTask(payload: EditTaskPayload) {
   try {
     const parsed = updateTaskPayloadSchema.parse(payload);
-    const userId = await getUserId();
-
-    if (!(await isUserProjectOwner(userId, parsed.projectId))) {
-      return {
-        success: false,
-        message: "You are not authorized to create task."
-      };
-    }
 
     const editTaskPayload = {
       id: parsed.id,
       title: parsed.title,
-      description: parsed.description,
+      label: parsed.label,
       dueDate: parsed.dueDate,
-      listId: parsed.listId,
       priority: parsed.priority,
-      createdBy: userId,
-      attachment: "",
-      updatedAt: new Date().toISOString(),
-      label: parsed.label
+      description: parsed.description,
+      updatedAt: new Date().toISOString()
     };
 
-    const taskId = await taskQueries.update(editTaskPayload);
+    await taskQueries.update(editTaskPayload);
 
-    if (parsed.assignees.length) {
-      const assignmentData = { taskId, userIds: parsed.assignees };
-      await taskAssignmentsQueries.assignMany(assignmentData);
-    }
-
-    return { success: true, message: "Task created successfully." };
+    return { success: true, message: "Task edited successfully." };
   } catch (error) {
     if (error instanceof ZodError) {
       return { success: false, message: error.issues[0].message };
@@ -231,6 +215,38 @@ export async function getTaskSlug(payload: GetTaskSlugPayload) {
     return {
       success: false,
       message: "Error. Cannot retrieve task slug data."
+    };
+  }
+}
+
+export async function getTaskEditData(payload: GetTaskEditDataPayload) {
+  try {
+    const parsed = getTaskSlugSchema.parse(payload);
+    const task = await taskQueries.getTask(parsed.id);
+
+    if (!task) return { success: false, message: "Task not found." };
+
+    const formatted = {
+      title: task.title,
+      label: task.label,
+      dueDate: task.dueDate,
+      priority: task.priority,
+      description: task.description
+    };
+
+    return {
+      success: true,
+      message: "Task edit data retrieved successfully.",
+      task: formatted
+    };
+  } catch (error) {
+    if (error instanceof ZodError) {
+      return { success: false, message: error.issues[0].message };
+    }
+
+    return {
+      success: false,
+      message: "Error. Cannot retrieve task edit data."
     };
   }
 }

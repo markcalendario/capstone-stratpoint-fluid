@@ -6,10 +6,10 @@ import { listSchema } from "./lists";
 import { projectSchema } from "./projects";
 import { userSchema } from "./users";
 
-const TITLE_MAX = 20;
+const TITLE_MAX = 50;
 const TITLE_MIN = 3;
 const DESCRIPTION_MIN = 6;
-const DESCRIPTION_MAX = 300;
+const DESCRIPTION_MAX = 10000;
 
 export const taskSchema = z.object({
   id: z.uuidv4("Task ID must be UUID").trim(),
@@ -72,15 +72,11 @@ export const deleteTaskPayloadSchema = z.object({
 
 export const updateTaskPayloadSchema = z.object({
   id: taskSchema.shape.id,
-  listId: listSchema.shape.id,
   title: taskSchema.shape.title,
   description: taskSchema.shape.description,
-  assignees: z.array(listSchema.shape.id, "Assignees must be array."),
-  priority: taskSchema.shape.priority,
   dueDate: taskSchema.shape.dueDate,
-  label: taskSchema.shape.label,
-  attachment: z.file("Attachment must be a file.").nullable(),
-  projectId: projectSchema.shape.id
+  priority: taskSchema.shape.priority,
+  label: taskSchema.shape.label
 });
 
 export const moveTaskPayloadSchema = z.object({

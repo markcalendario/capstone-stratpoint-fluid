@@ -45,7 +45,7 @@ export default function Dropdown({ className, label, items }: DropdownProps) {
       <button
         type="button"
         onClick={toggleIsOpen}
-        className={cn(className, "flex")}>
+        className={cn(className, "flex cursor-pointer")}>
         {label}
       </button>
 

@@ -6,11 +6,13 @@ import { toTitleCase } from "@/lib/utils/formatters";
 import { ProjectSchema } from "@/types/projects";
 import { TaskSchema } from "@/types/tasks";
 import { UserSchema } from "@/types/users";
-import { Clock, Pin, Settings } from "lucide-react";
+import { Clock, Pin } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import TaskSettingsButton from "./task-settings-button";
 
 interface TaskSlugBannerProps {
+  id: TaskSchema["id"];
   dueDate: string;
   createdAt: string;
   isOverdue: boolean;
@@ -25,6 +27,7 @@ interface TaskSlugBannerProps {
 }
 
 export default function TaskSlugBanner({
+  id,
   projectId,
   priority,
   remainingDays,
@@ -48,7 +51,7 @@ export default function TaskSlugBanner({
           {label && <Badge type="gray">{label}</Badge>}
         </div>
 
-        <p className="text-primary text-xl leading-none font-bold md:text-2xl dark:text-neutral-100">
+        <p className="text-primary text-xl leading-none font-bold md:text-3xl dark:text-neutral-100">
           {title}
         </p>
 
@@ -63,13 +66,8 @@ export default function TaskSlugBanner({
           </p>
         </div>
 
-        <div className="flex gap-3">
-          <UserImagesStack
-            show={5}
-            images={assigneesImages}
-          />
-
-          <div className="flex items-center gap-1">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
             <Image
               width={25}
               height={25}
@@ -85,9 +83,16 @@ export default function TaskSlugBanner({
             </Link>
           </div>
 
-          <button className="text-neutral-700 dark:text-neutral-300">
-            <Settings size={16} />
-          </button>
+          <div className="flex items-center gap-2">
+            <UserImagesStack
+              show={10}
+              images={assigneesImages}
+            />
+            <TaskSettingsButton
+              taskId={id}
+              projectId={projectId}
+            />
+          </div>
         </div>
       </div>
     </DashboardContent>
