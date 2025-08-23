@@ -1,27 +1,31 @@
+import { cn } from "@/lib/utils";
+
 interface DashboardContentProps {
   title?: string;
   description?: string;
   className?: string;
+  wrapperClassName?: string;
   tight?: boolean;
   children: React.ReactNode;
 }
 
 export function DashboardContent({
   title,
-  description,
   className,
+  description,
+  wrapperClassName,
   children,
   tight
 }: DashboardContentProps) {
   return (
-    <section className="pb-[50px]">
-      <div className={tight ? "m-auto max-w-[900px] px-[30px]" : "container"}>
+    <section className={cn(className, "p-[30px]")}>
+      <div className={cn("m-auto", tight ? "max-w-[900px]" : "max-w-[1366px]")}>
         <Title
           title={title}
           description={description}
         />
 
-        <div className={className}>{children}</div>
+        <div className={wrapperClassName}>{children}</div>
       </div>
     </section>
   );

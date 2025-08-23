@@ -9,7 +9,7 @@ export default function DashboardPage() {
     <DashboardContent
       title="Dashboard"
       description="Welcome back! Here's an overview of your projects and tasks."
-      className="space-y-5">
+      wrapperClassName="space-y-5">
       {/* Implementation Status Banner */}
       <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-900/20">
         <div className="flex items-start">

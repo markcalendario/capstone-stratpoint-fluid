@@ -1,5 +1,6 @@
 "use client";
 
+import { DashboardContent } from "@/components/layouts/dashboard/dashboard-content";
 import UserImagesStack from "@/components/ui/user-images-stack";
 import { toTitleCase } from "@/lib/utils/formatters";
 import { ProjectInfo } from "@/types/projects";
@@ -20,7 +21,9 @@ export default function ProjectBanner({
   memberImages
 }: ProjectBannerProps) {
   return (
-    <div className="ring-primary/20 space-y-3 rounded-sm bg-white p-3 ring-2 ring-inset md:p-7 dark:bg-neutral-800">
+    <DashboardContent
+      wrapperClassName="space-y-3"
+      className="bg-white dark:bg-neutral-800">
       <div className="flex flex-wrap items-start justify-between gap-2 md:gap-4">
         <div className="flex items-center gap-4">
           <Image
@@ -69,6 +72,6 @@ export default function ProjectBanner({
           />
         </div>
       </div>
-    </div>
+    </DashboardContent>
   );
 }

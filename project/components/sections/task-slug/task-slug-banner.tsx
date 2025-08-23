@@ -6,7 +6,7 @@ import { toTitleCase } from "@/lib/utils/formatters";
 import { ProjectSchema } from "@/types/projects";
 import { TaskSchema } from "@/types/tasks";
 import { UserSchema } from "@/types/users";
-import { Play, Square } from "lucide-react";
+import { Play, Settings, Square } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -38,8 +38,8 @@ export default function TaskSlugBanner({
   projectImageUrl
 }: TaskSlugBannerProps) {
   return (
-    <DashboardContent>
-      <div className="ring-primary/20 rounded-xs bg-white p-3 ring-2 ring-inset md:p-5 dark:bg-neutral-800 dark:text-neutral-100">
+    <DashboardContent className="ring-primary/20 bg-white ring-2 dark:bg-neutral-800">
+      <div className="dark:text-neutral-100">
         <div className="space-y-3">
           <div className="flex gap-1">
             <Badge type={priorityColors[priority]}>
@@ -87,6 +87,10 @@ export default function TaskSlugBanner({
                 {projectName}
               </Link>
             </div>
+
+            <button className="text-neutral-700 dark:text-neutral-300">
+              <Settings size={16} />
+            </button>
           </div>
         </div>
       </div>

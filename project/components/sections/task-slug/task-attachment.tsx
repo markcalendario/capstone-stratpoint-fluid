@@ -18,7 +18,7 @@ export default function TaskAttachment({ attachment }: TaskSlugBannerProps) {
         href={attachment}
         download={true}
         className="bg-primary text-neutral-100">
-        <Download />
+        <Download size={14} />
         Download Attachment
       </LinkButton>
     </DashboardContent>
