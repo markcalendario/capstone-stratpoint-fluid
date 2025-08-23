@@ -1,11 +1,13 @@
 import { queryClient } from "@/components/ui/query-client-provider";
 import {
   createAndAssignTask,
+  deleteTask,
   editTask,
   getTaskEditData,
   getTaskSlug,
   moveTask
 } from "@/lib/actions/tasks";
+import { ProjectSchema } from "@/types/projects";
 import { TaskSchema } from "@/types/tasks";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
@@ -65,4 +67,22 @@ export function useEditTask(id: TaskSchema["id"]) {
   });
 
   return { isEditingTask: isPending, editTask: mutateAsync };
+}
+
+export function useDeleteTask(
+  id: TaskSchema["id"],
+  projectId: ProjectSchema["id"]
+) {
+  const { isPending, mutateAsync } = useMutation({
+    mutationFn: deleteTask,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["task", id] });
+      queryClient.invalidateQueries({ queryKey: ["taskEditData", id] });
+      queryClient.invalidateQueries({ queryKey: ["listsAndTasks", projectId] });
+      queryClient.invalidateQueries({ queryKey: ["analytics"] });
+      queryClient.invalidateQueries({ queryKey: ["projects"] });
+    }
+  });
+
+  return { isDeletingTask: isPending, deleteTask: mutateAsync };
 }

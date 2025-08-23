@@ -61,7 +61,6 @@ export interface EditTaskPayload
 
 export interface DeleteTaskPayload {
   id: TaskSchema["id"];
-  projectId: ProjectSchema["id"];
 }
 
 export interface MoveTaskPayload {

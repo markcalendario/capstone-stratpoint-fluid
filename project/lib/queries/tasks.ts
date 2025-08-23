@@ -55,12 +55,7 @@ const taskQueries = {
   },
 
   delete: async (id: TaskSchema["id"]) => {
-    const [deletedComment] = await db
-      .delete(tasks)
-      .where(eq(tasks.id, id))
-      .returning({ id: tasks.id });
-
-    return deletedComment.id;
+    await db.delete(tasks).where(eq(tasks.id, id));
   },
 
   changePosition: async (

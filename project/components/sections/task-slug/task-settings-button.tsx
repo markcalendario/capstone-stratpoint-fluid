@@ -1,4 +1,5 @@
 import Dropdown from "@/components/ui/dropdowns/drop-down";
+import { DeleteTaskModal } from "@/components/ui/modals/delete-task-modal";
 import { EditTaskModal } from "@/components/ui/modals/edit-task-modal";
 import { ProjectSchema } from "@/types/projects";
 import { TaskSchema } from "@/types/tasks";
@@ -50,6 +51,14 @@ export default function TaskSettingsButton({
         <EditTaskModal
           taskId={taskId}
           toggle={toggleEditModal}
+        />
+      )}
+
+      {isDeleteModalOpen && (
+        <DeleteTaskModal
+          taskId={taskId}
+          projectId={projectId}
+          toggle={toggleDeleteModal}
         />
       )}
     </Fragment>

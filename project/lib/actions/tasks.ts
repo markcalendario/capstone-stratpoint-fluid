@@ -80,15 +80,8 @@ export async function createAndAssignTask(payload: CreateAndAssignTaskPayload) {
 
 export async function deleteTask(payload: DeleteTaskPayload) {
   try {
-    const userId = await getUserId();
     const parsed = deleteTaskPayloadSchema.parse(payload);
-
-    if (!(await isUserProjectOwner(userId, parsed.projectId))) {
-      return { success: false, message: "You're not the project owner." };
-    }
-
     await taskQueries.delete(parsed.id);
-
     return { success: true, message: "Task deleted successfully." };
   } catch (error) {
     if (error instanceof ZodError) {

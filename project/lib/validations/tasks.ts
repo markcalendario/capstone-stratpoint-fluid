@@ -66,8 +66,7 @@ export const createAndAssignTaskPayloadSchema = z.object({
 });
 
 export const deleteTaskPayloadSchema = z.object({
-  id: taskSchema.shape.id,
-  projectId: projectSchema.shape.id
+  id: taskSchema.shape.id
 });
 
 export const updateTaskPayloadSchema = z.object({
