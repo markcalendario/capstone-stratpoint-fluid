@@ -5,7 +5,7 @@ import {
 import { ProjectSchema } from "@/types/projects";
 import { TaskSchema } from "@/types/tasks";
 import { UserSchema } from "@/types/users";
-import { FormEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "../buttons/button";
 import SelectProjectMembers from "../input-fields/select/select-project-members";
 import { showErrorToast, showSuccessToast } from "../toast";
@@ -27,9 +27,9 @@ export function UpdateAssigneesModalOpen({
   const { taskAssignmentsData } = useTaskAssignments(taskId);
 
   const { isUpdatingTaskAssignments, updateTaskAssignment } =
-    useUpdateTaskAssignments(taskId);
+    useUpdateTaskAssignments(projectId, taskId);
 
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = async () => {
     const { success, message } = await updateTaskAssignment({
       taskId,
       userIds
