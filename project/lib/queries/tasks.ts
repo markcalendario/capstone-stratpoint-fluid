@@ -64,6 +64,13 @@ const taskQueries = {
     position: TaskSchema["position"]
   ) => {
     await db.update(tasks).set({ position, listId }).where(eq(tasks.id, id));
+  },
+
+  updateAttachment: async (
+    id: TaskSchema["id"],
+    attachment: TaskSchema["attachment"]
+  ) => {
+    await db.update(tasks).set({ attachment }).where(eq(tasks.id, id));
   }
 };
 

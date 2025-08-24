@@ -34,10 +34,8 @@ export function CreateTaskModal({
   listId,
   projectId
 }: CreateTaskModalProps) {
-  const {
-    isCreatingAndAssigningTask: isCreatingAndAssignTaskLoading,
-    createAndAssignTask
-  } = useCreateAndAssignTask();
+  const { isCreatingAndAssigningTask, createAndAssignTask } =
+    useCreateAndAssignTask();
 
   const [payload, setPayload] = useState<Payload>({
     label: "",
@@ -150,7 +148,7 @@ export function CreateTaskModal({
             type="submit"
             onClick={handleSubmit}
             className="bg-primary text-neutral-100"
-            isProcessing={isCreatingAndAssignTaskLoading}>
+            isProcessing={isCreatingAndAssigningTask}>
             Create Task
           </Button>
         </div>

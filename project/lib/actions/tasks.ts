@@ -6,7 +6,8 @@ import {
   EditTaskPayload,
   GetTaskEditDataPayload,
   GetTaskSlugPayload,
-  MoveTaskPayload
+  MoveTaskPayload,
+  UpdateAttachmentPayload
 } from "@/types/tasks";
 import { ZodError } from "zod";
 import taskAssignmentsQueries from "../queries/taskAssignments";
@@ -24,6 +25,7 @@ import {
   deleteTaskPayloadSchema,
   getTaskSlugSchema,
   moveTaskPayloadSchema,
+  updateAttachmentSchema,
   updateTaskPayloadSchema
 } from "../validations/tasks";
 
@@ -240,6 +242,30 @@ export async function getTaskEditData(payload: GetTaskEditDataPayload) {
     return {
       success: false,
       message: "Error. Cannot retrieve task edit data."
+    };
+  }
+}
+
+export async function updateAttachment(payload: UpdateAttachmentPayload) {
+  try {
+    const parsed = updateAttachmentSchema.parse(payload);
+
+    if (!parsed.file) {
+      return { success: false, message: "No file attached." };
+    }
+
+    const attachment = await upload({ file: parsed.file });
+    taskQueries.updateAttachment(parsed.id, attachment);
+
+    return { success: true, message: "Attachment updated successfully." };
+  } catch (error) {
+    if (error instanceof ZodError) {
+      return { success: false, message: error.issues[0].message };
+    }
+
+    return {
+      success: false,
+      message: "Error. Cannot update attachment."
     };
   }
 }

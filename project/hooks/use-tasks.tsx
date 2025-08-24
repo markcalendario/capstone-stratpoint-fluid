@@ -5,7 +5,8 @@ import {
   editTask,
   getTaskEditData,
   getTaskSlug,
-  moveTask
+  moveTask,
+  updateAttachment
 } from "@/lib/actions/tasks";
 import { ProjectSchema } from "@/types/projects";
 import { TaskSchema } from "@/types/tasks";
@@ -85,4 +86,15 @@ export function useDeleteTask(
   });
 
   return { isDeletingTask: isPending, deleteTask: mutateAsync };
+}
+
+export function useUpdateTaskAttachment(id: TaskSchema["id"]) {
+  const { isPending, mutateAsync } = useMutation({
+    mutationFn: updateAttachment,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["task", id] });
+    }
+  });
+
+  return { isUpdatingAttachment: isPending, updateAttachment: mutateAsync };
 }

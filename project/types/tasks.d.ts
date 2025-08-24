@@ -36,9 +36,7 @@ export interface UpdateTaskData
     | "priority"
     | "updatedAt"
     | "label"
-  > {
-  attachment?: TaskSchema["attachment"];
-}
+  > {}
 
 // Payload
 
@@ -72,6 +70,11 @@ export interface MoveTaskPayload {
 export interface GetTaskSlugPayload extends Pick<TaskSchema, "id"> {}
 
 export interface GetTaskEditDataPayload extends Pick<TaskSchema, "id"> {}
+
+interface UpdateAttachmentPayload {
+  id: TaskSchema["id"];
+  file: File | null;
+}
 
 // Misc
 

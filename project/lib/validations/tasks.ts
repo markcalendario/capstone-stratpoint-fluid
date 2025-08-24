@@ -39,6 +39,11 @@ export const taskSchema = z.object({
   createdAt: z.iso.datetime("Field 'createdAt' must be datetime."),
   updatedAt: z.iso.datetime("Field 'updatedAt' must be datetime."),
   attachment: z.url("Attachment must be URL."),
+  attachmentFile: z
+    .file("Attachment must be a file.")
+    .min(1, "Attachment file is required.")
+    .max(1024 * 1024 * 2, "Attachment file size must be less than 2 MB.")
+    .nullable(),
   label: z.string("Label must be string"),
   createdBy: userSchema.shape.id
 });
@@ -57,11 +62,7 @@ export const createAndAssignTaskPayloadSchema = z.object({
   priority: taskSchema.shape.priority,
   dueDate: taskSchema.shape.dueDate,
   label: taskSchema.shape.label,
-  attachment: z
-    .file("Attachment must be a file.")
-    .min(1, "Attachment file is required.")
-    .max(1024 * 1024 * 2, "Attachment file size must be less than 2 MB.")
-    .nullable(),
+  attachment: taskSchema.shape.attachmentFile,
   projectId: projectSchema.shape.id
 });
 
@@ -86,4 +87,9 @@ export const moveTaskPayloadSchema = z.object({
 
 export const getTaskSlugSchema = z.object({
   id: taskSchema.shape.id
+});
+
+export const updateAttachmentSchema = z.object({
+  id: taskSchema.shape.id,
+  file: taskSchema.shape.attachmentFile
 });

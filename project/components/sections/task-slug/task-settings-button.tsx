@@ -1,9 +1,17 @@
 import Dropdown from "@/components/ui/dropdowns/drop-down";
 import { DeleteTaskModal } from "@/components/ui/modals/delete-task-modal";
 import { EditTaskModal } from "@/components/ui/modals/edit-task-modal";
+import { UpdateAttachmentModal } from "@/components/ui/modals/update-attachment-modal";
 import { ProjectSchema } from "@/types/projects";
 import { TaskSchema } from "@/types/tasks";
-import { ArrowLeft, Edit, Settings2, Trash } from "lucide-react";
+import {
+  ArrowLeft,
+  Edit,
+  FilePlus2,
+  Settings2,
+  Trash,
+  UserCog
+} from "lucide-react";
 import { Fragment, useState } from "react";
 
 interface TaskSettingsButtonProps {
@@ -17,9 +25,11 @@ export default function TaskSettingsButton({
 }: TaskSettingsButtonProps) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isAttachmentModalOpen, setIsAttachmentModalOpen] = useState(false);
 
   const toggleEditModal = () => setIsEditModalOpen((prev) => !prev);
   const toggleDeleteModal = () => setIsDeleteModalOpen((prev) => !prev);
+  const toggleAttachmentModal = () => setIsAttachmentModalOpen((prev) => !prev);
 
   const items = [
     {
@@ -31,6 +41,16 @@ export default function TaskSettingsButton({
       onClick: toggleEditModal,
       label: "Edit Task",
       icon: Edit
+    },
+    {
+      onClick: toggleAttachmentModal,
+      label: "Add/Edit Attachment",
+      icon: FilePlus2
+    },
+    {
+      onClick: toggleEditModal,
+      label: "Assign Members",
+      icon: UserCog
     },
     {
       onClick: toggleDeleteModal,
@@ -59,6 +79,13 @@ export default function TaskSettingsButton({
           taskId={taskId}
           projectId={projectId}
           toggle={toggleDeleteModal}
+        />
+      )}
+
+      {isAttachmentModalOpen && (
+        <UpdateAttachmentModal
+          taskId={taskId}
+          toggle={toggleAttachmentModal}
         />
       )}
     </Fragment>
