@@ -1,6 +1,7 @@
 import Dropdown from "@/components/ui/dropdowns/drop-down";
 import { DeleteTaskModal } from "@/components/ui/modals/delete-task-modal";
 import { EditTaskModal } from "@/components/ui/modals/edit-task-modal";
+import { UpdateAssigneesModalOpen } from "@/components/ui/modals/update-assignments-modal";
 import { UpdateAttachmentModal } from "@/components/ui/modals/update-attachment-modal";
 import { ProjectSchema } from "@/types/projects";
 import { TaskSchema } from "@/types/tasks";
@@ -26,10 +27,12 @@ export default function TaskSettingsButton({
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isAttachmentModalOpen, setIsAttachmentModalOpen] = useState(false);
+  const [isAssigneesModalOpen, setIsAssigneesModalOpen] = useState(false);
 
   const toggleEditModal = () => setIsEditModalOpen((prev) => !prev);
   const toggleDeleteModal = () => setIsDeleteModalOpen((prev) => !prev);
   const toggleAttachmentModal = () => setIsAttachmentModalOpen((prev) => !prev);
+  const toggleAssigneesModal = () => setIsAssigneesModalOpen((prev) => !prev);
 
   const items = [
     {
@@ -48,7 +51,7 @@ export default function TaskSettingsButton({
       icon: FilePlus2
     },
     {
-      onClick: toggleEditModal,
+      onClick: toggleAssigneesModal,
       label: "Assign Members",
       icon: UserCog
     },
@@ -86,6 +89,14 @@ export default function TaskSettingsButton({
         <UpdateAttachmentModal
           taskId={taskId}
           toggle={toggleAttachmentModal}
+        />
+      )}
+
+      {isAssigneesModalOpen && (
+        <UpdateAssigneesModalOpen
+          taskId={taskId}
+          projectId={projectId}
+          toggle={toggleAssigneesModal}
         />
       )}
     </Fragment>
