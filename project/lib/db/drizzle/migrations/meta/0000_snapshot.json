@@ -600,8 +600,8 @@
       "policies": {},
       "isRLSEnabled": false
     },
-    "public.comments": {
-      "name": "comments",
+    "public.task_discussions": {
+      "name": "task_discussions",
       "schema": "",
       "columns": {
         "id": {
@@ -646,13 +646,13 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "fk_tasks_task_id_comments": {
-          "name": "fk_tasks_task_id_comments",
-          "tableFrom": "comments",
-          "tableTo": "tasks",
+        "fk_task_discussions_author_id_users": {
+          "name": "fk_task_discussions_author_id_users",
+          "tableFrom": "task_discussions",
+          "tableTo": "users",
           "schemaTo": "public",
           "columnsFrom": [
-            "task_id"
+            "author_id"
           ],
           "columnsTo": [
             "id"
@@ -660,13 +660,13 @@
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
-        "fk_comments_author_id_users": {
-          "name": "fk_comments_author_id_users",
-          "tableFrom": "comments",
-          "tableTo": "users",
+        "fk_task_discussions_task_id_tasks": {
+          "name": "fk_task_discussions_task_id_tasks",
+          "tableFrom": "task_discussions",
+          "tableTo": "tasks",
           "schemaTo": "public",
           "columnsFrom": [
-            "author_id"
+            "task_id"
           ],
           "columnsTo": [
             "id"
