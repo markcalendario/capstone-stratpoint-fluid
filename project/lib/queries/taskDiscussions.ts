@@ -12,7 +12,8 @@ const taskDiscussionsQueries = {
   getByTask: async (taskId: TaskSchema["id"]) => {
     return await db.query.taskDiscussions.findMany({
       with: { task: true, user: true },
-      where: (taskDiscussion, { eq }) => eq(taskDiscussion.taskId, taskId)
+      where: (taskDiscussion, { eq }) => eq(taskDiscussion.taskId, taskId),
+      orderBy: (taskDiscussion, { asc }) => asc(taskDiscussion.createdAt)
     });
   },
 

@@ -8,6 +8,7 @@ import {
 } from "@/types/taskDiscussions";
 import { ZodError } from "zod";
 import taskDiscussionsQueries from "../queries/taskDiscussions";
+import { formatDateTime } from "../utils/date-and-time";
 import { getUserId } from "../utils/users";
 import {
   createTaskDiscussionPayloadSchema,
@@ -18,6 +19,7 @@ import {
 
 export async function getTaskDiscussions(payload: GetTaskDiscussionsPayload) {
   try {
+    const userId = await getUserId();
     const parsed = getTaskDiscussionsPayloadSchema.parse(payload);
     const discussions = await taskDiscussionsQueries.getByTask(parsed.taskId);
 
@@ -26,7 +28,9 @@ export async function getTaskDiscussions(payload: GetTaskDiscussionsPayload) {
       content: discussion.content,
       authorName: discussion.user.name,
       authorImageUrl: discussion.user.imageUrl,
-      lastModified: discussion.user.updatedAt
+      isUserDiscussion: userId === discussion.authorId,
+      lastModified: formatDateTime(discussion.updatedAt),
+      isEdited: discussion.createdAt !== discussion.updatedAt
     }));
 
     return {

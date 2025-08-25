@@ -3,6 +3,7 @@
 import { DashboardContent } from "@/components/layouts/dashboard/dashboard-content";
 import TaskAttachment from "@/components/sections/task-slug/task-attachment";
 import TaskDescription from "@/components/sections/task-slug/task-description";
+import TaskDiscussions from "@/components/sections/task-slug/task-discussion";
 import TaskSlugBanner from "@/components/sections/task-slug/task-slug-banner";
 import SectionLoader from "@/components/ui/section-loader";
 import SliderTab from "@/components/ui/slider";
@@ -50,6 +51,8 @@ export default function TaskSlugPage() {
       {activeTab === "task" && (
         <TaskDescription description={task.description} />
       )}
+
+      {activeTab === "discussions" && <TaskDiscussions taskId={id} />}
     </Fragment>
   );
 }

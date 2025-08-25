@@ -18,6 +18,20 @@ export function formatDate(date: string) {
   });
 }
 
+export function formatDateTime(date: string) {
+  const d = new Date(date);
+  if (isNaN(d.getTime())) return "Invalid Date";
+
+  return d.toLocaleString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true
+  });
+}
+
 export function getDaysRemaining(dueDate: string | Date): string {
   const today = new Date();
   const due = new Date(dueDate);
