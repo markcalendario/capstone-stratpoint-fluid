@@ -4,52 +4,34 @@ import {
   TaskDiscussionsSchema,
   UpdateTaskDiscussionsData
 } from "@/types/taskDiscussions";
+import { TaskSchema } from "@/types/tasks";
 import { eq } from "drizzle-orm";
 import db from "../db";
 
 const taskDiscussionsQueries = {
-  getAll: async () => {
-    return await db.select().from(taskDiscussions);
-  },
-
-  get: async (id: TaskDiscussionsSchema["id"]) => {
-    const [comment] = await db
-      .select()
-      .from(taskDiscussions)
-      .where(eq(taskDiscussions.id, id));
-
-    return comment;
+  getByTask: async (taskId: TaskSchema["id"]) => {
+    return await db.query.taskDiscussions.findMany({
+      with: { task: true, user: true },
+      where: (taskDiscussion, { eq }) => eq(taskDiscussion.taskId, taskId)
+    });
   },
 
   create: async (data: CreateTaskDiscussionsData) => {
-    const [newComment] = await db
-      .insert(taskDiscussions)
-      .values(data)
-      .returning({ id: taskDiscussions.id });
-
-    return newComment.id;
+    await db.insert(taskDiscussions).values(data);
   },
 
   update: async (
     id: TaskDiscussionsSchema["id"],
     data: UpdateTaskDiscussionsData
   ) => {
-    const [updatedComment] = await db
+    await db
       .update(taskDiscussions)
       .set(data)
-      .where(eq(taskDiscussions.id, id))
-      .returning({ id: taskDiscussions.id });
-
-    return updatedComment.id;
+      .where(eq(taskDiscussions.id, id));
   },
 
   delete: async (id: TaskDiscussionsSchema["id"]) => {
-    const [deletedComment] = await db
-      .delete(taskDiscussions)
-      .where(eq(taskDiscussions.id, id))
-      .returning({ id: taskDiscussions.id });
-
-    return deletedComment.id;
+    await db.delete(taskDiscussions).where(eq(taskDiscussions.id, id));
   }
 };
 
