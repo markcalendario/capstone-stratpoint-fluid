@@ -18,3 +18,8 @@
   filter: brightness(0) saturate(100%) invert(100%) sepia(3%) saturate(755%)
     hue-rotate(200deg) brightness(117%) contrast(92%);
 }
+
+@utility svg-neutral-900 {
+  filter: brightness(0) saturate(100%) invert(0%) sepia(2%) saturate(1129%)
+    hue-rotate(343deg) brightness(99%) contrast(82%);
+}

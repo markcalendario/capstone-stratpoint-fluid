@@ -8,7 +8,7 @@ const taskDiscussionsSchema = z.object({
   id: z.uuidv4("Task discussion ID must be UUID").trim(),
   content: z
     .string("Content must be string.")
-    .refine((val) => stripHTML(val).length > 0, "Description cannot be empty.")
+    .refine((val) => stripHTML(val).length > 0, "Content cannot be empty.")
     .trim()
     .min(CONTENT_MIN, `Min comment length is ${CONTENT_MIN} characters.`)
     .max(CONTENT_MAX, `Max content length is ${CONTENT_MAX} characters.`),

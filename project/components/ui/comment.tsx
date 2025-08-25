@@ -34,9 +34,10 @@ export default function Comment({
         <p className="text-xs leading-none text-neutral-500">
           {isEdited ? "Edited" : "Posted"} {lastModified}
         </p>
-        <p className="rounded-sm bg-neutral-100 p-3 text-sm leading-5 text-neutral-600 dark:bg-neutral-900 dark:text-neutral-400">
-          {content}
-        </p>
+        <p
+          className="rounded-sm bg-neutral-100 p-3 text-sm leading-5 text-neutral-600 dark:bg-neutral-900 dark:text-neutral-400"
+          dangerouslySetInnerHTML={{ __html: content }}
+        />
       </div>
     </div>
   );
