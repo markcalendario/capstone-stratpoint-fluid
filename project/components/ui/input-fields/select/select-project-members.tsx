@@ -44,9 +44,8 @@ export default function SelectProjectMembers({
   }, [value]);
 
   useEffect(() => {
-    if (selectedIds === value) return;
     onChange(selectedIds);
-  }, [selectedIds, value, onChange]);
+  }, [selectedIds, onChange]);
 
   const loaded =
     !isProjectMembersOptionsLoading && projectMembersOptions?.members;
