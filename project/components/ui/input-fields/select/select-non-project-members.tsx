@@ -61,7 +61,7 @@ export default function SelectNonProjectMembers({
 
   useEffect(() => {
     refetch();
-  }, [debounced]);
+  }, [debounced, refetch]);
 
   useEffect(() => {
     if (!options?.nonMembers || isLoading) return;

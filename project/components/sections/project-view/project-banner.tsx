@@ -8,7 +8,7 @@ import { Box, Calendar, Crown, Users } from "lucide-react";
 import Image from "next/image";
 import ProjectActionButtons from "./project-action-buttons";
 
-interface ProjectBannerProps extends ProjectInfo {}
+type ProjectBannerProps = ProjectInfo;
 
 export default function ProjectBanner({
   id,

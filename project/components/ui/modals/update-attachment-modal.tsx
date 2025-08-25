@@ -1,6 +1,6 @@
 import { useUpdateTaskAttachment } from "@/hooks/use-tasks";
 import { TaskSchema } from "@/types/tasks";
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, useState } from "react";
 import Button from "../buttons/button";
 import Input from "../input-fields/input";
 import { showErrorToast, showSuccessToast } from "../toast";
@@ -25,7 +25,7 @@ export function UpdateAttachmentModal({
     if (file) setFile(file);
   };
 
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = async () => {
     const { success, message } = await updateAttachment({ id: taskId, file });
     if (!success) return showErrorToast(message);
     showSuccessToast(message);

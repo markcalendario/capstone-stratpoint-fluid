@@ -62,12 +62,12 @@ export default function SelectProject({
   useEffect(() => {
     if (!selectedProject) return onChange(null);
     onChange(selectedProject.id);
-  }, [selectedProject]);
+  }, [selectedProject, onChange]);
 
   // Refetch on debounce
   useEffect(() => {
     refetchProjectOptions();
-  }, [debounce]);
+  }, [debounce, refetchProjectOptions]);
 
   return (
     <div className="grid gap-1">

@@ -35,7 +35,7 @@ export async function createProject(payload: CreateProjectPayload) {
       imageUrl = await upload({ file: parsed.image });
     }
 
-    const data: any = {
+    const data = {
       name: parsed.name,
       description: parsed.description,
       dueDate: parsed.dueDate,
