@@ -1,24 +1,24 @@
 import { cn } from "@/lib/utils";
-import {
-  AlertTriangle,
-  CheckCircle,
-  Info as InfoIcon,
-  XCircle
-} from "lucide-react"; // Replace with your icon system
+import { AlertTriangle, CheckCircle, Info, XCircle } from "lucide-react";
 import { JSX } from "react";
 
-type AlertType = "info" | "success" | "warning" | "error";
+type AlertType = "info" | "success" | "warning" | "error" | "gray";
 
 interface AlertProps {
   type?: AlertType;
-  title: string;
+  title?: string;
   description?: string;
 }
 
 const alertStyles: Record<AlertType, { color: string; icon: JSX.Element }> = {
+  gray: {
+    color:
+      "bg-neutral-700/5 dark:text-neutral-400 dark:bg-neutral-400/5 dark:border-neutral-400 text-neutral-700 border-neutral-700",
+    icon: <Info className="h-5 w-5 text-neutral-700 dark:text-neutral-400" />
+  },
   info: {
-    color: "bg-blue-500/5 text-blue-600 border-blue-600",
-    icon: <InfoIcon className="h-5 w-5 text-blue-600" />
+    color: "bg-blue-400/5 text-blue-500 border-blue-500",
+    icon: <Info className="h-5 w-5 text-blue-500" />
   },
   success: {
     color: "bg-green-500/5 text-green-600 border-green-600",
@@ -55,7 +55,7 @@ export default function Alert({
       <div>{icon}</div>
       <div>
         <p className="leading-5 font-semibold">{title}</p>
-        {description && <p className="mt-1 text-sm leading-5">{description}</p>}
+        {description && <p className="text-sm leading-5">{description}</p>}
       </div>
     </div>
   );

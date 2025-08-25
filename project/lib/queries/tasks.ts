@@ -8,7 +8,10 @@ const taskQueries = {
   getByList: async (listId: ListSchema["id"]) => {
     return await db.query.tasks.findMany({
       where: (tasks, { eq }) => eq(tasks.listId, listId),
-      with: { taskAssignments: { with: { user: true } } },
+      with: {
+        list: { with: { project: true } },
+        taskAssignments: { with: { user: true } }
+      },
       orderBy: (tasks, { asc }) => [asc(tasks.position)]
     });
   },
@@ -16,7 +19,10 @@ const taskQueries = {
   getTask: async (taskId: TaskSchema["id"]) => {
     return await db.query.tasks.findFirst({
       where: (tasks, { eq }) => eq(tasks.id, taskId),
-      with: { taskAssignments: { with: { user: true } } }
+      with: {
+        list: { with: { project: true } },
+        taskAssignments: { with: { user: true } }
+      }
     });
   },
 
@@ -49,12 +55,7 @@ const taskQueries = {
   },
 
   delete: async (id: TaskSchema["id"]) => {
-    const [deletedComment] = await db
-      .delete(tasks)
-      .where(eq(tasks.id, id))
-      .returning({ id: tasks.id });
-
-    return deletedComment.id;
+    await db.delete(tasks).where(eq(tasks.id, id));
   },
 
   changePosition: async (
@@ -63,6 +64,13 @@ const taskQueries = {
     position: TaskSchema["position"]
   ) => {
     await db.update(tasks).set({ position, listId }).where(eq(tasks.id, id));
+  },
+
+  updateAttachment: async (
+    id: TaskSchema["id"],
+    attachment: TaskSchema["attachment"]
+  ) => {
+    await db.update(tasks).set({ attachment }).where(eq(tasks.id, id));
   }
 };
 

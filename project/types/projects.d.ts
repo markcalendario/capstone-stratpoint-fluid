@@ -13,10 +13,13 @@ type Project = InferSelectModel<typeof projects>;
 
 // Queries Data
 
-export type CreateProjectData = Pick<
-  ProjectSchema,
-  "name" | "description" | "dueDate" | "ownerId" | "imageUrl" | "projectType"
->;
+export interface CreateProjectData
+  extends Pick<
+    ProjectSchema,
+    "name" | "description" | "dueDate" | "ownerId" | "projectType"
+  > {
+  imageUrl?: ProjectSchema["imageUrl"];
+}
 
 export interface UpdateProjectData
   extends Pick<
@@ -45,11 +48,11 @@ interface DeleteProjectPayload {
   id: ProjectSchema["id"];
 }
 
-export interface GetProjectDataPayload {
+export interface GetProjectEditDataPayload {
   id: ProjectSchema["id"];
 }
 
-export interface GetProjectInfoPayload {
+export interface GetProjectSlugPayload {
   id: ProjectSchema["id"];
 }
 

@@ -5,12 +5,14 @@ interface ButtonProps {
   href: string;
   target?: "_blank" | "_self" | "_parent" | "_top" | "framename";
   className?: string;
+  download?: boolean;
   children: React.ReactNode;
 }
 
 export default function LinkButton({
   href,
   target,
+  download,
   className,
   children
 }: ButtonProps) {
@@ -18,8 +20,9 @@ export default function LinkButton({
     <Link
       href={href}
       target={target}
+      download={download}
       className={cn(
-        "inline-flex cursor-pointer items-center justify-center gap-[10px] rounded-sm px-[20px] py-[10px] text-sm font-[500] shadow-sm",
+        "inline-flex cursor-pointer items-center justify-center gap-[10px] rounded-sm px-[20px] py-[10px] text-xs font-[500]",
         className
       )}>
       {children}

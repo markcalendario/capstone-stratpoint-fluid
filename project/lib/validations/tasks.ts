@@ -6,10 +6,10 @@ import { listSchema } from "./lists";
 import { projectSchema } from "./projects";
 import { userSchema } from "./users";
 
-const TITLE_MAX = 20;
+const TITLE_MAX = 50;
 const TITLE_MIN = 3;
 const DESCRIPTION_MIN = 6;
-const DESCRIPTION_MAX = 300;
+const DESCRIPTION_MAX = 10000;
 
 export const taskSchema = z.object({
   id: z.uuidv4("Task ID must be UUID").trim(),
@@ -39,6 +39,11 @@ export const taskSchema = z.object({
   createdAt: z.iso.datetime("Field 'createdAt' must be datetime."),
   updatedAt: z.iso.datetime("Field 'updatedAt' must be datetime."),
   attachment: z.url("Attachment must be URL."),
+  attachmentFile: z
+    .file("Attachment must be a file.")
+    .min(1, "Attachment file is required.")
+    .max(1024 * 1024 * 2, "Attachment file size must be less than 2 MB.")
+    .nullable(),
   label: z.string("Label must be string"),
   createdBy: userSchema.shape.id
 });
@@ -57,30 +62,34 @@ export const createAndAssignTaskPayloadSchema = z.object({
   priority: taskSchema.shape.priority,
   dueDate: taskSchema.shape.dueDate,
   label: taskSchema.shape.label,
-  attachment: z.file("Attachment must be a file.").nullable(),
+  attachment: taskSchema.shape.attachmentFile,
   projectId: projectSchema.shape.id
 });
 
 export const deleteTaskPayloadSchema = z.object({
-  id: taskSchema.shape.id,
-  projectId: projectSchema.shape.id
+  id: taskSchema.shape.id
 });
 
 export const updateTaskPayloadSchema = z.object({
   id: taskSchema.shape.id,
-  listId: listSchema.shape.id,
   title: taskSchema.shape.title,
   description: taskSchema.shape.description,
-  assignees: z.array(listSchema.shape.id, "Assignees must be array."),
-  priority: taskSchema.shape.priority,
   dueDate: taskSchema.shape.dueDate,
-  label: taskSchema.shape.label,
-  attachment: z.file("Attachment must be a file.").nullable(),
-  projectId: projectSchema.shape.id
+  priority: taskSchema.shape.priority,
+  label: taskSchema.shape.label
 });
 
 export const moveTaskPayloadSchema = z.object({
   taskId: taskSchema.shape.id,
   newListId: listSchema.shape.id,
   newPosition: taskSchema.shape.position
+});
+
+export const getTaskSlugSchema = z.object({
+  id: taskSchema.shape.id
+});
+
+export const updateAttachmentSchema = z.object({
+  id: taskSchema.shape.id,
+  file: taskSchema.shape.attachmentFile
 });

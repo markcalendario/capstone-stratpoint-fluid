@@ -3,18 +3,29 @@
 import {
   CreateAndAssignTaskPayload,
   DeleteTaskPayload,
+  EditTaskPayload,
+  GetTaskEditDataPayload,
+  GetTaskSlugPayload,
   MoveTaskPayload,
-  UpdatetaskPayload
+  UpdateAttachmentPayload
 } from "@/types/tasks";
 import { ZodError } from "zod";
 import taskAssignmentsQueries from "../queries/taskAssignments";
 import taskQueries from "../queries/tasks";
+import {
+  formatDate,
+  getDaysRemaining,
+  isOverdue
+} from "../utils/date-and-time";
+import { upload } from "../utils/files";
 import { isUserProjectOwner } from "../utils/projects";
 import { getUserId } from "../utils/users";
 import {
   createAndAssignTaskPayloadSchema,
   deleteTaskPayloadSchema,
+  getTaskSlugSchema,
   moveTaskPayloadSchema,
+  updateAttachmentSchema,
   updateTaskPayloadSchema
 } from "../validations/tasks";
 
@@ -30,6 +41,11 @@ export async function createAndAssignTask(payload: CreateAndAssignTaskPayload) {
       };
     }
 
+    let attachment: string | null = null;
+    if (parsed.attachment) {
+      attachment = await upload({ file: parsed.attachment });
+    }
+
     const position = (await taskQueries.getMaxPosition(parsed.listId)) + 1;
 
     const createTaskData = {
@@ -41,7 +57,7 @@ export async function createAndAssignTask(payload: CreateAndAssignTaskPayload) {
       createdBy: userId,
       label: parsed.label,
       position,
-      attachment: ""
+      attachment
     };
 
     const taskId = await taskQueries.createTask(createTaskData);
@@ -66,15 +82,8 @@ export async function createAndAssignTask(payload: CreateAndAssignTaskPayload) {
 
 export async function deleteTask(payload: DeleteTaskPayload) {
   try {
-    const userId = await getUserId();
     const parsed = deleteTaskPayloadSchema.parse(payload);
-
-    if (!(await isUserProjectOwner(userId, parsed.projectId))) {
-      return { success: false, message: "You're not the project owner." };
-    }
-
     await taskQueries.delete(parsed.id);
-
     return { success: true, message: "Task deleted successfully." };
   } catch (error) {
     if (error instanceof ZodError) {
@@ -85,39 +94,23 @@ export async function deleteTask(payload: DeleteTaskPayload) {
   }
 }
 
-export async function updateTask(payload: UpdatetaskPayload) {
+export async function editTask(payload: EditTaskPayload) {
   try {
     const parsed = updateTaskPayloadSchema.parse(payload);
-    const userId = await getUserId();
-
-    if (!(await isUserProjectOwner(userId, parsed.projectId))) {
-      return {
-        success: false,
-        message: "You are not authorized to create task."
-      };
-    }
 
     const editTaskPayload = {
       id: parsed.id,
       title: parsed.title,
-      description: parsed.description,
+      label: parsed.label,
       dueDate: parsed.dueDate,
-      listId: parsed.listId,
       priority: parsed.priority,
-      createdBy: userId,
-      attachment: "",
-      updatedAt: new Date().toISOString(),
-      label: parsed.label
+      description: parsed.description,
+      updatedAt: new Date().toISOString()
     };
 
-    const taskId = await taskQueries.update(editTaskPayload);
+    await taskQueries.update(editTaskPayload);
 
-    if (parsed.assignees.length) {
-      const assignmentData = { taskId, userIds: parsed.assignees };
-      await taskAssignmentsQueries.assignMany(assignmentData);
-    }
-
-    return { success: true, message: "Task created successfully." };
+    return { success: true, message: "Task edited successfully." };
   } catch (error) {
     if (error instanceof ZodError) {
       return { success: false, message: error.issues[0].message };
@@ -176,5 +169,103 @@ export async function moveTask(payload: MoveTaskPayload) {
     }
 
     return { success: false, message: "Error. Cannot move task." };
+  }
+}
+
+export async function getTaskSlug(payload: GetTaskSlugPayload) {
+  try {
+    const parsed = getTaskSlugSchema.parse(payload);
+    const task = await taskQueries.getTask(parsed.id);
+
+    if (!task) return { success: false, message: "Task not found." };
+
+    const formatted = {
+      title: task.title,
+      priority: task.priority,
+      attachment: task.attachment,
+      remainingDays: getDaysRemaining(task.dueDate),
+      isOverdue: isOverdue(task.dueDate),
+      createdAt: formatDate(task.createdAt),
+      dueDate: formatDate(task.dueDate),
+      projectId: task.list.project.id,
+      projectName: task.list.project.name,
+      projectImageUrl: task.list.project.imageUrl,
+      description: task.description,
+      label: task.label,
+      assigneesImages: task.taskAssignments.map(
+        (assignment) => assignment.user.imageUrl
+      )
+    };
+
+    return {
+      success: true,
+      message: "Task retrieved successfully.",
+      task: formatted
+    };
+  } catch (error) {
+    if (error instanceof ZodError) {
+      return { success: false, message: error.issues[0].message };
+    }
+
+    return {
+      success: false,
+      message: "Error. Cannot retrieve task slug data."
+    };
+  }
+}
+
+export async function getTaskEditData(payload: GetTaskEditDataPayload) {
+  try {
+    const parsed = getTaskSlugSchema.parse(payload);
+    const task = await taskQueries.getTask(parsed.id);
+
+    if (!task) return { success: false, message: "Task not found." };
+
+    const formatted = {
+      title: task.title,
+      label: task.label,
+      dueDate: task.dueDate,
+      priority: task.priority,
+      description: task.description
+    };
+
+    return {
+      success: true,
+      message: "Task edit data retrieved successfully.",
+      task: formatted
+    };
+  } catch (error) {
+    if (error instanceof ZodError) {
+      return { success: false, message: error.issues[0].message };
+    }
+
+    return {
+      success: false,
+      message: "Error. Cannot retrieve task edit data."
+    };
+  }
+}
+
+export async function updateAttachment(payload: UpdateAttachmentPayload) {
+  try {
+    const parsed = updateAttachmentSchema.parse(payload);
+
+    if (!parsed.file) {
+      return { success: false, message: "No file attached." };
+    }
+
+    const attachment = await upload({ file: parsed.file });
+    taskQueries.updateAttachment(parsed.id, attachment);
+
+    return { success: true, message: "Attachment updated successfully." };
+  } catch (error) {
+    if (error instanceof ZodError) {
+      return { success: false, message: error.issues[0].message };
+    }
+
+    return {
+      success: false,
+      message: "Error. Cannot update attachment."
+    };
   }
 }

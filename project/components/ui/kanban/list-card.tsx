@@ -51,7 +51,7 @@ export default function ListCard({
       ref={setNodeRef}
       className={cn(
         isDragging && "opacity-20",
-        "flex max-h-[600px] min-h-[500px] min-w-100 flex-col gap-3 overflow-auto duration-100 dark:bg-neutral-900"
+        "flex max-h-[600px] min-h-[500px] max-w-100 min-w-100 flex-col gap-3 overflow-auto duration-100"
       )}>
       {/* List Header */}
       <div className="bg-primary flex items-center justify-between rounded-t-sm px-4 py-3">

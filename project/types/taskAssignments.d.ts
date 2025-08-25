@@ -13,3 +13,12 @@ export interface TaskAssignments
 export interface AssignManyData extends Pick<TaskAssignmentsSchema, "taskId"> {
   userIds: UserSchema["id"][];
 }
+
+export interface GetTaskAssignmentsPayload {
+  taskId: TaskSchema["id"];
+}
+
+export interface UpdateTaskAssignmentsPayload {
+  taskId: TaskSchema["id"];
+  userIds: UserSchema["id"][];
+}

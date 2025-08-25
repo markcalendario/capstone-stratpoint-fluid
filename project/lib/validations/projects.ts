@@ -53,7 +53,11 @@ export const createProjectPayloadSchema = z.object({
   image: projectSchema.shape.image
 });
 
-export const getProjectPayloadSchema = z.object({
+export const getProjectEditDataSchema = z.object({
+  id: projectSchema.shape.id
+});
+
+export const getProjectSlugSchema = z.object({
   id: projectSchema.shape.id
 });
 

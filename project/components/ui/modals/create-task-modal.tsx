@@ -1,10 +1,8 @@
-"use client";
-
 import { useCreateAndAssignTask } from "@/hooks/use-tasks";
 import { ListSchema } from "@/types/lists";
 import { ProjectSchema } from "@/types/projects";
 import { UserSchema } from "@/types/users";
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useCallback, useState } from "react";
 import Button from "../buttons/button";
 import Input from "../input-fields/input";
 import RichTextEditor from "../input-fields/rich-text-editor";
@@ -36,10 +34,8 @@ export function CreateTaskModal({
   listId,
   projectId
 }: CreateTaskModalProps) {
-  const {
-    isCreatingAndAssigningTask: isCreatingAndAssignTaskLoading,
-    createAndAssignTask
-  } = useCreateAndAssignTask();
+  const { isCreatingAndAssigningTask, createAndAssignTask } =
+    useCreateAndAssignTask();
 
   const [payload, setPayload] = useState<Payload>({
     label: "",
@@ -54,9 +50,12 @@ export function CreateTaskModal({
   });
 
   // Change handlers
-  const handleChange = <K extends keyof Payload>(key: K, value: Payload[K]) => {
-    setPayload((prev) => ({ ...prev, [key]: value }));
-  };
+  const handleChange = useCallback(
+    async <K extends keyof Payload>(key: K, value: Payload[K]) => {
+      setPayload((prev) => ({ ...prev, [key]: value }));
+    },
+    []
+  );
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] ?? null;
@@ -152,7 +151,7 @@ export function CreateTaskModal({
             type="submit"
             onClick={handleSubmit}
             className="bg-primary text-neutral-100"
-            isProcessing={isCreatingAndAssignTaskLoading}>
+            isProcessing={isCreatingAndAssigningTask}>
             Create Task
           </Button>
         </div>

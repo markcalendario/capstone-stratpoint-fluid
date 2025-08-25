@@ -27,7 +27,7 @@ export default function ProjectActionButtons({
     <Fragment>
       <div className="flex items-center justify-end space-x-1">
         <Dropdown
-          label={<Users size={20} />}
+          label={<Users size={16} />}
           items={[
             {
               href: `/team?projectId=${projectId}`,
@@ -40,10 +40,10 @@ export default function ProjectActionButtons({
               icon: UserPlus
             }
           ]}
-          className="cursor-pointer p-2 text-neutral-700 dark:text-neutral-300"
+          className="cursor-pointer p-1 text-neutral-700 dark:text-neutral-300"
         />
         <Dropdown
-          label={<MoreVertical size={20} />}
+          label={<MoreVertical size={16} />}
           items={[
             { onClick: toggleEditModal, label: "Edit Project", icon: Edit },
             {
@@ -52,7 +52,7 @@ export default function ProjectActionButtons({
               icon: Trash
             }
           ]}
-          className="cursor-pointer p-2 text-neutral-700 dark:text-neutral-300"
+          className="cursor-pointer p-1 text-neutral-700 dark:text-neutral-300"
         />
       </div>
 

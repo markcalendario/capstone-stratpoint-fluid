@@ -1,5 +1,6 @@
 "use client";
 
+import { DashboardContent } from "@/components/layouts/dashboard/dashboard-content";
 import UserImagesStack from "@/components/ui/user-images-stack";
 import { toTitleCase } from "@/lib/utils/formatters";
 import { ProjectInfo } from "@/types/projects";
@@ -7,7 +8,7 @@ import { Box, Calendar, Crown, Users } from "lucide-react";
 import Image from "next/image";
 import ProjectActionButtons from "./project-action-buttons";
 
-interface ProjectBannerProps extends ProjectInfo {}
+type ProjectBannerProps = ProjectInfo;
 
 export default function ProjectBanner({
   id,
@@ -20,8 +21,10 @@ export default function ProjectBanner({
   memberImages
 }: ProjectBannerProps) {
   return (
-    <div className="ring-primary/20 space-y-3 rounded-sm bg-white p-7 ring-2 ring-inset dark:bg-neutral-800">
-      <div className="flex items-start justify-between">
+    <DashboardContent
+      wrapperClassName="space-y-3"
+      className="bg-white dark:bg-neutral-800">
+      <div className="flex flex-wrap items-start justify-between gap-2 md:gap-4">
         <div className="flex items-center gap-4">
           <Image
             src={imageUrl}
@@ -42,7 +45,7 @@ export default function ProjectBanner({
         <ProjectActionButtons projectId={id} />
       </div>
 
-      <div className="flex gap-5 text-sm">
+      <div className="flex flex-wrap gap-2 text-sm md:gap-4">
         <p className="flex items-center gap-2 text-neutral-500 dark:text-neutral-400">
           <Calendar size={14} />
           {dueDate}
@@ -53,7 +56,7 @@ export default function ProjectBanner({
         </p>
       </div>
 
-      <div className="flex gap-5">
+      <div className="flex flex-wrap gap-2 md:gap-4">
         <div className="flex items-center gap-2 text-neutral-500 dark:text-neutral-400">
           <Crown size={14} />
           <UserImagesStack
@@ -69,6 +72,6 @@ export default function ProjectBanner({
           />
         </div>
       </div>
-    </div>
+    </DashboardContent>
   );
 }

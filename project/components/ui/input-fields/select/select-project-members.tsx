@@ -9,7 +9,7 @@ interface SelectMembersProps {
   name: string;
   label: string;
   required?: boolean;
-  value: ProjectSchema["id"][];
+  value: UserSchema["id"][];
   projectId: ProjectSchema["id"];
   onChange: (selectedIds: ProjectSchema["id"][]) => void;
 }
@@ -44,9 +44,8 @@ export default function SelectProjectMembers({
   }, [value]);
 
   useEffect(() => {
-    if (selectedIds === value) return;
     onChange(selectedIds);
-  }, [selectedIds]);
+  }, [selectedIds, onChange]);
 
   const loaded =
     !isProjectMembersOptionsLoading && projectMembersOptions?.members;

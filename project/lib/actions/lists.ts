@@ -73,6 +73,7 @@ export async function getListsWithTasks(payload: GetProjectListsPayload) {
           return {
             id: task.id,
             title: task.title,
+            label: task.label,
             listId: task.listId,
             priority: task.priority,
             isOverdue: isOverdue(task.dueDate),

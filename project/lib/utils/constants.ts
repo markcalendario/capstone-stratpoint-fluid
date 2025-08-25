@@ -10,3 +10,9 @@ export const projectTypes = [
   "artificial intelligence",
   "maintenance"
 ] as const;
+
+export const priorityColors = {
+  low: "success",
+  medium: "warning",
+  high: "error"
+} as const;
