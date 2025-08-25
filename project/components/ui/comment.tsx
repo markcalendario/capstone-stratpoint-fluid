@@ -1,5 +1,8 @@
-import { useUpdateTaskDiscussion } from "@/hooks/use-task-discussions";
-import { Edit, MoreHorizontal } from "lucide-react";
+import {
+  useDeleteTaskDiscussion,
+  useUpdateTaskDiscussion
+} from "@/hooks/use-task-discussions";
+import { Edit, MoreHorizontal, X } from "lucide-react";
 import Image from "next/image";
 import { ChangeEvent, useState } from "react";
 import Button from "./buttons/button";
@@ -31,6 +34,8 @@ export default function Comment({
   const [isEditState, setIsEditState] = useState(false);
   const [editedContent, setEditedContent] = useState(content);
 
+  const { deleteTaskDiscussion } = useDeleteTaskDiscussion(taskId);
+
   const { isUpdatingTaskDiscussion, updateTaskDiscussion } =
     useUpdateTaskDiscussion(taskId);
 
@@ -38,7 +43,7 @@ export default function Comment({
     setEditedContent(evt.target.value);
   };
 
-  const saveEdit = async () => {
+  const handleSaveEdit = async () => {
     const { success, message } = await updateTaskDiscussion({
       id,
       taskId,
@@ -48,6 +53,15 @@ export default function Comment({
     if (!success) return showErrorToast(message);
     showSuccessToast(message);
     setIsEditState(false);
+  };
+
+  const handleDelete = async () => {
+    const { success, message } = await deleteTaskDiscussion({
+      id
+    });
+
+    if (!success) return showErrorToast(message);
+    showSuccessToast(message);
   };
 
   const cancelEdit = () => {
@@ -60,6 +74,11 @@ export default function Comment({
       onClick: () => setIsEditState(true),
       label: "Edit",
       icon: Edit
+    },
+    {
+      onClick: handleDelete,
+      label: "Delete",
+      icon: X
     }
   ];
 
@@ -109,7 +128,7 @@ export default function Comment({
                 Cancel
               </Button>
               <Button
-                onClick={saveEdit}
+                onClick={handleSaveEdit}
                 isProcessing={isUpdatingTaskDiscussion}
                 className="bg-primary px-3 py-2 text-xs text-neutral-100">
                 Save
