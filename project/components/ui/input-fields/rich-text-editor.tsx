@@ -8,7 +8,7 @@ interface WYSIWYGEditorProps {
   id: string;
   name: string;
   value: string;
-  label: string;
+  label?: string;
   required?: boolean;
   placeholder: string;
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
@@ -33,11 +33,13 @@ export default function RichTextEditor({
   return (
     <div className="flex flex-col gap-1">
       <div className="flex flex-wrap items-center justify-between gap-1">
-        <label
-          htmlFor={id}
-          className="font-medium text-neutral-500 dark:text-neutral-400">
-          {label}
-        </label>
+        {label && (
+          <label
+            htmlFor={id}
+            className="font-medium text-neutral-500 dark:text-neutral-400">
+            {label}
+          </label>
+        )}
 
         {!required && (
           <p className="p-1 text-xs text-neutral-500 dark:text-neutral-400">

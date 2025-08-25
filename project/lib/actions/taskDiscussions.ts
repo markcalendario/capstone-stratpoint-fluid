@@ -1,10 +1,10 @@
 "use server";
 
-import { UpdateTaskAssignmentsPayload } from "@/types/taskAssignments";
 import {
   CreateTaskDiscussionPayload,
   DeleteTaskDiscussionPayload,
-  GetTaskDiscussionsPayload
+  GetTaskDiscussionsPayload,
+  UpdateTaskDiscussionPayload
 } from "@/types/taskDiscussions";
 import { ZodError } from "zod";
 import taskDiscussionsQueries from "../queries/taskDiscussions";
@@ -76,7 +76,7 @@ export async function createTaskDiscussion(
 }
 
 export async function updateTaskDiscussion(
-  payload: UpdateTaskAssignmentsPayload
+  payload: UpdateTaskDiscussionPayload
 ) {
   try {
     const parsed = updateTaskDiscussionPayloadSchema.parse(payload);

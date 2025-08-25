@@ -50,11 +50,18 @@ export function CreateTaskModal({
   });
 
   // Change handlers
-  const handleChange = useCallback(
-    async <K extends keyof Payload>(key: K, value: Payload[K]) => {
-      setPayload((prev) => ({ ...prev, [key]: value }));
+  const handleChange = async <K extends keyof Payload>(
+    key: K,
+    value: Payload[K]
+  ) => {
+    setPayload((prev) => ({ ...prev, [key]: value }));
+  };
+
+  const handleAssigneesChange = useCallback(
+    (selectedIds: UserSchema["id"][]) => {
+      setPayload((prev) => ({ ...prev, assignees: selectedIds }));
     },
-    []
+    [setPayload]
   );
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -102,7 +109,7 @@ export function CreateTaskModal({
           label="Assign to Members"
           projectId={projectId}
           value={payload.assignees}
-          onChange={(selectedIds) => handleChange("assignees", selectedIds)}
+          onChange={handleAssigneesChange}
         />
 
         <SelectPriority

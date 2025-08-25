@@ -34,9 +34,11 @@ export default function TaskDiscussions({ taskId }: TaskDescriptionProps) {
         />
       )}
 
-      {discussions.map((discussion) => (
+      {discussions.map((discussion, i) => (
         <Comment
-          key={discussion.id}
+          key={i}
+          taskId={taskId}
+          id={discussion.id}
           content={discussion.content}
           isEdited={discussion.isEdited}
           authorName={discussion.authorName}
