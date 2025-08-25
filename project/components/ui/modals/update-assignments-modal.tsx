@@ -5,7 +5,7 @@ import {
 import { ProjectSchema } from "@/types/projects";
 import { TaskSchema } from "@/types/tasks";
 import { UserSchema } from "@/types/users";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Button from "../buttons/button";
 import SelectProjectMembers from "../input-fields/select/select-project-members";
 import { showErrorToast, showSuccessToast } from "../toast";
@@ -41,9 +41,12 @@ export function UpdateAssigneesModalOpen({
     toggle();
   };
 
-  const handleAssigneesChange = (userIds: UserSchema["id"][]) => {
-    setUserIds(userIds);
-  };
+  const handleAssigneesChange = useCallback(
+    async (userIds: UserSchema["id"][]) => {
+      setUserIds(userIds);
+    },
+    []
+  );
 
   useEffect(() => {
     if (!taskAssignmentsData?.assignments) return;
