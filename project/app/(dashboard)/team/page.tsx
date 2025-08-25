@@ -1,5 +1,7 @@
 import { DashboardContent } from "@/components/layouts/dashboard/dashboard-content";
 import TeamMembersListGrid from "@/components/sections/team/team-grid-list";
+import SectionLoader from "@/components/ui/section-loader";
+import { Suspense } from "react";
 
 export default function TeamPage() {
   return (
@@ -24,7 +26,9 @@ export default function TeamPage() {
         </div>
 
         {/* Team Members Grid */}
-        <TeamMembersListGrid />
+        <Suspense fallback={<SectionLoader text="Loading Members" />}>
+          <TeamMembersListGrid />
+        </Suspense>
       </div>
     </DashboardContent>
   );
