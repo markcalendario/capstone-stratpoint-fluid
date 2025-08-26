@@ -8,7 +8,7 @@ interface WYSIWYGEditorProps {
   id: string;
   name: string;
   value: string;
-  label: string;
+  label?: string;
   required?: boolean;
   placeholder: string;
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
@@ -33,11 +33,13 @@ export default function RichTextEditor({
   return (
     <div className="flex flex-col gap-1">
       <div className="flex flex-wrap items-center justify-between gap-1">
-        <label
-          htmlFor={id}
-          className="font-medium text-neutral-500 dark:text-neutral-400">
-          {label}
-        </label>
+        {label && (
+          <label
+            htmlFor={id}
+            className="font-medium text-neutral-500 dark:text-neutral-400">
+            {label}
+          </label>
+        )}
 
         {!required && (
           <p className="p-1 text-xs text-neutral-500 dark:text-neutral-400">
@@ -49,7 +51,7 @@ export default function RichTextEditor({
       <ReactQuill
         value={value}
         onChange={handleChange}
-        className="border-primary [&_.ql-toolbar]:bg-primary [&_svg]:svg-white rounded-sm border-2 *:!border-none *:!text-base *:!font-medium dark:text-neutral-300 [&_.ql-header]:!text-white [&_.ql-header_.ql-active]:!text-white [&_.ql-header_.ql-picker-label]:hover:!text-white [&_.ql-toolbar]:!rounded-t-xs"
+        className="border-primary [&_svg]:!svg-neutral-900 dark:[&_svg]:!svg-neutral-100 rounded-sm border-2 *:!border-none *:!text-base *:!font-medium dark:text-neutral-300 [&_.ql-header]:!text-neutral-100 [&_.ql-picker-item]:!text-neutral-900 dark:[&_.ql-picker-item]:!text-neutral-100 [&_.ql-picker-label]:!text-neutral-900 [&_.ql-picker-label]:!opacity-50 dark:[&_.ql-picker-label]:!text-neutral-100 dark:[&_.ql-picker-options]:!bg-neutral-800 [&_.ql-toolbar]:!rounded-t-xs [&_.ql-toolbar]:bg-white dark:[&_.ql-toolbar]:bg-neutral-800 [&_svg]:opacity-50"
         theme="snow"
       />
 

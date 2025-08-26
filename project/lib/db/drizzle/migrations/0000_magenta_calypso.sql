@@ -79,7 +79,7 @@ CREATE TABLE "team_roles" (
 	CONSTRAINT "team_roles_title_key" UNIQUE("title")
 );
 --> statement-breakpoint
-CREATE TABLE "comments" (
+CREATE TABLE "task_discussions" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"content" text NOT NULL,
 	"task_id" uuid NOT NULL,
@@ -98,6 +98,6 @@ ALTER TABLE "project_members" ADD CONSTRAINT "fk_project_members_role_id_team_ro
 ALTER TABLE "project_members" ADD CONSTRAINT "fk_project_members_user_id_users" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "tasks" ADD CONSTRAINT "fk_tasks_list_id_lists" FOREIGN KEY ("list_id") REFERENCES "public"."lists"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "tasks" ADD CONSTRAINT "fk_tasks_created_by_users" FOREIGN KEY ("created_by") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "comments" ADD CONSTRAINT "fk_tasks_task_id_comments" FOREIGN KEY ("task_id") REFERENCES "public"."tasks"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "comments" ADD CONSTRAINT "fk_comments_author_id_users" FOREIGN KEY ("author_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;
+ALTER TABLE "task_discussions" ADD CONSTRAINT "fk_task_discussions_author_id_users" FOREIGN KEY ("author_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "task_discussions" ADD CONSTRAINT "fk_task_discussions_task_id_tasks" FOREIGN KEY ("task_id") REFERENCES "public"."tasks"("id") ON DELETE cascade ON UPDATE no action;
 */

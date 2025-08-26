@@ -9,7 +9,7 @@ import { UserSchema } from "@/types/users";
 import { Clock, Pin } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import TaskSettingsButton from "./task-settings-button";
+import TaskSettingsDropdown from "../../ui/dropdowns/task-settings-dropdown";
 
 interface TaskSlugBannerProps {
   id: TaskSchema["id"];
@@ -88,7 +88,7 @@ export default function TaskSlugBanner({
               show={10}
               images={assigneesImages}
             />
-            <TaskSettingsButton
+            <TaskSettingsDropdown
               taskId={id}
               projectId={projectId}
             />

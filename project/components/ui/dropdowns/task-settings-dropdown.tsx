@@ -20,7 +20,7 @@ interface TaskSettingsButtonProps {
   projectId: ProjectSchema["id"];
 }
 
-export default function TaskSettingsButton({
+export default function TaskSettingsDropdown({
   taskId,
   projectId
 }: TaskSettingsButtonProps) {

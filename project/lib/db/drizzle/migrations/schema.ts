@@ -138,7 +138,7 @@ export const teamRoles = pgTable("team_roles", {
 	unique("team_roles_title_key").on(table.title),
 ]);
 
-export const comments = pgTable("comments", {
+export const taskDiscussions = pgTable("task_discussions", {
 	id: uuid().defaultRandom().primaryKey().notNull(),
 	content: text().notNull(),
 	taskId: uuid("task_id").notNull(),
@@ -147,13 +147,13 @@ export const comments = pgTable("comments", {
 	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }).default(sql`CURRENT_TIMESTAMP`).notNull(),
 }, (table) => [
 	foreignKey({
-			columns: [table.taskId],
-			foreignColumns: [tasks.id],
-			name: "fk_tasks_task_id_comments"
-		}).onDelete("cascade"),
-	foreignKey({
 			columns: [table.authorId],
 			foreignColumns: [users.id],
-			name: "fk_comments_author_id_users"
+			name: "fk_task_discussions_author_id_users"
+		}).onDelete("cascade"),
+	foreignKey({
+			columns: [table.taskId],
+			foreignColumns: [tasks.id],
+			name: "fk_task_discussions_task_id_tasks"
 		}).onDelete("cascade"),
 ]);

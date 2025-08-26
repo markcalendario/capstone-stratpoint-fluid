@@ -6,7 +6,7 @@ import { toTitleCase } from "@/lib/utils/formatters";
 import { ProjectInfo } from "@/types/projects";
 import { Box, Calendar, Crown, Users } from "lucide-react";
 import Image from "next/image";
-import ProjectActionButtons from "./project-action-buttons";
+import ProjectActionButtons from "../../ui/dropdowns/project-actions-dropdowns";
 
 type ProjectBannerProps = ProjectInfo;
 

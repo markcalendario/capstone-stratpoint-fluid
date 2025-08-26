@@ -38,6 +38,8 @@ export default function Dropdown({ className, label, items }: DropdownProps) {
     };
   }, [handleClickOutside]);
 
+  const closeDropdown = () => setIsOpen(false);
+
   return (
     <div
       className="relative"
@@ -49,21 +51,29 @@ export default function Dropdown({ className, label, items }: DropdownProps) {
         {label}
       </button>
 
-      {isOpen && <RenderMenu items={items} />}
+      {isOpen && (
+        <RenderMenu
+          items={items}
+          closeDropdown={closeDropdown}
+        />
+      )}
     </div>
   );
 }
+
 interface RenderMenuProps {
   items: DropdownItem[];
+  closeDropdown: () => void;
 }
 
-function RenderMenu({ items }: RenderMenuProps) {
+function RenderMenu({ items, closeDropdown }: RenderMenuProps) {
   return (
     <div className="border-primary/20 absolute right-0 z-1 mt-1 w-max min-w-[150px] rounded-sm border-1 bg-white shadow-lg dark:bg-neutral-800">
       {items.map((item, i) => (
         <RenderItem
           key={i}
           item={item}
+          closeDropdown={closeDropdown}
         />
       ))}
     </div>
@@ -72,9 +82,10 @@ function RenderMenu({ items }: RenderMenuProps) {
 
 interface RenderItemProps {
   item: DropdownItem;
+  closeDropdown: () => void;
 }
 
-function RenderItem({ item }: RenderItemProps) {
+function RenderItem({ item, closeDropdown }: RenderItemProps) {
   const itemStyles =
     "flex w-full cursor-pointer font-medium duration-50 dark:hover:bg-neutral-700 dark:text-neutral-300 items-center py-2 px-3 hover:bg-neutral-100 gap-3 text-[14px] text-neutral-700";
 
@@ -82,18 +93,24 @@ function RenderItem({ item }: RenderItemProps) {
     return (
       <Link
         href={item.href}
+        onClick={closeDropdown}
         className={itemStyles}>
-        {<item.icon size={14} />} {item.label}
+        <item.icon size={14} /> {item.label}
       </Link>
     );
   } else if (item.onClick) {
     return (
       <button
         type="button"
-        onClick={item.onClick}
+        onClick={() => {
+          item.onClick?.();
+          closeDropdown();
+        }}
         className={itemStyles}>
-        {<item.icon size={14} />} {item.label}
+        <item.icon size={14} /> {item.label}
       </button>
     );
   }
+
+  return null;
 }
