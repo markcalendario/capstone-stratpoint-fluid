@@ -9,6 +9,13 @@ import { eq } from "drizzle-orm";
 import db from "../db";
 
 const taskDiscussionsQueries = {
+  get: async (id: TaskDiscussionsSchema["id"]) => {
+    return await db.query.taskDiscussions.findFirst({
+      with: { task: { with: { list: true } }, user: true },
+      where: (taskDiscussion, { eq }) => eq(taskDiscussion.id, id)
+    });
+  },
+
   getByTask: async (taskId: TaskSchema["id"]) => {
     return await db.query.taskDiscussions.findMany({
       with: { task: true, user: true },

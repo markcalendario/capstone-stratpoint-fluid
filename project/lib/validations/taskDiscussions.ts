@@ -29,7 +29,6 @@ export const createTaskDiscussionPayloadSchema = z.object({
 
 export const updateTaskDiscussionPayloadSchema = z.object({
   id: taskDiscussionsSchema.shape.id,
-  taskId: taskDiscussionsSchema.shape.taskId,
   content: taskDiscussionsSchema.shape.content
 });
 

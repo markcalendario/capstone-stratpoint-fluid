@@ -16,7 +16,7 @@ export interface CreateTaskDiscussionsData
   extends Pick<TaskDiscussionsSchema, "content" | "taskId" | "authorId"> {}
 
 export interface UpdateTaskDiscussionsData
-  extends Pick<TaskDiscussionsSchema, "content" | "taskId" | "updatedAt"> {}
+  extends Pick<TaskDiscussionsSchema, "content" | "updatedAt"> {}
 
 // Payloads
 
@@ -27,7 +27,7 @@ export interface CreateTaskDiscussionPayload
   extends Pick<TaskDiscussionsSchema, "content" | "taskId"> {}
 
 export interface UpdateTaskDiscussionPayload
-  extends Pick<TaskDiscussionsSchema, "id" | "content" | "taskId"> {}
+  extends Pick<TaskDiscussionsSchema, "id" | "content"> {}
 
 export interface DeleteTaskDiscussionPayload
   extends Pick<TaskDiscussionsSchema, "id"> {}
