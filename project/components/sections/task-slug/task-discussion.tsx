@@ -44,7 +44,7 @@ export default function TaskDiscussions({ taskId }: TaskDescriptionProps) {
           authorName={discussion.authorName}
           lastModified={discussion.lastModified}
           authorImage={discussion.authorImageUrl}
-          isUserDiscussion={discussion.isUserDiscussion}
+          isFromUser={discussion.isFromUser}
         />
       ))}
 

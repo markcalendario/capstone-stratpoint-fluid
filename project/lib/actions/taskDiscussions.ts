@@ -28,7 +28,7 @@ export async function getTaskDiscussions(payload: GetTaskDiscussionsPayload) {
       content: discussion.content,
       authorName: discussion.user.name,
       authorImageUrl: discussion.user.imageUrl,
-      isUserDiscussion: userId === discussion.authorId,
+      isFromUser: userId === discussion.authorId,
       lastModified: formatDateTime(discussion.updatedAt),
       isEdited: discussion.createdAt !== discussion.updatedAt
     }));

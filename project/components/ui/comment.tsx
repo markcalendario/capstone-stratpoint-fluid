@@ -18,7 +18,7 @@ interface CommentProps {
   authorName: string;
   authorImage: string;
   lastModified: string;
-  isUserDiscussion: boolean;
+  isFromUser: boolean;
 }
 
 export default function Comment({
@@ -29,7 +29,7 @@ export default function Comment({
   authorName,
   authorImage,
   lastModified,
-  isUserDiscussion
+  isFromUser
 }: CommentProps) {
   const [isEditState, setIsEditState] = useState(false);
   const [editedContent, setEditedContent] = useState(content);
@@ -94,10 +94,10 @@ export default function Comment({
       <div className="ring-primary/20 w-full space-y-2 rounded-sm bg-white p-4 ring-1 dark:bg-neutral-800">
         <div className="flex items-center justify-between">
           <p className="text-sm leading-none font-medium text-neutral-700 dark:text-neutral-300">
-            {isUserDiscussion ? "You" : authorName}
+            {isFromUser ? "You" : authorName}
           </p>
 
-          {isUserDiscussion && !isEditState && (
+          {isFromUser && !isEditState && (
             <Dropdown
               label={<MoreHorizontal size={14} />}
               items={items}
