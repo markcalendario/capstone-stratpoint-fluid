@@ -14,7 +14,7 @@ import projectQueries from "..//queries/projects";
 import { formatDate } from "../utils/date-and-time";
 import { upload } from "../utils/files";
 import { isUserProjectOwner, toCardData } from "../utils/projects";
-import { hasPermission } from "../utils/rolePermissions";
+import { getPermissions, hasPermission } from "../utils/rolePermissions";
 import { getUserId } from "../utils/users";
 import {
   createProjectPayloadSchema,
@@ -193,6 +193,7 @@ export async function getProjectSlug(payload: GetProjectSlugPayload) {
       projectType: project.projectType,
       ownerImage: project.user.imageUrl,
       dueDate: formatDate(project.dueDate),
+      permissions: await getPermissions(userId, project.id),
       memberImages: project.projectMembers.map((m) => m.user.imageUrl)
     } satisfies ProjectInfo;
 

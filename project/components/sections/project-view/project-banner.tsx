@@ -3,6 +3,7 @@
 import { DashboardContent } from "@/components/layouts/dashboard/dashboard-content";
 import UserImagesStack from "@/components/ui/user-images-stack";
 import { toTitleCase } from "@/lib/utils/formatters";
+import { PERMISSION } from "@/lib/utils/permission-enum";
 import { ProjectInfo } from "@/types/projects";
 import { Box, Calendar, Crown, Users } from "lucide-react";
 import Image from "next/image";
@@ -16,6 +17,7 @@ export default function ProjectBanner({
   dueDate,
   imageUrl,
   ownerImage,
+  permissions,
   projectType,
   description,
   memberImages
@@ -42,7 +44,15 @@ export default function ProjectBanner({
             </p>
           </div>
         </div>
-        <ProjectActionButtons projectId={id} />
+        <ProjectActionButtons
+          canEdit={permissions.includes(PERMISSION.EDIT_PROJECT)}
+          canDelete={permissions.includes(PERMISSION.DELETE_PROJECT)}
+          canViewTeam={permissions.includes(PERMISSION.VIEW_PROJECT_MEMBER)}
+          canInviteToTeam={permissions.includes(
+            PERMISSION.CREATE_PROJECT_MEMBER
+          )}
+          projectId={id}
+        />
       </div>
 
       <div className="flex flex-wrap gap-2 text-sm md:gap-4">

@@ -10,11 +10,11 @@ import { isUserProjectOwner } from "./projects";
 export async function getPermissions(
   userId: UserSchema["id"],
   projectId: ProjectSchema["id"]
-) {
+): Promise<Permissions[]> {
   // Project owner has all permissions
   if (await isUserProjectOwner(userId, projectId)) {
     const permissions = await permissionsQueries.getAll();
-    return permissions.map((permission) => permission.title);
+    return permissions.map((permission) => permission.title) as Permissions[];
   }
 
   const user = await projectMembersQueries.getByUserAndProject(
@@ -29,7 +29,7 @@ export async function getPermissions(
 
   return user.role.rolePermissions.map(
     (rolePermission) => rolePermission.permission.title
-  );
+  ) as Permissions[];
 }
 
 export async function hasPermission(

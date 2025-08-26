@@ -83,6 +83,7 @@ export interface ProjectInfo
     ProjectSchema,
     "id" | "name" | "dueDate" | "imageUrl" | "projectType" | "description"
   > {
-  ownerImage: UserSchema["imageUrl"];
   memberImages: string[];
+  permissions: Permissions[];
+  ownerImage: UserSchema["imageUrl"];
 }

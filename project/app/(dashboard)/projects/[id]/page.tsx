@@ -26,6 +26,7 @@ export default function ProjectPage() {
         dueDate={project.dueDate}
         imageUrl={project.imageUrl}
         ownerImage={project.ownerImage}
+        permissions={project.permissions}
         projectType={project.projectType}
         description={project.description}
         memberImages={project.memberImages}

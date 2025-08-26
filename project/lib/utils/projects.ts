@@ -1,5 +1,4 @@
 import { List } from "@/types/lists";
-import { Permissions } from "@/types/permissions";
 import { ProjectMember } from "@/types/projectMembers";
 import { Project, ProjectCardData, ProjectSchema } from "@/types/projects";
 import { Task } from "@/types/tasks";
@@ -50,10 +49,7 @@ export async function toCardData(
       ...project.projectMembers.map((member) => member.user.imageUrl)
     ];
 
-    const permissions = (await getPermissions(
-      userId,
-      project.id
-    )) as Permissions[];
+    const permissions = await getPermissions(userId, project.id);
 
     projectCardData.push({
       id: project.id,
