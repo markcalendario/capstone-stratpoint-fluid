@@ -18,7 +18,7 @@ import {
   isOverdue
 } from "../utils/date-and-time";
 import { upload } from "../utils/files";
-import { isUserProjectOwner } from "../utils/projects";
+import { hasPermission } from "../utils/rolePermissions";
 import { getUserId } from "../utils/users";
 import {
   createAndAssignTaskPayloadSchema,
@@ -34,11 +34,8 @@ export async function createAndAssignTask(payload: CreateAndAssignTaskPayload) {
     const parsed = createAndAssignTaskPayloadSchema.parse(payload);
     const userId = await getUserId();
 
-    if (!(await isUserProjectOwner(userId, parsed.projectId))) {
-      return {
-        success: false,
-        message: "You are not authorized to create task."
-      };
+    if (!(await hasPermission(userId, parsed.projectId, "create_task"))) {
+      return { success: false, message: "Unauthorized. Cannot create task." };
     }
 
     let attachment: string | null = null;
@@ -82,7 +79,16 @@ export async function createAndAssignTask(payload: CreateAndAssignTaskPayload) {
 
 export async function deleteTask(payload: DeleteTaskPayload) {
   try {
+    const userId = await getUserId();
     const parsed = deleteTaskPayloadSchema.parse(payload);
+
+    const task = await taskQueries.getTask(parsed.id);
+    if (!task) return { success: false, message: "Task not found." };
+
+    if (!(await hasPermission(userId, task.list.projectId, "delete_task"))) {
+      return { success: false, message: "Unauthorized. Cannot delete task." };
+    }
+
     await taskQueries.delete(parsed.id);
     return { success: true, message: "Task deleted successfully." };
   } catch (error) {
@@ -96,7 +102,15 @@ export async function deleteTask(payload: DeleteTaskPayload) {
 
 export async function editTask(payload: EditTaskPayload) {
   try {
+    const userId = await getUserId();
     const parsed = updateTaskPayloadSchema.parse(payload);
+
+    const task = await taskQueries.getTask(parsed.id);
+    if (!task) return { success: false, message: "Task not found." };
+
+    if (!(await hasPermission(userId, task.list.projectId, "edit_task"))) {
+      return { success: false, message: "Unauthorized. Cannot edit task." };
+    }
 
     const editTaskPayload = {
       id: parsed.id,
@@ -125,8 +139,16 @@ export async function editTask(payload: EditTaskPayload) {
 
 export async function moveTask(payload: MoveTaskPayload) {
   try {
+    const userId = await getUserId();
     const parsed = moveTaskPayloadSchema.parse(payload);
     const { taskId, newListId, newPosition } = parsed;
+
+    const task = await taskQueries.getTask(taskId);
+    if (!task) return { success: false, message: "Task not found." };
+
+    if (!(await hasPermission(userId, task.list.projectId, "edit_task"))) {
+      return { success: false, message: "Unauthorized. Cannot move task." };
+    }
 
     // Get tasks in the new list (in order)
     const tasks = await taskQueries.getByList(newListId);
@@ -174,10 +196,15 @@ export async function moveTask(payload: MoveTaskPayload) {
 
 export async function getTaskSlug(payload: GetTaskSlugPayload) {
   try {
+    const userId = await getUserId();
     const parsed = getTaskSlugSchema.parse(payload);
-    const task = await taskQueries.getTask(parsed.id);
 
+    const task = await taskQueries.getTask(parsed.id);
     if (!task) return { success: false, message: "Task not found." };
+
+    if (!(await hasPermission(userId, task.list.projectId, "view_task"))) {
+      return { success: false, message: "Unauthorized. Cannot get task." };
+    }
 
     const formatted = {
       title: task.title,
@@ -216,10 +243,18 @@ export async function getTaskSlug(payload: GetTaskSlugPayload) {
 
 export async function getTaskEditData(payload: GetTaskEditDataPayload) {
   try {
+    const userId = await getUserId();
     const parsed = getTaskSlugSchema.parse(payload);
-    const task = await taskQueries.getTask(parsed.id);
 
+    const task = await taskQueries.getTask(parsed.id);
     if (!task) return { success: false, message: "Task not found." };
+
+    if (!(await hasPermission(userId, task.list.projectId, "edit_task"))) {
+      return {
+        success: false,
+        message: "Unauthorized. Cannot retrieve edit task data."
+      };
+    }
 
     const formatted = {
       title: task.title,
@@ -248,7 +283,18 @@ export async function getTaskEditData(payload: GetTaskEditDataPayload) {
 
 export async function updateAttachment(payload: UpdateAttachmentPayload) {
   try {
+    const userId = await getUserId();
     const parsed = updateAttachmentSchema.parse(payload);
+
+    const task = await taskQueries.getTask(parsed.id);
+    if (!task) return { success: false, message: "Task not found." };
+
+    if (!(await hasPermission(userId, task.list.projectId, "edit_task"))) {
+      return {
+        success: false,
+        message: "Unauthorized. Cannot edit attachment."
+      };
+    }
 
     if (!parsed.file) {
       return { success: false, message: "No file attached." };
