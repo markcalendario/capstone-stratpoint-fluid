@@ -1,4 +1,4 @@
-import { pgTable, foreignKey, uuid, timestamp, unique, text, boolean, date, integer, pgEnum } from "drizzle-orm/pg-core"
+import { pgTable, foreignKey, uuid, timestamp, unique, text, boolean, date, integer, primaryKey, pgEnum } from "drizzle-orm/pg-core"
 import { sql } from "drizzle-orm"
 
 export const priority = pgEnum("priority", ['low', 'medium', 'high'])
@@ -156,4 +156,26 @@ export const taskDiscussions = pgTable("task_discussions", {
 			foreignColumns: [tasks.id],
 			name: "fk_task_discussions_task_id_tasks"
 		}).onDelete("cascade"),
+]);
+
+export const permissions = pgTable("permissions", {
+	id: uuid().defaultRandom().primaryKey().notNull(),
+	title: text().notNull(),
+});
+
+export const rolePermissions = pgTable("role_permissions", {
+	roleId: uuid().notNull(),
+	permissionId: uuid().notNull(),
+}, (table) => [
+	foreignKey({
+			columns: [table.permissionId],
+			foreignColumns: [permissions.id],
+			name: "role_permissions_permission_id_permissions"
+		}).onDelete("cascade"),
+	foreignKey({
+			columns: [table.roleId],
+			foreignColumns: [roles.id],
+			name: "role_permissions_role_id_roles"
+		}).onDelete("cascade"),
+	primaryKey({ columns: [table.roleId, table.permissionId], name: "role_permissions_pkey"}),
 ]);
