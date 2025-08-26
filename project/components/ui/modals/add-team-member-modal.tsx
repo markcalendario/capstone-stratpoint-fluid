@@ -1,6 +1,6 @@
 import { useAddProjectMembers } from "@/hooks/use-project-members";
 import { ProjectSchema } from "@/types/projects";
-import { TeamRolesSchema } from "@/types/teamRoles";
+import { RolesSchema } from "@/types/roles";
 import { UserSchema } from "@/types/users";
 import { useCallback, useState } from "react";
 import Button from "../buttons/button";
@@ -11,7 +11,7 @@ import Modal from "./modal";
 
 interface MembersState {
   userId: UserSchema["id"];
-  roleId: TeamRolesSchema["id"] | null;
+  roleId: RolesSchema["id"] | null;
 }
 
 interface AddTeamMemberModalProps {

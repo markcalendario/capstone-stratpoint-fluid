@@ -18,7 +18,7 @@ const projectMembersQueries = {
         return eq(projectMembers.projectId, projectId);
       },
       with: {
-        teamRole: true,
+        role: true,
         user: {
           with: {
             projects: true,
@@ -43,7 +43,7 @@ const projectMembersQueries = {
         );
       },
       with: {
-        teamRole: true,
+        role: true,
         user: {
           with: {
             taskAssignments: { with: { task: { with: { list: true } } } },
@@ -100,7 +100,7 @@ const projectMembersQueries = {
         );
       },
       with: {
-        teamRole: true,
+        role: true,
         user: {
           with: {
             taskAssignments: { with: { task: { with: { list: true } } } },

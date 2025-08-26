@@ -1,11 +1,11 @@
-import { getTeamRolesOptions } from "@/lib/actions/teamRoles";
+import { getRoleOptions } from "@/lib/actions/roles";
 import { useQuery } from "@tanstack/react-query";
 
-export default function useTeamRoles() {
+export default function useRoles() {
   const { isPending, data } = useQuery({
     queryKey: ["roles"],
-    queryFn: getTeamRolesOptions
+    queryFn: getRoleOptions
   });
 
-  return { isTeamRolesLoading: isPending, teamRoles: data };
+  return { isRolesLoading: isPending, rolesData: data };
 }

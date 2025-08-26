@@ -9,7 +9,7 @@ import {
   GetProjectMembersOptionsPayload,
   GetProjectMembers as GetProjectMembersPayload
 } from "@/types/projectMembers";
-import { UserOption } from "@/types/teamRoles";
+import { UserOption } from "@/types/roles";
 import { ZodError } from "zod";
 import projectMembersQueries from "../queries/projectMembers";
 import {
@@ -181,7 +181,7 @@ export async function getProjectMembers(payload: GetProjectMembersPayload) {
         name: user.name,
         email: user.email,
         imageUrl: user.imageUrl,
-        role: projectMember.teamRole.title,
+        role: projectMember.role.title,
         membershipStatus: getMembershipStatus(isAccepted),
         projectsCount: projectsMemberOf + projectsOwned,
         tasksDoneCount,
@@ -294,8 +294,8 @@ export async function getProjectMemberRole(
       projectId: member.projectId,
       imageUrl: member.user.imageUrl,
       role: {
-        id: member.teamRole.id,
-        title: member.teamRole.title
+        id: member.role.id,
+        title: member.role.title
       } satisfies UserOption["role"]
     };
 

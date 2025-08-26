@@ -401,7 +401,7 @@
         "fk_project_members_role_id_team_roles": {
           "name": "fk_project_members_role_id_team_roles",
           "tableFrom": "project_members",
-          "tableTo": "team_roles",
+          "tableTo": "roles",
           "schemaTo": "public",
           "columnsFrom": [
             "role_id"
@@ -560,8 +560,8 @@
       "policies": {},
       "isRLSEnabled": false
     },
-    "public.team_roles": {
-      "name": "team_roles",
+    "public.roles": {
+      "name": "roles",
       "schema": "",
       "columns": {
         "id": {
@@ -588,12 +588,12 @@
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
-        "team_roles_title_key": {
+        "roles_title_key": {
           "columns": [
             "title"
           ],
           "nullsNotDistinct": false,
-          "name": "team_roles_title_key"
+          "name": "roles_title_key"
         }
       },
       "checkConstraints": {},

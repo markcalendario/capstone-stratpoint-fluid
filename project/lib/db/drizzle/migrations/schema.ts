@@ -93,7 +93,7 @@ export const projectMembers = pgTable("project_members", {
 		}).onDelete("cascade"),
 	foreignKey({
 			columns: [table.roleId],
-			foreignColumns: [teamRoles.id],
+			foreignColumns: [roles.id],
 			name: "fk_project_members_role_id_team_roles"
 		}).onDelete("restrict"),
 	foreignKey({
@@ -130,12 +130,12 @@ export const tasks = pgTable("tasks", {
 		}).onDelete("cascade"),
 ]);
 
-export const teamRoles = pgTable("team_roles", {
+export const roles = pgTable("roles", {
 	id: uuid().defaultRandom().primaryKey().notNull(),
 	title: text().notNull(),
 	description: text(),
 }, (table) => [
-	unique("team_roles_title_key").on(table.title),
+	unique("roles_title_key").on(table.title),
 ]);
 
 export const taskDiscussions = pgTable("task_discussions", {

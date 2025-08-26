@@ -1,6 +1,6 @@
 import z from "zod";
 import { projectSchema } from "./projects";
-import { teamRolesSchema } from "./teamRoles";
+import { rolesSchema } from "./roles";
 import { userSchema } from "./users";
 
 export const projectMembersSchema = z.object({
@@ -29,7 +29,7 @@ export const addProjectMembersPayloadSchema = z.object({
     .array(
       z.object({
         userId: projectMembersSchema.shape.userId,
-        roleId: teamRolesSchema.shape.id
+        roleId: rolesSchema.shape.id
       }),
       "Members must contain ID and role ID."
     )
@@ -48,7 +48,7 @@ export const removeProjectMemberPayloadSchema = z.object({
 export const editProjectMemberRoleSchema = z.object({
   userId: userSchema.shape.id,
   projectId: projectSchema.shape.id,
-  roleId: teamRolesSchema.shape.id
+  roleId: rolesSchema.shape.id
 });
 
 export const getProjectMembersRoleSchema = z.object({

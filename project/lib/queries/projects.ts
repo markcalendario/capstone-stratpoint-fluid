@@ -24,7 +24,7 @@ const projectQueries = {
         user: {
           with: {
             projects: true,
-            projectMembers: { with: { teamRole: true } },
+            projectMembers: { with: { role: true } },
             taskAssignments: { with: { task: { with: { list: true } } } }
           }
         },
@@ -59,7 +59,7 @@ const projectQueries = {
         user: {
           with: {
             projects: true,
-            projectMembers: { with: { teamRole: true } },
+            projectMembers: { with: { role: true } },
             taskAssignments: { with: { task: { with: { list: true } } } }
           }
         },

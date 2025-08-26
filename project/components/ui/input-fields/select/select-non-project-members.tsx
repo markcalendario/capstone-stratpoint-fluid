@@ -2,16 +2,16 @@ import Input from "@/components/ui/input-fields/input";
 import SectionLoader from "@/components/ui/section-loader";
 import useDebounce from "@/hooks/use-debounce";
 import { useNonProjectMembersOptions } from "@/hooks/use-project-members";
-import useTeamRoles from "@/hooks/use-team-roles";
+import useRoles from "@/hooks/use-team-roles";
 import { ProjectSchema } from "@/types/projects";
-import { TeamRoles, UserOption } from "@/types/teamRoles";
+import { Roles, UserOption } from "@/types/roles";
 import { UserSchema } from "@/types/users";
 import { useEffect, useState } from "react";
 import UserOptionRow from "./options/user-option";
 
 interface OnChangeParams {
   userId: UserSchema["id"];
-  roleId: TeamRoles["id"] | null;
+  roleId: Roles["id"] | null;
 }
 
 interface SelectNewProjectMembersProps {
@@ -29,7 +29,7 @@ export default function SelectNonProjectMembers({
   const [selectedUsers, setSelectedUsers] = useState<UserOption[]>([]);
   const [searchedUsers, setSearchedUsers] = useState<UserOption[]>([]);
 
-  const { teamRoles: roleOptions } = useTeamRoles();
+  const { rolesData: roleOptions } = useRoles();
 
   const {
     isNonProjectMembersOptionsLoading: isLoading,

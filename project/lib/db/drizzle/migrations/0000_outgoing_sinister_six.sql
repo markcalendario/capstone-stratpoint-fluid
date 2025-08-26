@@ -72,11 +72,11 @@ CREATE TABLE "tasks" (
 	"created_by" uuid NOT NULL
 );
 --> statement-breakpoint
-CREATE TABLE "team_roles" (
+CREATE TABLE "roles" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"title" text NOT NULL,
 	"description" text,
-	CONSTRAINT "team_roles_title_key" UNIQUE("title")
+	CONSTRAINT "roles_title_key" UNIQUE("title")
 );
 --> statement-breakpoint
 CREATE TABLE "task_discussions" (
@@ -94,7 +94,7 @@ ALTER TABLE "projects" ADD CONSTRAINT "fk_projects_owner_id_users" FOREIGN KEY (
 ALTER TABLE "lists" ADD CONSTRAINT "fk_lists_created_by_users" FOREIGN KEY ("created_by") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "lists" ADD CONSTRAINT "fk_lists_project_id_projects" FOREIGN KEY ("project_id") REFERENCES "public"."projects"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "project_members" ADD CONSTRAINT "fk_project_members_project_id_projects" FOREIGN KEY ("project_id") REFERENCES "public"."projects"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "project_members" ADD CONSTRAINT "fk_project_members_role_id_team_roles" FOREIGN KEY ("role_id") REFERENCES "public"."team_roles"("id") ON DELETE restrict ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "project_members" ADD CONSTRAINT "fk_project_members_role_id_team_roles" FOREIGN KEY ("role_id") REFERENCES "public"."roles"("id") ON DELETE restrict ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "project_members" ADD CONSTRAINT "fk_project_members_user_id_users" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "tasks" ADD CONSTRAINT "fk_tasks_list_id_lists" FOREIGN KEY ("list_id") REFERENCES "public"."lists"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "tasks" ADD CONSTRAINT "fk_tasks_created_by_users" FOREIGN KEY ("created_by") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint

@@ -1,10 +1,10 @@
 "use server";
 
-import teamRolesQueries from "../queries/teamRoles";
+import rolesQueries from "../queries/roles";
 
-export async function getTeamRolesOptions() {
+export async function getRoleOptions() {
   try {
-    const roles = await teamRolesQueries.getAll();
+    const roles = await rolesQueries.getAll();
     const formatted = roles.map((r) => ({ id: r.id, title: r.title }));
     return {
       success: true,
