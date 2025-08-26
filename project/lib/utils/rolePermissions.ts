@@ -19,7 +19,7 @@ export async function hasPermission(
   if (await isUserProjectOwner(userId, projectId)) return true;
 
   // User is not a member or role is missing
-  if (!user || !user.role) return false;
+  if (!user?.isAccepted || !user.role) return false;
 
   const permissions = user.role.rolePermissions.map(
     (rolePermission) => rolePermission.permission.title

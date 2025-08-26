@@ -1,7 +1,6 @@
 "use server";
 
 import listQueries from "@/lib/queries/lists";
-import { isUserProjectOwner } from "@/lib/utils/projects";
 import { getUserId } from "@/lib/utils/users";
 import {
   createListPayloadSchema,
@@ -22,6 +21,7 @@ import {
 import { ZodError } from "zod";
 import { getDaysRemaining, isOverdue } from "../utils/date-and-time";
 import { stripHTML } from "../utils/formatters";
+import { hasPermission } from "../utils/rolePermissions";
 
 export async function createList(payload: CreateListPayload) {
   try {
@@ -29,9 +29,8 @@ export async function createList(payload: CreateListPayload) {
     const userId = await getUserId();
     const parsed = createListPayloadSchema.parse(payload);
 
-    // Check if user is a project owner
-    if (!(await isUserProjectOwner(userId, parsed.projectId))) {
-      return { success: false, message: "You are not the project owner." };
+    if (!(await hasPermission(userId, parsed.projectId, "create_list"))) {
+      return { success: false, message: "Unauthorized. Cannot create list." };
     }
 
     const position = await listQueries.getMaxPosition(parsed.projectId);
@@ -59,7 +58,13 @@ export async function createList(payload: CreateListPayload) {
 
 export async function getListsWithTasks(payload: GetProjectListsPayload) {
   try {
+    const userId = await getUserId();
     const parsed = getProjectListsPayloadSchema.parse(payload);
+
+    if (!(await hasPermission(userId, parsed.projectId, "view_list"))) {
+      return { success: false, message: "Unauthorized. Cannot view list." };
+    }
+
     const listsAndTasks = await listQueries.getListsWithTasks(parsed.projectId);
 
     const formatted = listsAndTasks.map((list) => {
@@ -104,7 +109,13 @@ export async function getListsWithTasks(payload: GetProjectListsPayload) {
 export async function updateList(payload: UpdateListPayload) {
   try {
     // Validate payload
+    const userId = await getUserId();
     const parsed = updateListPayloadSchema.parse(payload);
+    const list = await listQueries.get(parsed.id);
+
+    if (!(await hasPermission(userId, list.projectId, "edit_list"))) {
+      return { success: false, message: "Unauthorized. Cannot edit list." };
+    }
 
     const data = {
       name: parsed.name,
@@ -125,10 +136,15 @@ export async function updateList(payload: UpdateListPayload) {
   }
 }
 
-export async function getList(payload: GetListPayload) {
+export async function getListEditData(payload: GetListPayload) {
   try {
+    const userId = await getUserId();
     const validId = listSchema.shape.id.parse(payload.id);
     const list = await listQueries.get(validId);
+
+    if (!(await hasPermission(userId, list.projectId, "edit_list"))) {
+      return { success: false, message: "Unauthorized. Cannot view list." };
+    }
 
     return { success: true, message: "List fetched successfully.", list };
   } catch (error) {
@@ -142,7 +158,14 @@ export async function getList(payload: GetListPayload) {
 
 export async function deleteList(payload: DeleteListPayload) {
   try {
+    const userId = await getUserId();
     const parsed = deleteListPayloadSchema.parse(payload);
+    const list = await listQueries.get(parsed.id);
+
+    if (!(await hasPermission(userId, list.projectId, "delete_list"))) {
+      return { success: false, message: "Unauthorized. Cannot delete list." };
+    }
+
     await listQueries.delete(parsed.id);
 
     return { success: true, message: "List deleted successfully." };
@@ -156,7 +179,12 @@ export async function deleteList(payload: DeleteListPayload) {
 }
 
 export async function moveList(payload: MoveListPayload) {
+  const userId = await getUserId();
   const { listId, newPosition, projectId } = payload;
+
+  if (!(await hasPermission(userId, projectId, "edit_list"))) {
+    return { success: false, message: "Unauthorized. Cannot delete list." };
+  }
 
   // Get list IDs of the project
   const lists = await listQueries.getListsWithTasks(projectId);

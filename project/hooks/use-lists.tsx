@@ -2,7 +2,7 @@ import { queryClient } from "@/components/ui/query-client-provider";
 import {
   createList,
   deleteList,
-  getList,
+  getListEditData,
   getListsWithTasks,
   moveList,
   updateList
@@ -16,10 +16,10 @@ import {
 import { ProjectSchema } from "@/types/projects";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
-export function useList(id: ListSchema["id"]) {
+export function useListEditData(id: ListSchema["id"]) {
   const { isPending, data } = useQuery({
     queryKey: ["list", id],
-    queryFn: () => getList({ id })
+    queryFn: () => getListEditData({ id })
   });
 
   return { isListLoading: isPending, listData: data };
