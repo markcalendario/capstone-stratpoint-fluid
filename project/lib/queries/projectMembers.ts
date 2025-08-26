@@ -100,7 +100,7 @@ const projectMembersQueries = {
         );
       },
       with: {
-        role: true,
+        role: { with: { rolePermissions: { with: { permission: true } } } },
         user: {
           with: {
             taskAssignments: { with: { task: { with: { list: true } } } },
