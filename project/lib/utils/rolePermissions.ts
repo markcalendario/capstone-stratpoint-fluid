@@ -4,6 +4,7 @@ import { Action } from "@/types/permissions";
 import { ProjectSchema } from "@/types/projects";
 import { UserSchema } from "@/types/users";
 import projectMembersQueries from "../queries/projectMembers";
+import { isUserProjectOwner } from "./projects";
 
 export async function hasPermission(
   userId: UserSchema["id"],
@@ -14,6 +15,8 @@ export async function hasPermission(
     projectId,
     userId
   );
+
+  if (await isUserProjectOwner(userId, projectId)) return true;
 
   // User is not a member or role is missing
   if (!user || !user.role) return false;
