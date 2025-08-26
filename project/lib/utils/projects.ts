@@ -1,10 +1,12 @@
 import { List } from "@/types/lists";
+import { Permissions } from "@/types/permissions";
 import { ProjectMember } from "@/types/projectMembers";
 import { Project, ProjectCardData, ProjectSchema } from "@/types/projects";
 import { Task } from "@/types/tasks";
 import { User, UserSchema } from "@/types/users";
 import projectQueries from "..//queries/projects";
 import { getDaysRemaining, isOverdue } from "./date-and-time";
+import { getPermissions } from "./rolePermissions";
 
 interface ToCardDataList extends List {
   tasks: Task[];
@@ -20,7 +22,10 @@ interface ToCardData extends Project {
   user: User;
 }
 
-export function toCardData(projects: ToCardData[]) {
+export async function toCardData(
+  userId: UserSchema["id"],
+  projects: ToCardData[]
+) {
   const projectCardData = [];
 
   for (const project of projects) {
@@ -36,6 +41,20 @@ export function toCardData(projects: ToCardData[]) {
     const progress =
       totalTasks === 0 ? 0 : Math.round((doneTasks / totalTasks) * 100);
 
+    const openTasks = project.lists
+      .filter((list) => !list.isFinal)
+      .reduce((count, list) => count + list.tasks.length, 0);
+
+    const memberImages = [
+      project.user.imageUrl,
+      ...project.projectMembers.map((member) => member.user.imageUrl)
+    ];
+
+    const permissions = (await getPermissions(
+      userId,
+      project.id
+    )) as Permissions[];
+
     projectCardData.push({
       id: project.id,
       name: project.name,
@@ -46,13 +65,9 @@ export function toCardData(projects: ToCardData[]) {
       description: project.description,
       isOverdue: isOverdue(project.dueDate),
       daysRemaining: getDaysRemaining(project.dueDate),
-      openTasks: project.lists
-        .filter((list) => !list.isFinal)
-        .reduce((count, list) => count + list.tasks.length, 0),
-      memberImages: [
-        project.user.imageUrl,
-        ...project.projectMembers.map((member) => member.user.imageUrl)
-      ]
+      openTasks,
+      permissions,
+      memberImages
     });
   }
 

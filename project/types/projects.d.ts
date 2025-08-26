@@ -1,6 +1,7 @@
 import { projects } from "@/lib/db/drizzle/migrations/schema";
 import { InferSelectModel } from "drizzle-orm";
 import { ListSchema } from "./lists";
+import { Permissions } from "./permissions";
 import { ProjectMember } from "./projectMembers";
 import { UserSchema } from "./users";
 
@@ -71,6 +72,7 @@ export interface ProjectCardData
   progress: number; // In Percent
   memberImages: UserSchema["imageUrl"][];
   projectType: ProjectSchema["projectType"];
+  permissions: Permissions[];
 }
 
 export interface ProjectOption

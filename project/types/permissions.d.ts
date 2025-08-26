@@ -1,4 +1,4 @@
-export type Action =
+export type Permissions =
   | "edit_list"
   | "edit_task"
   | "delete_project_member"

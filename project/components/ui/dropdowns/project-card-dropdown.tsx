@@ -8,31 +8,62 @@ import { EditProjectModal } from "../modals/edit-project-modal";
 import Dropdown from "./drop-down";
 
 interface ProjectCardDropdownProps {
+  canView: boolean;
+  canEdit: boolean;
+  canDelete: boolean;
   id: ProjectSchema["id"];
 }
 
-export default function ProjectCardDropdown({ id }: ProjectCardDropdownProps) {
+export default function ProjectCardDropdown({
+  canView,
+  canEdit,
+  canDelete,
+  id
+}: ProjectCardDropdownProps) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const toggleEditModal = () => setIsEditModalOpen((prev) => !prev);
   const toggleDeleteModal = () => setIsDeleteModalOpen((prev) => !prev);
 
+  const dropdownItems = [];
+
+  if (canView) {
+    dropdownItems.push({
+      href: `/projects/${id}`,
+      label: "View",
+      icon: Eye
+    });
+  }
+
+  if (canEdit) {
+    dropdownItems.push({
+      onClick: toggleEditModal,
+      label: "Edit",
+      icon: Edit
+    });
+  }
+
+  if (canDelete) {
+    dropdownItems.push({
+      onClick: toggleDeleteModal,
+      label: "Delete",
+      icon: Trash
+    });
+  }
+
+  if (!dropdownItems.length) return;
+
   return (
     <Fragment>
       <Dropdown
-        className="hover:bg-primary/10 absolute top-0 right-0 cursor-pointer rounded p-1"
         label={
           <MoreHorizontal
             size={16}
             className="dark:text-white"
           />
         }
-        items={[
-          { href: `/projects/${id}`, label: "View", icon: Eye },
-          { onClick: toggleEditModal, label: "Edit", icon: Edit },
-          { onClick: toggleDeleteModal, label: "Delete", icon: Trash }
-        ]}
+        items={dropdownItems}
       />
       {isEditModalOpen && (
         <EditProjectModal

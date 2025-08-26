@@ -86,7 +86,7 @@ export async function getRecentProjects() {
     return {
       success: true,
       message: "Success getting recent projects.",
-      recentProjects: toCardData(recentProjects)
+      recentProjects: await toCardData(userId, recentProjects)
     };
   } catch (error) {
     if (error instanceof ZodError) {
@@ -110,7 +110,7 @@ export async function getProjects() {
     const userId = await getUserId();
     const projects = await projectQueries.getAll(userId);
 
-    const formattedProjects = toCardData(projects);
+    const formattedProjects = await toCardData(userId, projects);
 
     return {
       success: true,

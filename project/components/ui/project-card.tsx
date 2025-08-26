@@ -1,7 +1,8 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { ProjectCardData as IProjectCard } from "@/types/projects";
+import { PERMISSION } from "@/lib/utils/permission-enum";
+import { ProjectCardData } from "@/types/projects";
 import Image from "next/image";
 import Link from "next/link";
 import Badge from "./badge";
@@ -9,7 +10,7 @@ import ProjectCardDropdown from "./dropdowns/project-card-dropdown";
 import ProjectTypeBadge from "./project-type-badge";
 import UserImagesStack from "./user-images-stack";
 
-interface ProjectCardProps extends IProjectCard {
+interface ProjectCardProps extends ProjectCardData {
   className?: string;
 }
 
@@ -25,7 +26,8 @@ export default function ProjectCard({
   description,
   projectType,
   memberImages,
-  daysRemaining
+  daysRemaining,
+  permissions
 }: ProjectCardProps) {
   return (
     <div
@@ -33,9 +35,16 @@ export default function ProjectCard({
         "ring-primary/20 relative block rounded-sm p-5 ring-2 ring-inset",
         className
       )}>
-      <ProjectCardDropdown id={id} />
+      <div className="flex flex-wrap justify-between gap-1">
+        <ProjectTypeBadge type={projectType} />
 
-      <ProjectTypeBadge type={projectType} />
+        <ProjectCardDropdown
+          id={id}
+          canView={permissions.includes(PERMISSION.VIEW_PROJECT)}
+          canEdit={permissions.includes(PERMISSION.DELETE_PROJECT)}
+          canDelete={permissions.includes(PERMISSION.DELETE_PROJECT)}
+        />
+      </div>
 
       {/* Primary Info */}
       <Link

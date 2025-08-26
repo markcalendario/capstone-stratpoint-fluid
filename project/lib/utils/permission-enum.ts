@@ -1,0 +1,22 @@
+export const PERMISSION = {
+  EDIT_LIST: "edit_list",
+  EDIT_TASK: "edit_task",
+  DELETE_PROJECT_MEMBER: "delete_project_member",
+  CREATE_PROJECT: "create_project",
+  VIEW_PROJECT: "view_project",
+  DELETE_PROJECT: "delete_project",
+  EDIT_PROJECT_MEMBER: "edit_project_member",
+  CREATE_COMMENT: "create_comment",
+  VIEW_COMMENT: "view_comment",
+  CREATE_LIST: "create_list",
+  CREATE_PROJECT_MEMBER: "create_project_member",
+  VIEW_TASK: "view_task",
+  DELETE_LIST: "delete_list",
+  DELETE_TASK: "delete_task",
+  VIEW_PROJECT_MEMBER: "view_project_member",
+  EDIT_COMMENT: "edit_comment",
+  EDIT_PROJECT: "edit_project",
+  VIEW_LIST: "view_list",
+  CREATE_TASK: "create_task",
+  DELETE_COMMENT: "delete_comment"
+} as const;
