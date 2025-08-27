@@ -1,7 +1,7 @@
 import Button from "@/components/ui/buttons/button";
 import Input from "@/components/ui/input-fields/input";
 import Select from "@/components/ui/input-fields/select/select";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/tailwind";
 
 interface ProfileSettingsFormProps {
   className?: string;

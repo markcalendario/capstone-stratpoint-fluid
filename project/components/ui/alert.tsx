@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/tailwind";
 import { AlertTriangle, CheckCircle, Info, XCircle } from "lucide-react";
 import { JSX } from "react";
 

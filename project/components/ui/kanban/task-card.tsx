@@ -1,10 +1,10 @@
 // TODO: Task 5.6 - Create task detail modals and editing interfaces
 
 import { usePermissions } from "@/hooks/use-permissions";
-import { cn } from "@/lib/utils";
 import { priorityColors } from "@/lib/utils/constants";
 import { toTitleCase } from "@/lib/utils/formatters";
 import { PERMISSION } from "@/lib/utils/permission-enum";
+import { cn } from "@/lib/utils/tailwind";
 import { KanbanTask } from "@/types/kanban";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";

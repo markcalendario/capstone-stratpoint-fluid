@@ -1,5 +1,5 @@
 import Button from "@/components/ui/buttons/button";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/tailwind";
 import { Bell, Palette, Shield, User } from "lucide-react";
 
 type SettingsItem = {

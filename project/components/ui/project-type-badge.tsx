@@ -1,6 +1,6 @@
-import { cn } from "@/lib/utils";
 import { projectTypes } from "@/lib/utils/constants";
 import { toTitleCase } from "@/lib/utils/formatters";
+import { cn } from "@/lib/utils/tailwind";
 
 type ProjectType = (typeof projectTypes)[number];
 

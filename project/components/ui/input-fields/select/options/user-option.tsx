@@ -1,5 +1,5 @@
 import Dropdown from "@/components/ui/dropdowns/drop-down";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/tailwind";
 import { UserOption } from "@/types/roles";
 import { UserSchema } from "@/types/users";
 import { Check, LoaderCircle, Star, X } from "lucide-react";

@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/tailwind";
 
 interface BadgeProps {
   type?: "success" | "error" | "gray" | "info" | "warning";

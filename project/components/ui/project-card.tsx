@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/tailwind";
 import { ProjectCardData } from "@/types/projects";
 import Image from "next/image";
 import Link from "next/link";
