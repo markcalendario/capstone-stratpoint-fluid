@@ -2,25 +2,6 @@ import { UserSchema } from "@/types/users";
 import projectQueries from "..//queries/projects";
 import { dayStartOfWeek } from "./date-and-time";
 
-// Helper: Calculate percentage and type
-function calcChange(
-  current: number,
-  previous: number
-): { value: string; type: "positive" | "negative" } {
-  if (previous === 0) {
-    return {
-      value: current === 0 ? "0%" : "100%",
-      type: current >= 0 ? "positive" : "negative"
-    };
-  }
-
-  const change = ((current - previous) / previous) * 100;
-  return {
-    value: `${change.toFixed(1)}%`,
-    type: change >= 0 ? "positive" : "negative"
-  };
-}
-
 export async function getActiveProjectsStatus(userId: UserSchema["id"]) {
   const projects = await projectQueries.getAll(userId);
   const overall = projects.length;
