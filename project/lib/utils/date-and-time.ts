@@ -63,3 +63,14 @@ export function isOverdue(dueDate: string | Date): boolean {
 
   return due < today;
 }
+
+export function dayStartOfWeek() {
+  const now = new Date();
+  const dayOfWeek = now.getDay();
+  const diffToMonday = (dayOfWeek + 6) % 7;
+
+  const monday = new Date(now);
+  monday.setDate(now.getDate() - diffToMonday);
+  monday.setHours(0, 0, 0, 0);
+  return monday;
+}
