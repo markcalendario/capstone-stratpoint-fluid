@@ -1,4 +1,5 @@
 import {
+  getAnalyticsSummary,
   getDashboardStatus,
   getProjectProgress,
   getStatusByPriority
@@ -31,4 +32,13 @@ export function useStatusByPriority(projectId: ProjectSchema["id"]) {
   });
 
   return { isStatusByPriorityLoading: isPending, statusByPriorityData: data };
+}
+
+export function useAnalyticsSummary(projectId: ProjectSchema["id"]) {
+  const { isPending, data } = useQuery({
+    queryKey: ["analytics", "analyticsSummary", projectId],
+    queryFn: () => getAnalyticsSummary({ projectId })
+  });
+
+  return { isAnalyticsSummaryLoading: isPending, analyticsSummaryData: data };
 }

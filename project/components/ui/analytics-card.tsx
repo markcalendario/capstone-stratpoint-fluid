@@ -17,24 +17,34 @@ export default function AnalyticsCard({
   color,
   className
 }: AnalyticsCardProps) {
+  const colorMap: Record<string, string> = {
+    blue: "bg-primary",
+    green: "bg-green-700",
+    red: "bg-red-700",
+    yellow: "bg-yellow-600"
+  };
+
   return (
-    <div className={cn("border-primary/20 rounded-sm border-2 p-6", className)}>
-      <div className="mb-4 flex items-center justify-between">
-        <div
-          className={`flex h-10 w-10 items-center justify-center rounded-lg bg-neutral-500/10 dark:bg-white/10`}>
-          <Icon
-            className={`text-${color}-500`}
-            size={20}
-          />
+    <div className={cn("border-primary/20 rounded-sm border-2 p-5", className)}>
+      <div
+        className={cn(
+          colorMap[color],
+          "mb-2 inline-block items-center justify-between rounded-xs p-2"
+        )}>
+        <Icon
+          size={20}
+          className="text-neutral-100"
+        />
+      </div>
+      <div className="mb-1 flex items-end gap-2">
+        <div className="text-2xl leading-none font-bold text-neutral-900 dark:text-neutral-100">
+          {value}
+        </div>
+        <div className="text-xs text-neutral-500 dark:text-neutral-400">
+          {unit}
         </div>
       </div>
-      <div className="mb-1 text-2xl font-bold text-neutral-900 dark:text-neutral-100">
-        {value}
-      </div>
-      <div className="mb-2 text-sm text-neutral-500 dark:text-neutral-400">
-        {unit}
-      </div>
-      <div className="text-xs font-medium text-neutral-700 dark:text-neutral-300">
+      <div className="text-sm font-medium text-neutral-700 dark:text-neutral-300">
         {title}
       </div>
     </div>
