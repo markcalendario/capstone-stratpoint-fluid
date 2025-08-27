@@ -1,7 +1,6 @@
 import { projects } from "@/lib/db/drizzle/migrations/schema";
 import { InferSelectModel } from "drizzle-orm";
 import { ListSchema } from "./lists";
-import { Permissions } from "./permissions";
 import { ProjectMember } from "./projectMembers";
 import { UserSchema } from "./users";
 
@@ -83,6 +82,5 @@ export interface ProjectInfo
     "id" | "name" | "dueDate" | "imageUrl" | "projectType" | "description"
   > {
   memberImages: string[];
-  permissions: Permissions[];
   ownerImage: UserSchema["imageUrl"];
 }

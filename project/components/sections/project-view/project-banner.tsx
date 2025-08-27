@@ -16,7 +16,6 @@ export default function ProjectBanner({
   dueDate,
   imageUrl,
   ownerImage,
-  permissions,
   projectType,
   description,
   memberImages
