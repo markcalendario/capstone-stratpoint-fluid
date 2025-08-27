@@ -72,7 +72,6 @@ export interface ProjectCardData
   progress: number; // In Percent
   memberImages: UserSchema["imageUrl"][];
   projectType: ProjectSchema["projectType"];
-  permissions: Permissions[];
 }
 
 export interface ProjectOption

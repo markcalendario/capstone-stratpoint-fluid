@@ -1,5 +1,7 @@
 "use client";
 
+import { usePermissions } from "@/hooks/use-permissions";
+import { PERMISSION } from "@/lib/utils/permission-enum";
 import { ProjectSchema } from "@/types/projects";
 import { Edit, Eye, MoreHorizontal, Trash } from "lucide-react";
 import { Fragment, useState } from "react";
@@ -8,23 +10,22 @@ import { EditProjectModal } from "../modals/edit-project-modal";
 import Dropdown from "./drop-down";
 
 interface ProjectCardDropdownProps {
-  canView: boolean;
-  canEdit: boolean;
-  canDelete: boolean;
   id: ProjectSchema["id"];
 }
 
-export default function ProjectCardDropdown({
-  canView,
-  canEdit,
-  canDelete,
-  id
-}: ProjectCardDropdownProps) {
+export default function ProjectCardDropdown({ id }: ProjectCardDropdownProps) {
+  const { permissionsData } = usePermissions(id);
+
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const toggleEditModal = () => setIsEditModalOpen((prev) => !prev);
   const toggleDeleteModal = () => setIsDeleteModalOpen((prev) => !prev);
+
+  const permissions = permissionsData?.permissions;
+  const canView = permissions?.includes(PERMISSION.VIEW_PROJECT);
+  const canEdit = permissions?.includes(PERMISSION.EDIT_PROJECT);
+  const canDelete = permissions?.includes(PERMISSION.DELETE_PROJECT);
 
   const dropdownItems = [];
 

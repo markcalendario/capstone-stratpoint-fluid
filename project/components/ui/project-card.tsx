@@ -1,7 +1,6 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { PERMISSION } from "@/lib/utils/permission-enum";
 import { ProjectCardData } from "@/types/projects";
 import Image from "next/image";
 import Link from "next/link";
@@ -26,8 +25,7 @@ export default function ProjectCard({
   description,
   projectType,
   memberImages,
-  daysRemaining,
-  permissions
+  daysRemaining
 }: ProjectCardProps) {
   return (
     <div
@@ -38,12 +36,7 @@ export default function ProjectCard({
       <div className="flex flex-wrap justify-between gap-1">
         <ProjectTypeBadge type={projectType} />
 
-        <ProjectCardDropdown
-          id={id}
-          canView={permissions.includes(PERMISSION.VIEW_PROJECT)}
-          canEdit={permissions.includes(PERMISSION.DELETE_PROJECT)}
-          canDelete={permissions.includes(PERMISSION.DELETE_PROJECT)}
-        />
+        <ProjectCardDropdown id={id} />
       </div>
 
       {/* Primary Info */}

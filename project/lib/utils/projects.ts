@@ -5,7 +5,6 @@ import { Task } from "@/types/tasks";
 import { User, UserSchema } from "@/types/users";
 import projectQueries from "..//queries/projects";
 import { getDaysRemaining, isOverdue } from "./date-and-time";
-import { getPermissions } from "./rolePermissions";
 
 interface ToCardDataList extends List {
   tasks: Task[];
@@ -21,10 +20,7 @@ interface ToCardData extends Project {
   user: User;
 }
 
-export async function toCardData(
-  userId: UserSchema["id"],
-  projects: ToCardData[]
-) {
+export function toCardData(projects: ToCardData[]) {
   const projectCardData = [];
 
   for (const project of projects) {
@@ -49,8 +45,6 @@ export async function toCardData(
       ...project.projectMembers.map((member) => member.user.imageUrl)
     ];
 
-    const permissions = await getPermissions(userId, project.id);
-
     projectCardData.push({
       id: project.id,
       name: project.name,
@@ -62,7 +56,6 @@ export async function toCardData(
       isOverdue: isOverdue(project.dueDate),
       daysRemaining: getDaysRemaining(project.dueDate),
       openTasks,
-      permissions,
       memberImages
     });
   }
