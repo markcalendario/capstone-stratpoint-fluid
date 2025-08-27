@@ -100,8 +100,9 @@ export default function ListCard({
         {!isEmpty &&
           tasks.map((task) => (
             <TaskCard
-              key={task.id}
               {...task}
+              key={task.id}
+              projectId={projectId}
             />
           ))}
       </SortableContext>

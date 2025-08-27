@@ -1,8 +1,10 @@
 // TODO: Task 5.6 - Create task detail modals and editing interfaces
 
+import { usePermissions } from "@/hooks/use-permissions";
 import { cn } from "@/lib/utils";
 import { priorityColors } from "@/lib/utils/constants";
 import { toTitleCase } from "@/lib/utils/formatters";
+import { PERMISSION } from "@/lib/utils/permission-enum";
 import { KanbanTask } from "@/types/kanban";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
@@ -54,12 +56,15 @@ export function TaskCard({
   label,
   isDone,
   listId,
-  isOverdue,
   priority,
+  projectId,
+  isOverdue,
   description,
   remainingDays,
   assigneesImages
 }: KanbanTask) {
+  const { permissionsData } = usePermissions(projectId);
+
   const {
     isDragging,
     transform,
@@ -75,6 +80,9 @@ export function TaskCard({
 
   const style = { transform: CSS.Transform.toString(transform), transition };
 
+  const permissions = permissionsData?.permissions;
+  const canDrag = permissions?.includes(PERMISSION.EDIT_TASK);
+
   return (
     <Link
       style={style}
@@ -84,13 +92,16 @@ export function TaskCard({
         isDragging && "opacity-70",
         "ring-primary/20 relative block rounded-sm bg-white p-4 ring-1 duration-500 ring-inset dark:bg-neutral-800"
       )}>
-      <button
-        {...listeners}
-        {...attributes}
-        ref={setActivatorNodeRef}
-        className="absolute top-0 right-0 m-2 cursor-move p-1 text-neutral-500">
-        <GripVertical size={16} />
-      </button>
+      {canDrag && (
+        <button
+          {...listeners}
+          {...attributes}
+          ref={setActivatorNodeRef}
+          className="absolute top-0 right-0 m-2 cursor-move p-1 text-neutral-500">
+          <GripVertical size={16} />
+        </button>
+      )}
+
       <h4 className="text-sm font-medium text-neutral-800 dark:text-neutral-100">
         {title}
       </h4>

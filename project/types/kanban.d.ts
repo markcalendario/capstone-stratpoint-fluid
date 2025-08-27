@@ -1,4 +1,5 @@
 import { List } from "./lists";
+import { ProjectSchema } from "./projects";
 import { Task } from "./tasks";
 
 export interface KanbanTask
@@ -10,6 +11,7 @@ export interface KanbanTask
   isOverdue: boolean;
   remainingDays: string;
   assigneesImages: string[];
+  projectId: ProjectSchema["id"];
 }
 
 export interface KanbanList
