@@ -93,7 +93,7 @@ export function useProjectMemberRole(
 ) {
   const { isPending, data } = useQuery({
     queryFn: () => getProjectMemberRole({ projectId, userId }),
-    queryKey: ["teamRole", projectId, userId]
+    queryKey: ["role", projectId, userId]
   });
 
   return { isMemberRoleLoading: isPending, projectMemberRoleData: data };

@@ -286,7 +286,7 @@
           "name": "is_final",
           "type": "boolean",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "default": false
         },
         "created_by": {
@@ -401,7 +401,7 @@
         "fk_project_members_role_id_team_roles": {
           "name": "fk_project_members_role_id_team_roles",
           "tableFrom": "project_members",
-          "tableTo": "team_roles",
+          "tableTo": "roles",
           "schemaTo": "public",
           "columnsFrom": [
             "role_id"
@@ -560,8 +560,8 @@
       "policies": {},
       "isRLSEnabled": false
     },
-    "public.team_roles": {
-      "name": "team_roles",
+    "public.roles": {
+      "name": "roles",
       "schema": "",
       "columns": {
         "id": {
@@ -588,12 +588,12 @@
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
-        "team_roles_title_key": {
+        "roles_title_key": {
           "columns": [
             "title"
           ],
           "nullsNotDistinct": false,
-          "name": "team_roles_title_key"
+          "name": "roles_title_key"
         }
       },
       "checkConstraints": {},
@@ -676,6 +676,94 @@
         }
       },
       "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {},
+      "policies": {},
+      "isRLSEnabled": false
+    },
+    "public.permissions": {
+      "name": "permissions",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "title": {
+          "name": "title",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {},
+      "policies": {},
+      "isRLSEnabled": false
+    },
+    "public.role_permissions": {
+      "name": "role_permissions",
+      "schema": "",
+      "columns": {
+        "roleId": {
+          "name": "roleId",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "permissionId": {
+          "name": "permissionId",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "role_permissions_permission_id_permissions": {
+          "name": "role_permissions_permission_id_permissions",
+          "tableFrom": "role_permissions",
+          "tableTo": "permissions",
+          "schemaTo": "public",
+          "columnsFrom": [
+            "permissionId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "role_permissions_role_id_roles": {
+          "name": "role_permissions_role_id_roles",
+          "tableFrom": "role_permissions",
+          "tableTo": "roles",
+          "schemaTo": "public",
+          "columnsFrom": [
+            "roleId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "role_permissions_pkey": {
+          "name": "role_permissions_pkey",
+          "columns": [
+            "roleId",
+            "permissionId"
+          ]
+        }
+      },
       "uniqueConstraints": {},
       "checkConstraints": {},
       "policies": {},

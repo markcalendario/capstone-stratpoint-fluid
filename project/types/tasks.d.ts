@@ -1,10 +1,10 @@
 import { tasks } from "@/lib/db/drizzle/migrations/schema";
 import { InferSelectModel } from "drizzle-orm";
-import { TaskDiscussionsSchema } from "./taskDiscussions";
+import { TaskDiscussionSchema } from "./taskDiscussions";
 import { UserSchema } from "./users";
 
 export interface TaskSchema extends InferSelectModel<typeof tasks> {
-  taskDiscussions: TaskDiscussionsSchema[];
+  taskDiscussions: TaskDiscussionSchema[];
   taskAssignments: UserSchema[];
 }
 

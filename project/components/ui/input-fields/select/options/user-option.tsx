@@ -1,6 +1,6 @@
 import Dropdown from "@/components/ui/dropdowns/drop-down";
 import { cn } from "@/lib/utils";
-import { UserOption } from "@/types/teamRoles";
+import { UserOption } from "@/types/roles";
 import { UserSchema } from "@/types/users";
 import { Check, LoaderCircle, Star, X } from "lucide-react";
 import Image from "next/image";

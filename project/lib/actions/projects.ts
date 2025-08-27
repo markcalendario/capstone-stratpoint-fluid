@@ -14,6 +14,7 @@ import projectQueries from "..//queries/projects";
 import { formatDate } from "../utils/date-and-time";
 import { upload } from "../utils/files";
 import { isUserProjectOwner, toCardData } from "../utils/projects";
+import { hasPermission } from "../utils/rolePermissions";
 import { getUserId } from "../utils/users";
 import {
   createProjectPayloadSchema,
@@ -131,7 +132,16 @@ export async function getProjects() {
 
 export async function getProjectEditData(payload: GetProjectEditDataPayload) {
   try {
+    const userId = await getUserId();
     const parsed = getProjectEditDataSchema.parse(payload);
+
+    if (!(await hasPermission(userId, parsed.id, "edit_project"))) {
+      return {
+        success: false,
+        message: "You are not permitted to edit this project"
+      };
+    }
+
     const project = await projectQueries.get(parsed.id);
 
     if (!project) return { success: false, message: "Project not found." };
@@ -161,7 +171,16 @@ export async function getProjectEditData(payload: GetProjectEditDataPayload) {
 
 export async function getProjectSlug(payload: GetProjectSlugPayload) {
   try {
+    const userId = await getUserId();
     const parsed = getProjectSlugSchema.parse(payload);
+
+    if (!(await hasPermission(userId, parsed.id, "view_project"))) {
+      return {
+        success: false,
+        message: "You are not permitted to edit this project"
+      };
+    }
+
     const project = await projectQueries.get(parsed.id);
 
     if (!project) return { success: true, message: "Project not found." };
@@ -196,6 +215,13 @@ export async function deleteProject(payload: DeleteProjectPayload) {
     const userId = await getUserId();
     const parsed = deleteProjectPayloadSchema.parse(payload);
 
+    if (!(await hasPermission(userId, parsed.id, "delete_project"))) {
+      return {
+        success: false,
+        message: "You are not permitted to delete this project"
+      };
+    }
+
     if (!(await isUserProjectOwner(userId, parsed.id))) {
       return { success: false, message: "You are not the project owner." };
     }
@@ -216,6 +242,13 @@ export async function updateProject(payload: UpdateProjectPayload) {
   try {
     const userId = await getUserId();
     const parsed = updateProjectPayloadSchema.parse(payload);
+
+    if (!(await hasPermission(userId, parsed.projectId, "edit_project"))) {
+      return {
+        success: false,
+        message: "You are not permitted to edit this project"
+      };
+    }
 
     let imageUrl: string | undefined = undefined;
 

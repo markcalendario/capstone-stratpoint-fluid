@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import { MEMBERSHIP_STATUS } from "@/lib/utils/projectMembers";
 import { ProjectSchema } from "@/types/projects";
-import { TeamRoles } from "@/types/teamRoles";
+import { Role } from "@/types/roles";
 import { UserSchema } from "@/types/users";
 import { Mail } from "lucide-react";
 import Image from "next/image";
@@ -12,7 +12,7 @@ import TeamCardDropdown from "./dropdowns/team-card-dropdown";
 interface TeamCardProps extends Pick<UserSchema, "name" | "email"> {
   userId: UserSchema["id"];
   projectId: ProjectSchema["id"];
-  role: TeamRoles["title"];
+  role: Role["title"];
   className?: string;
   projectsCount: number;
   imageUrl: UserSchema["imageUrl"];

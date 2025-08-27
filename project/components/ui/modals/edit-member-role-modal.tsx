@@ -2,9 +2,9 @@ import {
   useEditProjectMemberRole,
   useProjectMemberRole
 } from "@/hooks/use-project-members";
-import useTeamRoles from "@/hooks/use-team-roles";
+import useRoles from "@/hooks/use-team-roles";
 import { ProjectSchema } from "@/types/projects";
-import { TeamRolesSchema } from "@/types/teamRoles";
+import { RoleSchema } from "@/types/roles";
 import { UserSchema } from "@/types/users";
 import Button from "../buttons/button";
 import UserRolePicker from "../input-fields/user-role-picker";
@@ -23,7 +23,7 @@ export default function EditMemberRoleModal({
   userId,
   projectId
 }: EditMemberRoleModalProps) {
-  const { teamRoles } = useTeamRoles();
+  const { rolesData } = useRoles();
 
   const { isEditingMemberRole, editProjectMemberRole: editMemberRole } =
     useEditProjectMemberRole(projectId, userId);
@@ -33,7 +33,7 @@ export default function EditMemberRoleModal({
 
   const handleEditRole = async (
     userId: UserSchema["id"],
-    role: TeamRolesSchema["id"]
+    role: RoleSchema["id"]
   ) => {
     const { success, message } = await editMemberRole({
       userId,
@@ -46,7 +46,7 @@ export default function EditMemberRoleModal({
     toggle();
   };
 
-  const isLoaded = !isMemberRoleLoading && memberRoleData?.member && teamRoles;
+  const isLoaded = !isMemberRoleLoading && memberRoleData?.member && rolesData;
 
   return (
     <Modal
@@ -60,7 +60,7 @@ export default function EditMemberRoleModal({
             id={memberRoleData.member.userId}
             name={memberRoleData.member.name}
             role={memberRoleData.member.role}
-            rolesOptions={teamRoles?.roles}
+            rolesOptions={rolesData?.roles}
             imageUrl={memberRoleData.member.imageUrl}
             onRoleChange={handleEditRole}
           />

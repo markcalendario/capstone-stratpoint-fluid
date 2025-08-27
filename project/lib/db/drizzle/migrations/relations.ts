@@ -1,5 +1,5 @@
 import { relations } from "drizzle-orm/relations";
-import { tasks, taskAssignments, users, projects, lists, projectMembers, teamRoles, taskDiscussions } from "./schema";
+import { tasks, taskAssignments, users, projects, lists, projectMembers, roles, taskDiscussions, permissions, rolePermissions } from "./schema";
 
 export const taskAssignmentsRelations = relations(taskAssignments, ({one}) => ({
 	task: one(tasks, {
@@ -60,9 +60,9 @@ export const projectMembersRelations = relations(projectMembers, ({one}) => ({
 		fields: [projectMembers.projectId],
 		references: [projects.id]
 	}),
-	teamRole: one(teamRoles, {
+	role: one(roles, {
 		fields: [projectMembers.roleId],
-		references: [teamRoles.id]
+		references: [roles.id]
 	}),
 	user: one(users, {
 		fields: [projectMembers.userId],
@@ -70,8 +70,9 @@ export const projectMembersRelations = relations(projectMembers, ({one}) => ({
 	}),
 }));
 
-export const teamRolesRelations = relations(teamRoles, ({many}) => ({
+export const rolesRelations = relations(roles, ({many}) => ({
 	projectMembers: many(projectMembers),
+	rolePermissions: many(rolePermissions),
 }));
 
 export const taskDiscussionsRelations = relations(taskDiscussions, ({one}) => ({
@@ -83,4 +84,19 @@ export const taskDiscussionsRelations = relations(taskDiscussions, ({one}) => ({
 		fields: [taskDiscussions.taskId],
 		references: [tasks.id]
 	}),
+}));
+
+export const rolePermissionsRelations = relations(rolePermissions, ({one}) => ({
+	permission: one(permissions, {
+		fields: [rolePermissions.permissionId],
+		references: [permissions.id]
+	}),
+	role: one(roles, {
+		fields: [rolePermissions.roleId],
+		references: [roles.id]
+	}),
+}));
+
+export const permissionsRelations = relations(permissions, ({many}) => ({
+	rolePermissions: many(rolePermissions),
 }));

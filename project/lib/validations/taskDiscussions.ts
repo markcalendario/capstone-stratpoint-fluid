@@ -4,7 +4,7 @@ import { stripHTML } from "../utils/formatters";
 const CONTENT_MAX = 5000;
 const CONTENT_MIN = 1;
 
-const taskDiscussionsSchema = z.object({
+const taskDiscussionSchema = z.object({
   id: z.uuidv4("Task discussion ID must be UUID").trim(),
   content: z
     .string("Content must be string.")
@@ -19,20 +19,19 @@ const taskDiscussionsSchema = z.object({
 });
 
 export const getTaskDiscussionsPayloadSchema = z.object({
-  taskId: taskDiscussionsSchema.shape.taskId
+  taskId: taskDiscussionSchema.shape.taskId
 });
 
 export const createTaskDiscussionPayloadSchema = z.object({
-  taskId: taskDiscussionsSchema.shape.taskId,
-  content: taskDiscussionsSchema.shape.content
+  taskId: taskDiscussionSchema.shape.taskId,
+  content: taskDiscussionSchema.shape.content
 });
 
 export const updateTaskDiscussionPayloadSchema = z.object({
-  id: taskDiscussionsSchema.shape.id,
-  taskId: taskDiscussionsSchema.shape.taskId,
-  content: taskDiscussionsSchema.shape.content
+  id: taskDiscussionSchema.shape.id,
+  content: taskDiscussionSchema.shape.content
 });
 
 export const deleteTaskDiscussionPayloadSchema = z.object({
-  id: taskDiscussionsSchema.shape.id
+  id: taskDiscussionSchema.shape.id
 });

@@ -46,7 +46,6 @@ export default function Comment({
   const handleSaveEdit = async () => {
     const { success, message } = await updateTaskDiscussion({
       id,
-      taskId,
       content: editedContent
     });
 

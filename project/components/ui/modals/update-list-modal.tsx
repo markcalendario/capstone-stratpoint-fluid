@@ -1,4 +1,4 @@
-import { useList, useUpdateList } from "@/hooks/use-lists";
+import { useListEditData, useUpdateList } from "@/hooks/use-lists";
 import { ProjectSchema } from "@/types/projects";
 import { CircleDashed, CircleDot } from "lucide-react";
 import { ChangeEvent, MouseEvent, useEffect, useState } from "react";
@@ -17,7 +17,7 @@ interface UpdateListModalProps {
 export function UpdateListModal({ id, toggle }: UpdateListModalProps) {
   const [formData, setFormData] = useState({ name: "", listType: "" });
   const { isListUpdating, updateList } = useUpdateList(id);
-  const { isListLoading, listData } = useList(id);
+  const { isListLoading, listData } = useListEditData(id);
 
   const handleChange = (evt: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = evt.target;

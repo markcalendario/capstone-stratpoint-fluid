@@ -9,7 +9,7 @@ import {
   GetProjectMembersOptionsPayload,
   GetProjectMembers as GetProjectMembersPayload
 } from "@/types/projectMembers";
-import { UserOption } from "@/types/teamRoles";
+import { UserOption } from "@/types/roles";
 import { ZodError } from "zod";
 import projectMembersQueries from "../queries/projectMembers";
 import {
@@ -21,6 +21,7 @@ import {
   getProjectOwnerId,
   isUserProjectOwner
 } from "../utils/projects";
+import { hasPermission } from "../utils/rolePermissions";
 import { getUserId } from "../utils/users";
 import {
   addProjectMembersPayloadSchema,
@@ -39,8 +40,13 @@ export async function getProjectMembersOptions(
     const parsed = getProjectMembersOptionsPayloadSchema.parse(payload);
     const userId = await getUserId();
 
-    if (!(await isUserProjectOwner(userId, parsed.projectId))) {
-      return { success: false, message: "You are not the project owner." };
+    if (
+      !(await hasPermission(userId, parsed.projectId, "view_project_member"))
+    ) {
+      return {
+        success: false,
+        message: "Unauthorized. Cannot retrieve members options."
+      };
     }
 
     const members = await projectMembersQueries.getAcceptedByProject(
@@ -91,8 +97,13 @@ export async function getNonProjectMembersOptions(
     const parsed = getNonProjectMembersOptionsPayloadSchema.parse(payload);
     const userId = await getUserId();
 
-    if (!(await isUserProjectOwner(userId, parsed.projectId))) {
-      return { success: false, message: "You are not the project owner." };
+    if (
+      !(await hasPermission(userId, parsed.projectId, "view_project_member"))
+    ) {
+      return {
+        success: false,
+        message: "Unauthorized. Cannot retrieve members options."
+      };
     }
 
     const nonMembers =
@@ -127,7 +138,14 @@ export async function getNonProjectMembersOptions(
 
 export async function addProjectMembers(payload: AddProjectMembersPayload) {
   try {
+    const userId = await getUserId();
     const parsed = addProjectMembersPayloadSchema.parse(payload);
+
+    if (
+      !(await hasPermission(userId, parsed.projectId, "create_project_member"))
+    ) {
+      return { success: false, message: "Unauthorized. Cannot add members." };
+    }
 
     for (const member of parsed.members) {
       const data = { projectId: parsed.projectId, ...member };
@@ -150,10 +168,20 @@ export async function addProjectMembers(payload: AddProjectMembersPayload) {
 export async function getProjectMembers(payload: GetProjectMembersPayload) {
   // Retrieves all members including those who are declined or current invited
   try {
+    const userId = await getUserId();
     const parsed = getProjectMembersPayloadSchema.parse(payload);
     const projectMembers = await projectMembersQueries.getByProject(
       parsed.projectId
     );
+
+    if (
+      !(await hasPermission(userId, parsed.projectId, "view_project_member"))
+    ) {
+      return {
+        success: false,
+        message: "Unauthorized. Cannot retrieve project members."
+      };
+    }
 
     const members = projectMembers.map((projectMember) => {
       const { user, isAccepted } = projectMember;
@@ -181,7 +209,7 @@ export async function getProjectMembers(payload: GetProjectMembersPayload) {
         name: user.name,
         email: user.email,
         imageUrl: user.imageUrl,
-        role: projectMember.teamRole.title,
+        role: projectMember.role.title,
         membershipStatus: getMembershipStatus(isAccepted),
         projectsCount: projectsMemberOf + projectsOwned,
         tasksDoneCount,
@@ -248,6 +276,7 @@ export async function getProjectMembers(payload: GetProjectMembersPayload) {
 
 export async function removeProjectMember(payload: DeleteMemberPayload) {
   try {
+    const userId = await getUserId();
     const parsed = removeProjectMemberPayloadSchema.parse(payload);
 
     // Return when owner is being deleted
@@ -255,6 +284,20 @@ export async function removeProjectMember(payload: DeleteMemberPayload) {
       return {
         success: false,
         message: "You cannot remove the project owner."
+      };
+    }
+
+    // If user is trying to remove his record
+    if (parsed.userId === userId) {
+      return { success: false, message: "You cannot remove yourself." };
+    }
+
+    if (
+      !(await hasPermission(userId, parsed.projectId, "delete_project_member"))
+    ) {
+      return {
+        success: false,
+        message: "Unauthorized. Cannot remove members."
       };
     }
 
@@ -278,7 +321,18 @@ export async function getProjectMemberRole(
 ) {
   // Retrieves the roles of members regardless of their membership status
   try {
+    const userId = await getUserId();
     const parsed = getProjectMembersRoleSchema.parse(payload);
+
+    if (
+      !(await hasPermission(userId, parsed.projectId, "view_project_member"))
+    ) {
+      return {
+        success: false,
+        message: "Unauthorized. Cannot retrieve project member roles."
+      };
+    }
+
     const member = await projectMembersQueries.getByUserAndProject(
       parsed.projectId,
       parsed.userId
@@ -294,8 +348,8 @@ export async function getProjectMemberRole(
       projectId: member.projectId,
       imageUrl: member.user.imageUrl,
       role: {
-        id: member.teamRole.id,
-        title: member.teamRole.title
+        id: member.role.id,
+        title: member.role.title
       } satisfies UserOption["role"]
     };
 
@@ -320,6 +374,7 @@ export async function editProjectMemberRole(
   payload: EditProjectMemberRoleData
 ) {
   try {
+    const userId = await getUserId();
     const parsed = editProjectMemberRoleSchema.parse(payload);
 
     // Return when owner's role is being edited
@@ -328,6 +383,12 @@ export async function editProjectMemberRole(
         success: false,
         message: "You cannot edit the project owner."
       };
+    }
+
+    if (
+      !(await hasPermission(userId, parsed.projectId, "edit_project_member"))
+    ) {
+      return { success: false, message: "Unauthorized. Cannot edit members." };
     }
 
     await projectMembersQueries.editMemberRole(parsed);

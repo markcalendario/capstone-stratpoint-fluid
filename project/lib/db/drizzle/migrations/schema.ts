@@ -1,4 +1,4 @@
-import { pgTable, foreignKey, uuid, timestamp, unique, text, boolean, date, integer, pgEnum } from "drizzle-orm/pg-core"
+import { pgTable, foreignKey, uuid, timestamp, unique, text, boolean, date, integer, primaryKey, pgEnum } from "drizzle-orm/pg-core"
 import { sql } from "drizzle-orm"
 
 export const priority = pgEnum("priority", ['low', 'medium', 'high'])
@@ -62,7 +62,7 @@ export const lists = pgTable("lists", {
 	position: integer().notNull(),
 	createdAt: timestamp("created_at", { withTimezone: true, mode: 'string' }).default(sql`CURRENT_TIMESTAMP`),
 	updatedAt: timestamp("updated_at", { withTimezone: true, mode: 'string' }).default(sql`CURRENT_TIMESTAMP`),
-	isFinal: boolean("is_final").default(false),
+	isFinal: boolean("is_final").default(false).notNull(),
 	createdBy: uuid("created_by").notNull(),
 }, (table) => [
 	foreignKey({
@@ -93,7 +93,7 @@ export const projectMembers = pgTable("project_members", {
 		}).onDelete("cascade"),
 	foreignKey({
 			columns: [table.roleId],
-			foreignColumns: [teamRoles.id],
+			foreignColumns: [roles.id],
 			name: "fk_project_members_role_id_team_roles"
 		}).onDelete("restrict"),
 	foreignKey({
@@ -130,12 +130,12 @@ export const tasks = pgTable("tasks", {
 		}).onDelete("cascade"),
 ]);
 
-export const teamRoles = pgTable("team_roles", {
+export const roles = pgTable("roles", {
 	id: uuid().defaultRandom().primaryKey().notNull(),
 	title: text().notNull(),
 	description: text(),
 }, (table) => [
-	unique("team_roles_title_key").on(table.title),
+	unique("roles_title_key").on(table.title),
 ]);
 
 export const taskDiscussions = pgTable("task_discussions", {
@@ -156,4 +156,26 @@ export const taskDiscussions = pgTable("task_discussions", {
 			foreignColumns: [tasks.id],
 			name: "fk_task_discussions_task_id_tasks"
 		}).onDelete("cascade"),
+]);
+
+export const permissions = pgTable("permissions", {
+	id: uuid().defaultRandom().primaryKey().notNull(),
+	title: text().notNull(),
+});
+
+export const rolePermissions = pgTable("role_permissions", {
+	roleId: uuid().notNull(),
+	permissionId: uuid().notNull(),
+}, (table) => [
+	foreignKey({
+			columns: [table.permissionId],
+			foreignColumns: [permissions.id],
+			name: "role_permissions_permission_id_permissions"
+		}).onDelete("cascade"),
+	foreignKey({
+			columns: [table.roleId],
+			foreignColumns: [roles.id],
+			name: "role_permissions_role_id_roles"
+		}).onDelete("cascade"),
+	primaryKey({ columns: [table.roleId, table.permissionId], name: "role_permissions_pkey"}),
 ]);

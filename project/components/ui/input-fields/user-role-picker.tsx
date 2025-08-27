@@ -1,5 +1,5 @@
 import Dropdown from "@/components/ui/dropdowns/drop-down";
-import { TeamRolesSchema, UserOption } from "@/types/teamRoles";
+import { RoleSchema, UserOption } from "@/types/roles";
 import { UserSchema } from "@/types/users";
 import { LoaderCircle, Star } from "lucide-react";
 import Image from "next/image";
@@ -8,9 +8,9 @@ interface UserRolePickerProps {
   id: UserSchema["id"];
   name: UserSchema["name"];
   imageUrl: UserSchema["imageUrl"];
-  role: Pick<TeamRolesSchema, "id" | "title">;
+  role: Pick<RoleSchema, "id" | "title">;
   rolesOptions: NonNullable<UserOption["role"]>[];
-  onRoleChange: (id: UserSchema["id"], role: TeamRolesSchema["id"]) => void;
+  onRoleChange: (id: UserSchema["id"], role: RoleSchema["id"]) => void;
 }
 
 export default function UserRolePicker({

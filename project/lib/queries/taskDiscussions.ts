@@ -1,7 +1,7 @@
 import { taskDiscussions } from "@/lib/db/drizzle/migrations/schema";
 import {
   CreateTaskDiscussionsData,
-  TaskDiscussionsSchema,
+  TaskDiscussionSchema,
   UpdateTaskDiscussionsData
 } from "@/types/taskDiscussions";
 import { TaskSchema } from "@/types/tasks";
@@ -9,6 +9,13 @@ import { eq } from "drizzle-orm";
 import db from "../db";
 
 const taskDiscussionsQueries = {
+  get: async (id: TaskDiscussionSchema["id"]) => {
+    return await db.query.taskDiscussions.findFirst({
+      with: { task: { with: { list: true } }, user: true },
+      where: (taskDiscussion, { eq }) => eq(taskDiscussion.id, id)
+    });
+  },
+
   getByTask: async (taskId: TaskSchema["id"]) => {
     return await db.query.taskDiscussions.findMany({
       with: { task: true, user: true },
@@ -22,7 +29,7 @@ const taskDiscussionsQueries = {
   },
 
   update: async (
-    id: TaskDiscussionsSchema["id"],
+    id: TaskDiscussionSchema["id"],
     data: UpdateTaskDiscussionsData
   ) => {
     await db
@@ -31,7 +38,7 @@ const taskDiscussionsQueries = {
       .where(eq(taskDiscussions.id, id));
   },
 
-  delete: async (id: TaskDiscussionsSchema["id"]) => {
+  delete: async (id: TaskDiscussionSchema["id"]) => {
     await db.delete(taskDiscussions).where(eq(taskDiscussions.id, id));
   }
 };

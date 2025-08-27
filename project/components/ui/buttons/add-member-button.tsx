@@ -8,7 +8,7 @@ import Button from "./button";
 
 interface AddTeamMemberButtonProps {
   className?: string;
-  preSelectedId?: ProjectSchema["id"] | null;
+  preSelectedId?: ProjectSchema["id"];
 }
 
 export function AddTeamMemberButton({

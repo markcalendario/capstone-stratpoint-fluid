@@ -42,7 +42,7 @@ CREATE TABLE "lists" (
 	"position" integer NOT NULL,
 	"created_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
 	"updated_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
-	"is_final" boolean DEFAULT false,
+	"is_final" boolean DEFAULT false NOT NULL,
 	"created_by" uuid NOT NULL
 );
 --> statement-breakpoint
@@ -72,11 +72,11 @@ CREATE TABLE "tasks" (
 	"created_by" uuid NOT NULL
 );
 --> statement-breakpoint
-CREATE TABLE "team_roles" (
+CREATE TABLE "roles" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"title" text NOT NULL,
 	"description" text,
-	CONSTRAINT "team_roles_title_key" UNIQUE("title")
+	CONSTRAINT "roles_title_key" UNIQUE("title")
 );
 --> statement-breakpoint
 CREATE TABLE "task_discussions" (
@@ -88,16 +88,29 @@ CREATE TABLE "task_discussions" (
 	"updated_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 --> statement-breakpoint
+CREATE TABLE "permissions" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"title" text NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE "role_permissions" (
+	"roleId" uuid NOT NULL,
+	"permissionId" uuid NOT NULL,
+	CONSTRAINT "role_permissions_pkey" PRIMARY KEY("roleId","permissionId")
+);
+--> statement-breakpoint
 ALTER TABLE "task_assignments" ADD CONSTRAINT "fk_task_assignments_task_id_tasks" FOREIGN KEY ("task_id") REFERENCES "public"."tasks"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "task_assignments" ADD CONSTRAINT "fk_user_task_assignments_user_id_users" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "projects" ADD CONSTRAINT "fk_projects_owner_id_users" FOREIGN KEY ("owner_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "lists" ADD CONSTRAINT "fk_lists_created_by_users" FOREIGN KEY ("created_by") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "lists" ADD CONSTRAINT "fk_lists_project_id_projects" FOREIGN KEY ("project_id") REFERENCES "public"."projects"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "project_members" ADD CONSTRAINT "fk_project_members_project_id_projects" FOREIGN KEY ("project_id") REFERENCES "public"."projects"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "project_members" ADD CONSTRAINT "fk_project_members_role_id_team_roles" FOREIGN KEY ("role_id") REFERENCES "public"."team_roles"("id") ON DELETE restrict ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "project_members" ADD CONSTRAINT "fk_project_members_role_id_team_roles" FOREIGN KEY ("role_id") REFERENCES "public"."roles"("id") ON DELETE restrict ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "project_members" ADD CONSTRAINT "fk_project_members_user_id_users" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "tasks" ADD CONSTRAINT "fk_tasks_list_id_lists" FOREIGN KEY ("list_id") REFERENCES "public"."lists"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "tasks" ADD CONSTRAINT "fk_tasks_created_by_users" FOREIGN KEY ("created_by") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "task_discussions" ADD CONSTRAINT "fk_task_discussions_author_id_users" FOREIGN KEY ("author_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "task_discussions" ADD CONSTRAINT "fk_task_discussions_task_id_tasks" FOREIGN KEY ("task_id") REFERENCES "public"."tasks"("id") ON DELETE cascade ON UPDATE no action;
+ALTER TABLE "task_discussions" ADD CONSTRAINT "fk_task_discussions_task_id_tasks" FOREIGN KEY ("task_id") REFERENCES "public"."tasks"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "role_permissions" ADD CONSTRAINT "role_permissions_permission_id_permissions" FOREIGN KEY ("permissionId") REFERENCES "public"."permissions"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "role_permissions" ADD CONSTRAINT "role_permissions_role_id_roles" FOREIGN KEY ("roleId") REFERENCES "public"."roles"("id") ON DELETE cascade ON UPDATE no action;
 */
