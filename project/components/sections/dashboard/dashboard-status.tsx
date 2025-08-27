@@ -1,7 +1,7 @@
 "use client";
 
 import SectionLoader from "@/components/ui/section-loader";
-import useDashboardStatus from "@/hooks/use-analytics";
+import { useDashboardStatus } from "@/hooks/use-analytics";
 import { CheckCircle, Clock, TrendingUp, Users } from "lucide-react";
 import StatusCard from "../../ui/status-card";
 

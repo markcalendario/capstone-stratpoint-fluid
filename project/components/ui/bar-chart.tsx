@@ -40,16 +40,18 @@ export default function BarChart({ data }: BarChart) {
         <Tooltip cursor={{ opacity: "10%" }} />
         <Legend />
         <Bar
-          dataKey="Done"
-          stackId="a"
+          dataKey="done"
+          name="Done"
+          stackId="stack"
           fill="#00C49F"
           unit="%"
           opacity="70%"
           stroke="#00C49F"
         />
         <Bar
-          dataKey="Pending"
-          stackId="a"
+          dataKey="pending"
+          name="Pending"
+          stackId="stack"
           fill="#ffc658"
           unit="%"
           opacity="70%"
