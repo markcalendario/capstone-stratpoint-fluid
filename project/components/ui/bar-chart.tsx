@@ -12,13 +12,15 @@ import {
   YAxis
 } from "recharts";
 
-export type BarChartData<T> = T[];
+export type ProjectProgressChartData<T> = T[];
 
-interface BarChart {
-  data: BarChartData<TaskStatus>;
+interface ProjectProgressChartProps {
+  data: ProjectProgressChartData<TaskStatus>;
 }
 
-export default function BarChart({ data }: BarChart) {
+export default function ProjectProgressChart({
+  data
+}: ProjectProgressChartProps) {
   return (
     <ResponsiveContainer
       width="100%"

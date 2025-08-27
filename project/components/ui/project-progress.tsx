@@ -1,10 +1,10 @@
 import { useProjectProgress } from "@/hooks/use-analytics";
 import { ProjectSchema } from "@/types/projects";
 import { TaskStatus } from "@/types/tasks";
-import BarChart, { BarChartData } from "./bar-chart";
+import ProjectProgressChart, { ProjectProgressChartData } from "./bar-chart";
 import SectionLoader from "./section-loader";
 
-const data: BarChartData<TaskStatus> = [
+const data: ProjectProgressChartData<TaskStatus> = [
   {
     name: "TaskFlow Capstone Project",
     done: 30,
@@ -30,7 +30,7 @@ export default function ProjectProgress({ projectId }: ProjectProgressProps) {
       <h3 className="mb-4 text-lg font-semibold text-neutral-800 dark:text-neutral-200">
         Project Progress
       </h3>
-      <BarChart
+      <ProjectProgressChart
         data={[
           {
             name: progress.name,
