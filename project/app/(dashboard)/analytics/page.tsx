@@ -2,9 +2,9 @@
 
 import { DashboardContent } from "@/components/layouts/dashboard/dashboard-content";
 import AnalyticsCard from "@/components/ui/analytics-card";
-import CumulativeFlowDiagram from "@/components/ui/area-chart";
 import SelectProject from "@/components/ui/input-fields/select/select-project";
 import ProjectProgress from "@/components/ui/project-progress";
+import StatusByPriority from "@/components/ui/status-by-priority";
 import { ProjectSchema } from "@/types/projects";
 import { BarChart3, Clock, TrendingUp, Users } from "lucide-react";
 import { useState } from "react";
@@ -40,13 +40,6 @@ const metrics = [
   }
 ] as const;
 
-const cfdData = [
-  { date: "2025-07-01", Todo: 5, InProgress: 3, QA: 1, Review: 0, Done: 5 },
-  { date: "2025-07-02", Todo: 4, InProgress: 4, QA: 0, Review: 1, Done: 0 },
-  { date: "2025-07-03", Todo: 2, InProgress: 5, QA: 0, Review: 2, Done: 0 },
-  { date: "2025-07-04", Todo: 1, InProgress: 3, QA: 0, Review: 0, Done: 0 }
-];
-
 export default function AnalyticsPage() {
   const [projectId, setProjectId] = useState<ProjectSchema["id"] | null>(null);
 
@@ -76,12 +69,7 @@ export default function AnalyticsPage() {
         {projectId && (
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
             <ProjectProgress projectId={projectId} />
-            <div className="outline-primary/20 rounded-sm bg-white p-6 outline-2 dark:bg-neutral-800">
-              <h3 className="mb-4 text-lg font-semibold text-neutral-800 dark:text-neutral-200">
-                Team Activity
-              </h3>
-              <CumulativeFlowDiagram data={cfdData} />
-            </div>
+            <StatusByPriority projectId={projectId} />
           </div>
         )}
       </div>

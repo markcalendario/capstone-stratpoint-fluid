@@ -1,13 +1,14 @@
 import {
   getDashboardStatus,
-  getProjectProgress
+  getProjectProgress,
+  getStatusByPriority
 } from "@/lib/actions/analytics";
 import { ProjectSchema } from "@/types/projects";
 import { useQuery } from "@tanstack/react-query";
 
 export function useDashboardStatus() {
   const { isPending, data } = useQuery({
-    queryKey: ["analytics"],
+    queryKey: ["analytics", "dashboardStatus"],
     queryFn: getDashboardStatus
   });
 
@@ -16,9 +17,18 @@ export function useDashboardStatus() {
 
 export function useProjectProgress(projectId: ProjectSchema["id"]) {
   const { isPending, data } = useQuery({
-    queryKey: ["analytics", projectId],
+    queryKey: ["analytics", "projectProgress", projectId],
     queryFn: () => getProjectProgress({ projectId })
   });
 
   return { isProjectProgressLoading: isPending, projectProgressData: data };
+}
+
+export function useStatusByPriority(projectId: ProjectSchema["id"]) {
+  const { isPending, data } = useQuery({
+    queryKey: ["analytics", "statusByPriority", projectId],
+    queryFn: () => getStatusByPriority({ projectId })
+  });
+
+  return { isStatusByPriorityLoading: isPending, statusByPriorityData: data };
 }
