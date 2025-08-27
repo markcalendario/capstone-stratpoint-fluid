@@ -1,3 +1,5 @@
+"use server";
+
 import { Permissions } from "@/types/permissions";
 import { GetPermissionsPayload } from "@/types/rolePermissions";
 import { ZodError } from "zod";
@@ -12,24 +14,36 @@ export default async function getPermissions(payload: GetPermissionsPayload) {
     const userId = await getUserId();
     const parsed = getPermissionsPayloadSchema.parse(payload);
 
-    if (await isUserProjectOwner(userId, parsed.projectId)) {
-      const permissions = await permissionsQueries.getAll();
-      return permissions.map((permission) => permission.title) as Permissions[];
-    }
+    let permissions: Permissions[];
 
     const user = await projectMembersQueries.getByUserAndProject(
       parsed.projectId,
       userId
     );
 
-    // If user is not accepted or has no role, return empty permissions
-    if (!user?.isAccepted || !user.role) {
-      return [];
+    // If project owner, return all permissions
+    if (await isUserProjectOwner(userId, parsed.projectId)) {
+      const allPermissions = await permissionsQueries.getAll();
+      permissions = allPermissions.map((p) => p.title) as Permissions[];
     }
 
-    return user.role.rolePermissions.map(
-      (rolePermission) => rolePermission.permission.title
-    ) as Permissions[];
+    // If user is not accepted or has no role, return empty permissions
+    else if (!user?.isAccepted || !user.role) {
+      permissions = [];
+    }
+
+    // If a user has a role, return permissions
+    else {
+      permissions = user.role.rolePermissions.map(
+        (rolePermission) => rolePermission.permission.title
+      ) as Permissions[];
+    }
+
+    return {
+      success: true,
+      message: "Permissions retrieved successfully.",
+      permissions
+    };
   } catch (error) {
     if (error instanceof ZodError) {
       return { success: false, message: error.issues[0].message };

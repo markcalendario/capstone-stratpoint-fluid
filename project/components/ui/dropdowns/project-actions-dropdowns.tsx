@@ -4,25 +4,21 @@ import Dropdown from "@/components/ui/dropdowns/drop-down";
 import { AddTeamMemberModal } from "@/components/ui/modals/add-team-member-modal";
 import { DeleteProjectModal } from "@/components/ui/modals/delete-project-modal";
 import { EditProjectModal } from "@/components/ui/modals/edit-project-modal";
+import { usePermissions } from "@/hooks/use-permissions";
+import { PERMISSION } from "@/lib/utils/permission-enum";
 import { ProjectSchema } from "@/types/projects";
 import { Edit, MoreVertical, Trash, UserPlus, Users } from "lucide-react";
 import { Fragment, useState } from "react";
 
 interface ProjectActionButtonsProps {
-  canEdit: boolean;
-  canDelete: boolean;
-  canViewTeam: boolean;
-  canInviteToTeam: boolean;
   projectId: ProjectSchema["id"];
 }
 
 export default function ProjectActionButtons({
-  canEdit,
-  canDelete,
-  canViewTeam,
-  canInviteToTeam,
   projectId
 }: ProjectActionButtonsProps) {
+  const { isPermissionsLoading, permissionsData } = usePermissions(projectId);
+
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
@@ -30,6 +26,12 @@ export default function ProjectActionButtons({
   const toggleDeleteModal = () => setIsDeleteModalOpen((prev) => !prev);
   const toggleEditModal = () => setIsEditModalOpen((prev) => !prev);
   const toggleInviteModal = () => setIsInviteModalOpen((prev) => !prev);
+
+  const permissions = permissionsData?.permissions;
+  const canViewTeam = permissions?.includes(PERMISSION.VIEW_PROJECT_MEMBER);
+  const canInvite = permissions?.includes(PERMISSION.CREATE_PROJECT_MEMBER);
+  const canEdit = permissions?.includes(PERMISSION.EDIT_PROJECT);
+  const canDelete = permissions?.includes(PERMISSION.DELETE_PROJECT);
 
   const teamItems = [];
   if (canViewTeam) {
@@ -39,7 +41,7 @@ export default function ProjectActionButtons({
       icon: Users
     });
   }
-  if (canInviteToTeam) {
+  if (canInvite) {
     teamItems.push({
       onClick: toggleInviteModal,
       label: "Invite to Team",
