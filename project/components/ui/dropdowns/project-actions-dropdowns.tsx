@@ -17,7 +17,7 @@ interface ProjectActionButtonsProps {
 export default function ProjectActionButtons({
   projectId
 }: ProjectActionButtonsProps) {
-  const { isPermissionsLoading, permissionsData } = usePermissions(projectId);
+  const { permissionsData } = usePermissions(projectId);
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);

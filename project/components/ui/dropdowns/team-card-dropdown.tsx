@@ -37,7 +37,7 @@ export default function TeamCardDropdown({
   const toggleEditMemberRoleModal = () =>
     setIsEditMemberRoleModalOpen((prev) => !prev);
 
-  let items: DropdownItem[] = [];
+  const items: DropdownItem[] = [];
 
   if (canEditMember) {
     items.push({
