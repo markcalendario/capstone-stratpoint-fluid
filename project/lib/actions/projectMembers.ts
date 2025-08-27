@@ -287,6 +287,11 @@ export async function removeProjectMember(payload: DeleteMemberPayload) {
       };
     }
 
+    // If user is trying to remove his record
+    if (parsed.userId === userId) {
+      return { success: false, message: "You cannot remove yourself." };
+    }
+
     if (
       !(await hasPermission(userId, parsed.projectId, "delete_project_member"))
     ) {
