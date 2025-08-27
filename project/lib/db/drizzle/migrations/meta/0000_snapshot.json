@@ -286,7 +286,7 @@
           "name": "is_final",
           "type": "boolean",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "default": false
         },
         "created_by": {

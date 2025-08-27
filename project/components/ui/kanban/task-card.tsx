@@ -52,6 +52,7 @@ export function TaskCard({
   id,
   title,
   label,
+  isDone,
   listId,
   isOverdue,
   priority,
@@ -99,7 +100,15 @@ export function TaskCard({
       <div className="mt-2 flex justify-between gap-2">
         <div className="flex items-stretch gap-1">
           <Badge type={priorityColors[priority]}>{toTitleCase(priority)}</Badge>
-          <Badge type={isOverdue ? "error" : "warning"}>{remainingDays}</Badge>
+
+          {!isDone && (
+            <Badge type={isOverdue ? "error" : "warning"}>
+              {remainingDays}
+            </Badge>
+          )}
+
+          {isDone && <Badge type="success">Done</Badge>}
+
           {label && <Badge type="gray">{label}</Badge>}
         </div>
         <UserImagesStack

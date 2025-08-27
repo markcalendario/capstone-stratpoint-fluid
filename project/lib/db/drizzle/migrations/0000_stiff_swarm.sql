@@ -42,7 +42,7 @@ CREATE TABLE "lists" (
 	"position" integer NOT NULL,
 	"created_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
 	"updated_at" timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
-	"is_final" boolean DEFAULT false,
+	"is_final" boolean DEFAULT false NOT NULL,
 	"created_by" uuid NOT NULL
 );
 --> statement-breakpoint

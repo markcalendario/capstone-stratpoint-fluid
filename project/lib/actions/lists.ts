@@ -81,6 +81,7 @@ export async function getListsWithTasks(payload: GetProjectListsPayload) {
             label: task.label,
             listId: task.listId,
             priority: task.priority,
+            isDone: list.isFinal,
             isOverdue: isOverdue(task.dueDate),
             description: stripHTML(task.description),
             remainingDays: getDaysRemaining(task.dueDate),

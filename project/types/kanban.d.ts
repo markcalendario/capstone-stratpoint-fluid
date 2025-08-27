@@ -6,6 +6,7 @@ export interface KanbanTask
     Task,
     "id" | "title" | "listId" | "priority" | "description" | "label"
   > {
+  isDone: boolean;
   isOverdue: boolean;
   remainingDays: string;
   assigneesImages: string[];
