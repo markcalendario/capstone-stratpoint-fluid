@@ -4,14 +4,14 @@ import useDebounce from "@/hooks/use-debounce";
 import { useNonProjectMembersOptions } from "@/hooks/use-project-members";
 import useRoles from "@/hooks/use-team-roles";
 import { ProjectSchema } from "@/types/projects";
-import { Roles, UserOption } from "@/types/roles";
+import { Role, UserOption } from "@/types/roles";
 import { UserSchema } from "@/types/users";
 import { useEffect, useState } from "react";
 import UserOptionRow from "./options/user-option";
 
 interface OnChangeParams {
   userId: UserSchema["id"];
-  roleId: Roles["id"] | null;
+  roleId: Role["id"] | null;
 }
 
 interface SelectNewProjectMembersProps {

@@ -1,7 +1,7 @@
 import z from "zod";
 import { projectSchema } from "./projects";
 
-export const permissionsSchema = z.object({
+export const permissionSchema = z.object({
   id: z.uuid("Permission ID must be UUID."),
   title: z.string("Permission title must be string")
 });

@@ -1,4 +1,4 @@
-import { ProjectMembers } from "@/types/projectMembers";
+import { ProjectMemberSchema } from "@/types/projectMembers";
 
 export const MEMBERSHIP_STATUS = {
   OWNER: "Owner",
@@ -7,7 +7,9 @@ export const MEMBERSHIP_STATUS = {
   INVITED: "Invited"
 };
 
-export function getMembershipStatus(isAccepted?: ProjectMembers["isAccepted"]) {
+export function getMembershipStatus(
+  isAccepted?: ProjectMemberSchema["isAccepted"]
+) {
   if (isAccepted) {
     return MEMBERSHIP_STATUS.ACCEPTED;
   } else if (isAccepted === false) {

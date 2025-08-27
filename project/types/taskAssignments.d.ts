@@ -2,15 +2,15 @@ import { taskAssignments } from "@/lib/db/drizzle/migrations/schema";
 import { InferSelectModel } from "drizzle-orm";
 import { User, UserSchema } from "./users";
 
-export interface TaskAssignmentsSchema
+export interface TaskAssignmentSchema
   extends InferSelectModel<typeof taskAssignments> {
   user: User;
 }
 
-export interface TaskAssignments
+export interface TaskAssignment
   extends InferSelectModel<typeof taskAssignments> {}
 
-export interface AssignManyData extends Pick<TaskAssignmentsSchema, "taskId"> {
+export interface AssignManyData extends Pick<TaskAssignmentSchema, "taskId"> {
   userIds: UserSchema["id"][];
 }
 

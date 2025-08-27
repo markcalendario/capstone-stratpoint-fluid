@@ -4,7 +4,7 @@ import {
 } from "@/hooks/use-project-members";
 import useRoles from "@/hooks/use-team-roles";
 import { ProjectSchema } from "@/types/projects";
-import { RolesSchema } from "@/types/roles";
+import { RoleSchema } from "@/types/roles";
 import { UserSchema } from "@/types/users";
 import Button from "../buttons/button";
 import UserRolePicker from "../input-fields/user-role-picker";
@@ -33,7 +33,7 @@ export default function EditMemberRoleModal({
 
   const handleEditRole = async (
     userId: UserSchema["id"],
-    role: RolesSchema["id"]
+    role: RoleSchema["id"]
   ) => {
     const { success, message } = await editMemberRole({
       userId,
