@@ -1,16 +1,7 @@
+import ProjectProgressChart from "@/components/ui/project-progress-chart";
+import SectionLoader from "@/components/ui/section-loader";
 import { useProjectProgress } from "@/hooks/use-analytics";
 import { ProjectSchema } from "@/types/projects";
-import { TaskStatus } from "@/types/tasks";
-import ProjectProgressChart, { ProjectProgressChartData } from "./bar-chart";
-import SectionLoader from "./section-loader";
-
-const data: ProjectProgressChartData<TaskStatus> = [
-  {
-    name: "TaskFlow Capstone Project",
-    done: 30,
-    pending: 100 - 30
-  }
-];
 
 interface ProjectProgressProps {
   projectId: ProjectSchema["id"];

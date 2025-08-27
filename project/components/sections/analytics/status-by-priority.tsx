@@ -1,7 +1,7 @@
+import SectionLoader from "@/components/ui/section-loader";
+import StatusByPriorityChart from "@/components/ui/status-by-priority-chart";
 import { useStatusByPriority } from "@/hooks/use-analytics";
 import { ProjectSchema } from "@/types/projects";
-import SectionLoader from "./section-loader";
-import StatusByPriorityChart from "./status-by-priority-chart";
 
 interface StatusByPriorityProps {
   projectId: ProjectSchema["id"];

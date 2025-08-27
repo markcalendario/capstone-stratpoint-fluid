@@ -2,9 +2,9 @@
 
 import { DashboardContent } from "@/components/layouts/dashboard/dashboard-content";
 import AnalyticsSummary from "@/components/sections/analytics/analytics-summary";
+import ProjectProgress from "@/components/sections/analytics/project-progress";
+import StatusByPriority from "@/components/sections/analytics/status-by-priority";
 import SelectProject from "@/components/ui/input-fields/select/select-project";
-import ProjectProgress from "@/components/ui/project-progress";
-import StatusByPriority from "@/components/ui/status-by-priority";
 import { ProjectSchema } from "@/types/projects";
 import { Fragment, useState } from "react";
 
