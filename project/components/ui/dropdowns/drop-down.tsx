@@ -3,7 +3,7 @@ import { LucideIcon } from "lucide-react";
 import Link from "next/link";
 import { ReactNode, useCallback, useEffect, useRef, useState } from "react";
 
-interface DropdownItem {
+export interface DropdownItem {
   onClick?: () => void;
   href?: string;
   label: string;
