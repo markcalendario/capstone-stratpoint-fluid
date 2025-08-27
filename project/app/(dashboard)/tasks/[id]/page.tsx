@@ -52,7 +52,12 @@ export default function TaskSlugPage() {
         <TaskDescription description={task.description} />
       )}
 
-      {activeTab === "discussions" && <TaskDiscussions taskId={id} />}
+      {activeTab === "discussions" && (
+        <TaskDiscussions
+          taskId={id}
+          projectId={task.projectId}
+        />
+      )}
     </Fragment>
   );
 }
