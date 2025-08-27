@@ -1,7 +1,8 @@
 "use client";
 
 import ListCardDropdown from "@/components/ui/dropdowns/list-card-dropdown";
-import { cn } from "@/lib/utils";
+import { usePermissions } from "@/hooks/use-permissions";
+import { PERMISSION } from "@/lib/utils/permission-enum";
 import { KanbanList } from "@/types/kanban";
 import {
   SortableContext,
@@ -28,32 +29,32 @@ export default function ListCard({
   projectId,
   tasksCount
 }: KanbanList) {
+  const { permissionsData } = usePermissions(projectId);
+
+  const permissions = permissionsData?.permissions;
+  const canDrag = permissions?.includes(PERMISSION.EDIT_LIST);
+  const canCreateTask = permissions?.includes(PERMISSION.CREATE_TASK);
+
   const {
-    isDragging,
     transform,
+    listeners,
     transition,
     attributes,
-    listeners,
-    setActivatorNodeRef,
-    setNodeRef
+    setNodeRef,
+    setActivatorNodeRef
   } = useSortable({
     id,
     data: { type: "LIST" as const }
   });
 
   const style = { transform: CSS.Transform.toString(transform), transition };
-
   const isEmpty = !tasks.length;
 
   return (
     <div
       style={style}
       ref={setNodeRef}
-      className={cn(
-        isDragging && "opacity-20",
-        "flex max-h-[600px] min-h-[500px] max-w-100 min-w-100 flex-col gap-3 overflow-auto duration-100"
-      )}>
-      {/* List Header */}
+      className="flex max-h-[600px] min-h-[500px] max-w-100 min-w-100 flex-col gap-3 overflow-auto duration-100">
       <div className="bg-primary flex items-center justify-between rounded-t-sm px-4 py-3">
         <div className="flex items-center gap-3">
           <p className="flex items-center gap-2 font-bold text-neutral-100">
@@ -67,17 +68,22 @@ export default function ListCard({
         </div>
 
         <div className="flex items-center gap-3">
-          <button
-            {...listeners}
-            {...attributes}
-            ref={setActivatorNodeRef}>
-            <GripHorizontal
-              size={16}
-              className="cursor-move text-neutral-100"
-            />
-          </button>
+          {canDrag && (
+            <button
+              {...listeners}
+              {...attributes}
+              ref={setActivatorNodeRef}>
+              <GripHorizontal
+                size={16}
+                className="cursor-move text-neutral-100"
+              />
+            </button>
+          )}
 
-          <ListCardDropdown id={id} />
+          <ListCardDropdown
+            id={id}
+            projectId={projectId}
+          />
         </div>
       </div>
 
@@ -100,11 +106,13 @@ export default function ListCard({
           ))}
       </SortableContext>
 
-      <AddTaskButton
-        listId={id}
-        projectId={projectId}
-        className="border-primary/50 text-primary sticky bottom-2 flex w-full cursor-pointer items-center justify-center gap-2 rounded-sm border-1 border-dashed bg-white p-3 text-sm font-medium backdrop-blur-md dark:bg-neutral-800 dark:text-neutral-200"
-      />
+      {canCreateTask && (
+        <AddTaskButton
+          listId={id}
+          projectId={projectId}
+          className="border-primary/50 text-primary sticky bottom-2 flex w-full cursor-pointer items-center justify-center gap-2 rounded-sm border-1 border-dashed bg-white p-3 text-sm font-medium backdrop-blur-md dark:bg-neutral-800 dark:text-neutral-200"
+        />
+      )}
     </div>
   );
 }
