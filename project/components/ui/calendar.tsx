@@ -1,21 +1,28 @@
 import moment from "moment";
-import { useCallback, useState } from "react";
+import { SyntheticEvent, useCallback, useState } from "react";
 import {
   Calendar as BigCalendar,
   Event,
   momentLocalizer,
   View
 } from "react-big-calendar";
-import withDragAndDrop from "react-big-calendar/lib/addons/dragAndDrop";
+import withDragAndDrop, {
+  EventInteractionArgs
+} from "react-big-calendar/lib/addons/dragAndDrop";
 import "./calendar.css";
 const DragAndDropCalendar = withDragAndDrop(BigCalendar);
 
 interface CalendarProps {
   events: Event[];
-  onSelectEvent: (event: Event, e: React.SyntheticEvent<HTMLElement>) => void;
+  onEventDrop: (event: EventInteractionArgs<Event>) => void;
+  onSelectEvent: (event: Event, e: SyntheticEvent<HTMLElement>) => void;
 }
 
-export default function Calendar({ events, onSelectEvent }: CalendarProps) {
+export default function Calendar({
+  events,
+  onEventDrop,
+  onSelectEvent
+}: CalendarProps) {
   const [date, setDate] = useState(new Date());
   const [view, setView] = useState<View>("month");
 
@@ -34,7 +41,9 @@ export default function Calendar({ events, onSelectEvent }: CalendarProps) {
         style={{ height: "500px" }}
         events={events}
         view={view}
+        views={["month", "agenda"]}
         date={date}
+        onEventDrop={onEventDrop}
         onSelectEvent={onSelectEvent}
         onNavigate={onNavigate}
         onView={onView}

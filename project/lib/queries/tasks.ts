@@ -45,13 +45,11 @@ const taskQueries = {
   },
 
   update: async (data: UpdateTaskData) => {
-    const [updatedTask] = await db
+    await db
       .update(tasks)
       .set(data)
       .where(eq(tasks.id, data.id))
       .returning({ id: tasks.id });
-
-    return updatedTask.id;
   },
 
   delete: async (id: TaskSchema["id"]) => {
@@ -71,6 +69,13 @@ const taskQueries = {
     attachment: TaskSchema["attachment"]
   ) => {
     await db.update(tasks).set({ attachment }).where(eq(tasks.id, id));
+  },
+
+  updateDueDate: async (
+    id: TaskSchema["id"],
+    dueDate: TaskSchema["dueDate"]
+  ) => {
+    await db.update(tasks).set({ dueDate }).where(eq(tasks.id, id));
   }
 };
 
