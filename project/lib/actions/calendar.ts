@@ -7,6 +7,7 @@ import {
 import { ZodError } from "zod";
 import projectQueries from "../queries/projects";
 import taskQueries from "../queries/tasks";
+import { getDaysRemaining } from "../utils/date-and-time";
 import { PERMISSION } from "../utils/permission-enum";
 import { hasPermission } from "../utils/rolePermissions";
 import { getUserId } from "../utils/users";
@@ -56,6 +57,58 @@ export async function getCalendarEvents() {
     return {
       success: false,
       message: "Error. Cannot retrieve calendar events."
+    };
+  }
+}
+
+export async function getUpcomingDeadlines() {
+  try {
+    const userId = await getUserId();
+    const projects = await projectQueries.getAll(userId);
+
+    const projectDeadlines = projects.map((project) => ({
+      id: project.id,
+      type: "project" as const,
+      title: project.name,
+      dueDate: new Date(project.dueDate),
+      daysRemaining: getDaysRemaining(project.dueDate)
+    }));
+
+    const taskDeadlines = projects
+      .flatMap((project) => project.lists)
+      .flatMap((list) => list.tasks)
+      .map((task) => ({
+        id: task.id,
+        type: "task" as const,
+        title: task.title,
+        dueDate: new Date(task.dueDate),
+        daysRemaining: getDaysRemaining(task.dueDate)
+      }));
+
+    const allEvents = [...taskDeadlines, ...projectDeadlines];
+
+    // Filter out past deadlines
+    const upcomingEvents = allEvents.filter(
+      (event) => event.dueDate.getTime() >= new Date().setHours(0, 0, 0, 0)
+    );
+
+    // Sort by soonest deadline
+    const sortedUpcomingEvents = upcomingEvents.sort(
+      (a, b) => a.dueDate.getTime() - b.dueDate.getTime()
+    );
+
+    // Get first 5
+    const deadlines = sortedUpcomingEvents.slice(0, 3);
+
+    return {
+      success: true,
+      message: "Upcoming deadlines retrieved successfully.",
+      deadlines
+    };
+  } catch {
+    return {
+      success: false,
+      message: "Error. Cannot retrieve upcomign deadlines."
     };
   }
 }

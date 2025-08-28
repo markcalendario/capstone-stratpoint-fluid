@@ -1,31 +1,67 @@
+import { toTitleCase } from "@/lib/utils/formatters";
 import { cn } from "@/lib/utils/tailwind";
+import { ProjectSchema } from "@/types/projects";
+import { TaskSchema } from "@/types/tasks";
+import { Box, Grid2X2Check } from "lucide-react";
+import Link from "next/link";
+import Badge from "./badge";
 
 interface DeadlineBarProps {
   title: string;
-  label: string;
-  date: Date | string;
+  daysRemaining: string;
+  type: "project" | "task";
+  id: ProjectSchema["id"] | TaskSchema["id"];
   className?: string;
 }
 
 export default function DeadlineBar({
+  id,
   title,
-  label,
-  date,
+  type,
+  daysRemaining,
   className
 }: DeadlineBarProps) {
+  const url = `/${type === "project" ? "projects" : "tasks"}/${id}`;
+
   return (
-    <div
+    <Link
+      href={url}
+      target="_blank"
       className={cn(
-        "outline-primary/20 flex items-end justify-between rounded-sm px-3 py-2 outline-2",
+        "outline-primary/20 flex items-end justify-between rounded-sm p-5 outline-2",
         className
       )}>
       <div>
-        <div className="font-medium text-neutral-700 dark:text-neutral-200">
+        <p className="flex items-center gap-2 text-xl font-bold text-neutral-700 dark:text-neutral-200">
           {title}
+        </p>
+
+        <div className="flex gap-1">
+          {type === "task" && (
+            <Badge
+              type="gray"
+              className="inline-flex items-center gap-1 text-[12px]">
+              <Grid2X2Check size={11} />
+              {toTitleCase(type)}
+            </Badge>
+          )}
+
+          {type === "project" && (
+            <Badge
+              type="error"
+              className="inline-flex items-center gap-1 text-[12px]">
+              <Box size={11} />
+              {toTitleCase(type)}
+            </Badge>
+          )}
+
+          <Badge
+            type="warning"
+            className="text-[12px]">
+            {daysRemaining}
+          </Badge>
         </div>
-        <div className="text-sm text-neutral-500">{label}</div>
       </div>
-      <div className="text-sm text-neutral-500">{date.toString()}</div>
-    </div>
+    </Link>
   );
 }
