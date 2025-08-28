@@ -1,13 +1,19 @@
 "use server";
 
-import { ChangeTaskDuePayload } from "@/types/calendar";
+import {
+  ChangeProjectDuePayload,
+  ChangeTaskDuePayload
+} from "@/types/calendar";
 import { ZodError } from "zod";
 import projectQueries from "../queries/projects";
 import taskQueries from "../queries/tasks";
 import { PERMISSION } from "../utils/permission-enum";
 import { hasPermission } from "../utils/rolePermissions";
 import { getUserId } from "../utils/users";
-import { changeTaskDuePayloadSchema } from "../validations/calendar";
+import {
+  changeProjectDuePayloadSchema,
+  changeTaskDuePayloadSchema
+} from "../validations/calendar";
 
 export async function getCalendarEvents() {
   try {
@@ -88,5 +94,39 @@ export async function changeTaskDue(payload: ChangeTaskDuePayload) {
     console.log(error);
 
     return { success: false, message: "Error. Cannot change task due date." };
+  }
+}
+
+export async function changeProjectDue(payload: ChangeProjectDuePayload) {
+  try {
+    const parsed = changeProjectDuePayloadSchema.parse(payload);
+    const userId = await getUserId();
+
+    const isPermitted = await hasPermission(
+      userId,
+      parsed.id,
+      PERMISSION.EDIT_PROJECT
+    );
+
+    if (!isPermitted) {
+      return {
+        success: false,
+        message:
+          "Unauthorized. You are not permitted to change project due date."
+      };
+    }
+
+    await projectQueries.updateDueDate(parsed.id, parsed.dueDate);
+    return { success: true, message: "Project due date updated successfully." };
+  } catch (error) {
+    if (error instanceof ZodError) {
+      return { success: false, message: error.issues[0].message };
+    }
+    console.log(error);
+
+    return {
+      success: false,
+      message: "Error. Cannot change project due date."
+    };
   }
 }
