@@ -11,6 +11,7 @@ import { formatToHTMLDate } from "@/lib/utils/date-and-time";
 import { EventResource } from "@/types/calendar";
 import { TaskSchema } from "@/types/tasks";
 import { useClerk } from "@clerk/nextjs";
+import { redirect, RedirectType } from "next/navigation";
 import { Event } from "react-big-calendar";
 import { EventInteractionArgs } from "react-big-calendar/lib/addons/dragAndDrop";
 
@@ -63,6 +64,16 @@ export default function EventsCalendar() {
     }
   };
 
+  const handleSelectEvent = (event: Event) => {
+    const { id, type } = event.resource;
+
+    if (type === "project") {
+      redirect(`/projects/${id}`, RedirectType.push);
+    } else if (type === "task") {
+      redirect(`/tasks/${id}`, RedirectType.push);
+    }
+  };
+
   if (isLoading) return <SectionLoader text="Loading Events" />;
 
   return (
@@ -72,7 +83,7 @@ export default function EventsCalendar() {
       <Calendar
         events={events}
         onEventDrop={handleEventDrop}
-        onSelectEvent={(evt) => console.log("Selected event:", evt)}
+        onSelectEvent={handleSelectEvent}
       />
     </DashboardContent>
   );

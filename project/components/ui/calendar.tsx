@@ -1,5 +1,5 @@
 import moment from "moment";
-import { SyntheticEvent, useCallback, useState } from "react";
+import { useCallback, useState } from "react";
 import {
   Calendar as BigCalendar,
   Event,
@@ -15,7 +15,7 @@ const DragAndDropCalendar = withDragAndDrop(BigCalendar);
 interface CalendarProps {
   events: Event[];
   onEventDrop: (event: EventInteractionArgs<Event>) => void;
-  onSelectEvent: (event: Event, e: SyntheticEvent<HTMLElement>) => void;
+  onSelectEvent: (event: Event) => void;
 }
 
 export default function Calendar({
