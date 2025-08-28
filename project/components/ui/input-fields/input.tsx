@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/tailwind";
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   id: string;

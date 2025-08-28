@@ -63,3 +63,24 @@ export function isOverdue(dueDate: string | Date): boolean {
 
   return due < today;
 }
+
+export function dayStartOfWeek() {
+  const now = new Date();
+  const dayOfWeek = now.getDay();
+  const diffToMonday = (dayOfWeek + 6) % 7;
+
+  const monday = new Date(now);
+  monday.setDate(now.getDate() - diffToMonday);
+  monday.setHours(0, 0, 0, 0);
+  return monday;
+}
+
+export function formatToHTMLDate(date: Date | string): string {
+  const d = typeof date === "string" ? new Date(date) : date;
+
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+}

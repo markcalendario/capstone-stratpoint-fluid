@@ -1,7 +1,7 @@
 "use client";
 
 import { useTheme } from "@/components/ui/theme-provider";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/tailwind";
 import {
   BarChart3,
   Calendar,

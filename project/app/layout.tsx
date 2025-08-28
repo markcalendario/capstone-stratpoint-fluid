@@ -1,6 +1,6 @@
 import QueryClientProvider from "@/components/ui/query-client-provider";
 import { ThemeProvider } from "@/components/ui/theme-provider";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/tailwind";
 import "@/styles/globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";

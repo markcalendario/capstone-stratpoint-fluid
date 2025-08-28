@@ -1,30 +1,25 @@
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/tailwind";
 import React from "react";
 
 interface StatusCardProps {
   name: string;
-  value: number;
-  changeType: "positive" | "negative";
-  change: string;
+  overall: number;
+  thisWeek: number;
   className: string;
   icon: React.ElementType;
 }
 
 export default function StatusCard({
   name,
-  value,
   className,
-  changeType,
-  change,
+  overall,
+  thisWeek,
   icon: Icon
 }: StatusCardProps) {
-  const changeColor =
-    changeType === "positive" ? "text-green-600" : "text-red-600";
-
   return (
     <div
       className={cn(
-        "border-primary/20 overflow-hidden rounded-sm border-2 bg-white p-6 dark:bg-neutral-800",
+        "ring-primary/20 overflow-hidden rounded-sm bg-white p-6 ring-2 dark:bg-neutral-800",
         className
       )}>
       <div className="flex items-center">
@@ -42,10 +37,17 @@ export default function StatusCard({
           </p>
           <div className="flex items-center">
             <span className="text-2xl font-black text-gray-800 dark:text-gray-100">
-              {value}
+              {overall}
             </span>
-            <span className={`ml-2 text-sm font-semibold ${changeColor}`}>
-              {change}
+
+            <span
+              className={cn(
+                "ml-3 text-xs font-semibold",
+                thisWeek > 0
+                  ? "text-green-600"
+                  : "text-neutral-400 dark:text-neutral-500"
+              )}>
+              {thisWeek} this week
             </span>
           </div>
         </div>

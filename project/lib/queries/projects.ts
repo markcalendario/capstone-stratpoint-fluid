@@ -116,6 +116,13 @@ const projectQueries = {
           eq(projects.isActive, true)
         )
     });
+  },
+
+  updateDueDate: async (
+    id: ProjectSchema["id"],
+    dueDate: ProjectSchema["dueDate"]
+  ) => {
+    await db.update(projects).set({ dueDate }).where(eq(projects.id, id));
   }
 };
 

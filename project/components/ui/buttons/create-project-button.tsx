@@ -1,7 +1,7 @@
 "use client";
 
 import { CreateProjectModal } from "@/components/ui/modals/create-project-modal";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/tailwind";
 import { Plus } from "lucide-react";
 import { Fragment, useState } from "react";
 import Button from "./button";

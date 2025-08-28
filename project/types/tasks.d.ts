@@ -88,6 +88,6 @@ export interface TaskCard
 
 export type TaskStatus = {
   name: string;
-  Done: number;
-  Pending: number;
+  done: number;
+  pending: number;
 };

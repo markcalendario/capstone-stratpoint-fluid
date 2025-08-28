@@ -1,106 +1,36 @@
+"use client";
+
 import { DashboardContent } from "@/components/layouts/dashboard/dashboard-content";
-import AnalyticsCard from "@/components/ui/analytics-card";
-import CumulativeFlowDiagram from "@/components/ui/area-chart";
-import BarChart, { BarChartData } from "@/components/ui/bar-chart";
-import { TaskStatus } from "@/types/tasks";
-import { BarChart3, Clock, TrendingUp, Users } from "lucide-react";
-
-const metrics = [
-  {
-    title: "Project Velocity",
-    value: "8.5",
-    unit: "tasks/week",
-    icon: TrendingUp,
-    color: "blue"
-  },
-  {
-    title: "Team Efficiency",
-    value: "92%",
-    unit: "completion rate",
-    icon: BarChart3,
-    color: "green"
-  },
-  {
-    title: "Active Users",
-    value: "24",
-    unit: "this week",
-    icon: Users,
-    color: "purple"
-  },
-  {
-    title: "Avg. Task Time",
-    value: "2.3",
-    unit: "days",
-    icon: Clock,
-    color: "red"
-  }
-] as const;
-
-const data: BarChartData<TaskStatus> = [
-  {
-    name: "TaskFlow Capstone Project",
-    Done: 30,
-    Pending: 100 - 30
-  },
-  {
-    name: "Stratpoint Website Redesign",
-    Done: 68,
-    Pending: 100 - 68
-  }
-];
-
-const cfdData = [
-  { date: "2025-07-01", Todo: 5, InProgress: 3, QA: 1, Review: 0, Done: 5 },
-  { date: "2025-07-02", Todo: 4, InProgress: 4, QA: 0, Review: 1, Done: 0 },
-  { date: "2025-07-03", Todo: 2, InProgress: 5, QA: 0, Review: 2, Done: 0 },
-  { date: "2025-07-04", Todo: 1, InProgress: 3, QA: 0, Review: 0, Done: 0 }
-];
+import AnalyticsSummary from "@/components/sections/analytics/analytics-summary";
+import ProjectProgress from "@/components/sections/analytics/project-progress";
+import StatusByPriority from "@/components/sections/analytics/status-by-priority";
+import SelectProject from "@/components/ui/input-fields/select/select-project";
+import { ProjectSchema } from "@/types/projects";
+import { Fragment, useState } from "react";
 
 export default function AnalyticsPage() {
+  const [projectId, setProjectId] = useState<ProjectSchema["id"] | null>(null);
+
+  const handleSelectProject = (projectId: ProjectSchema["id"] | null) => {
+    setProjectId(projectId);
+  };
+
   return (
     <DashboardContent
       title="Analytics"
       description="Track project performance and team productivity">
       <div className="space-y-6">
-        {/* Implementation Tasks Banner */}
-        <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-4 dark:border-yellow-800 dark:bg-yellow-900/20">
-          <h3 className="mb-2 text-sm font-medium text-yellow-800 dark:text-yellow-200">
-            📊 Analytics Implementation Tasks
-          </h3>
-          <ul className="space-y-1 text-sm text-yellow-700 dark:text-yellow-300">
-            <li>
-              • Task 6.6: Optimize performance and implement loading states
-            </li>
-            <li>• Task 8.5: Set up performance monitoring and analytics</li>
-          </ul>
-        </div>
+        <SelectProject onChange={handleSelectProject} />
 
-        {/* Analytics Cards */}
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
-          {metrics.map((metric, index) => (
-            <AnalyticsCard
-              key={index}
-              {...metric}
-              className="bg-white dark:bg-neutral-800"
-            />
-          ))}
-        </div>
-
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-          <div className="outline-primary/20 rounded-sm bg-white p-6 outline-2 dark:bg-neutral-800">
-            <h3 className="mb-4 text-lg font-semibold text-neutral-800 dark:text-neutral-200">
-              Project Progress
-            </h3>
-            <BarChart data={data} />
-          </div>
-
-          <div className="outline-primary/20 rounded-sm bg-white p-6 outline-2 dark:bg-neutral-800">
-            <h3 className="mb-4 text-lg font-semibold text-neutral-800 dark:text-neutral-200">
-              Team Activity
-            </h3>
-            <CumulativeFlowDiagram data={cfdData} />
-          </div>
-        </div>
+        {projectId && (
+          <Fragment>
+            <AnalyticsSummary projectId={projectId} />
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+              <ProjectProgress projectId={projectId} />
+              <StatusByPriority projectId={projectId} />
+            </div>
+          </Fragment>
+        )}
       </div>
     </DashboardContent>
   );

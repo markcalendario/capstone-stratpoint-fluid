@@ -1,7 +1,7 @@
 "use client";
 
 import SectionLoader from "@/components/ui/section-loader";
-import useDashboardStatus from "@/hooks/use-analytics";
+import { useDashboardStatus } from "@/hooks/use-analytics";
 import { CheckCircle, Clock, TrendingUp, Users } from "lucide-react";
 import StatusCard from "../../ui/status-card";
 
@@ -18,30 +18,26 @@ export default function DashboardStatus() {
   const statusCardData = [
     {
       name: "Active Projects",
-      value: status.activeProjects.count,
-      change: status.activeProjects.change,
-      changeType: status.activeProjects.changeType,
+      overall: status.activeProjects.overall,
+      thisWeek: status.activeProjects.thisWeek,
       icon: TrendingUp
     },
     {
       name: "Project Members",
-      value: status.projectMembers.count,
-      change: status.projectMembers.change,
-      changeType: status.projectMembers.changeType,
+      overall: status.projectMembers.overall,
+      thisWeek: status.projectMembers.thisWeek,
       icon: Users
     },
     {
       name: "Completed Tasks",
-      value: status.completedTasks.count,
-      change: status.completedTasks.change,
-      changeType: status.completedTasks.changeType,
+      overall: status.completedTasks.overall,
+      thisWeek: status.completedTasks.thisWeek,
       icon: CheckCircle
     },
     {
       name: "Pending Tasks",
-      value: status.pendingTasks.count,
-      change: status.pendingTasks.change,
-      changeType: status.pendingTasks.changeType,
+      overall: status.pendingTasks.overall,
+      thisWeek: status.pendingTasks.thisWeek,
       icon: Clock
     }
   ];
@@ -53,10 +49,9 @@ export default function DashboardStatus() {
           key={i}
           className="w-full"
           name={stat.name}
-          value={stat.value}
-          change={stat.change}
-          changeType={stat.changeType}
           icon={stat.icon}
+          overall={stat.overall}
+          thisWeek={stat.thisWeek}
         />
       ))}
     </div>

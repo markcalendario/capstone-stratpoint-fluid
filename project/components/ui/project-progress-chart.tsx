@@ -12,13 +12,15 @@ import {
   YAxis
 } from "recharts";
 
-export type BarChartData<T> = T[];
+export type ProjectProgressChartData<T> = T[];
 
-interface BarChart {
-  data: BarChartData<TaskStatus>;
+interface ProjectProgressChartProps {
+  data: ProjectProgressChartData<TaskStatus>;
 }
 
-export default function BarChart({ data }: BarChart) {
+export default function ProjectProgressChart({
+  data
+}: ProjectProgressChartProps) {
   return (
     <ResponsiveContainer
       width="100%"
@@ -40,16 +42,18 @@ export default function BarChart({ data }: BarChart) {
         <Tooltip cursor={{ opacity: "10%" }} />
         <Legend />
         <Bar
-          dataKey="Done"
-          stackId="a"
+          dataKey="done"
+          name="Done"
+          stackId="stack"
           fill="#00C49F"
           unit="%"
           opacity="70%"
           stroke="#00C49F"
         />
         <Bar
-          dataKey="Pending"
-          stackId="a"
+          dataKey="pending"
+          name="Pending"
+          stackId="stack"
           fill="#ffc658"
           unit="%"
           opacity="70%"

@@ -1,6 +1,7 @@
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/tailwind";
 
 interface BadgeProps {
+  className?: string;
   type?: "success" | "error" | "gray" | "info" | "warning";
   children: React.ReactNode;
 }
@@ -15,12 +16,17 @@ const badgeColors = {
     "text-yellow-600 bg-yellow-600/20 dark:text-yellow-300 dark:bg-yellow-700/20"
 };
 
-export default function Badge({ type = "gray", children }: BadgeProps) {
+export default function Badge({
+  type = "gray",
+  className,
+  children
+}: BadgeProps) {
   return (
     <span
       className={cn(
         badgeColors[type],
-        "inline-block rounded-sm px-2 py-1 text-[10px] font-medium"
+        "inline-block rounded-sm px-2 py-1 text-[10px] font-medium",
+        className
       )}>
       {children}
     </span>

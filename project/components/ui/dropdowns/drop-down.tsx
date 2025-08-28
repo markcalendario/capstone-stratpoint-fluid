@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/tailwind";
 import { LucideIcon } from "lucide-react";
 import Link from "next/link";
 import { ReactNode, useCallback, useEffect, useRef, useState } from "react";

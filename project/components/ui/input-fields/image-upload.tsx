@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/tailwind";
 import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
 
