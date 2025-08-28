@@ -9,6 +9,7 @@ export default async function getCalendarEvents() {
     const projects = await projectQueries.getAll(userId);
 
     const projectDeadlines = projects.map((project) => ({
+      allDay: true,
       title: `[PROJECT] ${project.name}`,
       start: new Date(project.dueDate),
       end: new Date(project.dueDate),
