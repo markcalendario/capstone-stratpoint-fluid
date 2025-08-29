@@ -79,3 +79,7 @@ export interface GetProjectMemberRolePayload {
 export interface AcceptInvitePayload {
   id: ProjectMember["id"];
 }
+
+export interface ReceiveInvitationEventData {
+  message: string;
+}

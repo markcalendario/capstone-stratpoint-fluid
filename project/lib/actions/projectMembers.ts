@@ -8,11 +8,13 @@ import {
   GetNonProjectMembersOptionsPayload,
   GetProjectMemberRolePayload,
   GetProjectMembersOptionsPayload,
-  GetProjectMembers as GetProjectMembersPayload
+  GetProjectMembers as GetProjectMembersPayload,
+  ReceiveInvitationEventData
 } from "@/types/projectMembers";
 import { UserOption } from "@/types/roles";
 import { ZodError } from "zod";
 import projectMembersQueries from "../queries/projectMembers";
+import projectQueries from "../queries/projects";
 import { getTimeDifference } from "../utils/date-and-time";
 import {
   getMembershipStatus,
@@ -23,8 +25,10 @@ import {
   getProjectOwnerId,
   isUserProjectOwner
 } from "../utils/projects";
+import pusher from "../utils/pusher";
+import { EVENTS } from "../utils/pusher-client";
 import { hasPermission } from "../utils/rolePermissions";
-import { getUserId } from "../utils/users";
+import { getClerkIdByUserId, getUserId } from "../utils/users";
 import {
   acceptInvitePayloadSchema,
   addProjectMembersPayloadSchema,
@@ -154,11 +158,18 @@ export async function addProjectMembers(payload: AddProjectMembersPayload) {
     for (const member of parsed.members) {
       const data = { projectId: parsed.projectId, ...member };
       await projectMembersQueries.addMember(data);
+
+      const project = await projectQueries.get(parsed.projectId);
+      const userClerkId = await getClerkIdByUserId(member.userId);
+
+      const message = `You have an invitation to join in ${project?.name}.`;
+      const eventData = { message } satisfies ReceiveInvitationEventData;
+      await pusher.trigger(userClerkId, EVENTS.INVITATION, eventData);
     }
 
     return {
       success: true,
-      message: `${parsed.members.length} user(s) added to team.`
+      message: `${parsed.members.length} users invited to the team.`
     };
   } catch (error) {
     if (error instanceof ZodError) {

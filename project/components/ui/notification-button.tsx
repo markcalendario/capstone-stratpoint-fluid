@@ -3,26 +3,47 @@ import {
   useDenyInvite,
   useInvites
 } from "@/hooks/use-project-members";
-import { ProjectMemberSchema } from "@/types/projectMembers";
+import pusherClient, { EVENTS } from "@/lib/utils/pusher-client";
+import {
+  ProjectMemberSchema,
+  ReceiveInvitationEventData
+} from "@/types/projectMembers";
 import { ProjectSchema } from "@/types/projects";
 import { RoleSchema } from "@/types/roles";
 import { useClerk } from "@clerk/nextjs";
 import { Bell, BellOff, Check, X } from "lucide-react";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SectionEmpty from "./section-empty";
 import SectionLoader from "./section-loader";
-import { showErrorToast, showSuccessToast } from "./toast";
+import { showActionToast, showErrorToast, showSuccessToast } from "./toast";
 
 export default function InviteNotificationsButton() {
+  const { user } = useClerk();
   const [isOpen, setIsOpen] = useState(false);
 
-  const toggleInvite = () => setIsOpen((prev) => !prev);
+  const toggleMenu = () => setIsOpen((prev) => !prev);
+
+  const handleReceiveInvitationEvent = (data: ReceiveInvitationEventData) => {
+    const action = !isOpen ? toggleMenu : () => {};
+    showActionToast(data.message, "View", action);
+  };
+
+  useEffect(() => {
+    if (!user) return;
+    const channel = pusherClient.subscribe(user.id);
+    channel.bind(EVENTS.INVITATION, handleReceiveInvitationEvent);
+
+    return () => {
+      channel.unbind(EVENTS.INVITATION, handleReceiveInvitationEvent);
+      pusherClient.unsubscribe(user.id);
+    };
+  }, [user]);
 
   return (
     <div className="relative">
       <button
-        onClick={toggleInvite}
+        onClick={toggleMenu}
         className="text-primary block aspect-square cursor-pointer rounded-full bg-white p-2 dark:bg-neutral-900 dark:text-neutral-100">
         <Bell size={16} />
       </button>
@@ -38,7 +59,6 @@ export default function InviteNotificationsButton() {
 
 function InviteNotificationList() {
   const { user } = useClerk();
-
   const { isInvitesLoading, invitesData } = useInvites(user?.id ?? "");
 
   const invites = invitesData?.invites;

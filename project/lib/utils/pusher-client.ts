@@ -1,9 +1,9 @@
 import Pusher from "pusher-js";
 
-export const CHANNELS = {
+export const EVENTS = {
   KANBAN: "kanban",
   ACTIVITY_LOG: "activity-log",
-  NOTIFICATION: "notification"
+  INVITATION: "invitation"
 };
 
 const pusherKey = process.env.NEXT_PUBLIC_PUSHER_KEY as string;
