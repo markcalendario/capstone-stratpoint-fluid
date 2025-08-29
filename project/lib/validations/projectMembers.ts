@@ -55,3 +55,7 @@ export const getProjectMembersRoleSchema = z.object({
   projectId: projectSchema.shape.id,
   userId: userSchema.shape.id
 });
+
+export const acceptInvitePayloadSchema = z.object({
+  id: projectMemberSchema.shape.id
+});

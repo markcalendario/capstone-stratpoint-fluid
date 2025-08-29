@@ -1,6 +1,7 @@
 "use server";
 
 import {
+  AcceptInvitePayload,
   AddProjectMembersPayload,
   DeleteMemberPayload,
   EditProjectMemberRoleData,
@@ -12,6 +13,7 @@ import {
 import { UserOption } from "@/types/roles";
 import { ZodError } from "zod";
 import projectMembersQueries from "../queries/projectMembers";
+import { getTimeDifference } from "../utils/date-and-time";
 import {
   getMembershipStatus,
   MEMBERSHIP_STATUS
@@ -24,6 +26,7 @@ import {
 import { hasPermission } from "../utils/rolePermissions";
 import { getUserId } from "../utils/users";
 import {
+  acceptInvitePayloadSchema,
   addProjectMembersPayloadSchema,
   editProjectMemberRoleSchema,
   getNonProjectMembersOptionsPayloadSchema,
@@ -403,5 +406,42 @@ export async function editProjectMemberRole(
     }
 
     return { success: false, message: "Error. Edit role." };
+  }
+}
+
+export async function getInvites() {
+  try {
+    // Retrieves all invites regardless of the invite status
+    const userId = await getUserId();
+    const invites = await projectMembersQueries.getByUserId(userId);
+
+    const formatted = invites.map((invite) => ({
+      id: invite.id,
+      isAccepted: invite.isAccepted,
+      projectName: invite.project.name,
+      inviteElapsedTime: getTimeDifference(invite.invitedAt)
+    }));
+
+    return {
+      success: true,
+      message: "Invites retrieved successfully.",
+      invites: formatted
+    };
+  } catch {
+    return { success: false, message: "Error. Cannot retrieve invitations." };
+  }
+}
+
+export async function acceptInvite(payload: AcceptInvitePayload) {
+  try {
+    const parsed = acceptInvitePayloadSchema.parse(payload);
+    await projectMembersQueries.acceptInvite(parsed.id);
+    return { success: false, message: "Project invitation has been accepted." };
+  } catch (error) {
+    if (error instanceof ZodError) {
+      return { success: false, message: error.issues[0].message };
+    }
+
+    return { success: false, message: "Error. Cannot accept invite." };
   }
 }

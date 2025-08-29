@@ -75,3 +75,7 @@ export interface GetProjectMemberRolePayload {
   projectId: ProjectSchema["id"];
   userId: UserSchema["id"];
 }
+
+export interface AcceptInvitePayload {
+  id: ProjectMember["id"];
+}
