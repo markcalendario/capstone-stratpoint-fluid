@@ -5,8 +5,8 @@ import {
 } from "@/hooks/use-project-members";
 import pusherClient, { EVENTS } from "@/lib/utils/pusher-client";
 import {
-  ProjectMemberSchema,
-  ReceiveInvitationEventData
+  InvitationEventData,
+  ProjectMemberSchema
 } from "@/types/projectMembers";
 import { ProjectSchema } from "@/types/projects";
 import { RoleSchema } from "@/types/roles";
@@ -24,7 +24,7 @@ export default function InviteNotificationsButton() {
 
   const toggleMenu = () => setIsOpen((prev) => !prev);
 
-  const handleReceiveInvitationEvent = (data: ReceiveInvitationEventData) => {
+  const handleReceiveInvitationEvent = (data: InvitationEventData) => {
     const action = !isOpen ? toggleMenu : () => {};
     showActionToast(data.message, "View", action);
   };

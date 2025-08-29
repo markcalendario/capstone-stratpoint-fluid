@@ -9,7 +9,7 @@ import {
   GetProjectMemberRolePayload,
   GetProjectMembersOptionsPayload,
   GetProjectMembers as GetProjectMembersPayload,
-  ReceiveInvitationEventData
+  InvitationEventData
 } from "@/types/projectMembers";
 import { UserOption } from "@/types/roles";
 import { ZodError } from "zod";
@@ -163,7 +163,7 @@ export async function addProjectMembers(payload: AddProjectMembersPayload) {
       const userClerkId = await getClerkIdByUserId(member.userId);
 
       const message = `You have an invitation to join in ${project?.name}.`;
-      const eventData = { message } satisfies ReceiveInvitationEventData;
+      const eventData = { message } satisfies InvitationEventData;
       await pusher.trigger(userClerkId, EVENTS.INVITATION, eventData);
     }
 

@@ -80,6 +80,6 @@ export interface AcceptInvitePayload {
   id: ProjectMember["id"];
 }
 
-export interface ReceiveInvitationEventData {
+export interface InvitationEventData {
   message: string;
 }
