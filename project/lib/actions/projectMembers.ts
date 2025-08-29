@@ -28,6 +28,7 @@ import { getUserId } from "../utils/users";
 import {
   acceptInvitePayloadSchema,
   addProjectMembersPayloadSchema,
+  denyInvitePayloadSchema,
   editProjectMemberRoleSchema,
   getNonProjectMembersOptionsPayloadSchema,
   getProjectMembersOptionsPayloadSchema,
@@ -410,17 +411,21 @@ export async function editProjectMemberRole(
 }
 
 export async function getInvites() {
+  // Retrieves all invitations where user hasn't responded yet. (isAccepted === null)
   try {
-    // Retrieves all invites regardless of the invite status
     const userId = await getUserId();
     const invites = await projectMembersQueries.getByUserId(userId);
 
-    const formatted = invites.map((invite) => ({
-      id: invite.id,
-      isAccepted: invite.isAccepted,
-      projectName: invite.project.name,
-      inviteElapsedTime: getTimeDifference(invite.invitedAt)
-    }));
+    const formatted = invites
+      .filter((invite) => invite.isAccepted === null)
+      .map((invite) => ({
+        id: invite.id,
+        role: invite.role.title,
+        isAccepted: invite.isAccepted,
+        projectName: invite.project.name,
+        projectImage: invite.project.imageUrl,
+        inviteElapsedTime: getTimeDifference(invite.invitedAt)
+      }));
 
     return {
       success: true,
@@ -436,12 +441,26 @@ export async function acceptInvite(payload: AcceptInvitePayload) {
   try {
     const parsed = acceptInvitePayloadSchema.parse(payload);
     await projectMembersQueries.acceptInvite(parsed.id);
-    return { success: false, message: "Project invitation has been accepted." };
+    return { success: true, message: "Project invitation has been accepted." };
   } catch (error) {
     if (error instanceof ZodError) {
       return { success: false, message: error.issues[0].message };
     }
 
     return { success: false, message: "Error. Cannot accept invite." };
+  }
+}
+
+export async function denyInvite(payload: AcceptInvitePayload) {
+  try {
+    const parsed = denyInvitePayloadSchema.parse(payload);
+    await projectMembersQueries.denyInvite(parsed.id);
+    return { success: true, message: "Project invitation has been denied." };
+  } catch (error) {
+    if (error instanceof ZodError) {
+      return { success: false, message: error.issues[0].message };
+    }
+
+    return { success: false, message: "Error. Cannot deny invite." };
   }
 }

@@ -15,7 +15,8 @@ const projectMembersQueries = {
   // Retrieve all invites regardless of their accepted status
   getByUserId: async (userId: UserSchema["id"]) => {
     return await db.query.projectMembers.findMany({
-      with: { project: true, user: true },
+      with: { project: true, user: true, role: true },
+      orderBy: (projectMembers, { desc }) => desc(projectMembers.invitedAt),
       where: (projectMembers, { eq }) => eq(projectMembers.userId, userId)
     });
   },
@@ -137,7 +138,7 @@ const projectMembersQueries = {
   },
 
   removeTeamMember: async (data: RemoveProjectMemberData) => {
-    await await db
+    await db
       .delete(projectMembers)
       .where(
         and(
@@ -163,6 +164,13 @@ const projectMembersQueries = {
     await db
       .update(projectMembers)
       .set({ isAccepted: true })
+      .where(eq(projectMembers.id, id));
+  },
+
+  denyInvite: async (id: ProjectMemberSchema["id"]) => {
+    await db
+      .update(projectMembers)
+      .set({ isAccepted: false })
       .where(eq(projectMembers.id, id));
   }
 };

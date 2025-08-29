@@ -59,3 +59,7 @@ export const getProjectMembersRoleSchema = z.object({
 export const acceptInvitePayloadSchema = z.object({
   id: projectMemberSchema.shape.id
 });
+
+export const denyInvitePayloadSchema = z.object({
+  id: projectMemberSchema.shape.id
+});
