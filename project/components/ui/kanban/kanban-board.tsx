@@ -3,6 +3,7 @@
 import { useListsWithTasks } from "@/hooks/use-lists";
 import { useMoveTask } from "@/hooks/use-tasks";
 import { moveList } from "@/lib/actions/lists";
+import pusherClient, { EVENTS } from "@/lib/utils/pusher-client";
 import { KanbanList } from "@/types/kanban";
 import { ListSchema } from "@/types/lists";
 import { ProjectSchema } from "@/types/projects";
@@ -30,11 +31,31 @@ interface KanbanBoardProps {
 }
 
 export default function KanbanBoard({ projectId }: KanbanBoardProps) {
+  const [kanbanItems, setKanbanItems] = useState<KanbanList[] | null>(null);
+
   const { isListsAndTasksLoading, listsAndTasksData } =
     useListsWithTasks(projectId);
 
-  const listsAndTasks = listsAndTasksData?.listsAndTasks;
-  const isLoaded = !isListsAndTasksLoading && listsAndTasks;
+  const handleKanbanEvent = (kanbanItems: KanbanList[]) => {
+    setKanbanItems(kanbanItems);
+  };
+
+  useEffect(() => {
+    const channel = pusherClient.subscribe(projectId);
+    channel.bind(EVENTS.KANBAN, handleKanbanEvent);
+
+    return () => {
+      channel.unbind(EVENTS.KANBAN, handleKanbanEvent);
+      pusherClient.unsubscribe(projectId);
+    };
+  }, [projectId]);
+
+  useEffect(() => {
+    if (!listsAndTasksData?.listsAndTasks) return;
+    setKanbanItems(listsAndTasksData.listsAndTasks);
+  }, [listsAndTasksData]);
+
+  const isLoaded = !isListsAndTasksLoading && kanbanItems;
 
   return (
     <div className="w-full">
@@ -44,7 +65,7 @@ export default function KanbanBoard({ projectId }: KanbanBoardProps) {
         <div className="flex min-w-full flex-nowrap items-stretch space-x-5 overflow-x-auto pb-4">
           <KanbanItems
             projectId={projectId}
-            lists={listsAndTasks}
+            lists={kanbanItems}
           />
 
           <CreateListButton

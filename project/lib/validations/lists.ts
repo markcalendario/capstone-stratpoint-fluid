@@ -12,6 +12,7 @@ export const listSchema = z.object({
     .trim()
     .min(MIN_NAME, `Minimum list name length is ${MIN_NAME} characters.`)
     .max(MAX_NAME, `Maximum list name length is ${MAX_NAME} characters.`),
+  position: z.number("Position must be a number").min(0, "Invalid position."),
   projectId: projectSchema.shape.id,
   createdBy: userSchema.shape.id,
   updatedAt: z.iso.datetime("Invalid date for date modified.").trim(),
@@ -39,4 +40,10 @@ export const updateListPayloadSchema = z.object({
 
 export const deleteListPayloadSchema = z.object({
   id: listSchema.shape.id
+});
+
+export const moveListPayloadSchema = z.object({
+  listId: listSchema.shape.id,
+  newPosition: listSchema.shape.position,
+  projectId: listSchema.shape.projectId
 });

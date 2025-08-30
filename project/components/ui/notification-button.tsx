@@ -25,7 +25,7 @@ export default function InviteNotificationsButton() {
   const toggleMenu = () => setIsOpen((prev) => !prev);
 
   const handleReceiveInvitationEvent = (data: InvitationEventData) => {
-    const action = !isOpen ? toggleMenu : () => {};
+    const action = () => setIsOpen((prev) => (prev ? prev : true));
     showActionToast(data.message, "View", action);
   };
 
