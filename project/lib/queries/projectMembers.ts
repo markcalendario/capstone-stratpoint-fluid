@@ -2,6 +2,7 @@ import {
   AddProjectMemberData,
   EditProjectMemberRoleData,
   GetNonProjectMembersOptionsData,
+  ProjectMemberSchema,
   RemoveProjectMemberData
 } from "@/types/projectMembers";
 import { ProjectSchema } from "@/types/projects";
@@ -11,7 +12,16 @@ import db from "../db";
 import { projectMembers } from "../db/drizzle/migrations/schema";
 
 const projectMembersQueries = {
-  // Retrive all project members regardless of their accepted status
+  // Retrieve all invites regardless of their accepted status
+  getByUserId: async (userId: UserSchema["id"]) => {
+    return await db.query.projectMembers.findMany({
+      with: { project: true, user: true, role: true },
+      orderBy: (projectMembers, { desc }) => desc(projectMembers.invitedAt),
+      where: (projectMembers, { eq }) => eq(projectMembers.userId, userId)
+    });
+  },
+
+  // Retrieve all project members regardless of their accepted status
   getByProject: async (projectId: ProjectSchema["id"]) => {
     return await db.query.projectMembers.findMany({
       where: (projectMembers, { eq }) => {
@@ -139,7 +149,7 @@ const projectMembersQueries = {
   },
 
   editMemberRole: async (data: EditProjectMemberRoleData) => {
-    return db
+    return await db
       .update(projectMembers)
       .set({ roleId: data.roleId })
       .where(
@@ -148,6 +158,20 @@ const projectMembersQueries = {
           eq(projectMembers.projectId, data.projectId)
         )
       );
+  },
+
+  acceptInvite: async (id: ProjectMemberSchema["id"]) => {
+    await db
+      .update(projectMembers)
+      .set({ isAccepted: true })
+      .where(eq(projectMembers.id, id));
+  },
+
+  denyInvite: async (id: ProjectMemberSchema["id"]) => {
+    await db
+      .update(projectMembers)
+      .set({ isAccepted: false })
+      .where(eq(projectMembers.id, id));
   }
 };
 

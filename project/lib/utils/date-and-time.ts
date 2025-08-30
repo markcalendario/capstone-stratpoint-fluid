@@ -47,9 +47,33 @@ export function getDaysRemaining(dueDate: string | Date): string {
     return `${diffInDays} day${diffInDays === 1 ? "" : "s"} left`;
   } else if (diffInDays < 0) {
     const overdueDays = Math.abs(diffInDays);
-    return `${overdueDays} day${overdueDays === 1 ? "" : "s"} late`;
+    return `${overdueDays} day${overdueDays === 1 ? "" : "s"} ago`;
   } else {
     return "Due today";
+  }
+}
+
+export function getTimeDifference(date: string | Date): string {
+  const now = new Date();
+  const target = new Date(date);
+  const diff = target.getTime() - now.getTime(); // in milliseconds
+
+  const isFuture = diff > 0;
+  const absDiff = Math.abs(diff);
+
+  const seconds = Math.floor(absDiff / 1000);
+  const minutes = Math.floor(seconds / 60);
+  const hours = Math.floor(minutes / 60);
+  const days = Math.floor(hours / 24);
+
+  if (seconds < 60) {
+    return isFuture ? `in ${seconds}s` : `${seconds}s ago`;
+  } else if (minutes < 60) {
+    return isFuture ? `in ${minutes}m` : `${minutes}m ago`;
+  } else if (hours < 24) {
+    return isFuture ? `in ${hours}h` : `${hours}h ago`;
+  } else {
+    return isFuture ? `$in {days}d` : `${days} days ago`;
   }
 }
 

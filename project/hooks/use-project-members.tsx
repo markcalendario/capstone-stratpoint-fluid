@@ -1,7 +1,10 @@
 import { queryClient } from "@/components/ui/query-client-provider";
 import {
+  acceptInvite,
   addProjectMembers,
+  denyInvite,
   editProjectMemberRole,
+  getInvites,
   getNonProjectMembersOptions,
   getProjectMemberRole,
   getProjectMembers,
@@ -115,4 +118,35 @@ export function useEditProjectMemberRole(
   });
 
   return { isEditingMemberRole: isPending, editProjectMemberRole: mutateAsync };
+}
+
+export function useInvites(userId: UserSchema["id"]) {
+  const { isPending, data } = useQuery({
+    queryFn: () => getInvites(),
+    queryKey: ["invites", userId]
+  });
+
+  return { isInvitesLoading: isPending, invitesData: data };
+}
+
+export function useAcceptInvite(userId: UserSchema["id"]) {
+  const { isPending, mutateAsync } = useMutation({
+    mutationFn: acceptInvite,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["invites", userId] });
+    }
+  });
+
+  return { isAcceptingInvite: isPending, acceptInvite: mutateAsync };
+}
+
+export function useDenyInvite(userId: UserSchema["id"]) {
+  const { isPending, mutateAsync } = useMutation({
+    mutationFn: denyInvite,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["invites", userId] });
+    }
+  });
+
+  return { isDenyingInvite: isPending, denyInvite: mutateAsync };
 }

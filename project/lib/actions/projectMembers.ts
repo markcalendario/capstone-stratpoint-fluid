@@ -1,17 +1,21 @@
 "use server";
 
 import {
+  AcceptInvitePayload,
   AddProjectMembersPayload,
   DeleteMemberPayload,
   EditProjectMemberRoleData,
   GetNonProjectMembersOptionsPayload,
   GetProjectMemberRolePayload,
   GetProjectMembersOptionsPayload,
-  GetProjectMembers as GetProjectMembersPayload
+  GetProjectMembers as GetProjectMembersPayload,
+  InvitationEventData
 } from "@/types/projectMembers";
 import { UserOption } from "@/types/roles";
 import { ZodError } from "zod";
 import projectMembersQueries from "../queries/projectMembers";
+import projectQueries from "../queries/projects";
+import { getTimeDifference } from "../utils/date-and-time";
 import {
   getMembershipStatus,
   MEMBERSHIP_STATUS
@@ -21,10 +25,14 @@ import {
   getProjectOwnerId,
   isUserProjectOwner
 } from "../utils/projects";
+import pusher from "../utils/pusher";
+import { EVENTS } from "../utils/pusher-client";
 import { hasPermission } from "../utils/rolePermissions";
-import { getUserId } from "../utils/users";
+import { getClerkIdByUserId, getUserId } from "../utils/users";
 import {
+  acceptInvitePayloadSchema,
   addProjectMembersPayloadSchema,
+  denyInvitePayloadSchema,
   editProjectMemberRoleSchema,
   getNonProjectMembersOptionsPayloadSchema,
   getProjectMembersOptionsPayloadSchema,
@@ -150,11 +158,18 @@ export async function addProjectMembers(payload: AddProjectMembersPayload) {
     for (const member of parsed.members) {
       const data = { projectId: parsed.projectId, ...member };
       await projectMembersQueries.addMember(data);
+
+      const project = await projectQueries.get(parsed.projectId);
+      const userClerkId = await getClerkIdByUserId(member.userId);
+
+      const message = `You have an invitation to join in ${project?.name}.`;
+      const eventData = { message } satisfies InvitationEventData;
+      await pusher.trigger(userClerkId, EVENTS.INVITATION, eventData);
     }
 
     return {
       success: true,
-      message: `${parsed.members.length} user(s) added to team.`
+      message: `${parsed.members.length} users invited to the team.`
     };
   } catch (error) {
     if (error instanceof ZodError) {
@@ -403,5 +418,60 @@ export async function editProjectMemberRole(
     }
 
     return { success: false, message: "Error. Edit role." };
+  }
+}
+
+export async function getInvites() {
+  // Retrieves all invitations where user hasn't responded yet. (isAccepted === null)
+  try {
+    const userId = await getUserId();
+    const invites = await projectMembersQueries.getByUserId(userId);
+
+    const formatted = invites
+      .filter((invite) => invite.isAccepted === null)
+      .map((invite) => ({
+        id: invite.id,
+        role: invite.role.title,
+        isAccepted: invite.isAccepted,
+        projectName: invite.project.name,
+        projectImage: invite.project.imageUrl,
+        inviteElapsedTime: getTimeDifference(invite.invitedAt)
+      }));
+
+    return {
+      success: true,
+      message: "Invites retrieved successfully.",
+      invites: formatted
+    };
+  } catch {
+    return { success: false, message: "Error. Cannot retrieve invitations." };
+  }
+}
+
+export async function acceptInvite(payload: AcceptInvitePayload) {
+  try {
+    const parsed = acceptInvitePayloadSchema.parse(payload);
+    await projectMembersQueries.acceptInvite(parsed.id);
+    return { success: true, message: "Project invitation has been accepted." };
+  } catch (error) {
+    if (error instanceof ZodError) {
+      return { success: false, message: error.issues[0].message };
+    }
+
+    return { success: false, message: "Error. Cannot accept invite." };
+  }
+}
+
+export async function denyInvite(payload: AcceptInvitePayload) {
+  try {
+    const parsed = denyInvitePayloadSchema.parse(payload);
+    await projectMembersQueries.denyInvite(parsed.id);
+    return { success: true, message: "Project invitation has been denied." };
+  } catch (error) {
+    if (error instanceof ZodError) {
+      return { success: false, message: error.issues[0].message };
+    }
+
+    return { success: false, message: "Error. Cannot deny invite." };
   }
 }
