@@ -1,110 +1,96 @@
-export function isFutureDate(date: string) {
-  const targetDate = new Date(date);
-  const currentDate = new Date();
+import {
+  differenceInCalendarDays,
+  format,
+  formatDistanceToNow,
+  isAfter,
+  isBefore,
+  isSameDay,
+  isValid,
+  parseISO,
+  startOfDay,
+  startOfWeek
+} from "date-fns";
 
-  // Time is set to 00:00 to compare only the date part.
-  currentDate.setHours(0, 0, 0, 0);
+/**
+ * Check if a date is today or in the future.
+ */
+export function isFutureDate(date: string): boolean {
+  const targetDate = startOfDay(parseISO(date));
+  const currentDate = startOfDay(new Date());
 
-  return targetDate >= currentDate;
+  return isAfter(targetDate, currentDate) || isSameDay(targetDate, currentDate);
 }
 
-export function formatDate(date: string) {
-  const d = new Date(date);
-  if (isNaN(d.getTime())) return "Invalid Date";
-  return d.toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "short",
-    day: "numeric"
-  });
+/**
+ * Format a date into "MMM DD, YYYY".
+ */
+export function formatDate(date: string): string {
+  const d = parseISO(date);
+  return isValid(d) ? format(d, "MMM d, yyyy") : "Invalid Date";
 }
 
-export function formatDateTime(date: string) {
-  const d = new Date(date);
-  if (isNaN(d.getTime())) return "Invalid Date";
-
-  return d.toLocaleString("en-US", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
-    hour12: true
-  });
+/**
+ * Format a date and time into "MMM DD, YYYY, HH:mm AM/PM".
+ */
+export function formatDateTime(date: string): string {
+  const d = parseISO(date);
+  return isValid(d) ? format(d, "MMM d, yyyy, h:mm a") : "Invalid Date";
 }
 
+/**
+ * Return the number of days remaining until a due date.
+ */
 export function getDaysRemaining(dueDate: string | Date): string {
-  const today = new Date();
-  const due = new Date(dueDate);
+  const today = startOfDay(new Date());
+  const due = startOfDay(
+    typeof dueDate === "string" ? parseISO(dueDate) : dueDate
+  );
 
-  // Zero out the time for accurate day comparison
-  today.setHours(0, 0, 0, 0);
-  due.setHours(0, 0, 0, 0);
+  const diff = differenceInCalendarDays(due, today);
 
-  const diffInMs = due.getTime() - today.getTime();
-  const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
-
-  if (diffInDays > 0) {
-    return `${diffInDays} day${diffInDays === 1 ? "" : "s"} left`;
-  } else if (diffInDays < 0) {
-    const overdueDays = Math.abs(diffInDays);
+  if (diff > 0) {
+    return `${diff} day${diff === 1 ? "" : "s"} left`;
+  } else if (diff < 0) {
+    const overdueDays = Math.abs(diff);
     return `${overdueDays} day${overdueDays === 1 ? "" : "s"} ago`;
   } else {
     return "Due today";
   }
 }
 
+/**
+ * Get human-readable time difference (e.g. "in 2 days", "3h ago").
+ */
 export function getTimeDifference(date: string | Date): string {
-  const now = new Date();
-  const target = new Date(date);
-  const diff = target.getTime() - now.getTime(); // in milliseconds
+  const target = typeof date === "string" ? parseISO(date) : date;
+  if (!isValid(target)) return "Invalid Date";
 
-  const isFuture = diff > 0;
-  const absDiff = Math.abs(diff);
-
-  const seconds = Math.floor(absDiff / 1000);
-  const minutes = Math.floor(seconds / 60);
-  const hours = Math.floor(minutes / 60);
-  const days = Math.floor(hours / 24);
-
-  if (seconds < 60) {
-    return isFuture ? `in ${seconds}s` : `${seconds}s ago`;
-  } else if (minutes < 60) {
-    return isFuture ? `in ${minutes}m` : `${minutes}m ago`;
-  } else if (hours < 24) {
-    return isFuture ? `in ${hours}h` : `${hours}h ago`;
-  } else {
-    return isFuture ? `$in {days}d` : `${days} days ago`;
-  }
+  return formatDistanceToNow(target, { addSuffix: true });
 }
 
+/**
+ * Check if a due date is overdue (i.e. before today).
+ */
 export function isOverdue(dueDate: string | Date): boolean {
-  const today = new Date();
-  const due = new Date(dueDate);
+  const today = startOfDay(new Date());
+  const due = startOfDay(
+    typeof dueDate === "string" ? parseISO(dueDate) : dueDate
+  );
 
-  // Zero out time parts for accurate date-only comparison
-  today.setHours(0, 0, 0, 0);
-  due.setHours(0, 0, 0, 0);
-
-  return due < today;
+  return isBefore(due, today);
 }
 
-export function dayStartOfWeek() {
-  const now = new Date();
-  const dayOfWeek = now.getDay();
-  const diffToMonday = (dayOfWeek + 6) % 7;
-
-  const monday = new Date(now);
-  monday.setDate(now.getDate() - diffToMonday);
-  monday.setHours(0, 0, 0, 0);
-  return monday;
+/**
+ * Get the start of the current week (Monday).
+ */
+export function dayStartOfWeek(): Date {
+  return startOfWeek(new Date(), { weekStartsOn: 1 });
 }
 
+/**
+ * Format a date as `yyyy-MM-dd` (for HTML input[type="date"]).
+ */
 export function formatToHTMLDate(date: Date | string): string {
-  const d = typeof date === "string" ? new Date(date) : date;
-
-  const year = d.getFullYear();
-  const month = String(d.getMonth() + 1).padStart(2, "0");
-  const day = String(d.getDate()).padStart(2, "0");
-
-  return `${year}-${month}-${day}`;
+  const d = typeof date === "string" ? parseISO(date) : date;
+  return isValid(d) ? format(d, "yyyy-MM-dd") : "Invalid Date";
 }

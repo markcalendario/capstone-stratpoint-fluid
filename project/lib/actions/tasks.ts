@@ -18,6 +18,7 @@ import {
   isOverdue
 } from "../utils/date-and-time";
 import { upload } from "../utils/files";
+import { broadcastKanbanUpdate } from "../utils/kanban";
 import { hasPermission } from "../utils/rolePermissions";
 import { getUserId } from "../utils/users";
 import {
@@ -64,6 +65,8 @@ export async function createAndAssignTask(payload: CreateAndAssignTaskPayload) {
       await taskAssignmentsQueries.assignMany(assignmentData);
     }
 
+    await broadcastKanbanUpdate(parsed.projectId);
+
     return { success: true, message: "Task created successfully." };
   } catch (error) {
     if (error instanceof ZodError) {
@@ -90,6 +93,10 @@ export async function deleteTask(payload: DeleteTaskPayload) {
     }
 
     await taskQueries.delete(parsed.id);
+
+    const projectId = task.list.projectId;
+    await broadcastKanbanUpdate(projectId);
+
     return { success: true, message: "Task deleted successfully." };
   } catch (error) {
     if (error instanceof ZodError) {
@@ -123,6 +130,9 @@ export async function editTask(payload: EditTaskPayload) {
     };
 
     await taskQueries.update(editTaskPayload);
+
+    const projectId = task.list.projectId;
+    await broadcastKanbanUpdate(projectId);
 
     return { success: true, message: "Task edited successfully." };
   } catch (error) {
@@ -183,6 +193,10 @@ export async function moveTask(payload: MoveTaskPayload) {
         await taskQueries.changePosition(id, newListId, position);
       }
     }
+
+    // Emit Kanban lists with tasks to all members of the project
+    const projectId = task.list.projectId;
+    await broadcastKanbanUpdate(projectId);
 
     return { success: true, message: "Task moved successfully." };
   } catch (error) {

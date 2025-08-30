@@ -7,6 +7,7 @@ import {
 import { ZodError } from "zod";
 import taskAssignmentsQueries from "../queries/taskAssignments";
 import taskQueries from "../queries/tasks";
+import { broadcastKanbanUpdate } from "../utils/kanban";
 import { hasPermission } from "../utils/rolePermissions";
 import { getUserId } from "../utils/users";
 import {
@@ -74,6 +75,9 @@ export async function updateTaskAssignment(
         userIds: parsed.userIds
       });
     }
+
+    const projectId = task.list.projectId;
+    await broadcastKanbanUpdate(projectId);
 
     return { success: true, message: "Task assigned successfully." };
   } catch (error) {

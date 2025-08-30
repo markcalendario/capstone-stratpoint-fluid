@@ -3,6 +3,8 @@
 import { useListsWithTasks } from "@/hooks/use-lists";
 import { useMoveTask } from "@/hooks/use-tasks";
 import { moveList } from "@/lib/actions/lists";
+import { formatDateTime } from "@/lib/utils/date-and-time";
+import pusherClient, { EVENTS } from "@/lib/utils/pusher-client";
 import { KanbanList } from "@/types/kanban";
 import { ListSchema } from "@/types/lists";
 import { ProjectSchema } from "@/types/projects";
@@ -20,6 +22,7 @@ import {
   SortableContext
 } from "@dnd-kit/sortable";
 import { useEffect, useState } from "react";
+import Badge from "../badge";
 import CreateListButton from "../buttons/create-list-button";
 import SectionLoader from "../section-loader";
 import ListCard from "./list-card";
@@ -30,27 +33,61 @@ interface KanbanBoardProps {
 }
 
 export default function KanbanBoard({ projectId }: KanbanBoardProps) {
+  const [kanbanItems, setKanbanItems] = useState<KanbanList[] | null>(null);
+  const [lastUpdateTime, setLastUpdateTime] = useState<string | null>(null);
+
   const { isListsAndTasksLoading, listsAndTasksData } =
     useListsWithTasks(projectId);
 
-  const listsAndTasks = listsAndTasksData?.listsAndTasks;
-  const isLoaded = !isListsAndTasksLoading && listsAndTasks;
+  const updateUpdateTime = () => {
+    const now = new Date().toISOString();
+    setLastUpdateTime(formatDateTime(now));
+  };
+
+  const handleKanbanEvent = (kanbanItems: KanbanList[]) => {
+    setKanbanItems(kanbanItems);
+    updateUpdateTime();
+  };
+
+  useEffect(() => {
+    updateUpdateTime();
+
+    const channel = pusherClient.subscribe(projectId);
+    channel.bind(EVENTS.KANBAN, handleKanbanEvent);
+
+    return () => {
+      channel.unbind(EVENTS.KANBAN, handleKanbanEvent);
+      pusherClient.unsubscribe(projectId);
+    };
+  }, [projectId]);
+
+  useEffect(() => {
+    if (!listsAndTasksData?.listsAndTasks) return;
+    setKanbanItems(listsAndTasksData.listsAndTasks);
+  }, [listsAndTasksData]);
+
+  const isLoaded = !isListsAndTasksLoading && kanbanItems;
 
   return (
     <div className="w-full">
       {!isLoaded && <SectionLoader text="Fetching Kanban Columns" />}
-
       {isLoaded && (
-        <div className="flex min-w-full flex-nowrap items-stretch space-x-5 overflow-x-auto pb-4">
-          <KanbanItems
-            projectId={projectId}
-            lists={listsAndTasks}
-          />
+        <div className="flex flex-col gap-2">
+          <div>
+            <Badge type="info">Last Update: {lastUpdateTime}</Badge>
+          </div>
 
-          <CreateListButton
-            projectId={projectId}
-            className="border-primary/20 text-primary hover:bg-primary/5 flex min-h-[500px] min-w-100 cursor-pointer flex-nowrap items-center justify-center gap-2 rounded-sm border-2 border-dashed bg-neutral-50 dark:border-neutral-500 dark:bg-neutral-800 dark:text-neutral-300"
-          />
+          <div className="flex min-w-full flex-nowrap items-stretch space-x-5 overflow-x-auto pb-4">
+            <KanbanItems
+              projectId={projectId}
+              lists={kanbanItems}
+            />
+
+            <CreateListButton
+              projectId={projectId}
+              className="border-primary/20 text-primary hover:bg-primary/5 flex min-h-[500px] min-w-100 cursor-pointer flex-nowrap items-center justify-center gap-2 rounded-sm border-2 border-dashed bg-neutral-50 dark:border-neutral-500 dark:bg-neutral-800 dark:text-neutral-300"
+            />
+          </div>
         </div>
       )}
     </div>

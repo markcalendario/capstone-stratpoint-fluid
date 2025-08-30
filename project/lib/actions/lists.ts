@@ -7,9 +7,9 @@ import {
   deleteListPayloadSchema,
   getProjectListsPayloadSchema,
   listSchema,
+  moveListPayloadSchema,
   updateListPayloadSchema
 } from "@/lib/validations/lists";
-import { KanbanList } from "@/types/kanban";
 import {
   CreateListPayload,
   DeleteListPayload,
@@ -19,8 +19,7 @@ import {
   UpdateListPayload
 } from "@/types/lists";
 import { ZodError } from "zod";
-import { getDaysRemaining, isOverdue } from "../utils/date-and-time";
-import { stripHTML } from "../utils/formatters";
+import { broadcastKanbanUpdate, getKanbanItems } from "../utils/kanban";
 import { hasPermission } from "../utils/rolePermissions";
 
 export async function createList(payload: CreateListPayload) {
@@ -46,6 +45,8 @@ export async function createList(payload: CreateListPayload) {
     // Create list
     await listQueries.create(data);
 
+    await broadcastKanbanUpdate(parsed.projectId);
+
     return { success: true, message: "List created successfully." };
   } catch (error) {
     if (error instanceof ZodError) {
@@ -65,39 +66,12 @@ export async function getListsWithTasks(payload: GetProjectListsPayload) {
       return { success: false, message: "Unauthorized. Cannot view list." };
     }
 
-    const listsAndTasks = await listQueries.getListsWithTasks(parsed.projectId);
-
-    const formatted = listsAndTasks.map((list) => {
-      return {
-        id: list.id,
-        name: list.name,
-        isFinal: list.isFinal,
-        projectId: list.projectId,
-        tasksCount: list.tasks.length,
-        tasks: list.tasks.map((task) => {
-          return {
-            id: task.id,
-            title: task.title,
-            label: task.label,
-            listId: task.listId,
-            isDone: list.isFinal,
-            priority: task.priority,
-            projectId: list.projectId,
-            isOverdue: isOverdue(task.dueDate),
-            description: stripHTML(task.description),
-            remainingDays: getDaysRemaining(task.dueDate),
-            assigneesImages: task.taskAssignments.map(
-              (assignment) => assignment.user.imageUrl
-            )
-          };
-        })
-      };
-    }) satisfies KanbanList[];
+    const listsAndTasks = await getKanbanItems(parsed.projectId);
 
     return {
       success: true,
       message: "Success getting lists with tasks.",
-      listsAndTasks: formatted
+      listsAndTasks
     };
   } catch (error) {
     if (error instanceof ZodError) {
@@ -128,6 +102,8 @@ export async function updateList(payload: UpdateListPayload) {
     // Update data
     await listQueries.update(parsed.id, data);
 
+    await broadcastKanbanUpdate(list.projectId);
+
     return { success: true, message: "List updated successfully." };
   } catch (error) {
     if (error instanceof ZodError) {
@@ -147,6 +123,8 @@ export async function getListEditData(payload: GetListPayload) {
     if (!(await hasPermission(userId, list.projectId, "edit_list"))) {
       return { success: false, message: "Unauthorized. Cannot view list." };
     }
+
+    await broadcastKanbanUpdate(list.projectId);
 
     return { success: true, message: "List fetched successfully.", list };
   } catch (error) {
@@ -170,6 +148,8 @@ export async function deleteList(payload: DeleteListPayload) {
 
     await listQueries.delete(parsed.id);
 
+    await broadcastKanbanUpdate(list.projectId);
+
     return { success: true, message: "List deleted successfully." };
   } catch (error) {
     if (error instanceof ZodError) {
@@ -181,31 +161,44 @@ export async function deleteList(payload: DeleteListPayload) {
 }
 
 export async function moveList(payload: MoveListPayload) {
-  const userId = await getUserId();
-  const { listId, newPosition, projectId } = payload;
+  try {
+    const userId = await getUserId();
+    const parsed = moveListPayloadSchema.parse(payload);
+    const { listId, newPosition, projectId } = parsed;
 
-  if (!(await hasPermission(userId, projectId, "edit_list"))) {
-    return { success: false, message: "Unauthorized. Cannot delete list." };
-  }
+    if (!(await hasPermission(userId, projectId, "edit_list"))) {
+      return { success: false, message: "Unauthorized. Cannot delete list." };
+    }
 
-  // Get list IDs of the project
-  const lists = await listQueries.getListsWithTasks(projectId);
-  const listIds = lists.map((list) => list.id);
+    // Get list IDs of the project
+    const lists = await listQueries.getListsWithTasks(projectId);
+    const listIds = lists.map((list) => list.id);
 
-  // Filter out the list being moved
-  const filteredListIds = listIds.filter((id) => id !== listId);
+    // Filter out the list being moved
+    const filteredListIds = listIds.filter((id) => id !== listId);
 
-  // Calculate a safe new position
-  const safeNewPosition = Math.max(
-    0,
-    Math.min(newPosition, filteredListIds.length)
-  );
+    // Calculate a safe new position
+    const safeNewPosition = Math.max(
+      0,
+      Math.min(newPosition, filteredListIds.length)
+    );
 
-  // Insert the listId into the new position
-  filteredListIds.splice(safeNewPosition, 0, listId);
+    // Insert the listId into the new position
+    filteredListIds.splice(safeNewPosition, 0, listId);
 
-  // Update positions for all lists
-  for (let i = 0; i < filteredListIds.length; i++) {
-    await listQueries.changePosition(filteredListIds[i], i + 1);
+    // Update positions for all lists
+    for (let i = 0; i < filteredListIds.length; i++) {
+      await listQueries.changePosition(filteredListIds[i], i + 1);
+    }
+
+    await broadcastKanbanUpdate(projectId);
+
+    return { success: true, message: "Kanban list moved successfully." };
+  } catch (error) {
+    if (error instanceof ZodError) {
+      return { success: false, message: error.issues[0].message };
+    }
+
+    return { success: false, message: "Kanban list moved successfully." };
   }
 }
