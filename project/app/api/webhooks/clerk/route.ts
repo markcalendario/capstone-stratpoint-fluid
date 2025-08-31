@@ -2,7 +2,7 @@ import userQueries from "@/lib/queries/users";
 import {
   createUserSchema,
   updateUserSchema,
-  userClerkIdSchema
+  userSchema
 } from "@/lib/validations/users";
 import { verifyWebhook } from "@clerk/nextjs/webhooks";
 import { NextRequest } from "next/server";
@@ -43,7 +43,7 @@ export async function POST(req: NextRequest) {
 
     // Webhook: On user deleted
     else if (type === "user.deleted") {
-      const validatedClerkId = userClerkIdSchema.parse(data.id);
+      const validatedClerkId = userSchema.shape.clerkId.parse(data.id);
       await userQueries.softDeleteByClerkId(validatedClerkId);
       return new Response("[Synced] Account deleted.", { status: 200 });
     }

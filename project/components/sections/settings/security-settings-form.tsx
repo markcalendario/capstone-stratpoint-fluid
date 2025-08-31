@@ -1,20 +1,10 @@
 import Button from "@/components/ui/buttons/button";
 import Input from "@/components/ui/input-fields/input";
-import { cn } from "@/lib/utils/tailwind";
+import { Fragment } from "react";
 
-interface ProfileSettingsFormProps {
-  className?: string;
-}
-
-export default function SecuritySettingsForm({
-  className
-}: ProfileSettingsFormProps) {
+export default function SecuritySettingsForm() {
   return (
-    <div
-      className={cn(
-        className,
-        "outline-primary/20 space-y-3 rounded-sm p-7 outline-2"
-      )}>
+    <Fragment>
       <h3 className="text-lg font-bold text-neutral-800 dark:text-neutral-200">
         Security Settings
       </h3>
@@ -31,6 +21,6 @@ export default function SecuritySettingsForm({
         placeholder="Re-type your password"
       />
       <Button className="bg-primary text-neutral-100">Save</Button>
-    </div>
+    </Fragment>
   );
 }

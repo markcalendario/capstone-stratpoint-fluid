@@ -14,21 +14,13 @@ export default function SettingsPage() {
   const renderActiveForm = () => {
     switch (activeTab) {
       case "profile":
-        return (
-          <ProfileSettingsForm className="col-span-2 bg-white dark:bg-neutral-800" />
-        );
+        return <ProfileSettingsForm />;
       case "notifications":
-        return (
-          <NotificationsSettingsForm className="col-span-2 bg-white dark:bg-neutral-800" />
-        );
+        return <NotificationsSettingsForm />;
       case "security":
-        return (
-          <SecuritySettingsForm className="col-span-2 bg-white dark:bg-neutral-800" />
-        );
+        return <SecuritySettingsForm />;
       case "appearance":
-        return (
-          <AppearanceSettingsForm className="col-span-2 bg-white dark:bg-neutral-800" />
-        );
+        return <AppearanceSettingsForm />;
       default:
         return null;
     }
@@ -64,7 +56,9 @@ export default function SettingsPage() {
           </div>
 
           {/* Settings Content */}
-          {renderActiveForm()}
+          <div className="outline-primary/20 col-span-2 space-y-3 rounded-sm bg-white p-7 outline-2 dark:bg-neutral-800">
+            {renderActiveForm()}
+          </div>
         </div>
       </div>
     </DashboardContent>

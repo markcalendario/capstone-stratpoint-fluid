@@ -30,6 +30,16 @@ export const updateUserSchema = z.object({
   updatedAt: userSchema.shape.updatedAt
 });
 
-export const userIdSchema = z.uuidv4("User ID is an invalid UUID.");
+// Payload Validations
 
-export const userClerkIdSchema = z.string("Clerk ID must be a string.").trim();
+export const editProfilePayloadSchema = z.object({
+  email: userSchema.shape.email,
+  lastName: userSchema.shape.name,
+  firstName: userSchema.shape.name,
+  newProfileFile: z
+    .file("Profile picture file must be provided.")
+    .min(1, "Image file is required.")
+    .max(1024 * 1024, "Image file size must be less than 1 MB.")
+    .mime("image/jpeg", "Image file must be JPG.")
+    .nullable()
+});

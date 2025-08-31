@@ -1,46 +1,23 @@
 import Button from "@/components/ui/buttons/button";
 import Select from "@/components/ui/input-fields/select/select";
-import { cn } from "@/lib/utils/tailwind";
+import { Fragment } from "react";
 
-interface ProfileSettingsFormProps {
-  className?: string;
-}
-
-export default function NotificationsSettingsForm({
-  className
-}: ProfileSettingsFormProps) {
+export default function NotificationsSettingsForm() {
   return (
-    <div
-      className={cn(
-        className,
-        "outline-primary/20 space-y-3 rounded-sm p-7 outline-2"
-      )}>
+    <Fragment>
       <h3 className="text-lg font-bold text-neutral-800 dark:text-neutral-200">
         Notification Settings
       </h3>
 
       <Select
-        id="project-deadline"
-        label="Project Deadline">
-        <option>On</option>
-        <option>Off</option>
-      </Select>
-
-      <Select
-        id="calendar-event"
-        label="Calendar Events">
-        <option>On</option>
-        <option>Off</option>
-      </Select>
-
-      <Select
         id="kanban"
-        label="Kanban Changes">
+        label="Project Invitation"
+        required>
         <option>On</option>
         <option>Off</option>
       </Select>
 
       <Button className="bg-primary text-neutral-100">Save</Button>
-    </div>
+    </Fragment>
   );
 }

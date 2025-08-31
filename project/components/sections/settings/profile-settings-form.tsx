@@ -1,44 +1,122 @@
-import Button from "@/components/ui/buttons/button";
-import Input from "@/components/ui/input-fields/input";
-import Select from "@/components/ui/input-fields/select/select";
-import { cn } from "@/lib/utils/tailwind";
+"use client";
 
-interface ProfileSettingsFormProps {
-  className?: string;
+import Button from "@/components/ui/buttons/button";
+import ImageUpload from "@/components/ui/input-fields/image-upload";
+import Input from "@/components/ui/input-fields/input";
+import SectionLoader from "@/components/ui/section-loader";
+import { showErrorToast, showSuccessToast } from "@/components/ui/toast";
+import { useEditProfile, useProfileEditData } from "@/hooks/use-user";
+import { useUser } from "@clerk/nextjs";
+import { ChangeEvent, Fragment, useEffect, useState } from "react";
+
+interface FormData {
+  email: string;
+  firstName: string;
+  lastName: string;
+  imageUrl: string;
+  newProfileFile: File | null;
 }
 
-export default function ProfileSettingsForm({
-  className
-}: ProfileSettingsFormProps) {
+export default function ProfileSettingsForm() {
+  const { user } = useUser();
+
+  const { isEditingProfile, editProfile } = useEditProfile(user?.id ?? "");
+
+  const { isProfileEditDataLoading, profileEditData } = useProfileEditData(
+    user?.id ?? ""
+  );
+
+  const [formData, setFormData] = useState<FormData>({
+    email: "",
+    imageUrl: "",
+    lastName: "",
+    firstName: "",
+    newProfileFile: null
+  });
+
+  const handleSave = async () => {
+    const { success, message } = await editProfile(formData);
+
+    if (!success) return showErrorToast(message);
+    showSuccessToast(message);
+  };
+
+  const handleInputChange = (evt: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = evt.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleProfileChange = (evt: ChangeEvent<HTMLInputElement>) => {
+    const file = evt.target.files?.[0] || null;
+    setFormData((prev) => ({ ...prev, newProfileFile: file }));
+  };
+
+  useEffect(() => {
+    if (!profileEditData?.data) return;
+
+    const data = profileEditData.data;
+
+    setFormData({
+      email: data.email,
+      firstName: data.firstName,
+      lastName: data.lastName,
+      imageUrl: data.imageUrl,
+      newProfileFile: null
+    });
+  }, [profileEditData?.data]);
+
+  if (isProfileEditDataLoading) return <SectionLoader text="Loading Profile" />;
+
   return (
-    <div
-      className={cn(
-        className,
-        "outline-primary/20 space-y-3 rounded-sm p-7 outline-2"
-      )}>
+    <Fragment>
       <h3 className="text-lg font-bold text-neutral-800 dark:text-neutral-200">
         Profile Settings
       </h3>
+
       <Input
-        id="full-name"
-        label="Full Name"
-        placeholder="Enter your full name"
+        id="first-name"
+        label="First Name"
+        name="firstName"
+        value={formData.firstName}
+        onChange={handleInputChange}
+        placeholder="Enter your first name"
+        required
       />
+
+      <Input
+        id="last-name"
+        label="Last Name"
+        name="lastName"
+        value={formData.lastName}
+        onChange={handleInputChange}
+        placeholder="Enter your last name"
+        required
+      />
+
       <Input
         id="email-address"
         label="Email Address"
-        placeholder="Enter your full name"
+        name="email"
+        value={formData.email}
+        onChange={handleInputChange}
+        placeholder="Enter your email"
+        required
       />
-      <Select
-        id="role"
-        label="Select Role">
-        <option>Project Manager</option>
-        <option>Developer</option>
-        <option>Designer</option>
-        <option>QA Engineer</option>
-      </Select>
 
-      <Button className="bg-primary text-neutral-100">Save</Button>
-    </div>
+      <ImageUpload
+        id="imageUrl"
+        label="Profile Picture"
+        required
+        onChange={handleProfileChange}
+        placeholderImageUrl={formData.imageUrl}
+      />
+
+      <Button
+        onClick={handleSave}
+        isProcessing={isEditingProfile}
+        className="bg-primary text-neutral-100">
+        Save
+      </Button>
+    </Fragment>
   );
 }

@@ -1,14 +1,8 @@
 import Select from "@/components/ui/input-fields/select/select";
 import { Theme, useTheme } from "@/components/ui/theme-provider";
-import { cn } from "@/lib/utils/tailwind";
+import { Fragment } from "react";
 
-interface AppearanceSettingsFormProps {
-  className?: string;
-}
-
-export default function AppearanceSettingsForm({
-  className
-}: AppearanceSettingsFormProps) {
+export default function AppearanceSettingsForm() {
   const { theme, setTheme } = useTheme();
 
   const handleSelectTheme = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -16,11 +10,7 @@ export default function AppearanceSettingsForm({
   };
 
   return (
-    <div
-      className={cn(
-        className,
-        "outline-primary/20 space-y-3 rounded-sm p-7 outline-2"
-      )}>
+    <Fragment>
       <h3 className="text-lg font-bold text-neutral-800 dark:text-neutral-200">
         Select Theme
       </h3>
@@ -33,6 +23,6 @@ export default function AppearanceSettingsForm({
         <option value="light">Light</option>
         <option value="dark">Dark</option>
       </Select>
-    </div>
+    </Fragment>
   );
 }
