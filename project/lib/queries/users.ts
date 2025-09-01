@@ -28,14 +28,11 @@ const userQueries = {
     return newUser.id;
   },
 
-  updateByClerkId: async (
-    clerkId: UserSchema["clerkId"],
-    data: UpdateUserData
-  ) => {
+  updateByClerkId: async (data: UpdateUserData) => {
     const [updatedUser] = await db
       .update(users)
       .set(data)
-      .where(eq(users.clerkId, clerkId))
+      .where(eq(users.clerkId, data.clerkId))
       .returning({ clerkId: users.clerkId });
 
     return updatedUser.clerkId;

@@ -14,23 +14,26 @@ export const userSchema = z.object({
   imageUrl: z.url("Image URL must be a valid URL.")
 });
 
-// Query Validations
+// Payload Validations
 
-export const createUserSchema = z.object({
+export const createUserPayloadSchema = z.object({
   name: userSchema.shape.name,
   email: userSchema.shape.email,
   clerkId: userSchema.shape.clerkId,
   imageUrl: userSchema.shape.imageUrl
 });
 
-export const updateUserSchema = z.object({
+export const updateUserPayloadSchema = z.object({
   name: userSchema.shape.name,
   email: userSchema.shape.email,
+  clerkId: userSchema.shape.clerkId,
   imageUrl: userSchema.shape.imageUrl,
   updatedAt: userSchema.shape.updatedAt
 });
 
-// Payload Validations
+export const deleteUserPayloadSchema = z.object({
+  clerkId: userSchema.shape.clerkId
+});
 
 export const editProfilePayloadSchema = z.object({
   email: userSchema.shape.email,

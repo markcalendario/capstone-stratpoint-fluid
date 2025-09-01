@@ -8,7 +8,7 @@ export interface UserSchema extends InferSelectModel<typeof users> {
 
 export interface User extends InferSelectModel<typeof users> {}
 
-// Payload Validation
+// Payload
 
 interface EditProfilePayload {
   email: UserSchema["email"];
@@ -17,7 +17,15 @@ interface EditProfilePayload {
   newProfileFile: File | null;
 }
 
-// Query Validation
+interface CreateUserPayload
+  extends Pick<UserSchema, "name" | "clerkId" | "email" | "imageUrl"> {}
+
+interface UpdateUserPayload
+  extends Pick<UserSchema, "email" | "name" | "updatedAt" | "imageUrl"> {}
+
+interface DeleteUserPayload extends Pick<UserSchema, "clerkId"> {}
+
+// Query
 
 export type CreateUserData = Pick<
   UserSchema,
@@ -26,5 +34,5 @@ export type CreateUserData = Pick<
 
 export type UpdateUserData = Pick<
   UserSchema,
-  "name" | "email" | "imageUrl" | "updatedAt"
+  "name" | "email" | "imageUrl" | "updatedAt" | "clerkId"
 >;

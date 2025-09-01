@@ -1,9 +1,20 @@
 "use server";
 
-import { EditProfilePayload } from "@/types/users";
+import {
+  CreateUserPayload,
+  DeleteUserPayload,
+  EditProfilePayload,
+  UpdateUserPayload
+} from "@/types/users";
 import { clerkClient, currentUser } from "@clerk/nextjs/server";
 import { ZodError } from "zod";
-import { editProfilePayloadSchema } from "../validations/users";
+import userQueries from "../queries/users";
+import {
+  createUserPayloadSchema,
+  deleteUserPayloadSchema,
+  editProfilePayloadSchema,
+  updateUserPayloadSchema
+} from "../validations/users";
 
 export async function getProfileEditData() {
   try {
@@ -115,5 +126,47 @@ export async function editProfile(payload: EditProfilePayload) {
 
     // Fallback error message for all other exceptions
     return { success: false, message: "Error. cannot edit profile." };
+  }
+}
+
+export async function createUser(payload: CreateUserPayload) {
+  try {
+    const parsed = createUserPayloadSchema.parse(payload);
+    await userQueries.create(parsed);
+    return { success: true, message: "User created successfully." };
+  } catch (error) {
+    if (error instanceof ZodError) {
+      return { success: false, message: error.issues[0].message };
+    }
+
+    return { success: false, message: "Error. Cannot create user." };
+  }
+}
+
+export async function updateUser(payload: UpdateUserPayload) {
+  try {
+    const parsed = updateUserPayloadSchema.parse(payload);
+    await userQueries.updateByClerkId(parsed);
+    return { success: true, message: "User updated successfully." };
+  } catch (error) {
+    if (error instanceof ZodError) {
+      return { success: false, message: error.issues[0].message };
+    }
+
+    return { success: false, message: "Error. Cannot update user." };
+  }
+}
+
+export async function deleteUser(payload: DeleteUserPayload) {
+  try {
+    const parsed = deleteUserPayloadSchema.parse(payload);
+    await userQueries.softDeleteByClerkId(parsed.clerkId);
+    return { success: true, message: "User deleted successfully." };
+  } catch (error) {
+    if (error instanceof ZodError) {
+      return { success: false, message: error.issues[0].message };
+    }
+
+    return { success: false, message: "Error. Cannot delete user." };
   }
 }
