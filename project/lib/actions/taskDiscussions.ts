@@ -9,7 +9,10 @@ import {
 import { ZodError } from "zod";
 import taskDiscussionsQueries from "../queries/taskDiscussions";
 import taskQueries from "../queries/tasks";
-import { formatDateTime } from "../utils/date-and-time";
+import {
+  broadcastDiscussionUpdate,
+  getDiscussionsByTask
+} from "../utils/discussions";
 import { hasPermission } from "../utils/rolePermissions";
 import { getUserId } from "../utils/users";
 import {
@@ -34,22 +37,12 @@ export async function getTaskDiscussions(payload: GetTaskDiscussionsPayload) {
       };
     }
 
-    const discussions = await taskDiscussionsQueries.getByTask(parsed.taskId);
-
-    const formatted = discussions.map((discussion) => ({
-      id: discussion.id,
-      content: discussion.content,
-      authorName: discussion.user.name,
-      authorImageUrl: discussion.user.imageUrl,
-      isFromUser: userId === discussion.authorId,
-      lastModified: formatDateTime(discussion.updatedAt),
-      isEdited: discussion.createdAt !== discussion.updatedAt
-    }));
+    const discussions = await getDiscussionsByTask(parsed.taskId, userId);
 
     return {
       success: true,
       message: "Task discussions retrieved successfully.",
-      discussions: formatted
+      discussions
     };
   } catch (error) {
     if (error instanceof ZodError) {
@@ -82,6 +75,8 @@ export async function createTaskDiscussion(
       taskId: parsed.taskId,
       content: parsed.content
     });
+
+    await broadcastDiscussionUpdate(parsed.taskId, userId);
 
     return { success: true, message: "Task discussion posted successfully" };
   } catch (error) {
@@ -126,6 +121,8 @@ export async function updateTaskDiscussion(
       updatedAt: new Date().toISOString()
     });
 
+    await broadcastDiscussionUpdate(comment.taskId, userId);
+
     return { success: true, message: "Task discussion updated successfully" };
   } catch (error) {
     if (error instanceof ZodError) {
@@ -165,6 +162,8 @@ export async function deleteTaskDiscussion(
     }
 
     await taskDiscussionsQueries.delete(parsed.id);
+
+    await broadcastDiscussionUpdate(comment.taskId, userId);
 
     return { success: true, message: "Task discussion deleted successfully." };
   } catch (error) {

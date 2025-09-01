@@ -1,6 +1,7 @@
 import { taskDiscussions } from "@/lib/db/drizzle/migrations/schema";
 import { InferSelectModel } from "drizzle-orm";
 import { Task } from "./tasks";
+import { UserSchema } from "./users";
 
 export interface TaskDiscussionSchema
   extends InferSelectModel<typeof taskDiscussions> {
@@ -31,3 +32,19 @@ export interface UpdateTaskDiscussionPayload
 
 export interface DeleteTaskDiscussionPayload
   extends Pick<TaskDiscussionSchema, "id"> {}
+
+// Formats
+
+export interface DiscussionContent {
+  id: TaskDiscussionSchema["id"];
+  content: TaskDiscussionSchema["content"];
+  authorName: UserSchema["name"];
+  authorImageUrl: UserSchema["imageUrl"];
+  isFromUser: boolean;
+  lastModified: string;
+  isEdited: boolean;
+}
+
+// Events
+
+export interface DiscussionEventData extends DiscussionContent {}

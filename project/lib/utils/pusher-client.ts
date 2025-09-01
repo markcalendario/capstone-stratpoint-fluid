@@ -2,7 +2,7 @@ import Pusher from "pusher-js";
 
 export const EVENTS = {
   KANBAN: "kanban",
-  ACTIVITY_LOG: "activity-log",
+  DISCUSSION: "discussion",
   INVITATION: "invitation"
 };
 
