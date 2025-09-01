@@ -27,6 +27,8 @@ export default function ProjectCard({
   memberImages,
   daysRemaining
 }: ProjectCardProps) {
+  const isDone = !openTasks && isOverdue;
+
   return (
     <div
       className={cn(
@@ -80,13 +82,19 @@ export default function ProjectCard({
 
       <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
         {/* Indicators */}
-        <div className="flex items-center gap-1">
-          <Badge type={isOverdue ? "error" : "warning"}>{daysRemaining}</Badge>
-          <Badge type={isActive ? "info" : "gray"}>
-            {isActive ? "Active" : "Inactive"}
-          </Badge>
-          <Badge type="gray">{openTasks} open tasks</Badge>
-        </div>
+        {isDone && <Badge type="success">Completed</Badge>}
+
+        {!isDone && (
+          <div className="flex items-center gap-1">
+            <Badge type={isOverdue ? "error" : "warning"}>
+              {daysRemaining}
+            </Badge>
+            <Badge type={isActive ? "info" : "gray"}>
+              {isActive ? "Active" : "Inactive"}
+            </Badge>
+            <Badge type="gray">{openTasks} open tasks</Badge>
+          </div>
+        )}
 
         {/* Members Images */}
         <UserImagesStack
