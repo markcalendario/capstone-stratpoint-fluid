@@ -1,3 +1,4 @@
+import { useNotificationPreference } from "@/hooks/use-notification-preference";
 import {
   useAcceptInvite,
   useDenyInvite,
@@ -21,6 +22,7 @@ import { showActionToast, showErrorToast, showSuccessToast } from "./toast";
 export default function InviteNotificationsButton() {
   const { user } = useClerk();
   const [isOpen, setIsOpen] = useState(false);
+  const { preference, setPreference } = useNotificationPreference();
 
   const toggleMenu = () => setIsOpen((prev) => !prev);
 
@@ -31,14 +33,17 @@ export default function InviteNotificationsButton() {
 
   useEffect(() => {
     if (!user) return;
+    if (!preference.invitation) return;
+
     const channel = pusherClient.subscribe(user.id);
     channel.bind(EVENTS.INVITATION, handleReceiveInvitationEvent);
 
     return () => {
       channel.unbind(EVENTS.INVITATION, handleReceiveInvitationEvent);
       pusherClient.unsubscribe(user.id);
+      pusherClient.disconnect();
     };
-  }, [user]);
+  }, [user, preference.invitation]);
 
   return (
     <div className="relative">
