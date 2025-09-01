@@ -47,7 +47,8 @@ const userQueries = {
       .set({
         email: deletedEmail,
         name: "[Deleted User]",
-        updatedAt: now
+        updatedAt: now,
+        isDeleted: true
       })
       .where(eq(users.clerkId, clerkId))
       .returning({ id: users.id, clerkId: users.clerkId });

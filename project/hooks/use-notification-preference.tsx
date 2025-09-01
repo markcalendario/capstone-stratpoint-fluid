@@ -7,7 +7,7 @@ type NotificationPreference = {
 };
 
 const defaultPreference: NotificationPreference = {
-  invitation: false
+  invitation: true
 };
 
 export function useNotificationPreference() {
