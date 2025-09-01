@@ -10,6 +10,7 @@ interface NavbarProps {
 
 export default function Navbar({ toggleSidebar }: NavbarProps) {
   const isMobile = useIsOnMobile();
+
   return (
     <nav className="dashboard-nav bg-primary border-primary/20 fixed top-0 left-0 z-[2] w-full border-b-2 px-[30px] py-[15px] dark:bg-neutral-800">
       <div className="flex justify-between">

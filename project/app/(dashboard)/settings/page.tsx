@@ -14,21 +14,13 @@ export default function SettingsPage() {
   const renderActiveForm = () => {
     switch (activeTab) {
       case "profile":
-        return (
-          <ProfileSettingsForm className="col-span-2 bg-white dark:bg-neutral-800" />
-        );
+        return <ProfileSettingsForm />;
       case "notifications":
-        return (
-          <NotificationsSettingsForm className="col-span-2 bg-white dark:bg-neutral-800" />
-        );
+        return <NotificationsSettingsForm />;
       case "security":
-        return (
-          <SecuritySettingsForm className="col-span-2 bg-white dark:bg-neutral-800" />
-        );
+        return <SecuritySettingsForm />;
       case "appearance":
-        return (
-          <AppearanceSettingsForm className="col-span-2 bg-white dark:bg-neutral-800" />
-        );
+        return <AppearanceSettingsForm />;
       default:
         return null;
     }
@@ -39,19 +31,6 @@ export default function SettingsPage() {
       title="Settings"
       description="Manage your account and application preferences">
       <div className="space-y-6">
-        {/* Implementation Tasks Banner */}
-        <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-4 dark:border-yellow-800 dark:bg-yellow-900/20">
-          <h3 className="mb-2 text-sm font-medium text-yellow-800 dark:text-yellow-200">
-            ⚙️ Settings Implementation Tasks
-          </h3>
-          <ul className="space-y-1 text-sm text-yellow-700 dark:text-yellow-300">
-            <li>• Task 2.4: Implement user session management</li>
-            <li>
-              • Task 6.4: Implement project member management and permissions
-            </li>
-          </ul>
-        </div>
-
         {/* Settings Sections */}
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
           {/* Settings Navigation */}
@@ -64,7 +43,9 @@ export default function SettingsPage() {
           </div>
 
           {/* Settings Content */}
-          {renderActiveForm()}
+          <div className="outline-primary/20 space-y-3 rounded-sm bg-white p-7 outline-2 lg:col-span-2 dark:bg-neutral-800">
+            {renderActiveForm()}
+          </div>
         </div>
       </div>
     </DashboardContent>

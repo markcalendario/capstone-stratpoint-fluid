@@ -1,46 +1,48 @@
 import Button from "@/components/ui/buttons/button";
 import Select from "@/components/ui/input-fields/select/select";
-import { cn } from "@/lib/utils/tailwind";
+import { showSuccessToast } from "@/components/ui/toast";
+import { useNotificationPreference } from "@/hooks/use-notification-preference";
+import { Fragment, useEffect, useState } from "react";
 
-interface ProfileSettingsFormProps {
-  className?: string;
-}
+export default function NotificationsSettingsForm() {
+  const { preference, setPreference } = useNotificationPreference();
+  const [localInvitation, setLocalInvitation] = useState<"On" | "Off">("Off");
 
-export default function NotificationsSettingsForm({
-  className
-}: ProfileSettingsFormProps) {
+  // Sync localInvitation with hook state when it loads
+  useEffect(() => {
+    setLocalInvitation(preference.invitation ? "On" : "Off");
+  }, [preference.invitation]);
+
+  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setLocalInvitation(e.target.value as "On" | "Off");
+  };
+
+  const handleSave = () => {
+    setPreference({ invitation: localInvitation === "On" });
+    showSuccessToast("Notification preference save successfully.");
+  };
+
   return (
-    <div
-      className={cn(
-        className,
-        "outline-primary/20 space-y-3 rounded-sm p-7 outline-2"
-      )}>
+    <Fragment>
       <h3 className="text-lg font-bold text-neutral-800 dark:text-neutral-200">
         Notification Settings
       </h3>
 
       <Select
-        id="project-deadline"
-        label="Project Deadline">
-        <option>On</option>
-        <option>Off</option>
-      </Select>
-
-      <Select
-        id="calendar-event"
-        label="Calendar Events">
-        <option>On</option>
-        <option>Off</option>
-      </Select>
-
-      <Select
         id="kanban"
-        label="Kanban Changes">
-        <option>On</option>
-        <option>Off</option>
+        label="Project Invitation"
+        required
+        value={localInvitation}
+        onChange={handleSelectChange}>
+        <option value="On">On</option>
+        <option value="Off">Off</option>
       </Select>
 
-      <Button className="bg-primary text-neutral-100">Save</Button>
-    </div>
+      <Button
+        className="bg-primary text-neutral-100"
+        onClick={handleSave}>
+        Save
+      </Button>
+    </Fragment>
   );
 }

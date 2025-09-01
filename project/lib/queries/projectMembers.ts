@@ -133,7 +133,7 @@ const projectMembersQueries = {
       .values(insertData)
       .onConflictDoUpdate({
         target: [projectMembers.projectId, projectMembers.userId],
-        set: { isAccepted: null }
+        set: { isAccepted: null, invitedAt: new Date().toISOString() }
       });
   },
 

@@ -14,22 +14,43 @@ export const userSchema = z.object({
   imageUrl: z.url("Image URL must be a valid URL.")
 });
 
-// Query Validations
+// Payload Validations
 
-export const createUserSchema = z.object({
+export const createUserPayloadSchema = z.object({
   name: userSchema.shape.name,
   email: userSchema.shape.email,
   clerkId: userSchema.shape.clerkId,
   imageUrl: userSchema.shape.imageUrl
 });
 
-export const updateUserSchema = z.object({
+export const updateUserPayloadSchema = z.object({
   name: userSchema.shape.name,
   email: userSchema.shape.email,
+  clerkId: userSchema.shape.clerkId,
   imageUrl: userSchema.shape.imageUrl,
   updatedAt: userSchema.shape.updatedAt
 });
 
-export const userIdSchema = z.uuidv4("User ID is an invalid UUID.");
+export const deleteUserPayloadSchema = z.object({
+  clerkId: userSchema.shape.clerkId
+});
 
-export const userClerkIdSchema = z.string("Clerk ID must be a string.").trim();
+export const editProfilePayloadSchema = z.object({
+  email: userSchema.shape.email,
+  lastName: userSchema.shape.name,
+  firstName: userSchema.shape.name,
+  newProfileFile: z
+    .file("Profile picture file must be provided.")
+    .min(1, "Image file is required.")
+    .max(1024 * 1024, "Image file size must be less than 1 MB.")
+    .mime("image/jpeg", "Image file must be JPG.")
+    .nullable()
+});
+
+export const changePasswordPayloadSchema = z.object({
+  currentPassword: z.string("Current password must be string.").trim(),
+  newPassword: z
+    .string("New password must be string.")
+    .trim()
+    .min(8, "Password must be at least 8 characters long.")
+});
