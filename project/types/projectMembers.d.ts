@@ -83,3 +83,7 @@ export interface AcceptInvitePayload {
 export interface InvitationEventData {
   message: string;
 }
+
+export interface LeaveProjectModal {
+  projectId: ProjectSchema["id"];
+}

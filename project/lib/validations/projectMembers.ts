@@ -63,3 +63,7 @@ export const acceptInvitePayloadSchema = z.object({
 export const denyInvitePayloadSchema = z.object({
   id: projectMemberSchema.shape.id
 });
+
+export const leaveProjectPayloadSchema = z.object({
+  projectId: projectSchema.shape.id
+});

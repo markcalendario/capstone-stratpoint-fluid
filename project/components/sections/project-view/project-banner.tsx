@@ -14,6 +14,7 @@ export default function ProjectBanner({
   id,
   name,
   dueDate,
+  isOwner,
   imageUrl,
   ownerImage,
   projectType,
@@ -42,7 +43,10 @@ export default function ProjectBanner({
             </p>
           </div>
         </div>
-        <ProjectActionButtons projectId={id} />
+        <ProjectActionButtons
+          projectId={id}
+          isOwner={isOwner}
+        />
       </div>
 
       <div className="flex flex-wrap gap-2 text-sm md:gap-4">
