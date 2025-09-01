@@ -321,6 +321,8 @@ export async function removeProjectMember(payload: DeleteMemberPayload) {
 
     await projectMembersQueries.removeTeamMember(parsed);
 
+    await unassignUserToProjectTasks(userId, parsed.projectId);
+
     return {
       success: true,
       message: "User removed successfully."

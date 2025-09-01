@@ -20,7 +20,7 @@ export default function RemoveMemberModal({
 }: RemoveMemberModalProps) {
   const CONFIRM_TEXT = "REMOVE MEMBER";
   const [confirmText, setConfirmText] = useState("");
-  const { isRemovingTeamMember, removeProjectMember: removeTeamMember } =
+  const { isRemovingTeamMember, removeProjectMember } =
     useRemoveProjectMember(projectId);
 
   const handleRemoveTeamMember = async () => {
@@ -28,7 +28,10 @@ export default function RemoveMemberModal({
       return showErrorToast("Incorrect delete confirmation text.");
     }
 
-    const { success, message } = await removeTeamMember({ userId, projectId });
+    const { success, message } = await removeProjectMember({
+      userId,
+      projectId
+    });
     if (!success) return showErrorToast(message);
     showSuccessToast(message);
   };
