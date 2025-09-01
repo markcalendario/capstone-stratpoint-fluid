@@ -6,7 +6,7 @@ import Input from "@/components/ui/input-fields/input";
 import SectionLoader from "@/components/ui/section-loader";
 import { showErrorToast, showSuccessToast } from "@/components/ui/toast";
 import { useEditProfile, useProfileEditData } from "@/hooks/use-user";
-import { useUser } from "@clerk/nextjs";
+import { useClerk, useUser } from "@clerk/nextjs";
 import { ChangeEvent, Fragment, useEffect, useState } from "react";
 
 interface FormData {
@@ -19,6 +19,7 @@ interface FormData {
 
 export default function ProfileSettingsForm() {
   const { user } = useUser();
+  const clerk = useClerk();
 
   const { isEditingProfile, editProfile } = useEditProfile(user?.id ?? "");
 
@@ -39,6 +40,8 @@ export default function ProfileSettingsForm() {
 
     if (!success) return showErrorToast(message);
     showSuccessToast(message);
+
+    clerk.user?.reload();
   };
 
   const handleInputChange = (evt: ChangeEvent<HTMLInputElement>) => {

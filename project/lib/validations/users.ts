@@ -46,3 +46,11 @@ export const editProfilePayloadSchema = z.object({
     .mime("image/jpeg", "Image file must be JPG.")
     .nullable()
 });
+
+export const changePasswordPayloadSchema = z.object({
+  currentPassword: z.string("Current password must be string.").trim(),
+  newPassword: z
+    .string("New password must be string.")
+    .trim()
+    .min(8, "Password must be at least 8 characters long.")
+});

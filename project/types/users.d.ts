@@ -25,6 +25,11 @@ interface UpdateUserPayload
 
 interface DeleteUserPayload extends Pick<UserSchema, "clerkId"> {}
 
+interface ChangePasswordPayload {
+  currentPassword: string;
+  newPassword: string;
+}
+
 // Query
 
 export type CreateUserData = Pick<

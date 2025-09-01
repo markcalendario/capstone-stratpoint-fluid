@@ -1,6 +1,7 @@
 "use server";
 
 import {
+  ChangePasswordPayload,
   CreateUserPayload,
   DeleteUserPayload,
   EditProfilePayload,
@@ -10,6 +11,7 @@ import { clerkClient, currentUser } from "@clerk/nextjs/server";
 import { ZodError } from "zod";
 import userQueries from "../queries/users";
 import {
+  changePasswordPayloadSchema,
   createUserPayloadSchema,
   deleteUserPayloadSchema,
   editProfilePayloadSchema,
@@ -168,5 +170,49 @@ export async function deleteUser(payload: DeleteUserPayload) {
     }
 
     return { success: false, message: "Error. Cannot delete user." };
+  }
+}
+
+export async function changePassword(payload: ChangePasswordPayload) {
+  try {
+    const user = await currentUser();
+
+    if (!user) {
+      return {
+        success: false,
+        message: "Unauthorized. You are not logged in."
+      };
+    }
+
+    const parsed = changePasswordPayloadSchema.parse(payload);
+
+    const client = await clerkClient();
+
+    if (user.passwordEnabled) {
+      try {
+        await client.users.verifyPassword({
+          userId: user.id,
+          password: parsed.currentPassword
+        });
+      } catch {
+        return { success: false, message: "Current password is incorrect." };
+      }
+    }
+
+    try {
+      await client.users.updateUser(user.id, { password: parsed.newPassword });
+    } catch (error) {
+      return { success: false, message: "Select another password." };
+    }
+
+    return { success: true, message: "Password changed successfully." };
+  } catch (error) {
+    console.log(error);
+
+    if (error instanceof ZodError) {
+      return { success: false, message: error.issues[0].message };
+    }
+
+    return { success: false, message: "Error. Cannot change password." };
   }
 }

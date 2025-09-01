@@ -1,5 +1,9 @@
 import { queryClient } from "@/components/ui/query-client-provider";
-import { editProfile, getProfileEditData } from "@/lib/actions/users";
+import {
+  changePassword,
+  editProfile,
+  getProfileEditData
+} from "@/lib/actions/users";
 import { UserSchema } from "@/types/users";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
@@ -21,4 +25,12 @@ export function useEditProfile(userId: UserSchema["id"]) {
   });
 
   return { isEditingProfile: isPending, editProfile: mutateAsync };
+}
+
+export function useChangePassword() {
+  const { isPending, mutateAsync } = useMutation({
+    mutationFn: changePassword
+  });
+
+  return { isChangingPassword: isPending, changePassword: mutateAsync };
 }
