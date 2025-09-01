@@ -41,7 +41,6 @@ export default function InviteNotificationsButton() {
     return () => {
       channel.unbind(EVENTS.INVITATION, handleReceiveInvitationEvent);
       pusherClient.unsubscribe(user.id);
-      pusherClient.disconnect();
     };
   }, [user, preference.invitation]);
 

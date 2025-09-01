@@ -58,7 +58,6 @@ export default function KanbanBoard({ projectId }: KanbanBoardProps) {
     return () => {
       channel.unbind(EVENTS.KANBAN, handleKanbanEvent);
       pusherClient.unsubscribe(projectId);
-      pusherClient.disconnect();
     };
   }, [projectId]);
 
