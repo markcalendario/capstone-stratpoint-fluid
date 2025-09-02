@@ -10,7 +10,7 @@ import { useTheme } from "./theme-provider";
 const NAV_LINKS = [
   { href: "/", label: "Home" },
   { href: "/sign-in", label: "Sign In" },
-  { href: "/sign-out", label: "Get Started" }
+  { href: "/sign-up", label: "Get Started" }
 ];
 
 export function Header() {
