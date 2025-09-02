@@ -32,8 +32,10 @@ export default function RemoveMemberModal({
       userId,
       projectId
     });
+
     if (!success) return showErrorToast(message);
     showSuccessToast(message);
+    toggle();
   };
 
   return (
