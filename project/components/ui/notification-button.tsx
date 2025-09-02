@@ -53,7 +53,7 @@ export default function InviteNotificationsButton() {
       </button>
 
       {isOpen && (
-        <div className="ring-primary/20 absolute right-[-15px] mt-2 w-fit min-w-[300px] space-y-2 rounded-sm bg-white p-3 shadow-sm ring-1 dark:bg-neutral-800">
+        <div className="ring-primary/20 absolute right-[-15px] mt-2 w-fit min-w-[300px] space-y-2 rounded-xs bg-white p-3 shadow-sm ring-1 dark:bg-neutral-800">
           <InviteNotificationList />
         </div>
       )}

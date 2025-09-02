@@ -25,7 +25,7 @@ export default function AnalyticsCard({
   };
 
   return (
-    <div className={cn("border-primary/20 rounded-sm border-1 p-5", className)}>
+    <div className={cn("border-primary/20 rounded-xs border-1 p-5", className)}>
       <div
         className={cn(
           colorMap[color],

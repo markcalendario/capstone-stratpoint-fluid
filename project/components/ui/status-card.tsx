@@ -19,7 +19,7 @@ export default function StatusCard({
   return (
     <div
       className={cn(
-        "ring-primary/20 overflow-hidden rounded-sm bg-white p-6 ring-1 dark:bg-neutral-800",
+        "ring-primary/20 overflow-hidden rounded-xs bg-white p-6 ring-1 dark:bg-neutral-800",
         className
       )}>
       <div className="flex items-center">

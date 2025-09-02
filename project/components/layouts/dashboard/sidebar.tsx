@@ -33,7 +33,7 @@ export default function Sidebar({ isOpen }: SidebarProps) {
   const theme = useTheme();
 
   const baseClasses =
-    "flex font-medium items-center rounded-sm gap-3 px-5 py-3 min-md:max-lg:p-0 min-md:max-lg:justify-center min-md:max-lg:aspect-square cursor-pointer";
+    "flex font-medium items-center rounded-xs gap-3 px-5 py-3 min-md:max-lg:p-0 min-md:max-lg:justify-center min-md:max-lg:aspect-square cursor-pointer";
   const inactiveClasses =
     "text-neutral-900 hover:bg-primary/5 dark:text-neutral-100";
   const activeClasses = "text-neutral-100 bg-primary";
@@ -41,7 +41,7 @@ export default function Sidebar({ isOpen }: SidebarProps) {
   if (!isOpen) return null;
 
   return (
-    <aside className="dashboard-sidebar border-primary/20 fixed top-[65px] z-[1] h-full w-full border-r-2 bg-white md:w-[88px] lg:w-[270px] dark:bg-neutral-800">
+    <aside className="dashboard-sidebar border-primary/20 fixed top-[65px] z-[1] h-full w-full border-r-1 bg-white md:w-[88px] lg:w-[270px] dark:bg-neutral-800">
       <div className="flex h-full flex-col gap-1 overflow-y-auto p-[15px]">
         {LINKS.map(({ label, path, icon: Icon }, i) => {
           const isActive = pathname === path;

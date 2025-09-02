@@ -108,7 +108,7 @@ function MenuItems({ isMobile, isMenuOpen, toggleMenu }: MenuItemsProps) {
           key={i}
           href={link.href}
           onClick={toggleMenu}
-          className="block rounded-sm font-[500] text-neutral-200 duration-300 ease-in-out md:px-[15px] md:py-[5px] md:text-neutral-200 md:hover:bg-neutral-100/20">
+          className="block rounded-xs font-[500] text-neutral-200 duration-300 ease-in-out md:px-[15px] md:py-[5px] md:text-neutral-200 md:hover:bg-neutral-100/20">
           {link.label}
         </Link>
       ))}
@@ -127,7 +127,7 @@ function MenuButton({ isMobile, toggleMenu }: MenuButtonProps) {
   return (
     <button
       onClick={toggleMenu}
-      className="cursor-pointer rounded-sm bg-neutral-100 p-[5px]">
+      className="cursor-pointer rounded-xs bg-neutral-100 p-[5px]">
       <MenuIcon />
     </button>
   );

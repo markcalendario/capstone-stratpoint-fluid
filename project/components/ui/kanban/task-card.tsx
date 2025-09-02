@@ -90,7 +90,7 @@ export function TaskCard({
       href={`/tasks/${id}`}
       className={cn(
         isDragging && "opacity-70",
-        "ring-primary/20 relative block rounded-sm bg-white p-4 ring-1 duration-500 ring-inset dark:bg-neutral-800"
+        "ring-primary/20 relative block rounded-xs bg-white p-4 ring-1 duration-500 ring-inset dark:bg-neutral-800"
       )}>
       {canDrag && (
         <button

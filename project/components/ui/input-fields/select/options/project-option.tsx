@@ -24,7 +24,7 @@ export default function ProjectOption({
   return (
     <div
       onClick={handleClick}
-      className="group flex cursor-pointer items-center justify-between rounded-sm bg-neutral-900/5 p-4 duration-100 hover:bg-neutral-900/10 dark:bg-neutral-100/5 dark:hover:bg-neutral-100/5">
+      className="group flex cursor-pointer items-center justify-between rounded-xs bg-neutral-900/5 p-4 duration-100 hover:bg-neutral-900/10 dark:bg-neutral-100/5 dark:hover:bg-neutral-100/5">
       <div className="flex flex-wrap items-center gap-3">
         {/* Image */}
         <div className="relative aspect-square h-8 w-8">
@@ -32,7 +32,7 @@ export default function ProjectOption({
             fill
             alt={name}
             src={imageUrl}
-            className="rounded-sm object-cover"
+            className="rounded-xs object-cover"
             sizes="(max-width: 768px) 100vw, 33vw"
           />
         </div>

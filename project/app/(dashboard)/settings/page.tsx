@@ -43,7 +43,7 @@ export default function SettingsPage() {
           </div>
 
           {/* Settings Content */}
-          <div className="outline-primary/20 space-y-3 rounded-sm bg-white p-7 outline-1 lg:col-span-2 dark:bg-neutral-800">
+          <div className="outline-primary/20 space-y-3 rounded-xs bg-white p-7 outline-1 lg:col-span-2 dark:bg-neutral-800">
             {renderActiveForm()}
           </div>
         </div>

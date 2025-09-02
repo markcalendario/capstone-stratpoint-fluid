@@ -22,7 +22,7 @@ export default function LinkButton({
       target={target}
       download={download}
       className={cn(
-        "inline-flex cursor-pointer items-center justify-center gap-[10px] rounded-sm px-[20px] py-[10px] text-xs font-[500]",
+        "inline-flex cursor-pointer items-center justify-center gap-[10px] rounded-xs px-[20px] py-[10px] text-xs font-[500]",
         className
       )}>
       {children}

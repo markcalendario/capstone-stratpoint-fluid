@@ -44,7 +44,7 @@ export default function UserOptionRow({
     <div
       className={cn(
         isSelected && "bg-neutral-100 dark:bg-neutral-900",
-        "flex w-full flex-wrap items-center justify-between gap-2 rounded-sm p-3"
+        "flex w-full flex-wrap items-center justify-between gap-2 rounded-xs p-3"
       )}>
       <div className="flex items-center gap-3">
         <Image
@@ -64,7 +64,7 @@ export default function UserOptionRow({
           <Dropdown
             label={role?.title ?? "Select Role"}
             items={dropdownItems}
-            className="border-primary/20 rounded-sm border-1 bg-white p-2 text-xs font-medium dark:bg-neutral-800 dark:text-neutral-300"
+            className="border-primary/20 rounded-xs border-1 bg-white p-2 text-xs font-medium dark:bg-neutral-800 dark:text-neutral-300"
           />
         )}
 

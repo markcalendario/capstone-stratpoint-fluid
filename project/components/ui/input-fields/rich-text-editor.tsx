@@ -51,7 +51,7 @@ export default function RichTextEditor({
       <ReactQuill
         value={value}
         onChange={handleChange}
-        className="border-primary [&_svg]:!svg-neutral-900 dark:[&_svg]:!svg-neutral-100 rounded-sm border-1 *:!border-none *:!text-base *:!font-medium dark:text-neutral-300 [&_.ql-header]:!text-neutral-100 [&_.ql-picker-item]:!text-neutral-900 dark:[&_.ql-picker-item]:!text-neutral-100 [&_.ql-picker-label]:!text-neutral-900 [&_.ql-picker-label]:!opacity-50 dark:[&_.ql-picker-label]:!text-neutral-100 dark:[&_.ql-picker-options]:!bg-neutral-800 [&_.ql-toolbar]:!rounded-t-xs [&_.ql-toolbar]:bg-white dark:[&_.ql-toolbar]:bg-neutral-800 [&_svg]:opacity-50"
+        className="border-primary [&_svg]:!svg-neutral-900 dark:[&_svg]:!svg-neutral-100 rounded-xs border-1 *:!border-none *:!text-base *:!font-medium dark:text-neutral-300 [&_.ql-header]:!text-neutral-100 [&_.ql-picker-item]:!text-neutral-900 dark:[&_.ql-picker-item]:!text-neutral-100 [&_.ql-picker-label]:!text-neutral-900 [&_.ql-picker-label]:!opacity-50 dark:[&_.ql-picker-label]:!text-neutral-100 dark:[&_.ql-picker-options]:!bg-neutral-800 [&_.ql-toolbar]:!rounded-t-xs [&_.ql-toolbar]:bg-white dark:[&_.ql-toolbar]:bg-neutral-800 [&_svg]:opacity-50"
         theme="snow"
       />
 

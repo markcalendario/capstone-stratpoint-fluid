@@ -23,7 +23,7 @@ export default function SearchFilter({
           type="text"
           onChange={handleSearchTextChange}
           placeholder="Search projects by name"
-          className="border-primary/20 w-full rounded-sm border-1 bg-white py-2 pr-4 pl-10 text-neutral-800 placeholder-neutral-500 focus:outline-none dark:bg-neutral-800 dark:text-neutral-200"
+          className="border-primary/20 w-full rounded-xs border-1 bg-white py-2 pr-4 pl-10 text-neutral-800 placeholder-neutral-500 focus:outline-none dark:bg-neutral-800 dark:text-neutral-200"
         />
       </div>
     </div>

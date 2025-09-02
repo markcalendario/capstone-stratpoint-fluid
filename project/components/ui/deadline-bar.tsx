@@ -28,7 +28,7 @@ export default function DeadlineBar({
       href={url}
       target="_blank"
       className={cn(
-        "outline-primary/20 flex items-end justify-between rounded-sm p-5 outline-1",
+        "outline-primary/20 flex items-end justify-between rounded-xs p-5 outline-1",
         className
       )}>
       <div>

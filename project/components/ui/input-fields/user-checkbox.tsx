@@ -34,7 +34,7 @@ export default function UserCheckbox({
 
       <label
         htmlFor={id}
-        className="peer-checked:bg-primary bg-primary/10 ring-primary/20 flex cursor-pointer items-center gap-2 rounded-sm px-4 py-2 ring-1 duration-100 select-none ring-inset peer-checked:text-neutral-100 dark:bg-neutral-100/10 dark:text-neutral-200 dark:ring-neutral-100/70 dark:peer-checked:bg-neutral-100/70 dark:peer-checked:text-neutral-800">
+        className="peer-checked:bg-primary bg-primary/10 ring-primary/20 flex cursor-pointer items-center gap-2 rounded-xs px-4 py-2 ring-1 duration-100 select-none ring-inset peer-checked:text-neutral-100 dark:bg-neutral-100/10 dark:text-neutral-200 dark:ring-neutral-100/70 dark:peer-checked:bg-neutral-100/70 dark:peer-checked:text-neutral-800">
         {checked && <Minus size={14} />}
         {!checked && <Plus size={14} />}
 
