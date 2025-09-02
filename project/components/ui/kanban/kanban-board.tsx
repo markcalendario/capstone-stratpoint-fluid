@@ -15,7 +15,11 @@ import {
   DragOverEvent,
   DragOverlay,
   DragStartEvent,
-  UniqueIdentifier
+  MouseSensor,
+  TouchSensor,
+  UniqueIdentifier,
+  useSensor,
+  useSensors
 } from "@dnd-kit/core";
 import {
   horizontalListSortingStrategy,
@@ -303,12 +307,15 @@ function KanbanItems({ projectId, lists }: KanbanItemsProps) {
     }
   };
 
+  const sensors = useSensors(useSensor(TouchSensor), useSensor(MouseSensor));
+
   useEffect(() => {
     setListsData(lists);
   }, [lists]);
 
   return (
     <DndContext
+      sensors={sensors}
       onDragStart={handleDragStart}
       onDragOver={handleDragOver}
       onDragEnd={handleDragEnd}>
