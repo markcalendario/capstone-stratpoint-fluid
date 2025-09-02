@@ -9,7 +9,8 @@ import {
   GetProjectMemberRolePayload,
   GetProjectMembersOptionsPayload,
   GetProjectMembers as GetProjectMembersPayload,
-  InvitationEventData
+  InvitationEventData,
+  LeaveProjectModal
 } from "@/types/projectMembers";
 import { UserOption } from "@/types/roles";
 import { ZodError } from "zod";
@@ -28,6 +29,7 @@ import {
 import pusher from "../utils/pusher";
 import { EVENTS } from "../utils/pusher-client";
 import { hasPermission } from "../utils/rolePermissions";
+import { unassignUserToProjectTasks } from "../utils/tasks";
 import { getClerkIdByUserId, getUserId } from "../utils/users";
 import {
   acceptInvitePayloadSchema,
@@ -38,6 +40,7 @@ import {
   getProjectMembersOptionsPayloadSchema,
   getProjectMembersPayloadSchema,
   getProjectMembersRoleSchema,
+  leaveProjectPayloadSchema,
   removeProjectMemberPayloadSchema
 } from "../validations/projectMembers";
 
@@ -318,6 +321,8 @@ export async function removeProjectMember(payload: DeleteMemberPayload) {
 
     await projectMembersQueries.removeTeamMember(parsed);
 
+    await unassignUserToProjectTasks(userId, parsed.projectId);
+
     return {
       success: true,
       message: "User removed successfully."
@@ -473,5 +478,27 @@ export async function denyInvite(payload: AcceptInvitePayload) {
     }
 
     return { success: false, message: "Error. Cannot deny invite." };
+  }
+}
+
+export async function leaveProject(payload: LeaveProjectModal) {
+  try {
+    const userId = await getUserId();
+    const parsed = leaveProjectPayloadSchema.parse(payload);
+
+    await projectMembersQueries.removeTeamMember({
+      userId,
+      projectId: parsed.projectId
+    });
+
+    await unassignUserToProjectTasks(userId, parsed.projectId);
+
+    return { success: true, message: "You successfully left the project." };
+  } catch (error) {
+    if (error instanceof ZodError) {
+      return { success: false, message: error.issues[0].message };
+    }
+
+    return { success: false, message: "Error. Cannot leave project." };
   }
 }

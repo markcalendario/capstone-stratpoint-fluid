@@ -6,9 +6,15 @@ import SectionLoader from "@/components/ui/section-loader";
 import { usePermissions } from "@/hooks/use-permissions";
 import { useTaskDiscussions } from "@/hooks/use-task-discussions";
 import { PERMISSION } from "@/lib/utils/permission-enum";
+import pusherClient, { EVENTS } from "@/lib/utils/pusher-client";
 import { ProjectSchema } from "@/types/projects";
+import {
+  DiscussionContent,
+  DiscussionEventData
+} from "@/types/taskDiscussions";
 import { TaskSchema } from "@/types/tasks";
 import { Feather } from "lucide-react";
+import { useEffect, useState } from "react";
 
 interface TaskDescriptionProps {
   taskId: TaskSchema["id"];
@@ -21,14 +27,36 @@ export default function TaskDiscussions({
 }: TaskDescriptionProps) {
   const { permissionsData } = usePermissions(projectId);
 
+  const [discussions, setDiscussion] = useState<DiscussionContent[] | null>(
+    null
+  );
+
   const { isTaskDiscussionsLoading, taskDiscussionsData } =
     useTaskDiscussions(taskId);
 
   const permissions = permissionsData?.permissions;
   const canComment = permissions?.includes(PERMISSION.CREATE_COMMENT);
 
-  const discussions = taskDiscussionsData?.discussions;
   const isLoaded = !isTaskDiscussionsLoading && discussions;
+
+  const handleDiscussionEvent = (data: DiscussionEventData[]) => {
+    setDiscussion(data);
+  };
+
+  useEffect(() => {
+    if (!taskDiscussionsData?.discussions) return;
+    setDiscussion(taskDiscussionsData.discussions);
+  }, [taskDiscussionsData?.discussions]);
+
+  useEffect(() => {
+    const channel = pusherClient.subscribe(taskId);
+    channel.bind(EVENTS.DISCUSSION, handleDiscussionEvent);
+
+    return () => {
+      channel.unbind(EVENTS.DISCUSSION, handleDiscussionEvent);
+      pusherClient.unsubscribe(taskId);
+    };
+  }, []);
 
   if (!isLoaded) {
     return <SectionLoader text="Loading Discussion" />;
@@ -42,7 +70,7 @@ export default function TaskDiscussions({
       {!discussions.length && (
         <SectionEmpty
           icon={Feather}
-          text={canComment ? "Start a Discussion" : "No Discussion Found"}
+          text={canComment ? "Start a Discussion" : "No Discussion Yet"}
         />
       )}
 

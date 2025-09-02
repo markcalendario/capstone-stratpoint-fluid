@@ -1,7 +1,17 @@
-import Button from "@/components/ui/buttons/button";
-import { Filter, Search } from "lucide-react";
+import { Search } from "lucide-react";
+import { ChangeEvent } from "react";
 
-export default function SearchFilter() {
+interface SearchFilterProps {
+  onSearchTextChange: (text: string) => void;
+}
+
+export default function SearchFilter({
+  onSearchTextChange
+}: SearchFilterProps) {
+  const handleSearchTextChange = (evt: ChangeEvent<HTMLInputElement>) => {
+    onSearchTextChange(evt.target.value);
+  };
+
   return (
     <div className="flex flex-col gap-4 sm:flex-row">
       <div className="relative flex-1">
@@ -11,14 +21,11 @@ export default function SearchFilter() {
         />
         <input
           type="text"
-          placeholder="Search projects..."
+          onChange={handleSearchTextChange}
+          placeholder="Search projects by name"
           className="border-primary/20 w-full rounded-sm border-2 bg-white py-2 pr-4 pl-10 text-neutral-800 placeholder-neutral-500 focus:outline-none dark:bg-neutral-800 dark:text-neutral-200"
         />
       </div>
-      <Button className="border-primary/20 border-2 bg-white text-neutral-800 dark:bg-neutral-800 dark:text-neutral-200">
-        <Filter size={16} />
-        Filter
-      </Button>
     </div>
   );
 }

@@ -11,9 +11,8 @@ import { Toaster } from "react-hot-toast";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Project Management Tool",
-  description: "Team collaboration and project management platform",
-  generator: "v0.dev"
+  title: "Fluid | Project Management",
+  description: "Team collaboration and project management platform."
 };
 
 type RootLayout = { children: React.ReactNode };

@@ -7,14 +7,24 @@ import { EditProjectModal } from "@/components/ui/modals/edit-project-modal";
 import { usePermissions } from "@/hooks/use-permissions";
 import { PERMISSION } from "@/lib/utils/permission-enum";
 import { ProjectSchema } from "@/types/projects";
-import { Edit, MoreVertical, Trash, UserPlus, Users } from "lucide-react";
+import {
+  Edit,
+  LogOut,
+  MoreVertical,
+  Trash,
+  UserPlus,
+  Users
+} from "lucide-react";
 import { Fragment, useState } from "react";
+import { LeaveProjectModal } from "../modals/leave-team-modal";
 
 interface ProjectActionButtonsProps {
+  isOwner: boolean;
   projectId: ProjectSchema["id"];
 }
 
 export default function ProjectActionButtons({
+  isOwner,
   projectId
 }: ProjectActionButtonsProps) {
   const { permissionsData } = usePermissions(projectId);
@@ -22,16 +32,19 @@ export default function ProjectActionButtons({
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
+  const [isLeaveModalOpen, setIsLeaveModalOpen] = useState(false);
 
   const toggleDeleteModal = () => setIsDeleteModalOpen((prev) => !prev);
   const toggleEditModal = () => setIsEditModalOpen((prev) => !prev);
   const toggleInviteModal = () => setIsInviteModalOpen((prev) => !prev);
+  const toggleLeaveModal = () => setIsLeaveModalOpen((prev) => !prev);
 
   const permissions = permissionsData?.permissions;
   const canViewTeam = permissions?.includes(PERMISSION.VIEW_PROJECT_MEMBER);
   const canInvite = permissions?.includes(PERMISSION.CREATE_PROJECT_MEMBER);
   const canEdit = permissions?.includes(PERMISSION.EDIT_PROJECT);
   const canDelete = permissions?.includes(PERMISSION.DELETE_PROJECT);
+  const canLeave = !isOwner;
 
   const teamItems = [];
   if (canViewTeam) {
@@ -46,6 +59,13 @@ export default function ProjectActionButtons({
       onClick: toggleInviteModal,
       label: "Invite to Team",
       icon: UserPlus
+    });
+  }
+  if (canLeave) {
+    teamItems.push({
+      onClick: toggleLeaveModal,
+      label: "Leave Team",
+      icon: LogOut
     });
   }
 
@@ -103,6 +123,13 @@ export default function ProjectActionButtons({
         <AddTeamMemberModal
           preSelectedId={projectId}
           toggle={toggleInviteModal}
+        />
+      )}
+
+      {isLeaveModalOpen && (
+        <LeaveProjectModal
+          projectId={projectId}
+          toggle={toggleLeaveModal}
         />
       )}
     </Fragment>

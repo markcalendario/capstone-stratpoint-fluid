@@ -23,6 +23,7 @@ export default function ProjectPage() {
       <ProjectBanner
         id={project.id}
         name={project.name}
+        isOwner={project.isOwner}
         dueDate={project.dueDate}
         imageUrl={project.imageUrl}
         ownerImage={project.ownerImage}

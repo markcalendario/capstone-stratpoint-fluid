@@ -54,7 +54,7 @@ export default function ListCard({
     <div
       style={style}
       ref={setNodeRef}
-      className="flex max-h-[600px] min-h-[500px] max-w-100 min-w-100 flex-col gap-3 overflow-auto duration-100">
+      className="flex max-h-[600px] min-h-[500px] max-w-95 min-w-95 flex-col gap-3 overflow-auto duration-100">
       <div className="bg-primary flex items-center justify-between rounded-t-sm px-4 py-3">
         <div className="flex items-center gap-3">
           <p className="flex items-center gap-2 font-bold text-neutral-100">

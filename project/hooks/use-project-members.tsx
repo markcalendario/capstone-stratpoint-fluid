@@ -9,6 +9,7 @@ import {
   getProjectMemberRole,
   getProjectMembers,
   getProjectMembersOptions,
+  leaveProject,
   removeProjectMember
 } from "@/lib/actions/projectMembers";
 import {
@@ -149,4 +150,15 @@ export function useDenyInvite(userId: UserSchema["id"]) {
   });
 
   return { isDenyingInvite: isPending, denyInvite: mutateAsync };
+}
+
+export function useLeaveProject() {
+  const { isPending, mutateAsync } = useMutation({
+    mutationFn: leaveProject,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["projects"] });
+    }
+  });
+
+  return { isLeavingProject: isPending, leaveProject: mutateAsync };
 }

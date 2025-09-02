@@ -188,6 +188,7 @@ export async function getProjectSlug(payload: GetProjectSlugPayload) {
     const formatted = {
       id: project.id,
       name: project.name,
+      isOwner: userId === project.ownerId,
       imageUrl: project.imageUrl,
       description: project.description,
       projectType: project.projectType,

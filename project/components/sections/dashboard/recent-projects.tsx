@@ -1,12 +1,18 @@
 "use client";
 
 import ProjectCard from "@/components/ui/project-card";
+import SectionEmpty from "@/components/ui/section-empty";
 import SectionLoader from "@/components/ui/section-loader";
 import { useRecentProjects } from "@/hooks/use-projects";
+import { Box } from "lucide-react";
 import Link from "next/link";
 
 export default function RecentProjects() {
   const { isRecentProjectsLoading, recentProjectsData } = useRecentProjects();
+
+  const recentProjects = recentProjectsData?.recentProjects ?? [];
+  const isLoading = isRecentProjectsLoading;
+  const isEmpty = !isLoading && recentProjects.length === 0;
 
   return (
     <div className="border-primary/20 rounded-sm border-2 bg-white p-6 dark:bg-neutral-800">
@@ -22,13 +28,18 @@ export default function RecentProjects() {
       </div>
 
       <div className="space-y-3">
-        {(isRecentProjectsLoading || !recentProjectsData) && (
-          <SectionLoader text="Retrieving Recent Projects" />
+        {isLoading && <SectionLoader text="Retrieving Recent Projects" />}
+
+        {isEmpty && (
+          <SectionEmpty
+            icon={Box}
+            text="No Recent Projects"
+          />
         )}
 
-        {!isRecentProjectsLoading &&
-          recentProjectsData &&
-          recentProjectsData.recentProjects.map((project) => (
+        {!isLoading &&
+          !isEmpty &&
+          recentProjects.map((project) => (
             <ProjectCard
               {...project}
               key={project.id}

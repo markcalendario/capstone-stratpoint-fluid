@@ -1,6 +1,7 @@
 import { AssignManyData } from "@/types/taskAssignments";
 import { TaskSchema } from "@/types/tasks";
-import { eq } from "drizzle-orm";
+import { UserSchema } from "@/types/users";
+import { and, eq } from "drizzle-orm";
 import db from "../db";
 import { taskAssignments } from "../db/drizzle/migrations/schema";
 
@@ -22,6 +23,20 @@ const taskAssignmentsQueries = {
 
   unassignAllByTask: async (taskId: TaskSchema["id"]) => {
     await db.delete(taskAssignments).where(eq(taskAssignments.taskId, taskId));
+  },
+
+  unassignUserToTasks: async (
+    userId: UserSchema["id"],
+    taskId: TaskSchema["id"]
+  ) => {
+    await db
+      .delete(taskAssignments)
+      .where(
+        and(
+          eq(taskAssignments.userId, userId),
+          eq(taskAssignments.taskId, taskId)
+        )
+      );
   }
 };
 
