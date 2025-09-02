@@ -22,16 +22,16 @@ export default function Hero() {
 
               <div className="flex flex-wrap gap-1">
                 <LinkButton
-                  href="/dashboard"
+                  href="/sign-in"
                   className="bg-primary text-neutral-100">
                   <Kanban size={16} />
                   Manage Projects
                 </LinkButton>
                 <LinkButton
-                  href="/projects"
+                  href="/sign-up"
                   className="bg-neutral-900 text-neutral-100 dark:bg-neutral-900">
                   <Blocks size={16} />
-                  View Projects
+                  Join Now
                 </LinkButton>
               </div>
             </div>

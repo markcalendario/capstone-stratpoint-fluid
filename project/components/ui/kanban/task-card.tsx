@@ -102,7 +102,7 @@ export function TaskCard({
         </button>
       )}
 
-      <h4 className="text-sm font-medium text-neutral-800 dark:text-neutral-100">
+      <h4 className="line-clamp-1 text-sm font-medium text-neutral-800 dark:text-neutral-100">
         {title}
       </h4>
       <p className="line-clamp-1 text-xs text-neutral-500 dark:text-neutral-300">

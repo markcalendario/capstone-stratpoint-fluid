@@ -1,17 +1,16 @@
 "use client";
 
-import { LogIn, MenuIcon, Moon, Sun } from "lucide-react";
+import { MenuIcon, Moon, Sun } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Fragment, useCallback, useEffect, useState } from "react";
 import Button from "./buttons/button";
-import LinkButton from "./buttons/link-button";
 import { useTheme } from "./theme-provider";
 
 const NAV_LINKS = [
-  { href: "/#features", label: "Features" },
-  { href: "/#pricing", label: "Pricing" },
-  { href: "/#about", label: "About" }
+  { href: "/", label: "Home" },
+  { href: "/sign-in", label: "Sign In" },
+  { href: "/sign-out", label: "Get Started" }
 ];
 
 export function Header() {
@@ -146,16 +145,6 @@ function CallToActions({ isMobile }: CallToActions) {
 
   return (
     <div className="flex justify-end gap-1 md:w-[calc(100%/3)]">
-      <LinkButton
-        href="/sign-up"
-        className="bg-neutral-100 dark:bg-neutral-800 dark:text-neutral-100">
-        Get Started
-      </LinkButton>
-      <LinkButton
-        href="/sign-in"
-        className="bg-neutral-100 p-[10px] dark:bg-neutral-800 dark:text-neutral-100">
-        <LogIn size={16} />
-      </LinkButton>
       <Button
         className="bg-neutral-100 p-[10px] dark:bg-neutral-800 dark:text-neutral-100"
         onClick={toggle}>

@@ -58,10 +58,10 @@ export default function ProjectCard({
 
         {/* Info */}
         <div className="">
-          <p className="leading-none font-bold text-neutral-900 dark:text-neutral-100">
+          <p className="line-clamp-1 leading-none font-bold text-neutral-900 dark:text-neutral-100">
             {name}
           </p>
-          <p className="mt-1 text-sm leading-none text-neutral-700 dark:text-neutral-300">
+          <p className="mt-1 line-clamp-1 text-sm leading-none text-neutral-700 dark:text-neutral-300">
             {description}
           </p>
         </div>

@@ -269,7 +269,7 @@ export async function getAnalyticsSummary(payload: GetAnalyticsSummaryPayload) {
       status: {
         tasksDone: doneTasksCount,
         tasksPending: pendingTasksCount,
-        completionRate: completionRate,
+        completionRate: completionRate.toFixed(2),
         overdueTasks: overdueTasksCount
       }
     };
