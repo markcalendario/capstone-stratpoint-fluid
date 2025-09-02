@@ -35,7 +35,7 @@ export default function Calendar({
   }, []);
 
   return (
-    <div className="outline-primary/20 rounded-sm bg-white p-7 outline-2 dark:bg-neutral-800">
+    <div className="outline-primary/20 rounded-sm bg-white p-7 outline-1 dark:bg-neutral-800">
       <DragAndDropCalendar
         localizer={momentLocalizer(moment)}
         style={{ height: "500px" }}

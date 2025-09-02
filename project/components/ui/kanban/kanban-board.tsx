@@ -89,7 +89,7 @@ export default function KanbanBoard({ projectId }: KanbanBoardProps) {
 
             <CreateListButton
               projectId={projectId}
-              className="border-primary/20 text-primary hover:bg-primary/5 flex min-h-[500px] min-w-90 cursor-pointer flex-nowrap items-center justify-center gap-2 rounded-sm border-2 border-dashed bg-neutral-50 dark:border-neutral-500 dark:bg-neutral-800 dark:text-neutral-300"
+              className="border-primary/20 text-primary hover:bg-primary/5 flex min-h-[500px] min-w-90 cursor-pointer flex-nowrap items-center justify-center gap-2 rounded-sm border-1 border-dashed bg-neutral-50 dark:border-neutral-500 dark:bg-neutral-800 dark:text-neutral-300"
             />
           </div>
         </div>

@@ -30,7 +30,7 @@ export default function SettingsNavigation({
     <div
       className={cn(
         className,
-        "outline-primary/20 space-y-3 rounded-sm p-7 outline-2"
+        "outline-primary/20 space-y-3 rounded-sm p-7 outline-1"
       )}>
       <h3 className="text-lg font-medium text-neutral-800 dark:text-neutral-200">
         Settings

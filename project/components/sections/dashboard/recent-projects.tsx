@@ -15,7 +15,7 @@ export default function RecentProjects() {
   const isEmpty = !isLoading && recentProjects.length === 0;
 
   return (
-    <div className="border-primary/20 rounded-sm border-2 bg-white p-6 dark:bg-neutral-800">
+    <div className="border-primary/20 rounded-sm border-1 bg-white p-6 dark:bg-neutral-800">
       <div className="mb-6 flex items-center justify-between">
         <h3 className="text-lg font-semibold text-neutral-800 dark:text-neutral-200">
           Recent Projects

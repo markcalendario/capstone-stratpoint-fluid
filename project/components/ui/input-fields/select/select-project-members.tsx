@@ -67,7 +67,7 @@ export default function SelectProjectMembers({
       {!loaded && <SectionLoader text="Loading Members" />}
 
       {loaded && (
-        <div className="border-primary flex min-h-30 flex-wrap gap-2 rounded-sm border-2 p-4">
+        <div className="border-primary flex min-h-30 flex-wrap gap-2 rounded-sm border-1 p-4">
           {projectMembersOptions.members.map((member) => (
             <UserCheckbox
               key={member.id}

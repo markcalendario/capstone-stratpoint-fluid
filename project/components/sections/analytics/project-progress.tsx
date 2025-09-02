@@ -17,7 +17,7 @@ export default function ProjectProgress({ projectId }: ProjectProgressProps) {
   if (isLoading) return <SectionLoader text="Loading Progress" />;
 
   return (
-    <div className="outline-primary/20 rounded-sm bg-white p-6 outline-2 dark:bg-neutral-800">
+    <div className="outline-primary/20 rounded-sm bg-white p-6 outline-1 dark:bg-neutral-800">
       <h3 className="mb-4 text-lg font-semibold text-neutral-800 dark:text-neutral-200">
         Project Progress
       </h3>
