@@ -12,6 +12,16 @@ import {
 } from "date-fns";
 
 /**
+ * Check if the first date is after the second date.
+ */
+export function isDateAfterDate(
+  date: Date | string | number,
+  compareDate: Date | string | number
+) {
+  return isAfter(new Date(date), new Date(compareDate));
+}
+
+/**
  * Check if a date is today or in the future.
  */
 export function isFutureDate(date: string): boolean {

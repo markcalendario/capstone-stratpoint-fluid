@@ -10,11 +10,13 @@ import {
   UpdateAttachmentPayload
 } from "@/types/tasks";
 import { ZodError } from "zod";
+import projectQueries from "../queries/projects";
 import taskAssignmentsQueries from "../queries/taskAssignments";
 import taskQueries from "../queries/tasks";
 import {
   formatDate,
   getDaysRemaining,
+  isDateAfterDate,
   isOverdue
 } from "../utils/date-and-time";
 import { dispatchError, handleDispatchError } from "../utils/dispatch-error";
@@ -48,6 +50,21 @@ export async function createAndAssignTask(payload: CreateAndAssignTaskPayload) {
     let attachment: string | null = null;
     if (parsed.attachment) {
       attachment = await upload({ file: parsed.attachment });
+    }
+
+    const project = await projectQueries.get(parsed.projectId);
+    if (!project) return dispatchError(404);
+
+    const isTaskDueDateAfterProject = isDateAfterDate(
+      new Date(parsed.dueDate),
+      new Date(project.dueDate)
+    );
+
+    if (isTaskDueDateAfterProject) {
+      return {
+        success: false,
+        message: "Task due date cannot be after project."
+      };
     }
 
     const position = (await taskQueries.getMaxPosition(parsed.listId)) + 1;
@@ -129,6 +146,18 @@ export async function editTask(payload: EditTaskPayload) {
     );
 
     if (!isPermitted) return dispatchError(401);
+
+    const isTaskDueDateAfterProject = isDateAfterDate(
+      new Date(parsed.dueDate),
+      new Date(task.list.project.dueDate)
+    );
+
+    if (isTaskDueDateAfterProject) {
+      return {
+        success: false,
+        message: "Task due date cannot be after project."
+      };
+    }
 
     const editTaskPayload = {
       id: parsed.id,
