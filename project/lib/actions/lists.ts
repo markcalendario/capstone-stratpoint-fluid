@@ -18,8 +18,9 @@ import {
   MoveListPayload,
   UpdateListPayload
 } from "@/types/lists";
-import { ZodError } from "zod";
+import { dispatchError, handleDispatchError } from "../utils/dispatch-error";
 import { broadcastKanbanUpdate, getKanbanItems } from "../utils/kanban";
+import { PERMISSION } from "../utils/permission-enum";
 import { hasPermission } from "../utils/rolePermissions";
 
 export async function createList(payload: CreateListPayload) {
@@ -28,9 +29,13 @@ export async function createList(payload: CreateListPayload) {
     const userId = await getUserId();
     const parsed = createListPayloadSchema.parse(payload);
 
-    if (!(await hasPermission(userId, parsed.projectId, "create_list"))) {
-      return { success: false, message: "Unauthorized. Cannot create list." };
-    }
+    const isPermitted = await hasPermission(
+      userId,
+      parsed.projectId,
+      PERMISSION.CREATE_LIST
+    );
+
+    if (!isPermitted) return dispatchError(401);
 
     const position = await listQueries.getMaxPosition(parsed.projectId);
 
@@ -49,11 +54,7 @@ export async function createList(payload: CreateListPayload) {
 
     return { success: true, message: "List created successfully." };
   } catch (error) {
-    if (error instanceof ZodError) {
-      return { success: false, message: error.issues[0].message };
-    }
-
-    return { success: false, message: "Error. Cannot create list." };
+    handleDispatchError(error);
   }
 }
 
@@ -62,9 +63,13 @@ export async function getListsWithTasks(payload: GetProjectListsPayload) {
     const userId = await getUserId();
     const parsed = getProjectListsPayloadSchema.parse(payload);
 
-    if (!(await hasPermission(userId, parsed.projectId, "view_list"))) {
-      return { success: false, message: "Unauthorized. Cannot view list." };
-    }
+    const isPermitted = await hasPermission(
+      userId,
+      parsed.projectId,
+      PERMISSION.VIEW_LIST
+    );
+
+    if (!isPermitted) return dispatchError(401);
 
     const listsAndTasks = await getKanbanItems(parsed.projectId);
 
@@ -74,11 +79,7 @@ export async function getListsWithTasks(payload: GetProjectListsPayload) {
       listsAndTasks
     };
   } catch (error) {
-    if (error instanceof ZodError) {
-      return { success: false, message: error.issues[0].message };
-    }
-
-    return { success: false, message: "Error. Cannot get lists with tasks." };
+    handleDispatchError(error);
   }
 }
 
@@ -89,9 +90,13 @@ export async function updateList(payload: UpdateListPayload) {
     const parsed = updateListPayloadSchema.parse(payload);
     const list = await listQueries.get(parsed.id);
 
-    if (!(await hasPermission(userId, list.projectId, "edit_list"))) {
-      return { success: false, message: "Unauthorized. Cannot edit list." };
-    }
+    const isPermitted = await hasPermission(
+      userId,
+      list.projectId,
+      PERMISSION.EDIT_LIST
+    );
+
+    if (!isPermitted) return dispatchError(401);
 
     const data = {
       name: parsed.name,
@@ -106,11 +111,7 @@ export async function updateList(payload: UpdateListPayload) {
 
     return { success: true, message: "List updated successfully." };
   } catch (error) {
-    if (error instanceof ZodError) {
-      return { success: false, message: error.issues[0].message };
-    }
-
-    return { success: false, message: "Error. Cannot update list." };
+    handleDispatchError(error);
   }
 }
 
@@ -120,19 +121,19 @@ export async function getListEditData(payload: GetListPayload) {
     const validId = listSchema.shape.id.parse(payload.id);
     const list = await listQueries.get(validId);
 
-    if (!(await hasPermission(userId, list.projectId, "edit_list"))) {
-      return { success: false, message: "Unauthorized. Cannot view list." };
-    }
+    const isPermitted = await hasPermission(
+      userId,
+      list.projectId,
+      PERMISSION.EDIT_LIST
+    );
+
+    if (!isPermitted) return dispatchError(401);
 
     await broadcastKanbanUpdate(list.projectId);
 
     return { success: true, message: "List fetched successfully.", list };
   } catch (error) {
-    if (error instanceof ZodError) {
-      return { success: false, message: error.issues[0].message, list: null };
-    }
-
-    return { success: false, message: "Error. Cannot get list.", list: null };
+    handleDispatchError(error);
   }
 }
 
@@ -142,9 +143,13 @@ export async function deleteList(payload: DeleteListPayload) {
     const parsed = deleteListPayloadSchema.parse(payload);
     const list = await listQueries.get(parsed.id);
 
-    if (!(await hasPermission(userId, list.projectId, "delete_list"))) {
-      return { success: false, message: "Unauthorized. Cannot delete list." };
-    }
+    const isPermitted = await hasPermission(
+      userId,
+      list.projectId,
+      PERMISSION.DELETE_LIST
+    );
+
+    if (!isPermitted) return dispatchError(404);
 
     await listQueries.delete(parsed.id);
 
@@ -152,11 +157,7 @@ export async function deleteList(payload: DeleteListPayload) {
 
     return { success: true, message: "List deleted successfully." };
   } catch (error) {
-    if (error instanceof ZodError) {
-      return { success: false, message: error.issues[0].message };
-    }
-
-    return { success: false, message: "Error. Cannot delete list." };
+    handleDispatchError(error);
   }
 }
 
@@ -166,9 +167,13 @@ export async function moveList(payload: MoveListPayload) {
     const parsed = moveListPayloadSchema.parse(payload);
     const { listId, newPosition, projectId } = parsed;
 
-    if (!(await hasPermission(userId, projectId, "edit_list"))) {
-      return { success: false, message: "Unauthorized. Cannot delete list." };
-    }
+    const isPermitted = await hasPermission(
+      userId,
+      projectId,
+      PERMISSION.EDIT_LIST
+    );
+
+    if (!isPermitted) return dispatchError(401);
 
     // Get list IDs of the project
     const lists = await listQueries.getListsWithTasks(projectId);
@@ -195,10 +200,6 @@ export async function moveList(payload: MoveListPayload) {
 
     return { success: true, message: "Kanban list moved successfully." };
   } catch (error) {
-    if (error instanceof ZodError) {
-      return { success: false, message: error.issues[0].message };
-    }
-
-    return { success: false, message: "Kanban list moved successfully." };
+    handleDispatchError(error);
   }
 }
