@@ -2,6 +2,7 @@
 
 import { GetPermissionsPayload } from "@/types/rolePermissions";
 import { ZodError } from "zod";
+import { handleDispatchError } from "../utils/dispatch-error";
 import { getPermissions as getPermissionsUtil } from "../utils/rolePermissions";
 import { getUserId } from "../utils/users";
 import { getPermissionsPayloadSchema } from "../validations/permissions";
@@ -21,6 +22,6 @@ export default async function getPermissions(payload: GetPermissionsPayload) {
       return { success: false, message: error.issues[0].message };
     }
 
-    return { success: false, message: "Error. Cannot get permissions." };
+    handleDispatchError(error);
   }
 }
