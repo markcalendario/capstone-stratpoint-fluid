@@ -25,7 +25,6 @@ export function Header() {
             isMobile={isMobile}
             setIsMobile={setIsMobile}
           />
-          <CallToActions isMobile={isMobile} />
         </div>
       </div>
     </nav>
@@ -34,7 +33,7 @@ export function Header() {
 
 function Logo() {
   return (
-    <div className="md:w-fit">
+    <div className="">
       <div className="inline-block bg-neutral-100 px-2 py-3 dark:bg-neutral-800">
         <Link
           href="/"
@@ -82,10 +81,14 @@ function Menu({ isMobile, setIsMobile }: Menu) {
         toggleMenu={toggleMenu}
       />
 
-      <MenuButton
-        isMobile={isMobile}
-        toggleMenu={toggleMenu}
-      />
+      <div className="flex gap-1">
+        <MenuButton
+          isMobile={isMobile}
+          toggleMenu={toggleMenu}
+        />
+
+        <ThemeButton />
+      </div>
     </Fragment>
   );
 }
@@ -102,7 +105,7 @@ function MenuItems({ isMobile, isMenuOpen, toggleMenu }: MenuItemsProps) {
   if (!shouldDisplay) return null;
 
   return (
-    <div className="bg-primary fixed top-[60px] left-0 flex h-[calc(100vh-60px)] w-full flex-col gap-[30px] p-[20px] md:static md:top-auto md:left-auto md:h-auto md:w-fit md:flex-row md:justify-center md:gap-[10px] md:bg-transparent md:p-0 dark:max-md:bg-neutral-900">
+    <div className="bg-primary fixed top-[60px] left-0 flex h-[calc(100vh-60px)] w-full flex-col gap-[30px] p-[20px] md:static md:top-auto md:left-auto md:h-auto md:flex-row md:justify-center md:gap-[10px] md:bg-transparent md:p-0 dark:max-md:bg-neutral-900">
       {NAV_LINKS.map((link, i) => (
         <Link
           key={i}
@@ -125,26 +128,20 @@ function MenuButton({ isMobile, toggleMenu }: MenuButtonProps) {
   if (!isMobile) return;
 
   return (
-    <button
+    <Button
       onClick={toggleMenu}
-      className="cursor-pointer rounded-xs bg-neutral-100 p-[5px]">
-      <MenuIcon />
-    </button>
+      className="bg-neutral-100 p-[10px] dark:bg-neutral-800 dark:text-neutral-100">
+      <MenuIcon size={16} />
+    </Button>
   );
 }
 
-interface CallToActions {
-  isMobile: boolean | null;
-}
-
-function CallToActions({ isMobile }: CallToActions) {
+function ThemeButton() {
   const { theme, setTheme } = useTheme();
   const toggle = () => setTheme(theme === "light" ? "dark" : "light");
 
-  if (isMobile) return;
-
   return (
-    <div className="flex justify-end gap-1 md:w-fit">
+    <div className="flex justify-end gap-1">
       <Button
         className="bg-neutral-100 p-[10px] dark:bg-neutral-800 dark:text-neutral-100"
         onClick={toggle}>
