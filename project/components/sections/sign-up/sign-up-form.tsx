@@ -34,14 +34,20 @@ export default function SignUpForm() {
             formButtonPrimary:
               "py-[10px] bg-primary hover:bg-primary text-white rounded-none shadow-none",
 
-            formFieldInputShowPasswordIcon:
-              "text-neutral-900 dark:text-neutral-100",
-            formFieldInputShowPasswordButton: "dark:bg-neutral-800",
+            formResendCodeLink: "dark:text-neutral-200 text-neutral-800",
+            otpCodeFieldInput: "dark:bg-neutral-900 dark:text-neutral-200",
+
+            identityPreviewText: "dark:text-neutral-200",
+            identityPreviewEditButtonIcon: "dark:text-neutral-200",
+
+            backLink: "dark:text-neutral-200",
 
             // Footer
             footerAction: "w-full bg-neutral-100 dark:bg-neutral-700",
             footerActionText: "text-neutral-600 dark:text-neutral-300",
-            footerActionLink: "text-primary dark:text-white"
+            footerActionLink: "text-primary dark:text-white",
+
+            footerAction__alternativeMethods: "bg-none py-2 px-3"
           }
         }}
         signInUrl="/sign-in"
