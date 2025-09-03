@@ -6,7 +6,7 @@ import {
   GetProjectProgressPayload,
   GetStatusByPriorityPayload
 } from "@/types/analytics";
-import { redirect } from "next/navigation";
+import { ZodError } from "zod";
 import projectQueries from "../queries/projects";
 import { priorities } from "../utils/constants";
 import { dayStartOfWeek, isOverdue } from "../utils/date-and-time";
@@ -91,6 +91,10 @@ export async function getDashboardStatus() {
       }
     };
   } catch (error) {
+    if (error instanceof ZodError) {
+      return { success: false, message: error.issues[0].message };
+    }
+
     handleDispatchError(error);
   }
 }
@@ -103,7 +107,7 @@ export async function getProjectProgress(payload: GetProjectProgressPayload) {
 
     const project = await projectQueries.get(projectId);
 
-    if (!project) redirect("/errors/404");
+    if (!project) return dispatchError(401);
 
     const isPermitted = await hasPermission(
       userId,
@@ -138,6 +142,10 @@ export async function getProjectProgress(payload: GetProjectProgressPayload) {
       message: "Project progress retrieved successfully."
     };
   } catch (error) {
+    if (error instanceof ZodError) {
+      return { success: false, message: error.issues[0].message };
+    }
+
     handleDispatchError(error);
   }
 }
@@ -191,6 +199,10 @@ export async function getStatusByPriority(payload: GetStatusByPriorityPayload) {
       message: "Project status by priority retrieved successfully."
     };
   } catch (error) {
+    if (error instanceof ZodError) {
+      return { success: false, message: error.issues[0].message };
+    }
+
     handleDispatchError(error);
   }
 }
@@ -242,6 +254,10 @@ export async function getAnalyticsSummary(payload: GetAnalyticsSummaryPayload) {
       }
     };
   } catch (error) {
+    if (error instanceof ZodError) {
+      return { success: false, message: error.issues[0].message };
+    }
+
     handleDispatchError(error);
   }
 }

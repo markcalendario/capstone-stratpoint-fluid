@@ -18,6 +18,7 @@ import {
   MoveListPayload,
   UpdateListPayload
 } from "@/types/lists";
+import { ZodError } from "zod";
 import { dispatchError, handleDispatchError } from "../utils/dispatch-error";
 import { broadcastKanbanUpdate, getKanbanItems } from "../utils/kanban";
 import { PERMISSION } from "../utils/permission-enum";
@@ -54,6 +55,10 @@ export async function createList(payload: CreateListPayload) {
 
     return { success: true, message: "List created successfully." };
   } catch (error) {
+    if (error instanceof ZodError) {
+      return { success: false, message: error.issues[0].message };
+    }
+
     handleDispatchError(error);
   }
 }
@@ -79,6 +84,10 @@ export async function getListsWithTasks(payload: GetProjectListsPayload) {
       listsAndTasks
     };
   } catch (error) {
+    if (error instanceof ZodError) {
+      return { success: false, message: error.issues[0].message };
+    }
+
     handleDispatchError(error);
   }
 }
@@ -111,6 +120,10 @@ export async function updateList(payload: UpdateListPayload) {
 
     return { success: true, message: "List updated successfully." };
   } catch (error) {
+    if (error instanceof ZodError) {
+      return { success: false, message: error.issues[0].message };
+    }
+
     handleDispatchError(error);
   }
 }
@@ -133,6 +146,10 @@ export async function getListEditData(payload: GetListPayload) {
 
     return { success: true, message: "List fetched successfully.", list };
   } catch (error) {
+    if (error instanceof ZodError) {
+      return { success: false, message: error.issues[0].message };
+    }
+
     handleDispatchError(error);
   }
 }
@@ -157,6 +174,10 @@ export async function deleteList(payload: DeleteListPayload) {
 
     return { success: true, message: "List deleted successfully." };
   } catch (error) {
+    if (error instanceof ZodError) {
+      return { success: false, message: error.issues[0].message };
+    }
+
     handleDispatchError(error);
   }
 }
@@ -200,6 +221,10 @@ export async function moveList(payload: MoveListPayload) {
 
     return { success: true, message: "Kanban list moved successfully." };
   } catch (error) {
+    if (error instanceof ZodError) {
+      return { success: false, message: error.issues[0].message };
+    }
+
     handleDispatchError(error);
   }
 }

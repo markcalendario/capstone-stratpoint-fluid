@@ -134,6 +134,10 @@ export async function getNonProjectMembersOptions(
       nonMembers: formatted
     };
   } catch (error) {
+    if (error instanceof ZodError) {
+      return { success: false, message: error.issues[0].message };
+    }
+
     handleDispatchError(error);
   }
 }
@@ -168,6 +172,10 @@ export async function addProjectMembers(payload: AddProjectMembersPayload) {
       message: `${parsed.members.length} users invited to the team.`
     };
   } catch (error) {
+    if (error instanceof ZodError) {
+      return { success: false, message: error.issues[0].message };
+    }
+
     handleDispatchError(error);
   }
 }
@@ -266,6 +274,10 @@ export async function getProjectMembers(payload: GetProjectMembersPayload) {
       members
     };
   } catch (error) {
+    if (error instanceof ZodError) {
+      return { success: false, message: error.issues[0].message };
+    }
+
     handleDispatchError(error);
   }
 }
@@ -305,6 +317,10 @@ export async function removeProjectMember(payload: DeleteMemberPayload) {
       message: "User removed successfully."
     };
   } catch (error) {
+    if (error instanceof ZodError) {
+      return { success: false, message: error.issues[0].message };
+    }
+
     handleDispatchError(error);
   }
 }
@@ -349,6 +365,10 @@ export async function getProjectMemberRole(
       member: data
     };
   } catch (error) {
+    if (error instanceof ZodError) {
+      return { success: false, message: error.issues[0].message };
+    }
+
     handleDispatchError(error);
   }
 }
@@ -383,6 +403,10 @@ export async function editProjectMemberRole(
       message: "Role edited successfully."
     };
   } catch (error) {
+    if (error instanceof ZodError) {
+      return { success: false, message: error.issues[0].message };
+    }
+
     handleDispatchError(error);
   }
 }
@@ -410,6 +434,10 @@ export async function getInvites() {
       invites: formatted
     };
   } catch (error) {
+    if (error instanceof ZodError) {
+      return { success: false, message: error.issues[0].message };
+    }
+
     handleDispatchError(error);
   }
 }
@@ -420,6 +448,10 @@ export async function acceptInvite(payload: AcceptInvitePayload) {
     await projectMembersQueries.acceptInvite(parsed.id);
     return { success: true, message: "Project invitation has been accepted." };
   } catch (error) {
+    if (error instanceof ZodError) {
+      return { success: false, message: error.issues[0].message };
+    }
+
     handleDispatchError(error);
   }
 }
@@ -430,6 +462,10 @@ export async function denyInvite(payload: AcceptInvitePayload) {
     await projectMembersQueries.denyInvite(parsed.id);
     return { success: true, message: "Project invitation has been denied." };
   } catch (error) {
+    if (error instanceof ZodError) {
+      return { success: false, message: error.issues[0].message };
+    }
+
     handleDispatchError(error);
   }
 }
@@ -448,6 +484,10 @@ export async function leaveProject(payload: LeaveProjectModal) {
 
     return { success: true, message: "You successfully left the project." };
   } catch (error) {
+    if (error instanceof ZodError) {
+      return { success: false, message: error.issues[0].message };
+    }
+
     handleDispatchError(error);
   }
 }

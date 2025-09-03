@@ -4,6 +4,7 @@ import {
   ChangeProjectDuePayload,
   ChangeTaskDuePayload
 } from "@/types/calendar";
+import { ZodError } from "zod";
 import projectQueries from "../queries/projects";
 import taskQueries from "../queries/tasks";
 import { getDaysRemaining } from "../utils/date-and-time";
@@ -54,6 +55,10 @@ export async function getCalendarEvents() {
       events
     };
   } catch (error) {
+    if (error instanceof ZodError) {
+      return { success: false, message: error.issues[0].message };
+    }
+
     handleDispatchError(error);
   }
 }
@@ -103,6 +108,10 @@ export async function getUpcomingDeadlines() {
       deadlines
     };
   } catch (error) {
+    if (error instanceof ZodError) {
+      return { success: false, message: error.issues[0].message };
+    }
+
     handleDispatchError(error);
   }
 }
@@ -133,6 +142,10 @@ export async function changeTaskDue(payload: ChangeTaskDuePayload) {
     await taskQueries.updateDueDate(parsed.id, parsed.dueDate);
     return { success: true, message: "Task due date updated successfully." };
   } catch (error) {
+    if (error instanceof ZodError) {
+      return { success: false, message: error.issues[0].message };
+    }
+
     handleDispatchError(error);
   }
 }
@@ -158,6 +171,10 @@ export async function changeProjectDue(payload: ChangeProjectDuePayload) {
     await projectQueries.updateDueDate(parsed.id, parsed.dueDate);
     return { success: true, message: "Project due date updated successfully." };
   } catch (error) {
+    if (error instanceof ZodError) {
+      return { success: false, message: error.issues[0].message };
+    }
+
     handleDispatchError(error);
   }
 }
