@@ -49,7 +49,7 @@ export default function Alert({
   return (
     <div
       className={cn(
-        "flex w-full items-start gap-3 rounded-sm border p-4",
+        "flex w-full items-start gap-3 rounded-xs border p-4",
         color
       )}>
       <div>{icon}</div>

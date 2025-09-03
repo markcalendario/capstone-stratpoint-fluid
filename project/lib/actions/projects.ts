@@ -12,7 +12,9 @@ import {
 import { ZodError } from "zod";
 import projectQueries from "..//queries/projects";
 import { formatDate } from "../utils/date-and-time";
+import { dispatchError, handleDispatchError } from "../utils/dispatch-error";
 import { upload } from "../utils/files";
+import { PERMISSION } from "../utils/permission-enum";
 import { isUserProjectOwner, toCardData } from "../utils/projects";
 import { hasPermission } from "../utils/rolePermissions";
 import { getUserId } from "../utils/users";
@@ -54,19 +56,10 @@ export async function createProject(payload: CreateProjectPayload) {
     };
   } catch (error) {
     if (error instanceof ZodError) {
-      return {
-        success: false,
-        message: error.issues[0].message,
-        projectId: null
-      };
+      return { success: false, message: error.issues[0].message };
     }
-    console.log(error);
 
-    return {
-      success: false,
-      message: "Error. Cannot create project.",
-      projectId: null
-    };
+    handleDispatchError(error);
   }
 }
 
@@ -90,18 +83,10 @@ export async function getRecentProjects() {
     };
   } catch (error) {
     if (error instanceof ZodError) {
-      return {
-        success: false,
-        message: error.issues[0].message,
-        recentProjects: []
-      };
+      return { success: false, message: error.issues[0].message };
     }
 
-    return {
-      success: false,
-      message: "Error. Cannot get recent projects.",
-      recentProjects: []
-    };
+    handleDispatchError(error);
   }
 }
 
@@ -119,14 +104,10 @@ export async function getProjects() {
     };
   } catch (error) {
     if (error instanceof ZodError) {
-      return { success: false, message: error.issues[0].message, projects: [] };
+      return { success: false, message: error.issues[0].message };
     }
 
-    return {
-      success: false,
-      message: "Error. Cannot get projects.",
-      projects: []
-    };
+    handleDispatchError(error);
   }
 }
 
@@ -135,16 +116,16 @@ export async function getProjectEditData(payload: GetProjectEditDataPayload) {
     const userId = await getUserId();
     const parsed = getProjectEditDataSchema.parse(payload);
 
-    if (!(await hasPermission(userId, parsed.id, "edit_project"))) {
-      return {
-        success: false,
-        message: "You are not permitted to edit this project"
-      };
-    }
+    const isPermitted = await hasPermission(
+      userId,
+      parsed.id,
+      PERMISSION.EDIT_PROJECT
+    );
+
+    if (!isPermitted) return dispatchError(401);
 
     const project = await projectQueries.get(parsed.id);
-
-    if (!project) return { success: false, message: "Project not found." };
+    if (!project) return dispatchError(404);
 
     const formatted = {
       id: project.id,
@@ -165,7 +146,7 @@ export async function getProjectEditData(payload: GetProjectEditDataPayload) {
       return { success: false, message: error.issues[0].message };
     }
 
-    return { success: false, message: "Error. Cannot get project." };
+    handleDispatchError(error);
   }
 }
 
@@ -174,16 +155,17 @@ export async function getProjectSlug(payload: GetProjectSlugPayload) {
     const userId = await getUserId();
     const parsed = getProjectSlugSchema.parse(payload);
 
-    if (!(await hasPermission(userId, parsed.id, "view_project"))) {
-      return {
-        success: false,
-        message: "You are not permitted to edit this project"
-      };
-    }
-
     const project = await projectQueries.get(parsed.id);
 
-    if (!project) return { success: true, message: "Project not found." };
+    if (!project) return dispatchError(404);
+
+    const isPermitted = await hasPermission(
+      userId,
+      parsed.id,
+      PERMISSION.VIEW_PROJECT
+    );
+
+    if (!isPermitted) return dispatchError(401);
 
     const formatted = {
       id: project.id,
@@ -204,24 +186,28 @@ export async function getProjectSlug(payload: GetProjectSlugPayload) {
     };
   } catch (error) {
     if (error instanceof ZodError) {
+      const isIdError = error.issues[0].path[0] === "id";
+      if (isIdError) return dispatchError(404);
+
       return { success: false, message: error.issues[0].message };
     }
 
-    return { success: false, message: "Error. Cannot get project." };
+    handleDispatchError(error);
   }
 }
 
 export async function deleteProject(payload: DeleteProjectPayload) {
   try {
-    const userId = await getUserId();
     const parsed = deleteProjectPayloadSchema.parse(payload);
+    const userId = await getUserId();
 
-    if (!(await hasPermission(userId, parsed.id, "delete_project"))) {
-      return {
-        success: false,
-        message: "You are not permitted to delete this project"
-      };
-    }
+    const isPermitted = await hasPermission(
+      userId,
+      parsed.id,
+      PERMISSION.DELETE_PROJECT
+    );
+
+    if (!isPermitted) return dispatchError(401);
 
     if (!(await isUserProjectOwner(userId, parsed.id))) {
       return { success: false, message: "You are not the project owner." };
@@ -235,7 +221,7 @@ export async function deleteProject(payload: DeleteProjectPayload) {
       return { success: false, message: error.issues[0].message };
     }
 
-    return { success: false, message: "Error. Cannot delete project." };
+    handleDispatchError(error);
   }
 }
 
@@ -244,12 +230,13 @@ export async function updateProject(payload: UpdateProjectPayload) {
     const userId = await getUserId();
     const parsed = updateProjectPayloadSchema.parse(payload);
 
-    if (!(await hasPermission(userId, parsed.projectId, "edit_project"))) {
-      return {
-        success: false,
-        message: "You are not permitted to edit this project"
-      };
-    }
+    const isPermitted = await hasPermission(
+      userId,
+      parsed.projectId,
+      "edit_project"
+    );
+
+    if (!isPermitted) return dispatchError(401);
 
     let imageUrl: string | undefined = undefined;
 
@@ -282,7 +269,7 @@ export async function updateProject(payload: UpdateProjectPayload) {
       return { success: false, message: error.issues[0].message };
     }
 
-    return { success: false, message: "Error. Cannot create project." };
+    handleDispatchError(error);
   }
 }
 
@@ -306,12 +293,10 @@ export async function getProjectOptions(payload: GetProjectOptionsPayload) {
       projects: formatted
     };
   } catch (error) {
-    console.log(error);
-
     if (error instanceof ZodError) {
       return { success: false, message: error.issues[0].message };
     }
 
-    return { success: false, message: "Error. Cannot retrieve projects." };
+    handleDispatchError(error);
   }
 }

@@ -64,11 +64,11 @@ export default function ImageUpload({
         )}
       </div>
 
-      <div className="border-primary rounded-xs border-2 p-2">
+      <div className="border-primary rounded-xs border-1 p-2">
         {/* Clickable image wrapper */}
         <div
           onClick={triggerFileInput}
-          className="group hover:border-primary dark:hover:border-primary relative m-auto h-32 w-32 cursor-pointer overflow-hidden rounded border-2 border-dashed border-neutral-300 transition dark:border-neutral-700">
+          className="group hover:border-primary dark:hover:border-primary relative m-auto h-32 w-32 cursor-pointer overflow-hidden rounded border-1 border-dashed border-neutral-300 transition dark:border-neutral-700">
           <Image
             fill
             sizes="(max-width: 768px) 100vw, 50vw"

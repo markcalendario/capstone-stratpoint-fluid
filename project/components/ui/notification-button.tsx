@@ -53,7 +53,7 @@ export default function InviteNotificationsButton() {
       </button>
 
       {isOpen && (
-        <div className="ring-primary/20 absolute right-[-15px] mt-2 w-fit min-w-[300px] space-y-2 rounded-sm bg-white p-3 shadow-sm ring-1 dark:bg-neutral-800">
+        <div className="ring-primary/20 fixed top-15 right-0 left-0 z-50 mx-4 rounded-xs bg-white p-4 shadow-md ring-1 sm:absolute sm:top-10 sm:right-[-15px] sm:left-auto sm:mx-0 sm:w-fit sm:min-w-[300px] sm:rounded-xs sm:p-3 sm:shadow-sm dark:bg-neutral-800">
           <InviteNotificationList />
         </div>
       )}
@@ -146,13 +146,13 @@ function InviteNotification({
                 <button
                   className="cursor-pointer"
                   onClick={handleAcceptInvite}>
-                  <Check size={10} />
+                  <Check size={16} />
                 </button>
 
                 <button
                   className="cursor-pointer"
                   onClick={handleDenyInvite}>
-                  <X size={10} />
+                  <X size={16} />
                 </button>
               </span>
             )}

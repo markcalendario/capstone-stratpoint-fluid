@@ -163,7 +163,7 @@ const projectMembersQueries = {
   acceptInvite: async (id: ProjectMemberSchema["id"]) => {
     await db
       .update(projectMembers)
-      .set({ isAccepted: true })
+      .set({ isAccepted: true, acceptedAt: new Date().toISOString() })
       .where(eq(projectMembers.id, id));
   },
 

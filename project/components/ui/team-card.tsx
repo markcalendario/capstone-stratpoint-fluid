@@ -36,7 +36,7 @@ export default function TeamCard({
 }: TeamCardProps) {
   return (
     <Fragment>
-      <div className={cn("border-primary/20 rounded-sm border", className)}>
+      <div className={cn("border-primary/20 rounded-xs border", className)}>
         <div className="mb-4 flex items-start justify-between">
           <div className="flex items-center space-x-3">
             <div className="ring-primary relative aspect-square w-10 overflow-hidden rounded-full ring-1">

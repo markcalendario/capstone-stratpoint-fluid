@@ -32,7 +32,7 @@ export default function ProjectCard({
   return (
     <div
       className={cn(
-        "ring-primary/20 relative block rounded-sm p-5 ring-2 ring-inset",
+        "ring-primary/20 relative block rounded-xs p-5 ring-1 ring-inset",
         className
       )}>
       <div className="flex flex-wrap justify-between gap-1">
@@ -51,7 +51,7 @@ export default function ProjectCard({
             fill
             alt={name}
             src={imageUrl}
-            className="rounded-sm object-cover"
+            className="rounded-xs object-cover"
             sizes="(max-width: 768px) 100vw, 33vw"
           />
         </div>

@@ -90,7 +90,7 @@ export default function Comment({
         src={authorImage}
         className="rounded-full"
       />
-      <div className="ring-primary/20 w-full space-y-2 rounded-sm bg-white p-4 ring-1 dark:bg-neutral-800">
+      <div className="ring-primary/20 w-full space-y-2 rounded-xs bg-white p-4 ring-1 dark:bg-neutral-800">
         <div className="flex items-center justify-between">
           <p className="text-sm leading-none font-medium text-neutral-700 dark:text-neutral-300">
             {isFromUser ? "You" : authorName}
@@ -138,7 +138,7 @@ export default function Comment({
 
         {!isEditState && (
           <p
-            className="rounded-sm bg-neutral-100 p-3 text-sm leading-5 text-neutral-600 dark:bg-neutral-900 dark:text-neutral-400"
+            className="rounded-xs bg-neutral-100 p-3 text-sm leading-5 text-neutral-600 dark:bg-neutral-900 dark:text-neutral-400"
             dangerouslySetInnerHTML={{ __html: content }}
           />
         )}

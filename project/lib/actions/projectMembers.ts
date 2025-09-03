@@ -17,6 +17,8 @@ import { ZodError } from "zod";
 import projectMembersQueries from "../queries/projectMembers";
 import projectQueries from "../queries/projects";
 import { getTimeDifference } from "../utils/date-and-time";
+import { dispatchError, handleDispatchError } from "../utils/dispatch-error";
+import { PERMISSION } from "../utils/permission-enum";
 import {
   getMembershipStatus,
   MEMBERSHIP_STATUS
@@ -51,18 +53,18 @@ export async function getProjectMembersOptions(
     const parsed = getProjectMembersOptionsPayloadSchema.parse(payload);
     const userId = await getUserId();
 
-    if (
-      !(await hasPermission(userId, parsed.projectId, "view_project_member"))
-    ) {
-      return {
-        success: false,
-        message: "Unauthorized. Cannot retrieve members options."
-      };
-    }
+    const isPermitted = await hasPermission(
+      userId,
+      parsed.projectId,
+      PERMISSION.VIEW_PROJECT_MEMBER
+    );
+
+    if (!isPermitted) return dispatchError(401);
 
     const members = await projectMembersQueries.getAcceptedByProject(
       parsed.projectId
     );
+
     const formatted = members.map((member) => {
       return {
         id: member.user.id,
@@ -73,10 +75,7 @@ export async function getProjectMembersOptions(
 
     // Include owner
     const owner = await getProjectOwner(parsed.projectId);
-
-    if (!owner) {
-      return { success: false, message: "Cannot find project owner." };
-    }
+    if (!owner) return dispatchError(404);
 
     formatted.push({
       id: owner.id,
@@ -108,14 +107,13 @@ export async function getNonProjectMembersOptions(
     const parsed = getNonProjectMembersOptionsPayloadSchema.parse(payload);
     const userId = await getUserId();
 
-    if (
-      !(await hasPermission(userId, parsed.projectId, "view_project_member"))
-    ) {
-      return {
-        success: false,
-        message: "Unauthorized. Cannot retrieve members options."
-      };
-    }
+    const isPermitted = await hasPermission(
+      userId,
+      parsed.projectId,
+      PERMISSION.VIEW_PROJECT_MEMBER
+    );
+
+    if (!isPermitted) return dispatchError(401);
 
     const nonMembers =
       await projectMembersQueries.getNonProjectMembersOptions(parsed);
@@ -140,10 +138,7 @@ export async function getNonProjectMembersOptions(
       return { success: false, message: error.issues[0].message };
     }
 
-    return {
-      success: false,
-      message: "Error. Cannot retrieve non project members."
-    };
+    handleDispatchError(error);
   }
 }
 
@@ -152,11 +147,13 @@ export async function addProjectMembers(payload: AddProjectMembersPayload) {
     const userId = await getUserId();
     const parsed = addProjectMembersPayloadSchema.parse(payload);
 
-    if (
-      !(await hasPermission(userId, parsed.projectId, "create_project_member"))
-    ) {
-      return { success: false, message: "Unauthorized. Cannot add members." };
-    }
+    const isPermitted = await hasPermission(
+      userId,
+      parsed.projectId,
+      PERMISSION.CREATE_PROJECT_MEMBER
+    );
+
+    if (!isPermitted) return dispatchError(401);
 
     for (const member of parsed.members) {
       const data = { projectId: parsed.projectId, ...member };
@@ -179,7 +176,7 @@ export async function addProjectMembers(payload: AddProjectMembersPayload) {
       return { success: false, message: error.issues[0].message };
     }
 
-    return { success: false, message: "Error. Cannot add team members." };
+    handleDispatchError(error);
   }
 }
 
@@ -188,18 +185,18 @@ export async function getProjectMembers(payload: GetProjectMembersPayload) {
   try {
     const userId = await getUserId();
     const parsed = getProjectMembersPayloadSchema.parse(payload);
+
+    const isPermitted = await hasPermission(
+      userId,
+      parsed.projectId,
+      PERMISSION.VIEW_PROJECT_MEMBER
+    );
+
+    if (!isPermitted) return dispatchError(401);
+
     const projectMembers = await projectMembersQueries.getByProject(
       parsed.projectId
     );
-
-    if (
-      !(await hasPermission(userId, parsed.projectId, "view_project_member"))
-    ) {
-      return {
-        success: false,
-        message: "Unauthorized. Cannot retrieve project members."
-      };
-    }
 
     const members = projectMembers.map((projectMember) => {
       const { user, isAccepted } = projectMember;
@@ -237,12 +234,9 @@ export async function getProjectMembers(payload: GetProjectMembersPayload) {
 
     // Include owner
 
-    const owner = await getProjectOwner(parsed.projectId);
     const ownerRole = "Project Owner";
-
-    if (!owner) {
-      return { success: false, message: "Cannot find project owner." };
-    }
+    const owner = await getProjectOwner(parsed.projectId);
+    if (!owner) return dispatchError(400);
 
     const ownerTasksDoneCount = owner.taskAssignments.filter((assignment) => {
       return (
@@ -281,14 +275,10 @@ export async function getProjectMembers(payload: GetProjectMembersPayload) {
     };
   } catch (error) {
     if (error instanceof ZodError) {
-      return { success: false, message: error.issues[0].message, members: [] };
+      return { success: false, message: error.issues[0].message };
     }
 
-    return {
-      success: false,
-      message: "Error. Cannot retrieve project members.",
-      members: []
-    };
+    handleDispatchError(error);
   }
 }
 
@@ -296,6 +286,14 @@ export async function removeProjectMember(payload: DeleteMemberPayload) {
   try {
     const userId = await getUserId();
     const parsed = removeProjectMemberPayloadSchema.parse(payload);
+
+    const isPermitted = await hasPermission(
+      userId,
+      parsed.projectId,
+      PERMISSION.DELETE_PROJECT_MEMBER
+    );
+
+    if (!isPermitted) return dispatchError(401);
 
     // Return when owner is being deleted
     if (await isUserProjectOwner(parsed.userId, parsed.projectId)) {
@@ -310,18 +308,9 @@ export async function removeProjectMember(payload: DeleteMemberPayload) {
       return { success: false, message: "You cannot remove yourself." };
     }
 
-    if (
-      !(await hasPermission(userId, parsed.projectId, "delete_project_member"))
-    ) {
-      return {
-        success: false,
-        message: "Unauthorized. Cannot remove members."
-      };
-    }
-
     await projectMembersQueries.removeTeamMember(parsed);
 
-    await unassignUserToProjectTasks(userId, parsed.projectId);
+    await unassignUserToProjectTasks(parsed.userId, parsed.projectId);
 
     return {
       success: true,
@@ -332,7 +321,7 @@ export async function removeProjectMember(payload: DeleteMemberPayload) {
       return { success: false, message: error.issues[0].message };
     }
 
-    return { success: false, message: "Error. Cannot remove member." };
+    handleDispatchError(error);
   }
 }
 
@@ -344,23 +333,20 @@ export async function getProjectMemberRole(
     const userId = await getUserId();
     const parsed = getProjectMembersRoleSchema.parse(payload);
 
-    if (
-      !(await hasPermission(userId, parsed.projectId, "view_project_member"))
-    ) {
-      return {
-        success: false,
-        message: "Unauthorized. Cannot retrieve project member roles."
-      };
-    }
+    const isPermitted = await hasPermission(
+      userId,
+      parsed.projectId,
+      PERMISSION.VIEW_PROJECT_MEMBER
+    );
+
+    if (!isPermitted) return dispatchError(401);
 
     const member = await projectMembersQueries.getByUserAndProject(
       parsed.projectId,
       parsed.userId
     );
 
-    if (!member) {
-      return { success: false, message: "Cannot find member." };
-    }
+    if (!member) return dispatchError(404);
 
     const data = {
       userId: member.userId,
@@ -383,10 +369,7 @@ export async function getProjectMemberRole(
       return { success: false, message: error.issues[0].message };
     }
 
-    return {
-      success: false,
-      message: "Error. Cannot remove member."
-    };
+    handleDispatchError(error);
   }
 }
 
@@ -401,15 +384,17 @@ export async function editProjectMemberRole(
     if (await isUserProjectOwner(parsed.userId, parsed.projectId)) {
       return {
         success: false,
-        message: "You cannot edit the project owner."
+        message: "You cannot edit the role of project owner."
       };
     }
 
-    if (
-      !(await hasPermission(userId, parsed.projectId, "edit_project_member"))
-    ) {
-      return { success: false, message: "Unauthorized. Cannot edit members." };
-    }
+    const isPermitted = await hasPermission(
+      userId,
+      parsed.projectId,
+      PERMISSION.EDIT_PROJECT_MEMBER
+    );
+
+    if (!isPermitted) return dispatchError(401);
 
     await projectMembersQueries.editMemberRole(parsed);
 
@@ -422,7 +407,7 @@ export async function editProjectMemberRole(
       return { success: false, message: error.issues[0].message };
     }
 
-    return { success: false, message: "Error. Edit role." };
+    handleDispatchError(error);
   }
 }
 
@@ -448,8 +433,12 @@ export async function getInvites() {
       message: "Invites retrieved successfully.",
       invites: formatted
     };
-  } catch {
-    return { success: false, message: "Error. Cannot retrieve invitations." };
+  } catch (error) {
+    if (error instanceof ZodError) {
+      return { success: false, message: error.issues[0].message };
+    }
+
+    handleDispatchError(error);
   }
 }
 
@@ -463,7 +452,7 @@ export async function acceptInvite(payload: AcceptInvitePayload) {
       return { success: false, message: error.issues[0].message };
     }
 
-    return { success: false, message: "Error. Cannot accept invite." };
+    handleDispatchError(error);
   }
 }
 
@@ -477,7 +466,7 @@ export async function denyInvite(payload: AcceptInvitePayload) {
       return { success: false, message: error.issues[0].message };
     }
 
-    return { success: false, message: "Error. Cannot deny invite." };
+    handleDispatchError(error);
   }
 }
 
@@ -499,6 +488,6 @@ export async function leaveProject(payload: LeaveProjectModal) {
       return { success: false, message: error.issues[0].message };
     }
 
-    return { success: false, message: "Error. Cannot leave project." };
+    handleDispatchError(error);
   }
 }

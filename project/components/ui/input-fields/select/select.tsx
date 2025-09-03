@@ -38,7 +38,7 @@ export default function Select({
         id={id}
         value={value}
         {...props}
-        className="border-primary w-full rounded-sm border-2 p-[10px] font-[500] placeholder-neutral-500 outline-0 dark:text-neutral-300 dark:placeholder-neutral-400">
+        className="border-primary w-full rounded-xs border-1 p-[10px] font-[500] placeholder-neutral-500 outline-0 dark:text-neutral-300 dark:placeholder-neutral-400">
         {children}
       </select>
     </div>

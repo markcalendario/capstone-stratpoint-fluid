@@ -21,7 +21,7 @@ export default function SliderTabs({
     "bg-neutral-200 dark:bg-neutral-800 text-neutral-800 dark:text-neutral-300 hover:bg-primary hover:text-white";
 
   return (
-    <div className="inline-flex flex-wrap overflow-hidden rounded-sm">
+    <div className="inline-flex flex-wrap overflow-hidden rounded-xs">
       {tabs.map((tab) => {
         const isActive = tab.value === active;
         const style = `${baseStyle} ${isActive ? activeStyle : inactiveStyle}`;

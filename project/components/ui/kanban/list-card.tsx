@@ -55,13 +55,13 @@ export default function ListCard({
       style={style}
       ref={setNodeRef}
       className="flex max-h-[600px] min-h-[500px] max-w-75 min-w-75 flex-col gap-3 overflow-auto duration-100 md:max-w-95 md:min-w-95">
-      <div className="bg-primary flex items-center justify-between rounded-t-sm px-4 py-3">
+      <div className="bg-primary flex items-center justify-between rounded-t-xs px-4 py-3">
         <div className="flex items-center gap-3">
           <p className="flex items-center gap-2 font-bold text-neutral-100">
             {isFinal ? <CircleDot size={14} /> : <CircleDashed size={14} />}
             {name}
           </p>
-          <p className="flex items-center gap-1 rounded-sm bg-neutral-100/10 p-1 text-xs text-neutral-300">
+          <p className="flex items-center gap-1 rounded-xs bg-neutral-100/10 p-1 text-xs text-neutral-300">
             <TableProperties size={12} />
             {tasksCount}
           </p>
@@ -111,7 +111,7 @@ export default function ListCard({
         <AddTaskButton
           listId={id}
           projectId={projectId}
-          className="border-primary/50 text-primary sticky bottom-2 flex w-full cursor-pointer items-center justify-center gap-2 rounded-sm border-1 border-dashed bg-white p-3 text-sm font-medium backdrop-blur-md dark:bg-neutral-800 dark:text-neutral-200"
+          className="border-primary/50 text-primary sticky bottom-2 flex w-full cursor-pointer items-center justify-center gap-2 rounded-xs border-1 border-dashed bg-white p-3 text-sm font-medium backdrop-blur-md dark:bg-neutral-800 dark:text-neutral-200"
         />
       )}
     </div>

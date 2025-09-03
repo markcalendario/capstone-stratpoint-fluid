@@ -48,7 +48,7 @@ export default function CommentBox({ taskId }: CommentBoxProps) {
         src={user.user.imageUrl}
         className="rounded-full"
       />
-      <div className="ring-primary/20 w-full space-y-2 rounded-sm bg-white p-4 ring-1 dark:bg-neutral-800">
+      <div className="ring-primary/20 w-full space-y-2 rounded-xs bg-white p-4 ring-1 dark:bg-neutral-800">
         <RichTextEditor
           id="comment"
           name="comment"

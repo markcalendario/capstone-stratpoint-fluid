@@ -10,6 +10,7 @@ import {
 import { clerkClient, currentUser } from "@clerk/nextjs/server";
 import { ZodError } from "zod";
 import userQueries from "../queries/users";
+import { dispatchError, handleDispatchError } from "../utils/dispatch-error";
 import {
   changePasswordPayloadSchema,
   createUserPayloadSchema,
@@ -21,13 +22,7 @@ import {
 export async function getProfileEditData() {
   try {
     const user = await currentUser();
-
-    if (!user) {
-      return {
-        success: false,
-        message: "Unauthorized. You are not logged in."
-      };
-    }
+    if (!user) return dispatchError(401);
 
     const { imageUrl, lastName, firstName, emailAddresses } = user;
 
@@ -43,11 +38,8 @@ export async function getProfileEditData() {
       message: "Profile settings data retrieved successfully.",
       data
     };
-  } catch {
-    return {
-      success: false,
-      message: "Error. Cannot retrieve profile settings data."
-    };
+  } catch (error) {
+    handleDispatchError(error);
   }
 }
 
@@ -60,12 +52,7 @@ export async function editProfile(payload: EditProfilePayload) {
     const user = await currentUser();
 
     // If no user is logged in, return an unauthorized response
-    if (!user) {
-      return {
-        success: false,
-        message: "Unauthorized. You are not logged in."
-      };
-    }
+    if (!user) return dispatchError(401);
 
     // Initialize the Clerk client
     const client = await clerkClient();
@@ -119,57 +106,12 @@ export async function editProfile(payload: EditProfilePayload) {
 
     return { success: true, message: "Profile saved successfully." };
   } catch (error) {
-    console.log(error);
-
     // Handle validation errors from Zod
     if (error instanceof ZodError) {
       return { success: false, message: error.issues[0].message };
     }
 
-    // Fallback error message for all other exceptions
-    return { success: false, message: "Error. cannot edit profile." };
-  }
-}
-
-export async function createUser(payload: CreateUserPayload) {
-  try {
-    const parsed = createUserPayloadSchema.parse(payload);
-    await userQueries.create(parsed);
-    return { success: true, message: "User created successfully." };
-  } catch (error) {
-    if (error instanceof ZodError) {
-      return { success: false, message: error.issues[0].message };
-    }
-
-    return { success: false, message: "Error. Cannot create user." };
-  }
-}
-
-export async function updateUser(payload: UpdateUserPayload) {
-  try {
-    const parsed = updateUserPayloadSchema.parse(payload);
-    await userQueries.updateByClerkId(parsed);
-    return { success: true, message: "User updated successfully." };
-  } catch (error) {
-    if (error instanceof ZodError) {
-      return { success: false, message: error.issues[0].message };
-    }
-
-    return { success: false, message: "Error. Cannot update user." };
-  }
-}
-
-export async function deleteUser(payload: DeleteUserPayload) {
-  try {
-    const parsed = deleteUserPayloadSchema.parse(payload);
-    await userQueries.softDeleteByClerkId(parsed.clerkId);
-    return { success: true, message: "User deleted successfully." };
-  } catch (error) {
-    if (error instanceof ZodError) {
-      return { success: false, message: error.issues[0].message };
-    }
-
-    return { success: false, message: "Error. Cannot delete user." };
+    handleDispatchError(error);
   }
 }
 
@@ -214,5 +156,49 @@ export async function changePassword(payload: ChangePasswordPayload) {
     }
 
     return { success: false, message: "Error. Cannot change password." };
+  }
+}
+
+// Webhook utilities, must return { success, message } only.
+
+export async function createUser(payload: CreateUserPayload) {
+  try {
+    const parsed = createUserPayloadSchema.parse(payload);
+    await userQueries.create(parsed);
+    return { success: true, message: "User created successfully." };
+  } catch (error) {
+    if (error instanceof ZodError) {
+      return { success: false, message: error.issues[0].message };
+    }
+
+    return { success: false, message: "Error. Cannot create user." };
+  }
+}
+
+export async function updateUser(payload: UpdateUserPayload) {
+  try {
+    const parsed = updateUserPayloadSchema.parse(payload);
+    await userQueries.updateByClerkId(parsed);
+    return { success: true, message: "User updated successfully." };
+  } catch (error) {
+    if (error instanceof ZodError) {
+      return { success: false, message: error.issues[0].message };
+    }
+
+    return { success: false, message: "Error. Cannot update user." };
+  }
+}
+
+export async function deleteUser(payload: DeleteUserPayload) {
+  try {
+    const parsed = deleteUserPayloadSchema.parse(payload);
+    await userQueries.softDeleteByClerkId(parsed.clerkId);
+    return { success: true, message: "User deleted successfully." };
+  } catch (error) {
+    if (error instanceof ZodError) {
+      return { success: false, message: error.issues[0].message };
+    }
+
+    return { success: false, message: "Error. Cannot delete user." };
   }
 }

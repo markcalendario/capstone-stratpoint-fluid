@@ -62,7 +62,7 @@ function RenderMembers({ projectId }: RenderMembersProps) {
       {canAddMember && (
         <AddTeamMemberButton
           preSelectedId={projectId}
-          className="border-primary/20 text-primary border-2 border-dashed bg-white text-center text-lg dark:bg-neutral-800 dark:text-neutral-200"
+          className="border-primary/20 text-primary border-1 border-dashed bg-white text-center text-lg dark:bg-neutral-800 dark:text-neutral-200"
         />
       )}
       {projectMembers.members.map((member, i) => (

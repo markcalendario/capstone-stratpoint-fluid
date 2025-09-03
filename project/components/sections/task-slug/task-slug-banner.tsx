@@ -43,7 +43,7 @@ export default function TaskSlugBanner({
   return (
     <DashboardContent
       tight
-      className="ring-primary/20 bg-white ring-2 dark:bg-neutral-800">
+      className="ring-primary/20 bg-white ring-1 dark:bg-neutral-800">
       <div className="space-y-3">
         <div className="flex gap-1">
           <Badge type={priorityColors[priority]}>{toTitleCase(priority)}</Badge>

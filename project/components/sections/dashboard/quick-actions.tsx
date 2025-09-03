@@ -3,7 +3,7 @@ import { CreateProjectButton } from "@/components/ui/buttons/create-project-butt
 
 export default function QuickActions() {
   return (
-    <div className="border-primary/20 rounded-sm border-2 bg-white p-6 dark:bg-neutral-800">
+    <div className="border-primary/20 rounded-xs border-1 bg-white p-6 dark:bg-neutral-800">
       <h3 className="mb-4 text-lg font-semibold text-neutral-800 dark:text-neutral-200">
         Quick Actions
       </h3>

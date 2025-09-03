@@ -16,7 +16,7 @@ export async function unassignUserToProjectTasks(
     .map((task) => task.id);
 
   for (const taskId of taskIds) {
-    taskAssignmentsQueries.unassignUserToTasks(userId, taskId);
+    await taskAssignmentsQueries.unassignUserToTasks(userId, taskId);
   }
 
   return true;

@@ -14,7 +14,9 @@ export default function Dashboard({ children }: DashboardProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const isOnMobile = useIsOnMobile();
 
-  const toggleSidebar = () => setIsSidebarOpen((prev) => !prev);
+  const toggleSidebar = () => {
+    isOnMobile ? setIsSidebarOpen((prev) => !prev) : null;
+  };
 
   useEffect(() => {
     setIsSidebarOpen(isOnMobile !== null && isOnMobile !== true);
@@ -23,7 +25,10 @@ export default function Dashboard({ children }: DashboardProps) {
   return (
     <section className="dashboard-grid min-h-screen">
       <Navbar toggleSidebar={toggleSidebar} />
-      <Sidebar isOpen={isSidebarOpen} />
+      <Sidebar
+        isOpen={isSidebarOpen}
+        toggleSidebar={toggleSidebar}
+      />
       <Main>{children}</Main>
     </section>
   );

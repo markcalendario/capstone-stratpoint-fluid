@@ -21,7 +21,7 @@ export default function SignInForm() {
 
             // Social Buttons
             socialButtonsBlockButton:
-              "py-[10px] bg-white dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 outline-1 hover:outline-2 outline-neutral-300 dark:outline-neutral-700",
+              "py-[10px] bg-white dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 outline-1 hover:outline-1 outline-neutral-300 dark:outline-neutral-700",
 
             // Divider
             dividerLine: "bg-neutral-300 dark:bg-neutral-700",
@@ -30,14 +30,24 @@ export default function SignInForm() {
             // Form
             formFieldLabel: "text-neutral-900 dark:text-neutral-400",
             formFieldInput:
-              "py-[10px] bg-white dark:bg-neutral-900 text-neutral-800 dark:text-neutral-100 placeholder-neutral-500 shadow-none outline-1 hover:outline-2 focus:outline-2 outline-offset-0 outline-neutral-300 dark:outline-neutral-700",
+              "py-[10px] bg-white dark:bg-neutral-900 text-neutral-800 dark:text-neutral-100 placeholder-neutral-500 shadow-none outline-1 hover:outline-1 focus:outline-1 outline-offset-0 outline-neutral-300 dark:outline-neutral-700",
             formButtonPrimary:
               "py-[10px] bg-primary hover:bg-primary text-white rounded-none shadow-none",
+
+            formResendCodeLink: "dark:text-neutral-200 text-neutral-800",
+            otpCodeFieldInput: "dark:bg-neutral-900 dark:text-neutral-200",
+
+            identityPreviewText: "dark:text-neutral-200",
+            identityPreviewEditButtonIcon: "dark:text-neutral-200",
+
+            backLink: "dark:text-neutral-200",
 
             // Footer
             footerAction: "w-full bg-neutral-100 dark:bg-neutral-700",
             footerActionText: "text-neutral-600 dark:text-neutral-300",
-            footerActionLink: "text-primary dark:text-white"
+            footerActionLink: "text-primary dark:text-white",
+
+            footerAction__alternativeMethods: "bg-none py-2 px-3"
           }
         }}
         signUpUrl="/sign-up"

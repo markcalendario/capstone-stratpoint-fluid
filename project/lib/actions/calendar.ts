@@ -8,6 +8,7 @@ import { ZodError } from "zod";
 import projectQueries from "../queries/projects";
 import taskQueries from "../queries/tasks";
 import { getDaysRemaining } from "../utils/date-and-time";
+import { dispatchError, handleDispatchError } from "../utils/dispatch-error";
 import { PERMISSION } from "../utils/permission-enum";
 import { hasPermission } from "../utils/rolePermissions";
 import { getUserId } from "../utils/users";
@@ -53,11 +54,12 @@ export async function getCalendarEvents() {
       message: "Calendar events retrieved successfully.",
       events
     };
-  } catch {
-    return {
-      success: false,
-      message: "Error. Cannot retrieve calendar events."
-    };
+  } catch (error) {
+    if (error instanceof ZodError) {
+      return { success: false, message: error.issues[0].message };
+    }
+
+    handleDispatchError(error);
   }
 }
 
@@ -105,11 +107,12 @@ export async function getUpcomingDeadlines() {
       message: "Upcoming deadlines retrieved successfully.",
       deadlines
     };
-  } catch {
-    return {
-      success: false,
-      message: "Error. Cannot retrieve upcomign deadlines."
-    };
+  } catch (error) {
+    if (error instanceof ZodError) {
+      return { success: false, message: error.issues[0].message };
+    }
+
+    handleDispatchError(error);
   }
 }
 
@@ -118,9 +121,7 @@ export async function changeTaskDue(payload: ChangeTaskDuePayload) {
     const parsed = changeTaskDuePayloadSchema.parse(payload);
     const task = await taskQueries.getTask(parsed.id);
 
-    if (!task) {
-      return { success: false, message: "Task not found." };
-    }
+    if (!task) return dispatchError(404);
 
     const userId = await getUserId();
     const projectId = task.list.projectId;
@@ -134,7 +135,7 @@ export async function changeTaskDue(payload: ChangeTaskDuePayload) {
     if (!isPermitted) {
       return {
         success: false,
-        message: "Unauthorized. You are not permitted to change task due date."
+        message: "You are not permitted to change due date of this task."
       };
     }
 
@@ -144,9 +145,8 @@ export async function changeTaskDue(payload: ChangeTaskDuePayload) {
     if (error instanceof ZodError) {
       return { success: false, message: error.issues[0].message };
     }
-    console.log(error);
 
-    return { success: false, message: "Error. Cannot change task due date." };
+    handleDispatchError(error);
   }
 }
 
@@ -164,8 +164,7 @@ export async function changeProjectDue(payload: ChangeProjectDuePayload) {
     if (!isPermitted) {
       return {
         success: false,
-        message:
-          "Unauthorized. You are not permitted to change project due date."
+        message: "You are not permitted to change due date of this project."
       };
     }
 
@@ -175,11 +174,7 @@ export async function changeProjectDue(payload: ChangeProjectDuePayload) {
     if (error instanceof ZodError) {
       return { success: false, message: error.issues[0].message };
     }
-    console.log(error);
 
-    return {
-      success: false,
-      message: "Error. Cannot change project due date."
-    };
+    handleDispatchError(error);
   }
 }

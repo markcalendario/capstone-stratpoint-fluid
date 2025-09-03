@@ -34,7 +34,7 @@ export default function UserRolePicker({
   }
 
   return (
-    <div className="ring-primary flex w-full items-center justify-between gap-2 rounded-sm bg-neutral-100 p-3 transition dark:bg-neutral-900 dark:hover:ring-2">
+    <div className="ring-primary flex w-full items-center justify-between gap-2 rounded-xs bg-neutral-100 p-3 transition dark:bg-neutral-900 dark:hover:ring-1">
       <div className="flex items-center gap-3">
         <Image
           alt={name}
@@ -51,7 +51,7 @@ export default function UserRolePicker({
       <Dropdown
         label={role.title}
         items={dropdownItems}
-        className="border-primary/20 rounded-sm border bg-white px-3 py-1 text-sm font-medium dark:bg-neutral-800 dark:text-neutral-300"
+        className="border-primary/20 rounded-xs border bg-white px-3 py-1 text-sm font-medium dark:bg-neutral-800 dark:text-neutral-300"
       />
     </div>
   );

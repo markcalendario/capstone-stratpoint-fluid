@@ -32,7 +32,7 @@ export default function ProjectTypeBadge({ type }: ProjectTypeBadgeProps) {
     <span
       className={cn(
         projectTypeColors[type],
-        "inline-block rounded-sm border border-current px-2 py-1 text-[10px] font-medium"
+        "inline-block rounded-xs border border-current px-2 py-1 text-[10px] font-medium"
       )}>
       {toTitleCase(type)}
     </span>

@@ -13,6 +13,8 @@ import {
   broadcastDiscussionUpdate,
   getDiscussionsByTask
 } from "../utils/discussions";
+import { dispatchError, handleDispatchError } from "../utils/dispatch-error";
+import { PERMISSION } from "../utils/permission-enum";
 import { hasPermission } from "../utils/rolePermissions";
 import { getUserId } from "../utils/users";
 import {
@@ -28,14 +30,15 @@ export async function getTaskDiscussions(payload: GetTaskDiscussionsPayload) {
     const parsed = getTaskDiscussionsPayloadSchema.parse(payload);
 
     const task = await taskQueries.getTask(parsed.taskId);
-    if (!task) return { success: false, message: "Task not found." };
+    if (!task) return dispatchError(404);
 
-    if (!(await hasPermission(userId, task.list.projectId, "view_comment"))) {
-      return {
-        success: false,
-        message: "Unauthorized. Cannot retrieve discussions."
-      };
-    }
+    const isPermitted = await hasPermission(
+      userId,
+      task.list.projectId,
+      PERMISSION.VIEW_COMMENT
+    );
+
+    if (!isPermitted) dispatchError(401);
 
     const discussions = await getDiscussionsByTask(parsed.taskId, userId);
 
@@ -49,10 +52,7 @@ export async function getTaskDiscussions(payload: GetTaskDiscussionsPayload) {
       return { success: false, message: error.issues[0].message };
     }
 
-    return {
-      success: false,
-      message: "Error. Cannot retrieve task discussions."
-    };
+    handleDispatchError(error);
   }
 }
 
@@ -64,11 +64,15 @@ export async function createTaskDiscussion(
     const parsed = createTaskDiscussionPayloadSchema.parse(payload);
 
     const task = await taskQueries.getTask(parsed.taskId);
-    if (!task) return { success: false, message: "Task not found." };
+    if (!task) return dispatchError(404);
 
-    if (!(await hasPermission(userId, task.list.projectId, "create_comment"))) {
-      return { success: false, message: "Unauthorized. Cannot post comment." };
-    }
+    const isPermitted = await hasPermission(
+      userId,
+      task.list.projectId,
+      PERMISSION.CREATE_COMMENT
+    );
+
+    if (!isPermitted) return dispatchError(401);
 
     await taskDiscussionsQueries.create({
       authorId: userId,
@@ -84,10 +88,7 @@ export async function createTaskDiscussion(
       return { success: false, message: error.issues[0].message };
     }
 
-    return {
-      success: false,
-      message: "Error. Cannot post task discussion."
-    };
+    handleDispatchError(error);
   }
 }
 
@@ -106,7 +107,7 @@ export async function updateTaskDiscussion(
     const isPermitted = await hasPermission(
       userId,
       projectId,
-      "create_comment"
+      PERMISSION.EDIT_COMMENT
     );
 
     if (!isUserOwner || !isPermitted) {
@@ -146,34 +147,23 @@ export async function deleteTaskDiscussion(
 
     if (!comment) return { success: false, message: "Task not found." };
     const projectId = comment.task.list.projectId;
-
     const isUserOwner = userId === comment.user.id;
     const isPermitted = await hasPermission(
       userId,
       projectId,
-      "create_comment"
+      PERMISSION.DELETE_COMMENT
     );
 
-    if (!isUserOwner || !isPermitted) {
-      return {
-        success: false,
-        message: "Unauthorized. Cannot delete comment."
-      };
-    }
+    if (!isUserOwner || !isPermitted) return dispatchError(401);
 
     await taskDiscussionsQueries.delete(parsed.id);
-
     await broadcastDiscussionUpdate(comment.taskId, userId);
-
     return { success: true, message: "Task discussion deleted successfully." };
   } catch (error) {
     if (error instanceof ZodError) {
       return { success: false, message: error.issues[0].message };
     }
 
-    return {
-      success: false,
-      message: "Error. Cannot delete task discussion."
-    };
+    handleDispatchError(error);
   }
 }

@@ -10,15 +10,19 @@ import {
   UpdateAttachmentPayload
 } from "@/types/tasks";
 import { ZodError } from "zod";
+import projectQueries from "../queries/projects";
 import taskAssignmentsQueries from "../queries/taskAssignments";
 import taskQueries from "../queries/tasks";
 import {
   formatDate,
   getDaysRemaining,
+  isDateAfterDate,
   isOverdue
 } from "../utils/date-and-time";
+import { dispatchError, handleDispatchError } from "../utils/dispatch-error";
 import { upload } from "../utils/files";
 import { broadcastKanbanUpdate } from "../utils/kanban";
+import { PERMISSION } from "../utils/permission-enum";
 import { hasPermission } from "../utils/rolePermissions";
 import { getUserId } from "../utils/users";
 import {
@@ -35,13 +39,32 @@ export async function createAndAssignTask(payload: CreateAndAssignTaskPayload) {
     const parsed = createAndAssignTaskPayloadSchema.parse(payload);
     const userId = await getUserId();
 
-    if (!(await hasPermission(userId, parsed.projectId, "create_task"))) {
-      return { success: false, message: "Unauthorized. Cannot create task." };
-    }
+    const isPermitted = await hasPermission(
+      userId,
+      parsed.projectId,
+      PERMISSION.CREATE_TASK
+    );
+
+    if (!isPermitted) return dispatchError(401);
 
     let attachment: string | null = null;
     if (parsed.attachment) {
       attachment = await upload({ file: parsed.attachment });
+    }
+
+    const project = await projectQueries.get(parsed.projectId);
+    if (!project) return dispatchError(404);
+
+    const isTaskDueDateAfterProject = isDateAfterDate(
+      new Date(parsed.dueDate),
+      new Date(project.dueDate)
+    );
+
+    if (isTaskDueDateAfterProject) {
+      return {
+        success: false,
+        message: "Task due date cannot be after project."
+      };
     }
 
     const position = (await taskQueries.getMaxPosition(parsed.listId)) + 1;
@@ -73,10 +96,7 @@ export async function createAndAssignTask(payload: CreateAndAssignTaskPayload) {
       return { success: false, message: error.issues[0].message };
     }
 
-    return {
-      success: false,
-      message: "Error. Cannot create task."
-    };
+    handleDispatchError(error);
   }
 }
 
@@ -86,11 +106,15 @@ export async function deleteTask(payload: DeleteTaskPayload) {
     const parsed = deleteTaskPayloadSchema.parse(payload);
 
     const task = await taskQueries.getTask(parsed.id);
-    if (!task) return { success: false, message: "Task not found." };
+    if (!task) return dispatchError(404);
 
-    if (!(await hasPermission(userId, task.list.projectId, "delete_task"))) {
-      return { success: false, message: "Unauthorized. Cannot delete task." };
-    }
+    const isPermitted = await hasPermission(
+      userId,
+      task.list.projectId,
+      PERMISSION.DELETE_TASK
+    );
+
+    if (!isPermitted) return dispatchError(401);
 
     await taskQueries.delete(parsed.id);
 
@@ -103,7 +127,7 @@ export async function deleteTask(payload: DeleteTaskPayload) {
       return { success: false, message: error.issues[0].message };
     }
 
-    return { success: false, message: "Error. Cannot delete task." };
+    handleDispatchError(error);
   }
 }
 
@@ -113,10 +137,26 @@ export async function editTask(payload: EditTaskPayload) {
     const parsed = updateTaskPayloadSchema.parse(payload);
 
     const task = await taskQueries.getTask(parsed.id);
-    if (!task) return { success: false, message: "Task not found." };
+    if (!task) return dispatchError(404);
 
-    if (!(await hasPermission(userId, task.list.projectId, "edit_task"))) {
-      return { success: false, message: "Unauthorized. Cannot edit task." };
+    const isPermitted = await hasPermission(
+      userId,
+      task.list.projectId,
+      PERMISSION.EDIT_TASK
+    );
+
+    if (!isPermitted) return dispatchError(401);
+
+    const isTaskDueDateAfterProject = isDateAfterDate(
+      new Date(parsed.dueDate),
+      new Date(task.list.project.dueDate)
+    );
+
+    if (isTaskDueDateAfterProject) {
+      return {
+        success: false,
+        message: "Task due date cannot be after project."
+      };
     }
 
     const editTaskPayload = {
@@ -140,10 +180,7 @@ export async function editTask(payload: EditTaskPayload) {
       return { success: false, message: error.issues[0].message };
     }
 
-    return {
-      success: false,
-      message: "Error. Cannot create task."
-    };
+    handleDispatchError(error);
   }
 }
 
@@ -154,11 +191,15 @@ export async function moveTask(payload: MoveTaskPayload) {
     const { taskId, newListId, newPosition } = parsed;
 
     const task = await taskQueries.getTask(taskId);
-    if (!task) return { success: false, message: "Task not found." };
+    if (!task) return dispatchError(404);
 
-    if (!(await hasPermission(userId, task.list.projectId, "edit_task"))) {
-      return { success: false, message: "Unauthorized. Cannot move task." };
-    }
+    const isPermitted = await hasPermission(
+      userId,
+      task.list.projectId,
+      PERMISSION.EDIT_TASK
+    );
+
+    if (!isPermitted) return dispatchError(401);
 
     // Get tasks in the new list (in order)
     const tasks = await taskQueries.getByList(newListId);
@@ -204,7 +245,7 @@ export async function moveTask(payload: MoveTaskPayload) {
       return { success: false, message: error.issues[0].message };
     }
 
-    return { success: false, message: "Error. Cannot move task." };
+    handleDispatchError(error);
   }
 }
 
@@ -214,11 +255,15 @@ export async function getTaskSlug(payload: GetTaskSlugPayload) {
     const parsed = getTaskSlugSchema.parse(payload);
 
     const task = await taskQueries.getTask(parsed.id);
-    if (!task) return { success: false, message: "Task not found." };
+    if (!task) return dispatchError(404);
 
-    if (!(await hasPermission(userId, task.list.projectId, "view_task"))) {
-      return { success: false, message: "Unauthorized. Cannot get task." };
-    }
+    const isPermitted = await hasPermission(
+      userId,
+      task.list.projectId,
+      PERMISSION.VIEW_TASK
+    );
+
+    if (!isPermitted) return dispatchError(401);
 
     const formatted = {
       title: task.title,
@@ -245,13 +290,13 @@ export async function getTaskSlug(payload: GetTaskSlugPayload) {
     };
   } catch (error) {
     if (error instanceof ZodError) {
+      const isIdError = error.issues[0].path[0] === "id";
+      if (isIdError) return dispatchError(404);
+
       return { success: false, message: error.issues[0].message };
     }
 
-    return {
-      success: false,
-      message: "Error. Cannot retrieve task slug data."
-    };
+    handleDispatchError(error);
   }
 }
 
@@ -261,14 +306,15 @@ export async function getTaskEditData(payload: GetTaskEditDataPayload) {
     const parsed = getTaskSlugSchema.parse(payload);
 
     const task = await taskQueries.getTask(parsed.id);
-    if (!task) return { success: false, message: "Task not found." };
+    if (!task) return dispatchError(404);
 
-    if (!(await hasPermission(userId, task.list.projectId, "edit_task"))) {
-      return {
-        success: false,
-        message: "Unauthorized. Cannot retrieve edit task data."
-      };
-    }
+    const isPermitted = await hasPermission(
+      userId,
+      task.list.projectId,
+      PERMISSION.EDIT_TASK
+    );
+
+    if (!isPermitted) return dispatchError(401);
 
     const formatted = {
       title: task.title,
@@ -288,10 +334,7 @@ export async function getTaskEditData(payload: GetTaskEditDataPayload) {
       return { success: false, message: error.issues[0].message };
     }
 
-    return {
-      success: false,
-      message: "Error. Cannot retrieve task edit data."
-    };
+    handleDispatchError(error);
   }
 }
 
@@ -301,14 +344,15 @@ export async function updateAttachment(payload: UpdateAttachmentPayload) {
     const parsed = updateAttachmentSchema.parse(payload);
 
     const task = await taskQueries.getTask(parsed.id);
-    if (!task) return { success: false, message: "Task not found." };
+    if (!task) return dispatchError(404);
 
-    if (!(await hasPermission(userId, task.list.projectId, "edit_task"))) {
-      return {
-        success: false,
-        message: "Unauthorized. Cannot edit attachment."
-      };
-    }
+    const isPermitted = await hasPermission(
+      userId,
+      task.list.projectId,
+      PERMISSION.EDIT_TASK
+    );
+
+    if (!isPermitted) return dispatchError(401);
 
     if (!parsed.file) {
       return { success: false, message: "No file attached." };
@@ -323,9 +367,6 @@ export async function updateAttachment(payload: UpdateAttachmentPayload) {
       return { success: false, message: error.issues[0].message };
     }
 
-    return {
-      success: false,
-      message: "Error. Cannot update attachment."
-    };
+    handleDispatchError(error);
   }
 }

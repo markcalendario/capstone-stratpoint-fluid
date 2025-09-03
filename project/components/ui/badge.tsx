@@ -25,7 +25,7 @@ export default function Badge({
     <span
       className={cn(
         badgeColors[type],
-        "inline-block rounded-sm px-2 py-1 text-[10px] font-medium",
+        "inline-block rounded-xs px-2 py-1 text-[10px] font-medium",
         className
       )}>
       {children}

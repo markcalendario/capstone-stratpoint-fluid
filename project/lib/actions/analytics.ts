@@ -10,6 +10,7 @@ import { ZodError } from "zod";
 import projectQueries from "../queries/projects";
 import { priorities } from "../utils/constants";
 import { dayStartOfWeek, isOverdue } from "../utils/date-and-time";
+import { dispatchError, handleDispatchError } from "../utils/dispatch-error";
 import { toTitleCase } from "../utils/formatters";
 import { PERMISSION } from "../utils/permission-enum";
 import { hasPermission } from "../utils/rolePermissions";
@@ -94,7 +95,7 @@ export async function getDashboardStatus() {
       return { success: false, message: error.issues[0].message };
     }
 
-    return { success: false, message: "Error. Cannot get dashboard status." };
+    handleDispatchError(error);
   }
 }
 
@@ -106,9 +107,7 @@ export async function getProjectProgress(payload: GetProjectProgressPayload) {
 
     const project = await projectQueries.get(projectId);
 
-    if (!project) {
-      return { success: false, message: "Project is not found." };
-    }
+    if (!project) return dispatchError(401);
 
     const isPermitted = await hasPermission(
       userId,
@@ -116,9 +115,7 @@ export async function getProjectProgress(payload: GetProjectProgressPayload) {
       PERMISSION.VIEW_PROJECT
     );
 
-    if (!isPermitted) {
-      return { success: false, message: "Error. Cannot view project." };
-    }
+    if (!isPermitted) return dispatchError(401);
 
     const pendingCount = project.lists
       .filter((list) => !list.isFinal)
@@ -149,10 +146,7 @@ export async function getProjectProgress(payload: GetProjectProgressPayload) {
       return { success: false, message: error.issues[0].message };
     }
 
-    return {
-      success: false,
-      message: "Error. Cannot retrieve project progress."
-    };
+    handleDispatchError(error);
   }
 }
 
@@ -164,9 +158,7 @@ export async function getStatusByPriority(payload: GetStatusByPriorityPayload) {
 
     const project = await projectQueries.get(projectId);
 
-    if (!project) {
-      return { success: false, message: "Project is not found." };
-    }
+    if (!project) return dispatchError(404);
 
     const isPermitted = await hasPermission(
       userId,
@@ -174,9 +166,7 @@ export async function getStatusByPriority(payload: GetStatusByPriorityPayload) {
       PERMISSION.VIEW_PROJECT
     );
 
-    if (!isPermitted) {
-      return { success: false, message: "Error. Cannot view project." };
-    }
+    if (!isPermitted) return dispatchError(401);
 
     // Build the initial structure
     const priorityMap = {
@@ -213,10 +203,7 @@ export async function getStatusByPriority(payload: GetStatusByPriorityPayload) {
       return { success: false, message: error.issues[0].message };
     }
 
-    return {
-      success: false,
-      message: "Error. Cannot retrieve project status by priority."
-    };
+    handleDispatchError(error);
   }
 }
 
@@ -232,18 +219,11 @@ export async function getAnalyticsSummary(payload: GetAnalyticsSummaryPayload) {
       PERMISSION.VIEW_PROJECT
     );
 
-    if (!isPermitted) {
-      return {
-        success: false,
-        message: "Unauthorized. Cannot view project analytics."
-      };
-    }
+    if (!isPermitted) return dispatchError(401);
 
     const project = await projectQueries.get(parsed.projectId);
 
-    if (!project) {
-      return { success: false, message: "Not found. Project not found." };
-    }
+    if (!project) return dispatchError(404);
 
     // Done tasks
     const doneTasksCount = project.lists
@@ -278,6 +258,6 @@ export async function getAnalyticsSummary(payload: GetAnalyticsSummaryPayload) {
       return { success: false, message: error.issues[0].message };
     }
 
-    return { success: false, message: "Error. Cannot get dashboard status." };
+    handleDispatchError(error);
   }
 }

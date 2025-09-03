@@ -31,7 +31,7 @@ export default function Radio({
       />
       <label
         htmlFor={id}
-        className="border-primary/20 peer-checked:border-primary peer-checked:bg-primary/5 peer-checked:text-primary dark:peer-checked:border-primary/50 inline-flex w-full cursor-pointer items-center justify-between rounded-sm border-2 text-gray-500 hover:bg-gray-50 hover:text-gray-600 dark:text-gray-400 dark:peer-checked:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-gray-300">
+        className="border-primary/20 peer-checked:border-primary peer-checked:bg-primary/5 peer-checked:text-primary dark:peer-checked:border-primary/50 inline-flex w-full cursor-pointer items-center justify-between rounded-xs border-1 text-gray-500 hover:bg-gray-50 hover:text-gray-600 dark:text-gray-400 dark:peer-checked:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-gray-300">
         <div className="flex items-start space-x-3 p-2">
           {Icon && (
             <Icon

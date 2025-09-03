@@ -7,7 +7,9 @@ import {
 import { ZodError } from "zod";
 import taskAssignmentsQueries from "../queries/taskAssignments";
 import taskQueries from "../queries/tasks";
+import { dispatchError, handleDispatchError } from "../utils/dispatch-error";
 import { broadcastKanbanUpdate } from "../utils/kanban";
+import { PERMISSION } from "../utils/permission-enum";
 import { hasPermission } from "../utils/rolePermissions";
 import { getUserId } from "../utils/users";
 import {
@@ -21,14 +23,15 @@ export async function getTaskAssignments(payload: GetTaskAssignmentsPayload) {
     const parsed = getTaskAssignmentsPayloadSchema.parse(payload);
     const task = await taskQueries.getTask(parsed.taskId);
 
-    if (!task) return { success: false, message: "Task not found." };
+    if (!task) return dispatchError(404);
 
-    if (!(await hasPermission(userId, task.list.projectId, "view_task"))) {
-      return {
-        success: false,
-        message: "Unauthorized. Cannot retrieve assigned members."
-      };
-    }
+    const isPermitted = await hasPermission(
+      userId,
+      task.list.projectId,
+      PERMISSION.VIEW_TASK
+    );
+
+    if (!isPermitted) return dispatchError(401);
 
     const assignments = await taskAssignmentsQueries.getByTask(parsed.taskId);
     const formatted = assignments.map((assignment) => assignment.userId);
@@ -43,10 +46,7 @@ export async function getTaskAssignments(payload: GetTaskAssignmentsPayload) {
       return { success: false, message: error.issues[0].message };
     }
 
-    return {
-      success: false,
-      message: "Error. Cannot retrieve task assignments."
-    };
+    handleDispatchError(error);
   }
 }
 
@@ -58,14 +58,15 @@ export async function updateTaskAssignment(
     const parsed = updateAssignmentPayloadSchema.parse(payload);
     const task = await taskQueries.getTask(parsed.taskId);
 
-    if (!task) return { success: false, message: "Task not found." };
+    if (!task) return dispatchError(404);
 
-    if (!(await hasPermission(userId, task.list.projectId, "edit_task"))) {
-      return {
-        success: false,
-        message: "Unauthorized. Cannot updated assignees."
-      };
-    }
+    const isPermitted = await hasPermission(
+      userId,
+      task.list.projectId,
+      PERMISSION.EDIT_TASK
+    );
+
+    if (!isPermitted) dispatchError(401);
 
     await taskAssignmentsQueries.unassignAllByTask(parsed.taskId);
 
