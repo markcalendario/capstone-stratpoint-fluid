@@ -14,7 +14,9 @@ export default function Dashboard({ children }: DashboardProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const isOnMobile = useIsOnMobile();
 
-  const toggleSidebar = () => setIsSidebarOpen((prev) => !prev);
+  const toggleSidebar = () => {
+    isOnMobile ? setIsSidebarOpen((prev) => !prev) : null;
+  };
 
   useEffect(() => {
     setIsSidebarOpen(isOnMobile !== null && isOnMobile !== true);
