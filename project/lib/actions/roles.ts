@@ -1,6 +1,7 @@
 "use server";
 
 import rolesQueries from "../queries/roles";
+import { handleDispatchError } from "../utils/dispatch-error";
 
 export async function getRoleOptions() {
   try {
@@ -11,11 +12,7 @@ export async function getRoleOptions() {
       message: "Roles retrieved successfully.",
       roles: formatted
     };
-  } catch {
-    return {
-      success: false,
-      message: "Error. Cannot retrieve roles.",
-      roles: []
-    };
+  } catch (error) {
+    handleDispatchError(error);
   }
 }
