@@ -228,7 +228,7 @@ export async function getTaskSlug(payload: GetTaskSlugPayload) {
     const task = await taskQueries.getTask(parsed.id);
     if (!task) return dispatchError(404);
 
-    const isPermitted = hasPermission(
+    const isPermitted = await hasPermission(
       userId,
       task.list.projectId,
       PERMISSION.VIEW_TASK
@@ -261,7 +261,8 @@ export async function getTaskSlug(payload: GetTaskSlugPayload) {
     };
   } catch (error) {
     if (error instanceof ZodError) {
-      if (error.issues[0].path[0] === "id") return dispatchError(404);
+      const isIdError = error.issues[0].path[0] === "id";
+      if (isIdError) return dispatchError(404);
 
       return { success: false, message: error.issues[0].message };
     }
