@@ -77,7 +77,7 @@ function RenderMenu({ items, closeDropdown }: RenderMenuProps) {
   return (
     <Fragment>
       {/* Desktop dropdown */}
-      <div className="border-primary/20 absolute right-0 mt-2 hidden w-max min-w-[250px] rounded-xs border bg-white shadow-lg sm:block dark:bg-neutral-800">
+      <div className="border-primary/20 absolute right-0 z-1 mt-2 hidden w-max min-w-[250px] rounded-xs border bg-white shadow-lg sm:block dark:bg-neutral-800">
         {items.map((item, i) => (
           <RenderItem
             key={i}
@@ -88,7 +88,7 @@ function RenderMenu({ items, closeDropdown }: RenderMenuProps) {
       </div>
 
       {/* Mobile sheet */}
-      <div className="fixed inset-0 z-50 flex items-end bg-black/30 backdrop-blur-sm sm:hidden">
+      <div className="fixed inset-0 z-1 flex items-end bg-black/30 backdrop-blur-sm sm:hidden">
         <div className="w-full rounded-t-xs bg-white p-4 shadow-lg dark:bg-neutral-900">
           <div className="mb-3 flex items-center justify-between">
             <span className="text-sm font-semibold text-neutral-600 dark:text-neutral-300">
