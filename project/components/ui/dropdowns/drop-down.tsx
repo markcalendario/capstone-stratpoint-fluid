@@ -77,7 +77,7 @@ function RenderMenu({ items, closeDropdown }: RenderMenuProps) {
   return (
     <Fragment>
       {/* Desktop dropdown */}
-      <div className="border-primary/20 absolute right-0 mt-2 hidden w-max min-w-[180px] rounded-lg border bg-white shadow-lg sm:block dark:bg-neutral-800">
+      <div className="border-primary/20 absolute right-0 mt-2 hidden w-max min-w-[250px] rounded-xs border bg-white shadow-lg sm:block dark:bg-neutral-800">
         {items.map((item, i) => (
           <RenderItem
             key={i}
@@ -89,7 +89,7 @@ function RenderMenu({ items, closeDropdown }: RenderMenuProps) {
 
       {/* Mobile sheet */}
       <div className="fixed inset-0 z-50 flex items-end bg-black/30 backdrop-blur-sm sm:hidden">
-        <div className="w-full rounded-t-2xl bg-white p-4 shadow-lg dark:bg-neutral-900">
+        <div className="w-full rounded-t-xs bg-white p-4 shadow-lg dark:bg-neutral-900">
           <div className="mb-3 flex items-center justify-between">
             <span className="text-sm font-semibold text-neutral-600 dark:text-neutral-300">
               Menu
@@ -122,7 +122,7 @@ interface RenderItemProps {
 
 function RenderItem({ item, closeDropdown }: RenderItemProps) {
   const itemStyles =
-    "flex w-full items-center cursor-pointer gap-3 rounded-md py-2 px-3 text-[15px] font-medium text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors";
+    "flex w-full items-center cursor-pointer gap-3 py-2 px-3 text-[15px] font-medium text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors";
 
   if (item.href) {
     return (
