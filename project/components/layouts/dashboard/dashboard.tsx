@@ -23,7 +23,10 @@ export default function Dashboard({ children }: DashboardProps) {
   return (
     <section className="dashboard-grid min-h-screen">
       <Navbar toggleSidebar={toggleSidebar} />
-      <Sidebar isOpen={isSidebarOpen} />
+      <Sidebar
+        isOpen={isSidebarOpen}
+        toggleSidebar={toggleSidebar}
+      />
       <Main>{children}</Main>
     </section>
   );

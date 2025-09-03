@@ -17,6 +17,7 @@ import { usePathname } from "next/navigation";
 
 interface SidebarProps {
   isOpen: boolean;
+  toggleSidebar: () => void;
 }
 
 const LINKS = [
@@ -28,7 +29,7 @@ const LINKS = [
   { label: "Settings", path: "/settings", icon: Settings, current: false }
 ];
 
-export default function Sidebar({ isOpen }: SidebarProps) {
+export default function Sidebar({ isOpen, toggleSidebar }: SidebarProps) {
   const pathname = usePathname();
   const theme = useTheme();
 
@@ -50,6 +51,7 @@ export default function Sidebar({ isOpen }: SidebarProps) {
             <Link
               key={i}
               href={path}
+              onClick={toggleSidebar}
               className={cn(
                 baseClasses,
                 isActive ? activeClasses : inactiveClasses
@@ -64,7 +66,10 @@ export default function Sidebar({ isOpen }: SidebarProps) {
 
         <Link
           href="#"
-          onClick={theme.toggleTheme}
+          onClick={() => {
+            theme.toggleTheme();
+            toggleSidebar();
+          }}
           className={cn(baseClasses, inactiveClasses)}>
           {theme.theme === "light" ? <Moon /> : <Sun />}
           <span className="block md:hidden lg:block">Toggle Theme</span>

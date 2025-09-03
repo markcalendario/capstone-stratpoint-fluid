@@ -1,7 +1,14 @@
 import { cn } from "@/lib/utils/tailwind";
-import { LucideIcon } from "lucide-react";
+import { LucideIcon, X } from "lucide-react";
 import Link from "next/link";
-import { ReactNode, useCallback, useEffect, useRef, useState } from "react";
+import {
+  Fragment,
+  ReactNode,
+  useCallback,
+  useEffect,
+  useRef,
+  useState
+} from "react";
 
 export interface DropdownItem {
   onClick?: () => void;
@@ -47,7 +54,7 @@ export default function Dropdown({ className, label, items }: DropdownProps) {
       <button
         type="button"
         onClick={toggleIsOpen}
-        className={cn(className, "flex cursor-pointer")}>
+        className={cn(className, "flex cursor-pointer items-center gap-2")}>
         {label}
       </button>
 
@@ -68,15 +75,43 @@ interface RenderMenuProps {
 
 function RenderMenu({ items, closeDropdown }: RenderMenuProps) {
   return (
-    <div className="border-primary/20 absolute right-0 z-1 mt-1 w-max min-w-[150px] rounded-xs border-1 bg-white shadow-lg dark:bg-neutral-800">
-      {items.map((item, i) => (
-        <RenderItem
-          key={i}
-          item={item}
-          closeDropdown={closeDropdown}
-        />
-      ))}
-    </div>
+    <Fragment>
+      {/* Desktop dropdown */}
+      <div className="border-primary/20 absolute right-0 mt-2 hidden w-max min-w-[180px] rounded-lg border bg-white shadow-lg sm:block dark:bg-neutral-800">
+        {items.map((item, i) => (
+          <RenderItem
+            key={i}
+            item={item}
+            closeDropdown={closeDropdown}
+          />
+        ))}
+      </div>
+
+      {/* Mobile sheet */}
+      <div className="fixed inset-0 z-50 flex items-end bg-black/30 backdrop-blur-sm sm:hidden">
+        <div className="w-full rounded-t-2xl bg-white p-4 shadow-lg dark:bg-neutral-900">
+          <div className="mb-3 flex items-center justify-between">
+            <span className="text-sm font-semibold text-neutral-600 dark:text-neutral-300">
+              Menu
+            </span>
+            <button
+              onClick={closeDropdown}
+              className="text-neutral-500 hover:text-neutral-800 dark:hover:text-neutral-200">
+              <X className="cursor-pointer" />
+            </button>
+          </div>
+          <div className="flex flex-col">
+            {items.map((item, i) => (
+              <RenderItem
+                key={i}
+                item={item}
+                closeDropdown={closeDropdown}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+    </Fragment>
   );
 }
 
@@ -87,7 +122,7 @@ interface RenderItemProps {
 
 function RenderItem({ item, closeDropdown }: RenderItemProps) {
   const itemStyles =
-    "flex w-full cursor-pointer font-medium duration-50 dark:hover:bg-neutral-700 dark:text-neutral-300 items-center py-2 px-3 hover:bg-neutral-100 gap-3 text-[14px] text-neutral-700";
+    "flex w-full items-center cursor-pointer gap-3 rounded-md py-2 px-3 text-[15px] font-medium text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors";
 
   if (item.href) {
     return (
@@ -95,7 +130,7 @@ function RenderItem({ item, closeDropdown }: RenderItemProps) {
         href={item.href}
         onClick={closeDropdown}
         className={itemStyles}>
-        <item.icon size={14} /> {item.label}
+        <item.icon size={16} /> {item.label}
       </Link>
     );
   } else if (item.onClick) {
@@ -107,7 +142,7 @@ function RenderItem({ item, closeDropdown }: RenderItemProps) {
           closeDropdown();
         }}
         className={itemStyles}>
-        <item.icon size={14} /> {item.label}
+        <item.icon size={16} /> {item.label}
       </button>
     );
   }
